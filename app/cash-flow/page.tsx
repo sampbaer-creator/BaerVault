@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "@/components/shared/PlaceholderPage";
+import { CashFlowOverview } from "@/components/cash-flow/CashFlowOverview";
 
 export default function CashFlowPage() {
-  return <PlaceholderPage title="Cash Flow" description="Understand money in, money out, and household savings." />;
+  return <CashFlowOverview />;
 }

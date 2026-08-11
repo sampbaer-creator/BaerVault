@@ -1,6 +1,6 @@
 # BearVault
 
-BearVault is a modern household finance web application. This repository currently contains the production-ready frontend foundation; finance features, authentication, and backend integrations will be added later.
+BearVault is a modern household finance web application. The current frontend includes a responsive application shell, household dashboard, monthly category-based budget workflow, and cash-flow analysis built with mock data. Authentication, persistence, and external financial integrations will be added later.
 
 ## Local development
 
@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). The root route redirects to the dashboard placeholder.
+Open [http://localhost:3000](http://localhost:3000). The root route redirects to the dashboard.
 
 ## Verification
 
@@ -23,5 +23,5 @@ npm run build
 - Next.js App Router, React, and TypeScript
 - React Compiler and ESLint
 - Mantine and Tabler Icons
-- Recharts (installed for future dashboards)
+- Recharts for dashboard and cash-flow visualizations
 - CSS Modules and global CSS; no Tailwind CSS
