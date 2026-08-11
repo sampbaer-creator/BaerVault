@@ -3,6 +3,8 @@ import "@mantine/core/styles.css";
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
+
+import { AppShell } from "@/components/layout/AppShell";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -19,12 +21,14 @@ export const viewport: Viewport = { width: "device-width", initialScale: 1 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={geistSans.variable}>
+    <html lang="en" className={geistSans.variable} suppressHydrationWarning>
       <head>
         <ColorSchemeScript defaultColorScheme="light" />
       </head>
       <body>
-        <MantineProvider defaultColorScheme="light">{children}</MantineProvider>
+        <MantineProvider defaultColorScheme="light">
+          <AppShell>{children}</AppShell>
+        </MantineProvider>
       </body>
     </html>
   );

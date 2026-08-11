@@ -1,6 +1,14 @@
 :root {
-  --background: #f5f6f8;
-  --foreground: #202124;
+  --app-background: #f5f6f8;
+  --app-surface: #ffffff;
+  --app-border: #e4e7ec;
+  --app-hover: #f1f3f5;
+  --app-text-strong: #161b22;
+  --app-text-muted: #667085;
+  --app-accent: #1f4d3b;
+  --app-accent-soft: #eaf2ee;
+  --app-focus: #377d63;
+  --app-shadow: 0 8px 28px rgb(24 32 46 / 4%);
 }
 
 *,
@@ -18,8 +26,8 @@ body {
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
+  color: var(--app-text-strong);
+  background: var(--app-background);
   font-family: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;

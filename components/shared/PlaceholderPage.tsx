@@ -1,17 +1,20 @@
-import { Container, Paper, Stack, Text, Title } from "@mantine/core";
+import styles from "@/components/layout/AppShell.module.css";
 
-type PlaceholderPageProps = { title: string };
+type PlaceholderPageProps = {
+  title: string;
+  description: string;
+};
 
-export function PlaceholderPage({ title }: PlaceholderPageProps) {
+export function PlaceholderPage({ title, description }: PlaceholderPageProps) {
   return (
-    <Container component="main" size="md" py={{ base: "xl", sm: 64 }} px="md">
-      <Paper withBorder radius="md" p={{ base: "lg", sm: "xl" }}>
-        <Stack gap="xs">
-          <Text c="dimmed" fw={600} size="sm">BearVault</Text>
-          <Title order={1}>{title}</Title>
-          <Text c="dimmed">This area is ready for future household finance tools.</Text>
-        </Stack>
-      </Paper>
-    </Container>
+    <section aria-labelledby="page-title">
+      <div className={styles.pageIntro}>
+        <h2 className={styles.pageTitle} id="page-title">
+          {title}
+        </h2>
+        <p className={styles.pageDescription}>{description}</p>
+      </div>
+      <div className={styles.placeholderSurface} aria-hidden="true" />
+    </section>
   );
 }
