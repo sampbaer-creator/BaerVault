@@ -1,4 +1,4 @@
-import { Avatar } from "@mantine/core";
+import { UserButton } from "@clerk/nextjs";
 
 import styles from "./AppShell.module.css";
 
@@ -14,16 +14,12 @@ export function PageHeader({ title }: PageHeaderProps) {
           <h1 className={styles.headerTitle}>{title}</h1>
           <p className={styles.headerSubtitle}>Household workspace</p>
         </div>
-        <Avatar color="dark" radius="xl" size={40} aria-label="Samuel Baer profile">
-          SB
-        </Avatar>
+        <UserButton />
       </header>
 
       <header className={styles.mobileHeader}>
         <span className={styles.mobileBrand}>BearVault</span>
-        <Avatar color="dark" radius="xl" size={36} aria-label="Samuel Baer profile">
-          SB
-        </Avatar>
+        <UserButton />
       </header>
     </>
   );

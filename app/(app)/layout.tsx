@@ -7,7 +7,7 @@ export default async function ProtectedAppLayout({ children }: { children: React
   const { orgId, userId, redirectToSignIn } = await auth();
 
   if (!userId) return redirectToSignIn();
-  if (!orgId) redirect("/household/setup");
+  if (!orgId) redirect("/onboarding");
 
   return <AppShell>{children}</AppShell>;
 }

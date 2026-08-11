@@ -9,7 +9,7 @@ export default function SignUpPage() {
       <Link className={styles.brand} href="/">BearVault</Link>
       <div className={styles.authCard}>
         <p className={styles.step}>Step 1 of 2</p>
-        <SignUp forceRedirectUrl="/household/setup" signInUrl="/sign-in" />
+        <SignUp forceRedirectUrl="/onboarding" signInUrl="/sign-in" />
       </div>
       <p className={styles.footer}>Secure household finance, built for real life.</p>
     </main>

@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 
 import styles from "./setup.module.css";
 
-export default async function HouseholdSetupPage() {
+export default async function OnboardingPage() {
   const { orgId, userId, redirectToSignIn } = await auth();
   if (!userId) return redirectToSignIn();
   if (orgId) redirect("/dashboard");
