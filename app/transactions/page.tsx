@@ -1,7 +1,5 @@
-import { PlaceholderPage } from "@/components/shared/PlaceholderPage";
+import { redirect } from "next/navigation";
 
 export default function TransactionsPage() {
-  return (
-    <PlaceholderPage title="Transactions" description="Review your household activity." />
-  );
+  redirect("/cash-flow");
 }

@@ -12,7 +12,7 @@ Households, including spouses or household members, who need a shared and approa
 
 ## Product Purpose
 
-BearVault helps a household understand its current financial position, manually manage income and expenses, create monthly budgets, track investments, and plan ahead. Success means the household can answer how it is doing financially without navigating a complex trading or accounting interface.
+BearVault helps a household understand its current financial position, build monthly spending from category-level purchases, track income and cash flow, maintain investments, and plan ahead. Success means the household can answer how it is doing financially without navigating a complex transaction ledger, trading terminal, or accounting interface.
 
 ## Positioning
 
@@ -20,14 +20,14 @@ BearVault combines a calm household-finance overview with explicit shared-househ
 
 ## Operating Context
 
-Users review their financial position at a glance, enter and review household transactions, plan monthly budgets, maintain investment holdings, and share the workspace with another household member. The product must work comfortably on phones and larger screens.
+Users review their financial position at a glance, add purchases directly to monthly budget categories, record income in Cash Flow, maintain investment holdings, and share the workspace with another household member. Budget is the primary spending-entry workflow; Cash Flow is the analytical view of money in, money out, and savings. The product must work comfortably on phones and larger screens.
 
 ## Capabilities and Constraints
 
 - Next.js App Router application using TypeScript, Mantine, Tabler Icons, Recharts, and CSS Modules without Tailwind.
 - Current work uses realistic mock data only.
 - No authentication, backend, bank connection, market-data API, payment provider, email provider, or analytics integration is active yet.
-- Existing routes and responsive application shell must remain available.
+- The responsive application shell remains stable. Primary navigation is Dashboard, Budget, Cash Flow, Investments, Household, and Settings; `/transactions` redirects to `/cash-flow` for compatibility.
 - Financial data must use clear formatting and tabular numerals where appropriate.
 
 ## Brand Commitments

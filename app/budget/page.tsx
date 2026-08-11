@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "@/components/shared/PlaceholderPage";
+import { BudgetWorkspace } from "@/components/budget/BudgetWorkspace";
 
 export default function BudgetPage() {
-  return <PlaceholderPage title="Budget" description="Plan and track your monthly spending." />;
+  return <BudgetWorkspace />;
 }

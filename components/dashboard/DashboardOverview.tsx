@@ -234,7 +234,7 @@ export function DashboardOverview() {
         </section>
 
         <section className={`${styles.panel} ${styles.transactionsPanel}`} aria-labelledby="transactions-title">
-          <SectionHeading id="transactions-title" title="Recent activity" href="/transactions" action="All transactions" />
+          <SectionHeading id="transactions-title" title="Recent activity" href="/cash-flow" action="View cash flow" />
           <div className={styles.transactions}>
             {recentTransactions.map((transaction, index) => {
               const icons = [IconShoppingBag, IconCoin, IconHome, IconBuildingBank];
