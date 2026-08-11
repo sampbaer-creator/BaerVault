@@ -1,3 +1,4 @@
+import { auth } from "@clerk/nextjs/server";
 import { NextRequest } from "next/server";
 
 const ranges = {
@@ -16,6 +17,8 @@ type TwelveDataResponse = {
 };
 
 export async function GET(request: NextRequest) {
+  const { orgId } = await auth.protect();
+  if (!orgId) return Response.json({ error: "Select a household before requesting market data." }, { status: 403 });
   const apiKey = process.env.TWELVE_DATA_API_KEY;
   if (!apiKey) return Response.json({ error: "Market data is not configured." }, { status: 503 });
 

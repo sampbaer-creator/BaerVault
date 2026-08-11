@@ -15,6 +15,9 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { FormEvent, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+
+import { addCategoryAction, deleteBudgetEntryAction, saveBudgetEntryAction, setPlannedAmountAction } from "@/app/(app)/budget/actions";
 
 import {
   categoryActual,
@@ -26,18 +29,22 @@ import {
   totalPlanned,
   totalSpending,
   type BudgetCategory,
+  type BudgetMonth,
   type Purchase,
 } from "@/lib/finance";
-import { augustBudget } from "@/lib/mockFinanceData";
 
 import styles from "./BudgetWorkspace.module.css";
 
 type PurchaseDraft = { amount: string; description: string; date: string };
-const emptyPurchase: PurchaseDraft = { amount: "", description: "", date: "2026-08-11" };
+const today = new Date().toISOString().slice(0, 10);
+const emptyPurchase: PurchaseDraft = { amount: "", description: "", date: today };
 
-export function BudgetWorkspace() {
+export function BudgetWorkspace({ initialBudget }: { initialBudget: BudgetMonth & { year: number; monthNumber: number } }) {
+  const router = useRouter();
   const isMobile = useMediaQuery("(max-width: 47.999rem)");
-  const [categories, setCategories] = useState<BudgetCategory[]>(augustBudget.categories);
+  const [categories, setCategories] = useState<BudgetCategory[]>(initialBudget.categories);
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [purchaseDraft, setPurchaseDraft] = useState<PurchaseDraft>(emptyPurchase);
   const [editingPurchaseId, setEditingPurchaseId] = useState<string | null>(null);
@@ -47,7 +54,7 @@ export function BudgetWorkspace() {
   const [addingCategory, setAddingCategory] = useState(false);
   const [categoryDraft, setCategoryDraft] = useState({ name: "", plannedAmount: "" });
 
-  const month = useMemo(() => ({ ...augustBudget, categories }), [categories]);
+  const month = useMemo(() => ({ ...initialBudget, categories }), [categories, initialBudget]);
   const selected = categories.find((category) => category.id === selectedId) ?? null;
   const income = totalIncome(month);
   const planned = totalPlanned(month);
@@ -68,19 +75,27 @@ export function BudgetWorkspace() {
     setCategories((current) => current.map((category) => category.id === selectedId ? updater(category) : category));
   }
 
-  function submitPurchase(event: FormEvent) {
+  async function submitPurchase(event: FormEvent) {
     event.preventDefault();
     const amount = Number(purchaseDraft.amount);
     if (!selected || !amount || amount < 0 || !purchaseDraft.description.trim()) return;
+    const previous = categories;
+    const temporaryId = editingPurchaseId ?? "pending-new-entry";
     updateSelected((category) => ({
       ...category,
       purchases: editingPurchaseId
         ? category.purchases.map((purchase) => purchase.id === editingPurchaseId ? { ...purchase, amount, description: purchaseDraft.description.trim(), date: purchaseDraft.date } : purchase)
-        : [{ id: `purchase-${Date.now()}`, amount, description: purchaseDraft.description.trim(), date: purchaseDraft.date }, ...category.purchases],
+        : [{ id: temporaryId, amount, description: purchaseDraft.description.trim(), date: purchaseDraft.date }, ...category.purchases],
     }));
+    setSaving(true); setError("");
+    const result = await saveBudgetEntryAction({ id: editingPurchaseId ?? undefined, categoryId: selected.id, description: purchaseDraft.description, amount, date: purchaseDraft.date });
+    setSaving(false);
+    if (!result.ok) { setCategories(previous); setError(result.error); return; }
+    if (!editingPurchaseId) setCategories((current) => current.map((category) => category.id === selected.id ? { ...category, purchases: category.purchases.map((purchase) => purchase.id === temporaryId ? { ...purchase, id: result.data.id } : purchase) } : category));
     setPurchaseDraft(emptyPurchase);
     setEditingPurchaseId(null);
     setShowPurchaseForm(false);
+    router.refresh();
   }
 
   function editPurchase(purchase: Purchase) {
@@ -89,37 +104,51 @@ export function BudgetWorkspace() {
     setShowPurchaseForm(true);
   }
 
-  function removePurchase(id: string) {
+  async function removePurchase(id: string) {
+    const previous = categories;
     updateSelected((category) => ({ ...category, purchases: category.purchases.filter((purchase) => purchase.id !== id) }));
+    const result = await deleteBudgetEntryAction(id);
+    if (!result.ok) { setCategories(previous); setError(result.error); } else router.refresh();
   }
 
-  function savePlanned() {
+  async function savePlanned() {
     const value = Number(plannedDraft);
-    if (value >= 0) updateSelected((category) => ({ ...category, plannedAmount: value }));
+    if (value >= 0 && selected) {
+      const previous = categories; updateSelected((category) => ({ ...category, plannedAmount: value }));
+      const result = await setPlannedAmountAction(selected.id, value);
+      if (!result.ok) { setCategories(previous); setError(result.error); } else router.refresh();
+    }
     setEditingPlanned(false);
   }
 
-  function addCategory(event: FormEvent) {
+  async function addCategory(event: FormEvent) {
     event.preventDefault();
     const plannedAmount = Number(categoryDraft.plannedAmount);
     if (!categoryDraft.name.trim() || plannedAmount < 0) return;
-    setCategories((current) => [...current, { id: `category-${Date.now()}`, name: categoryDraft.name.trim(), plannedAmount, purchases: [] }]);
+    setSaving(true); setError("");
+    const result = await addCategoryAction({ year: initialBudget.year, month: initialBudget.monthNumber, name: categoryDraft.name, plannedAmount });
+    setSaving(false);
+    if (!result.ok) { setError(result.error); return; }
+    setCategories((current) => [...current, result.data]);
     setCategoryDraft({ name: "", plannedAmount: "" });
     setAddingCategory(false);
+    router.refresh();
   }
 
   return (
     <div className={styles.budget}>
       <header className={styles.intro}>
-        <div><p className={styles.eyebrow}>Monthly plan</p><h2>August budget</h2><p>Plan the month, then add purchases where they belong.</p></div>
+        <div><p className={styles.eyebrow}>Monthly plan</p><h2>{initialBudget.month} budget</h2><p>Plan the month, then add purchases where they belong.</p></div>
         <button className={styles.copyButton} type="button" disabled title="Available when another month has been created"><IconCopy size={16} />Copy previous month</button>
       </header>
 
       <section className={styles.monthBar} aria-label="Budget month navigation">
         <button type="button" aria-label="Previous month" disabled title="Only August mock data is available"><IconArrowLeft size={18} /></button>
-        <strong>August 2026</strong>
+        <strong>{initialBudget.month}</strong>
         <button type="button" aria-label="Next month" disabled title="Only August mock data is available"><IconArrowRight size={18} /></button>
       </section>
+
+      {error && <p className={styles.formError} role="alert">{error}</p>}
 
       <section className={styles.summary} aria-labelledby="budget-summary-title">
         <div className={styles.summaryLead}><span id="budget-summary-title">Available after spending</span><strong>{currency.format(savings)}</strong><small>{currency.format(income)} income this month</small></div>
@@ -134,6 +163,7 @@ export function BudgetWorkspace() {
         <div className={styles.sheetHeading}><div><h3 id="categories-title">Spending plan</h3><p>Actuals are calculated from the purchases inside each category.</p></div><button type="button" onClick={() => setAddingCategory(true)}><IconPlus size={16} />Add category</button></div>
         <div className={styles.tableHeader} aria-hidden="true"><span>Category</span><span>Budget / projected</span><span>Actual</span><span>Remaining / variance</span><span /></div>
         <div className={styles.rows}>
+          {!categories.length && <div className={styles.emptyState}>No budget categories yet. Add your first category to start planning this month.</div>}
           {categories.map((category) => {
             const actual = categoryActual(category);
             const variance = categoryRemaining(category);
@@ -163,7 +193,7 @@ export function BudgetWorkspace() {
             <div className={styles.amountField}><span>$</span><input aria-label="Purchase amount" placeholder="0.00" inputMode="decimal" min="0.01" step="0.01" required value={purchaseDraft.amount} onChange={(e) => setPurchaseDraft({ ...purchaseDraft, amount: e.target.value })} autoFocus /></div>
             <label>Description<input placeholder="Costco" required value={purchaseDraft.description} onChange={(e) => setPurchaseDraft({ ...purchaseDraft, description: e.target.value })} /></label>
             <label>Date<input type="date" required value={purchaseDraft.date} onChange={(e) => setPurchaseDraft({ ...purchaseDraft, date: e.target.value })} /></label>
-            <div className={styles.formActions}><button type="button" onClick={() => setShowPurchaseForm(false)}><IconX size={15} />Cancel</button><button className={styles.primaryButton} type="submit">{editingPurchaseId ? "Save purchase" : "Add purchase"}</button></div>
+            <div className={styles.formActions}><button type="button" onClick={() => setShowPurchaseForm(false)}><IconX size={15} />Cancel</button><button className={styles.primaryButton} type="submit" disabled={saving}>{saving ? "Saving…" : editingPurchaseId ? "Save purchase" : "Add purchase"}</button></div>
           </form>}
           <div className={styles.purchaseList}>
             {selected.purchases.map((purchase) => <div className={styles.purchase} key={purchase.id}><div><strong>{purchase.description}</strong><span>{new Date(`${purchase.date}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span></div><strong>{currency.format(purchase.amount)}</strong><div className={styles.purchaseActions}><button type="button" onClick={() => editPurchase(purchase)} aria-label={`Edit ${purchase.description}`}><IconEdit size={16} /></button><button type="button" onClick={() => removePurchase(purchase.id)} aria-label={`Delete ${purchase.description}`}><IconTrash size={16} /></button></div></div>)}
@@ -172,7 +202,7 @@ export function BudgetWorkspace() {
       </Drawer>
 
       <Drawer opened={addingCategory} onClose={() => setAddingCategory(false)} position={isMobile ? "bottom" : "right"} size={isMobile ? "auto" : 400} radius={isMobile ? "18px 18px 0 0" : 0} title="Add category" classNames={{ content: styles.drawer, header: styles.drawerHeader, body: styles.drawerBody, title: styles.drawerTitle }}>
-        <form className={styles.categoryForm} onSubmit={addCategory}><label>Category name<input placeholder="Childcare" value={categoryDraft.name} onChange={(e) => setCategoryDraft({ ...categoryDraft, name: e.target.value })} autoFocus /></label><label>Planned amount<div className={styles.simpleAmount}><span>$</span><input inputMode="decimal" placeholder="0.00" value={categoryDraft.plannedAmount} onChange={(e) => setCategoryDraft({ ...categoryDraft, plannedAmount: e.target.value })} /></div></label><button className={styles.primaryButton} type="submit">Add category</button></form>
+        <form className={styles.categoryForm} onSubmit={addCategory}><label>Category name<input placeholder="Childcare" value={categoryDraft.name} onChange={(e) => setCategoryDraft({ ...categoryDraft, name: e.target.value })} autoFocus /></label><label>Planned amount<div className={styles.simpleAmount}><span>$</span><input inputMode="decimal" placeholder="0.00" value={categoryDraft.plannedAmount} onChange={(e) => setCategoryDraft({ ...categoryDraft, plannedAmount: e.target.value })} /></div></label><button className={styles.primaryButton} type="submit" disabled={saving}>{saving ? "Saving…" : "Add category"}</button></form>
       </Drawer>
     </div>
   );

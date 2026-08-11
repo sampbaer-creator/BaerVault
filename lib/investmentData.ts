@@ -1,6 +1,6 @@
 export type InvestmentLot = { id: string; shares: number; price: number; date: string };
 export type Holding = { id: string; symbol: string; name: string; fallbackPrice: number; lots: InvestmentLot[] };
-export type InvestmentAccount = { id: string; name: string; institution: string; type: "Joint brokerage" | "Roth IRA" | "401(k)" | "HSA"; owner: string; holdings: Holding[] };
+export type InvestmentAccount = { id: string; name: string; institution: string; type: string; owner: string; contributionAmount?: number; holdings: Holding[] };
 
 export const investmentAccounts: InvestmentAccount[] = [
   { id: "fidelity-joint", name: "Fidelity Joint", institution: "Fidelity", type: "Joint brokerage", owner: "Samuel & Bailey", holdings: [

@@ -4,155 +4,87 @@ import { Drawer } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { IconBuildingBank, IconChevronRight, IconPlus, IconShieldCheck, IconTrendingUp } from "@tabler/icons-react";
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { Area, AreaChart, Cell, CartesianGrid, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { useRouter } from "next/navigation";
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
+import { addHoldingAction, addInvestmentAccountAction, addPurchaseLotAction } from "@/app/(app)/investments/actions";
 import { currency } from "@/lib/finance";
-import { costFor, investmentAccounts, sharesFor, valueFor, type Holding, type InvestmentAccount } from "@/lib/investmentData";
+import { costFor, sharesFor, valueFor, type Holding, type InvestmentAccount } from "@/lib/investmentData";
 import styles from "./InvestmentsWorkspace.module.css";
 
 type Range = "1M" | "3M" | "1Y" | "5Y";
 type MarketData = { price: number; points: Array<{ date: string; close: number }>; exchange?: string; error?: string };
+const today = new Date().toISOString().slice(0, 10);
 
-const allocationColors = ["#25455d", "#315f50", "#70988a", "#a87546", "#8b947f"];
-
-export function InvestmentsWorkspace() {
-  const mobile = useMediaQuery("(max-width: 47.999rem)");
-  const [accounts, setAccounts] = useState<InvestmentAccount[]>(investmentAccounts);
-  const [accountId, setAccountId] = useState(investmentAccounts[0].id);
+export function InvestmentsWorkspace({ initialAccounts }: { initialAccounts: InvestmentAccount[] }) {
+  const router = useRouter(); const mobile = useMediaQuery("(max-width: 47.999rem)");
+  const [accounts, setAccounts] = useState(initialAccounts);
+  const [accountId, setAccountId] = useState(initialAccounts[0]?.id ?? "");
   const [holding, setHolding] = useState<Holding | null>(null);
-  const [range, setRange] = useState<Range>("1Y");
-  const [market, setMarket] = useState<MarketData | null>(null);
-  const [projectionRate, setProjectionRate] = useState(7);
-  const [monthly, setMonthly] = useState(500);
+  const [range, setRange] = useState<Range>("1Y"); const [market, setMarket] = useState<MarketData | null>(null);
   const [accountMarkets, setAccountMarkets] = useState<Record<string, MarketData>>({});
-  const [addHoldingOpen, setAddHoldingOpen] = useState(false);
-  const [holdingDraft, setHoldingDraft] = useState({ symbol: "", name: "", shares: "", price: "", date: "2026-08-11" });
-  const [holdingError, setHoldingError] = useState("");
-  const [addingHolding, setAddingHolding] = useState(false);
-  const account = accounts.find((item) => item.id === accountId) ?? accounts[0];
+  const [accountOpen, setAccountOpen] = useState(false); const [holdingOpen, setHoldingOpen] = useState(false); const [lotOpen, setLotOpen] = useState(false);
+  const [saving, setSaving] = useState(false); const [error, setError] = useState("");
+  const [accountDraft, setAccountDraft] = useState({ name: "", type: "Joint brokerage", ownership: "joint" });
+  const [holdingDraft, setHoldingDraft] = useState({ symbol: "", name: "", shares: "", price: "", date: today });
+  const [lotDraft, setLotDraft] = useState({ shares: "", price: "", date: today });
+  const account = accounts.find((item) => item.id === accountId) ?? accounts[0] ?? null;
 
   useEffect(() => {
-    if (!holding) return;
-    const controller = new AbortController();
-    fetch(`/api/market-data?symbol=${encodeURIComponent(holding.symbol)}&range=${range}`, { signal: controller.signal })
-      .then(async (response) => {
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error);
-        setMarket(data);
-      })
-      .catch((error: Error) => {
-        if (error.name !== "AbortError") setMarket({ price: holding.fallbackPrice, points: [], error: error.message });
-      });
+    if (!holding) return; const controller = new AbortController();
+    fetch(`/api/market-data?symbol=${encodeURIComponent(holding.symbol)}&range=${range}`, { signal: controller.signal }).then(async (response) => { const data = await response.json(); if (!response.ok) throw new Error(data.error); setMarket(data); }).catch((caught: Error) => { if (caught.name !== "AbortError") setMarket({ price: 0, points: [], error: caught.message }); });
     return () => controller.abort();
   }, [holding, range]);
 
   useEffect(() => {
+    if (!account?.holdings.length) return;
     const controller = new AbortController();
-    Promise.all(account.holdings.map(async (item) => {
-      const response = await fetch(`/api/market-data?symbol=${encodeURIComponent(item.symbol)}&range=1Y`, { signal: controller.signal });
-      if (!response.ok) throw new Error("Market history unavailable");
-      return [item.symbol, await response.json()] as const;
-    })).then((entries) => setAccountMarkets(Object.fromEntries(entries))).catch(() => undefined);
+    Promise.all(account.holdings.map(async (item) => { const response = await fetch(`/api/market-data?symbol=${encodeURIComponent(item.symbol)}&range=1Y`, { signal: controller.signal }); const data = await response.json(); if (!response.ok) throw new Error(data.error); return [item.symbol, data] as const; })).then((entries) => setAccountMarkets(Object.fromEntries(entries))).catch(() => undefined);
     return () => controller.abort();
   }, [account]);
 
-  const price = market?.price ?? holding?.fallbackPrice ?? 0;
-  const positionValue = holding ? valueFor(holding, price) : 0;
-  const positionCost = holding ? costFor(holding) : 0;
-  const positionGain = positionValue - positionCost;
   const portfolioCost = accounts.reduce((sum, item) => sum + item.holdings.reduce((total, current) => total + costFor(current), 0), 0);
-  const portfolioValue = accounts.reduce((sum, item) => sum + item.holdings.reduce((total, current) => total + valueFor(current, accountMarkets[current.symbol]?.price ?? current.fallbackPrice), 0), 0);
-  const accountValue = account.holdings.reduce((sum, item) => sum + valueFor(item, accountMarkets[item.symbol]?.price ?? item.fallbackPrice), 0);
-  const allocation = account.holdings.map((item) => ({ name: item.symbol, value: valueFor(item, accountMarkets[item.symbol]?.price ?? item.fallbackPrice) }));
+  const portfolioValue = accounts.reduce((sum, item) => sum + item.holdings.reduce((total, current) => total + valueFor(current, accountMarkets[current.symbol]?.price ?? 0), 0), 0);
+  const accountValue = account?.holdings.reduce((sum, item) => sum + valueFor(item, accountMarkets[item.symbol]?.price ?? 0), 0) ?? 0;
   const accountHistory = useMemo(() => {
-    const histories = account.holdings.map((item) => ({ shares: sharesFor(item), points: accountMarkets[item.symbol]?.points ?? [] })).filter((item) => item.points.length);
-    if (!histories.length) return [];
-    const length = Math.min(...histories.map((item) => item.points.length));
+    if (!account) return []; const histories = account.holdings.map((item) => ({ shares: sharesFor(item), points: accountMarkets[item.symbol]?.points ?? [] })).filter((item) => item.points.length);
+    if (!histories.length) return []; const length = Math.min(...histories.map((item) => item.points.length));
     return histories[0].points.slice(-length).map((point, index) => ({ date: point.date, value: histories.reduce((sum, item) => sum + item.points[item.points.length - length + index].close * item.shares, 0) }));
-  }, [account.holdings, accountMarkets]);
-  const monthlyChange = accountHistory.length > 4 ? accountHistory.at(-1)!.value - accountHistory.at(-5)!.value : 0;
-  const projected = useMemo(() => [5, 10, 20].map((years) => {
-    const months = years * 12;
-    const monthlyRate = projectionRate / 100 / 12;
-    const growth = Math.pow(1 + monthlyRate, months);
-    const future = monthlyRate === 0 ? portfolioValue + monthly * months : portfolioValue * growth + monthly * (growth - 1) / monthlyRate;
-    return { years, value: future };
-  }), [projectionRate, monthly, portfolioValue]);
+  }, [account, accountMarkets]);
 
-  function selectHolding(nextHolding: Holding) {
-    setMarket(null);
-    setHolding(nextHolding);
-  }
-
-  function selectRange(nextRange: Range) {
-    setMarket(null);
-    setRange(nextRange);
+  async function addAccount(event: FormEvent) {
+    event.preventDefault(); setSaving(true); setError(""); const result = await addInvestmentAccountAction({ name: accountDraft.name, accountType: accountDraft.type, ownership: accountDraft.ownership }); setSaving(false);
+    if (!result.ok) { setError(result.error); return; } setAccounts((current) => [...current, result.data]); setAccountMarkets({}); setAccountId(result.data.id); setAccountOpen(false); setAccountDraft({ name:"", type:"Joint brokerage", ownership:"joint" }); router.refresh();
   }
 
   async function addHolding(event: FormEvent) {
-    event.preventDefault();
-    const symbol = holdingDraft.symbol.trim().toUpperCase(); const shares = Number(holdingDraft.shares); const purchasePrice = Number(holdingDraft.price);
-    if (!/^[A-Z0-9./-]{1,15}$/.test(symbol) || shares <= 0 || purchasePrice <= 0 || !holdingDraft.date) { setHoldingError("Enter a valid ticker, shares, purchase price, and date."); return; }
-    setAddingHolding(true); setHoldingError("");
-    try {
-      const response = await fetch(`/api/market-data?symbol=${encodeURIComponent(symbol)}&range=1M`); const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
-      const nextHolding: Holding = { id: `${symbol.toLowerCase()}-${Date.now()}`, symbol, name: holdingDraft.name.trim() || symbol, fallbackPrice: data.price, lots: [{ id: `lot-${Date.now()}`, shares, price: purchasePrice, date: holdingDraft.date }] };
-      setAccounts((current) => current.map((item) => item.id === account.id ? { ...item, holdings: [...item.holdings, nextHolding] } : item));
-      setHoldingDraft({ symbol: "", name: "", shares: "", price: "", date: "2026-08-11" }); setAddHoldingOpen(false);
-    } catch (error) { setHoldingError(error instanceof Error ? error.message : "Could not verify this ticker."); }
-    finally { setAddingHolding(false); }
+    event.preventDefault(); if (!account) return; const symbol = holdingDraft.symbol.trim().toUpperCase(); const shares = Number(holdingDraft.shares); const price = Number(holdingDraft.price);
+    if (!/^[A-Z0-9./-]{1,15}$/.test(symbol) || shares <= 0 || price < 0 || !holdingDraft.date) { setError("Enter a valid ticker, shares, price, and date."); return; }
+    setSaving(true); setError("");
+    try { const response = await fetch(`/api/market-data?symbol=${encodeURIComponent(symbol)}&range=1M`); const quote = await response.json(); if (!response.ok) throw new Error(quote.error); const result = await addHoldingAction({ accountId: account.id, symbol, name: holdingDraft.name, shares, price, date: holdingDraft.date }); if (!result.ok) throw new Error(result.error); const next = { ...result.data, fallbackPrice: quote.price }; setAccounts((current) => current.map((item) => item.id === account.id ? { ...item, holdings: [...item.holdings, next] } : item)); setHoldingDraft({ symbol:"", name:"", shares:"", price:"", date:today }); setHoldingOpen(false); router.refresh(); }
+    catch (caught) { setError(caught instanceof Error ? caught.message : "Could not add this holding."); } finally { setSaving(false); }
   }
 
+  async function addLot(event: FormEvent) {
+    event.preventDefault(); if (!holding) return; const shares = Number(lotDraft.shares); const price = Number(lotDraft.price); setSaving(true); setError("");
+    const result = await addPurchaseLotAction({ holdingId: holding.id, shares, price, date: lotDraft.date }); setSaving(false);
+    if (!result.ok) { setError(result.error); return; }
+    const updated = { ...holding, lots: [...holding.lots, result.data] }; setHolding(updated); setAccounts((current) => current.map((item) => ({ ...item, holdings: item.holdings.map((candidate) => candidate.id === holding.id ? updated : candidate) }))); setLotDraft({ shares:"", price:"", date:today }); setLotOpen(false); router.refresh();
+  }
+
+  const positionPrice = market?.price ?? 0; const positionCost = holding ? costFor(holding) : 0; const positionValue = holding ? valueFor(holding, positionPrice) : 0;
   return <div className={styles.workspace}>
-    <header className={styles.intro}>
-      <div><p>Protected portfolio</p><h2>Your investment accounts</h2><span>Track ownership, growth, and long-term possibilities in one place.</span></div>
-      <button type="button" disabled title="Account editing will be connected with persistence"><IconPlus size={17} />Add account</button>
-    </header>
+    <header className={styles.intro}><div><p>Protected portfolio</p><h2>Your investment accounts</h2><span>Supabase stores what you own. Twelve Data supplies market prices and history.</span></div><button type="button" onClick={() => { setError(""); setAccountOpen(true); }}><IconPlus size={17}/>Add account</button></header>
+    <section className={styles.hero}><div><span>Household portfolio</span><strong>{currency.format(portfolioValue)}</strong><p><IconTrendingUp size={15}/>{portfolioCost ? `${currency.format(portfolioValue - portfolioCost)} total gain` : "Add an account and holding to begin"}</p></div><div className={styles.heroRail}><div><span>Total invested</span><strong>{currency.format(portfolioCost)}</strong></div><div><span>Accounts</span><strong>{accounts.length}</strong></div><div><span>Holdings</span><strong>{accounts.reduce((count, item) => count + item.holdings.length, 0)}</strong></div></div></section>
+    {!accounts.length ? <section className={styles.sheet}><div className={styles.loading}>No investment accounts yet. Add your first account to start tracking holdings.</div></section> : <>
+      <section className={styles.portfolioChartPanel}><div className={styles.portfolioChartHeading}><div><h3>{account?.name} performance</h3><p>Live market history from Twelve Data</p></div></div><div className={styles.portfolioChart}>{accountHistory.length ? <ResponsiveContainer width="100%" height="100%"><AreaChart data={accountHistory}><CartesianGrid vertical={false} stroke="#e8ecea" strokeDasharray="3 5"/><XAxis dataKey="date" hide/><YAxis hide domain={["dataMin", "dataMax"]}/><Tooltip formatter={(value) => currency.format(Number(value))}/><Area type="monotone" dataKey="value" stroke="#315f50" fill="#dcebe4" isAnimationActive={false}/></AreaChart></ResponsiveContainer> : <div className={styles.loading}>{account?.holdings.length ? "Loading market history…" : "Add a holding to build performance history."}</div>}</div></section>
+      <div className={styles.accountTabs} role="tablist">{accounts.map((item) => <button role="tab" aria-selected={item.id === account?.id} className={item.id === account?.id ? styles.activeTab : ""} onClick={() => { setAccountId(item.id); setAccountMarkets({}); }} key={item.id}><IconBuildingBank size={17}/><span>{item.name}<small>{item.type} · {item.owner}</small></span></button>)}</div>
+      <section className={styles.sheet}><div className={styles.sheetHeading}><div><h3>{account?.name}</h3><p>{account?.type}</p></div><button type="button" onClick={() => { setError(""); setHoldingOpen(true); }}><IconPlus size={16}/>Add holding</button></div><div className={styles.tableHead}><span>Holding</span><span>Shares</span><span>Avg. cost</span><span>Invested</span><span>Current value</span><span>Gain / loss</span><span>Weight</span><span/></div>{account?.holdings.length ? account.holdings.map((item) => { const shares = sharesFor(item); const cost = costFor(item); const live = accountMarkets[item.symbol]?.price ?? 0; const value = valueFor(item, live); const gain = value - cost; return <button className={styles.holdingRow} type="button" onClick={() => setHolding(item)} key={item.id}><span className={styles.identity}><b>{item.symbol}</b><span>{item.name}</span></span><span>{shares.toFixed(4)}</span><span>{currency.format(shares ? cost / shares : 0)}</span><span>{currency.format(cost)}</span><span><b>{live ? currency.format(value) : "Loading…"}</b><small>{live ? `${currency.format(live)} / share` : "Market price"}</small></span><span className={gain >= 0 ? styles.positive : styles.negative}><b>{live ? currency.format(gain) : "—"}</b></span><span>{accountValue && live ? `${(value / accountValue * 100).toFixed(1)}%` : "—"}</span><IconChevronRight size={16}/></button>; }) : <div className={styles.loading}>No holdings in this account yet.</div>}</section>
+    </>}
+    <section className={styles.projection}><div><IconShieldCheck size={20}/><h3>Household-isolated ownership</h3><p>Accounts, holdings, and purchase lots are saved for the active Clerk household. Market prices are fetched live and are not stored as ownership data.</p></div></section>
 
-    <section className={styles.hero} aria-labelledby="portfolio-title">
-      <div><span id="portfolio-title">Household portfolio</span><strong>{currency.format(portfolioValue)}</strong><p><IconTrendingUp size={15} />+{currency.format(portfolioValue - portfolioCost)} total gain · +{((portfolioValue / portfolioCost - 1) * 100).toFixed(1)}%</p></div>
-      <div className={styles.heroRail}><div><span>Total invested</span><strong>{currency.format(portfolioCost)}</strong></div><div><span>Accounts</span><strong>{accounts.length}</strong></div><div><span>Holdings</span><strong>{accounts.reduce((count, item) => count + item.holdings.length, 0)}</strong></div></div>
-    </section>
-
-    <section className={styles.portfolioChartPanel} aria-labelledby="account-growth-title"><div className={styles.portfolioChartHeading}><div><h3 id="account-growth-title">{account.name} performance</h3><p>Market value over the past year</p></div><div><span>Approx. monthly change</span><strong className={monthlyChange >= 0 ? styles.positive : styles.negative}>{monthlyChange >= 0 ? "+" : ""}{currency.format(monthlyChange)}</strong></div></div><div className={styles.portfolioChart} role="img" aria-label={`${account.name} portfolio value history`}>{accountHistory.length ? <ResponsiveContainer width="100%" height="100%"><AreaChart data={accountHistory}><defs><linearGradient id="portfolioFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#315f50" stopOpacity={.3} /><stop offset="1" stopColor="#315f50" stopOpacity={0} /></linearGradient></defs><CartesianGrid vertical={false} stroke="#e8ecea" strokeDasharray="3 5" /><XAxis dataKey="date" hide /><YAxis domain={["dataMin", "dataMax"]} hide /><Tooltip formatter={(value) => currency.format(Number(value))} /><Area type="monotone" dataKey="value" stroke="#315f50" strokeWidth={2.4} fill="url(#portfolioFill)" isAnimationActive={false} /></AreaChart></ResponsiveContainer> : <div className={styles.loading}>Loading portfolio history…</div>}</div></section>
-
-    <div className={styles.accountTabs} role="tablist" aria-label="Investment accounts">
-      {accounts.map((item) => <button role="tab" aria-selected={item.id === account.id} className={item.id === account.id ? styles.activeTab : ""} onClick={() => { setAccountMarkets({}); setAccountId(item.id); }} key={item.id}><IconBuildingBank size={17} /><span>{item.name}<small>{item.type} · {item.owner}</small></span></button>)}
-    </div>
-
-    <div className={styles.accountGrid}>
-      <section className={styles.sheet} aria-labelledby="holdings-title">
-        <div className={styles.sheetHeading}><div><h3 id="holdings-title">{account.name}</h3><p>{account.institution} · {account.type}</p></div><button type="button" onClick={() => setAddHoldingOpen(true)}><IconPlus size={16} />Add holding</button></div>
-        <div className={styles.tableHead}><span>Holding</span><span>Shares</span><span>Avg. cost</span><span>Invested</span><span>Current value</span><span>Gain / loss</span><span>Weight</span><span /></div>
-        {account.holdings.map((item) => {
-          const shares = sharesFor(item); const cost = costFor(item); const livePrice = accountMarkets[item.symbol]?.price ?? item.fallbackPrice; const value = valueFor(item, livePrice); const gain = value - cost;
-          return <button className={styles.holdingRow} type="button" onClick={() => selectHolding(item)} aria-haspopup="dialog" key={item.id}><span className={styles.identity}><b>{item.symbol}</b><span>{item.name}</span></span><span>{shares.toFixed(2)}</span><span>{currency.format(cost / shares)}</span><span>{currency.format(cost)}</span><span><b>{currency.format(value)}</b><small>{currency.format(livePrice)} / share</small></span><span className={gain >= 0 ? styles.positive : styles.negative}><b>{gain >= 0 ? "+" : ""}{currency.format(gain)}</b><small>{gain >= 0 ? "+" : ""}{(gain / cost * 100).toFixed(1)}%</small></span><span>{(value / accountValue * 100).toFixed(1)}%</span><IconChevronRight size={16} /></button>;
-        })}
-      </section>
-
-      <section className={styles.allocationPanel} aria-labelledby="allocation-title"><div><h3 id="allocation-title">Account allocation</h3><p>{account.name}</p></div><div className={styles.allocationChart} role="img" aria-label={`${account.name} allocation by holding`}><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={allocation} dataKey="value" nameKey="name" innerRadius="58%" outerRadius="82%" paddingAngle={2} isAnimationActive={false}>{allocation.map((item, index) => <Cell fill={allocationColors[index % allocationColors.length]} key={item.name} />)}</Pie><Tooltip formatter={(value) => currency.format(Number(value))} /></PieChart></ResponsiveContainer></div><div className={styles.allocationLegend}>{allocation.map((item, index) => <div key={item.name}><i style={{ background: allocationColors[index % allocationColors.length] }} /><span>{item.name}</span><strong>{(item.value / accountValue * 100).toFixed(1)}%</strong></div>)}</div></section>
-    </div>
-
-    <section className={styles.projection} aria-labelledby="projection-title">
-      <div><IconShieldCheck size={20} /><h3 id="projection-title">Long-term scenarios</h3><p>Explore possible account growth using a steady assumed return—not a market prediction.</p></div>
-      <div className={styles.assumptions}><label>Annual return<input type="number" min="0" max="15" step="0.5" value={projectionRate} onChange={(event) => setProjectionRate(Number(event.target.value))} /><span>%</span></label><label>Monthly contribution<span>$</span><input type="number" min="0" step="50" value={monthly} onChange={(event) => setMonthly(Number(event.target.value))} /></label></div>
-      <div className={styles.outcomes}>{projected.map((item) => <div key={item.years}><span>{item.years} years</span><strong>{currency.format(item.value)}</strong></div>)}</div><small>Illustrative estimate only. Returns are not guaranteed and exclude taxes, fees, and inflation.</small>
-    </section>
-
-    <Drawer opened={Boolean(holding)} onClose={() => setHolding(null)} position={mobile ? "bottom" : "right"} size={mobile ? "92%" : 560} radius={mobile ? "18px 18px 0 0" : 0} title={holding ? `${holding.symbol} · ${holding.name}` : "Holding"} classNames={{ content: styles.drawer, header: styles.drawerHeader, body: styles.drawerBody, title: styles.drawerTitle }}>
-      {holding && <><div className={styles.holdingSummary}><div><span>Position value</span><strong>{currency.format(positionValue)}</strong><small className={positionGain >= 0 ? styles.positive : styles.negative}>{positionGain >= 0 ? "+" : ""}{currency.format(positionGain)} since purchase</small></div><div><span>Shares</span><strong>{sharesFor(holding).toFixed(2)}</strong></div><div><span>Market price</span><strong>{currency.format(price)}</strong><small>{market?.exchange ?? "Market data"}</small></div></div><div className={styles.rangeBar}>{(["1M", "3M", "1Y", "5Y"] as Range[]).map((item) => <button type="button" aria-pressed={range === item} className={range === item ? styles.activeRange : ""} onClick={() => selectRange(item)} key={item}>{item}</button>)}</div><div className={styles.chart} role="img" aria-label={`${holding.symbol} price history for ${range}`}>{!market ? <div className={styles.loading}>Loading market history…</div> : market.points.length ? <ResponsiveContainer width="100%" height="100%"><AreaChart data={market.points}><defs><linearGradient id="holdingFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#315f50" stopOpacity={.25} /><stop offset="1" stopColor="#315f50" stopOpacity={0} /></linearGradient></defs><CartesianGrid vertical={false} stroke="#e8ecea" strokeDasharray="3 5" /><XAxis dataKey="date" hide /><YAxis domain={["dataMin", "dataMax"]} hide /><Tooltip formatter={(value) => currency.format(Number(value))} /><Area type="monotone" dataKey="close" stroke="#315f50" strokeWidth={2.2} fill="url(#holdingFill)" isAnimationActive={false} /></AreaChart></ResponsiveContainer> : <div className={styles.loading}>{market.error ?? "History unavailable"}</div>}</div><section className={styles.lots}><div><h3>Purchase history</h3><button type="button" disabled title="Lot editing will be connected with persistence"><IconPlus size={15} />Add lot</button></div>{holding.lots.map((lot) => <div key={lot.id}><span>{new Date(`${lot.date}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span><span>{lot.shares} shares</span><strong>{currency.format(lot.price)}</strong></div>)}</section></>}
-    </Drawer>
-    <Drawer opened={addHoldingOpen} onClose={() => setAddHoldingOpen(false)} position={mobile ? "bottom" : "right"} size={mobile ? "auto" : 430} radius={mobile ? "18px 18px 0 0" : 0} title={`Add holding to ${account.name}`} classNames={{ content: styles.drawer, header: styles.drawerHeader, body: styles.drawerBody, title: styles.drawerTitle }}>
-      <div className={styles.addHoldingIntro}><p>Enter what you own and what you paid. BearVault will verify the ticker, fetch its current market price, and calculate value and gain automatically.</p></div>
-      <form className={styles.holdingForm} onSubmit={addHolding}>
-        <div className={styles.formRow}><label>Ticker<input value={holdingDraft.symbol} onChange={(event) => setHoldingDraft({ ...holdingDraft, symbol: event.target.value.toUpperCase() })} placeholder="VTI" maxLength={15} required autoFocus /></label><label>Investment name<input value={holdingDraft.name} onChange={(event) => setHoldingDraft({ ...holdingDraft, name: event.target.value })} placeholder="Optional" /></label></div>
-        <div className={styles.formRow}><label>Shares<input type="number" inputMode="decimal" min="0.000001" step="any" value={holdingDraft.shares} onChange={(event) => setHoldingDraft({ ...holdingDraft, shares: event.target.value })} placeholder="10" required /></label><label>Purchase price<input type="number" inputMode="decimal" min="0.01" step="0.01" value={holdingDraft.price} onChange={(event) => setHoldingDraft({ ...holdingDraft, price: event.target.value })} placeholder="125.50" required /></label></div>
-        <label>Purchase date<input type="date" value={holdingDraft.date} onChange={(event) => setHoldingDraft({ ...holdingDraft, date: event.target.value })} required /></label>
-        {holdingDraft.shares && holdingDraft.price && <div className={styles.investedPreview}><span>Amount invested</span><strong>{currency.format(Number(holdingDraft.shares) * Number(holdingDraft.price))}</strong></div>}
-        {holdingError && <p className={styles.formError} role="alert">{holdingError}</p>}
-        <button className={styles.submitHolding} type="submit" disabled={addingHolding}>{addingHolding ? "Verifying ticker…" : "Add holding"}</button>
-      </form>
-    </Drawer>
+    <Drawer opened={accountOpen} onClose={() => setAccountOpen(false)} position={mobile?"bottom":"right"} size={mobile?"auto":430} title="Add investment account" classNames={{content:styles.drawer,header:styles.drawerHeader,body:styles.drawerBody,title:styles.drawerTitle}}>{error && <p className={styles.formError}>{error}</p>}<form className={styles.holdingForm} onSubmit={addAccount}><label>Account name<input value={accountDraft.name} onChange={(e)=>setAccountDraft({...accountDraft,name:e.target.value})} placeholder="Fidelity Joint" required autoFocus/></label><label>Account type<select value={accountDraft.type} onChange={(e)=>setAccountDraft({...accountDraft,type:e.target.value})}><option>Joint brokerage</option><option>Brokerage</option><option>Roth IRA</option><option>Traditional IRA</option><option>401(k)</option><option>HSA</option></select></label><label>Ownership<select value={accountDraft.ownership} onChange={(e)=>setAccountDraft({...accountDraft,ownership:e.target.value})}><option value="user">User</option><option value="spouse">Spouse</option><option value="joint">Joint</option><option value="other">Other</option></select></label><button className={styles.submitHolding} type="submit" disabled={saving}>{saving?"Saving…":"Add account"}</button></form></Drawer>
+    <Drawer opened={holdingOpen} onClose={() => setHoldingOpen(false)} position={mobile?"bottom":"right"} size={mobile?"auto":430} title={`Add holding to ${account?.name ?? "account"}`} classNames={{content:styles.drawer,header:styles.drawerHeader,body:styles.drawerBody,title:styles.drawerTitle}}>{error && <p className={styles.formError}>{error}</p>}<form className={styles.holdingForm} onSubmit={addHolding}><div className={styles.formRow}><label>Ticker<input value={holdingDraft.symbol} onChange={(e)=>setHoldingDraft({...holdingDraft,symbol:e.target.value.toUpperCase()})} placeholder="QQQ" maxLength={15} required autoFocus/></label><label>Investment name<input value={holdingDraft.name} onChange={(e)=>setHoldingDraft({...holdingDraft,name:e.target.value})} placeholder="Optional"/></label></div><div className={styles.formRow}><label>Shares<input type="number" min="0.000001" step="any" value={holdingDraft.shares} onChange={(e)=>setHoldingDraft({...holdingDraft,shares:e.target.value})} required/></label><label>Purchase price<input type="number" min="0" step="0.01" value={holdingDraft.price} onChange={(e)=>setHoldingDraft({...holdingDraft,price:e.target.value})} required/></label></div><label>Purchase date<input type="date" value={holdingDraft.date} onChange={(e)=>setHoldingDraft({...holdingDraft,date:e.target.value})} required/></label><button className={styles.submitHolding} type="submit" disabled={saving}>{saving?"Verifying and saving…":"Add holding"}</button></form></Drawer>
+    <Drawer opened={Boolean(holding)} onClose={() => { setHolding(null); setLotOpen(false); }} position={mobile?"bottom":"right"} size={mobile?"92%":560} title={holding ? `${holding.symbol} · ${holding.name}` : "Holding"} classNames={{content:styles.drawer,header:styles.drawerHeader,body:styles.drawerBody,title:styles.drawerTitle}}>{holding && <><div className={styles.holdingSummary}><div><span>Position value</span><strong>{market ? currency.format(positionValue) : "Loading…"}</strong><small>{market?.error ?? `${currency.format(positionValue - positionCost)} gain / loss`}</small></div><div><span>Shares</span><strong>{sharesFor(holding).toFixed(4)}</strong></div><div><span>Market price</span><strong>{market ? currency.format(positionPrice) : "—"}</strong><small>{market?.exchange ?? "Twelve Data"}</small></div></div><div className={styles.rangeBar}>{(["1M","3M","1Y","5Y"] as Range[]).map((item)=><button type="button" aria-pressed={range===item} className={range===item?styles.activeRange:""} onClick={()=>{ setMarket(null); setRange(item); }} key={item}>{item}</button>)}</div><div className={styles.chart}>{market?.points.length ? <ResponsiveContainer width="100%" height="100%"><AreaChart data={market.points}><XAxis dataKey="date" hide/><YAxis hide domain={["dataMin","dataMax"]}/><Tooltip formatter={(value)=>currency.format(Number(value))}/><Area type="monotone" dataKey="close" stroke="#315f50" fill="#dcebe4" isAnimationActive={false}/></AreaChart></ResponsiveContainer> : <div className={styles.loading}>{market?.error ?? "Loading market history…"}</div>}</div><section className={styles.lots}><div><h3>Purchase history</h3><button type="button" onClick={()=>setLotOpen((open)=>!open)}><IconPlus size={15}/>Add lot</button></div>{lotOpen && <form className={styles.holdingForm} onSubmit={addLot}>{error && <p className={styles.formError}>{error}</p>}<div className={styles.formRow}><label>Shares<input type="number" min="0.000001" step="any" value={lotDraft.shares} onChange={(e)=>setLotDraft({...lotDraft,shares:e.target.value})} required/></label><label>Price per share<input type="number" min="0" step="0.01" value={lotDraft.price} onChange={(e)=>setLotDraft({...lotDraft,price:e.target.value})} required/></label></div><label>Purchase date<input type="date" value={lotDraft.date} onChange={(e)=>setLotDraft({...lotDraft,date:e.target.value})} required/></label><button className={styles.submitHolding} disabled={saving}>{saving?"Saving…":"Save lot"}</button></form>}{holding.lots.map((lot)=><div key={lot.id}><span>{new Date(`${lot.date}T12:00:00`).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</span><span>{lot.shares} shares</span><strong>{currency.format(lot.price)}</strong></div>)}</section></>}</Drawer>
   </div>;
 }

@@ -1,0 +1,3 @@
+export default function AppLoading() {
+  return <div aria-label="Loading household data" aria-busy="true" style={{ display: "grid", gap: 18 }}><div style={{ width: "42%", height: 36, borderRadius: 10, background: "var(--app-hover)" }}/><div style={{ height: 220, borderRadius: 16, background: "var(--app-surface)", border: "1px solid var(--app-border)" }}/><div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 16 }}>{[1,2,3].map((item)=><div key={item} style={{ height: 180, borderRadius: 16, background: "var(--app-surface)", border: "1px solid var(--app-border)" }}/>)}</div></div>;
+}

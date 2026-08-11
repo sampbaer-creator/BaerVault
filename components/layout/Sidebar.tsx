@@ -1,4 +1,4 @@
-import { Avatar } from "@mantine/core";
+import { OrganizationSwitcher } from "@clerk/nextjs";
 import Link from "next/link";
 
 import {
@@ -66,13 +66,7 @@ export function Sidebar({ pathname }: SidebarProps) {
       </nav>
 
       <div className={styles.sidebarFooter}>
-        <div className={styles.profile}>
-          <Avatar color="dark" radius="xl" size={38}>SB</Avatar>
-          <div className={styles.profileText}>
-            <span className={styles.profileName}>Samuel Baer</span>
-            <span className={styles.profileCaption}>Personal household</span>
-          </div>
-        </div>
+        <OrganizationSwitcher hidePersonal afterCreateOrganizationUrl="/dashboard" afterSelectOrganizationUrl="/dashboard" />
       </div>
     </aside>
   );
