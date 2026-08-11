@@ -1,3 +1,4 @@
+import { ClerkProvider } from "@clerk/nextjs";
 import "@mantine/core/styles.css";
 
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
@@ -26,9 +27,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <ColorSchemeScript defaultColorScheme="light" />
       </head>
       <body>
-        <MantineProvider defaultColorScheme="light">
+        <ClerkProvider>
+          <MantineProvider defaultColorScheme="light">
           <AppShell>{children}</AppShell>
-        </MantineProvider>
+          </MantineProvider>
+        </ClerkProvider>
       </body>
     </html>
   );

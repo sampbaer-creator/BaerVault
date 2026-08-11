@@ -47,3 +47,6 @@ next-env.d.ts
 /.vscode/
 /skills-lock.json
 /.impeccable/screenshots/
+
+# clerk configuration (can include secrets)
+/.clerk/
