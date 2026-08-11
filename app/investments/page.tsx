@@ -1,7 +1,5 @@
-import { PlaceholderPage } from "@/components/shared/PlaceholderPage";
+import { InvestmentsWorkspace } from "@/components/investments/InvestmentsWorkspace";
 
 export default function InvestmentsPage() {
-  return (
-    <PlaceholderPage title="Investments" description="Track your investment portfolio." />
-  );
+  return <InvestmentsWorkspace />;
 }
