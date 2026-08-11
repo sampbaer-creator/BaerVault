@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-11T00:00:00-06:00",
+  "title": "Design System: BearVault",
+  "extensions": {
+    "colorMeta": {
+      "protected-navy": { "role": "primary", "displayName": "Protected Navy", "canonical": "#15243a", "tonalRamp": ["#101722", "#15243a", "#243a55", "#304860", "#52677e", "#7f8fa0", "#b8c1ca", "#edf0f3"] },
+      "vault-green": { "role": "primary", "displayName": "Vault Green", "canonical": "#315f50", "tonalRamp": ["#13251f", "#1f4035", "#315f50", "#557a6d", "#6f9f8d", "#9cbaae", "#c8d9d2", "#eef4f1"] },
+      "growth-green": { "role": "secondary", "displayName": "Growth Green", "canonical": "#267056", "tonalRamp": ["#10291f", "#174533", "#267056", "#438b70", "#6ca992", "#9bc6b4", "#c9e0d7", "#eff7f4"] },
+      "soft-green": { "role": "secondary", "displayName": "Soft Green", "canonical": "#e8f1ed", "tonalRamp": ["#17251f", "#2c443a", "#49685b", "#6f8c80", "#99afa6", "#bdcec7", "#d8e5df", "#f1f7f4"] },
+      "warm-bronze": { "role": "tertiary", "displayName": "Warm Bronze", "canonical": "#a87546", "tonalRamp": ["#2c1e13", "#503521", "#765032", "#a87546", "#bf9168", "#d2ae8c", "#e4cdb7", "#f7eee6"] },
+      "graphite": { "role": "neutral", "displayName": "Graphite", "canonical": "#161b22", "tonalRamp": ["#111418", "#242a31", "#3e454d", "#5e656d", "#81878e", "#a7acb1", "#ced1d4", "#f1f2f3"] },
+      "muted-ink": { "role": "neutral", "displayName": "Muted Ink", "canonical": "#66736d", "tonalRamp": ["#1b211e", "#313a36", "#4b5751", "#66736d", "#87918c", "#aab1ae", "#cdd2cf", "#f1f3f2"] },
+      "canvas": { "role": "neutral", "displayName": "Cool Canvas", "canonical": "#f5f6f8", "tonalRamp": ["#202225", "#3c3f44", "#5d6066", "#7f8288", "#a2a5aa", "#c4c6ca", "#e2e3e6", "#f5f6f8"] },
+      "surface": { "role": "neutral", "displayName": "Precision White", "canonical": "#ffffff", "tonalRamp": ["#262626", "#464646", "#686868", "#8c8c8c", "#b0b0b0", "#d0d0d0", "#eeeeee", "#ffffff"] },
+      "border": { "role": "neutral", "displayName": "Cool Border", "canonical": "#e4e7ec", "tonalRamp": ["#202226", "#3c3f45", "#5e6269", "#81858d", "#a5a9b0", "#c7cad0", "#e4e7ec", "#f7f8fa"] },
+      "hover": { "role": "neutral", "displayName": "Quiet Hover", "canonical": "#f1f3f5", "tonalRamp": ["#202224", "#3d3f42", "#5f6265", "#828589", "#a5a8ac", "#c7c9cc", "#e3e5e7", "#f5f6f7"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Financial Display", "purpose": "Singular dominant household totals." },
+      "headline": { "displayName": "Page Headline", "purpose": "Greeting and major page statements." },
+      "title": { "displayName": "Panel Title", "purpose": "Compact section and panel headings." },
+      "body": { "displayName": "Calm Body", "purpose": "Status context and explanatory copy." },
+      "label": { "displayName": "Precision Label", "purpose": "Controls, metadata, compact actions, and values." }
+    },
+    "shadows": [
+      { "name": "shell-ambient", "value": "0 8px 28px rgb(24 32 46 / 4%)", "purpose": "Barely lifted general surfaces." },
+      { "name": "protected-plane", "value": "0 18px 52px rgb(26 45 39 / 9%), inset 0 1px 0 rgb(255 255 255 / 92%)", "purpose": "The dominant net-worth surface only." },
+      { "name": "compact-glass", "value": "inset 0 1px 0 rgb(255 255 255 / 86%), 0 8px 24px rgb(31 54 45 / 6%)", "purpose": "Small translucent status controls." },
+      { "name": "active-control", "value": "0 4px 12px rgb(21 36 58 / 16%)", "purpose": "Selected pill inside a compact control group." }
+    ],
+    "motion": [
+      { "name": "control-spring", "value": "140ms cubic-bezier(0.23, 1, 0.32, 1)", "purpose": "Short press and link feedback; remove transforms under reduced motion." },
+      { "name": "color-standard", "value": "140ms ease", "purpose": "Navigation and compact-control color transitions." }
+    ],
+    "breakpoints": [
+      { "name": "stack", "value": "68rem" },
+      { "name": "mobile", "value": "47.999rem" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Active Timeframe",
+      "kind": "button",
+      "refersTo": "timeframe-active",
+      "description": "Selected period inside the compact net-worth timeframe control.",
+      "html": "<button class=\"ds-timeframe\" type=\"button\" aria-pressed=\"true\">3M</button>",
+      "css": ".ds-timeframe { min-width: 46px; height: 36px; padding: 7px 12px; border: 0; border-radius: 999px; color: #fff; background: #15243a; box-shadow: 0 4px 12px rgb(21 36 58 / 16%); font: 680 12px var(--font-geist-sans, system-ui, sans-serif); cursor: pointer; transition: transform 140ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-timeframe:hover { background: #243a55; } .ds-timeframe:active { transform: scale(.97); } .ds-timeframe:focus-visible { outline: 2px solid #377d63; outline-offset: 2px; }"
+    },
+    {
+      "name": "Positive Status Chip",
+      "kind": "chip",
+      "refersTo": "positive-chip",
+      "description": "Compact positive performance state for financially meaningful movement.",
+      "html": "<span class=\"ds-positive-chip\">↗ +1.7%</span>",
+      "css": ".ds-positive-chip { display: inline-flex; align-items: center; gap: 4px; padding: 6px 9px; border-radius: 999px; color: #27674f; background: #e8f1ed; font: 700 11px var(--font-geist-sans, system-ui, sans-serif); font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Precision Panel",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "Opaque container for detailed budget, investment, and activity reading.",
+      "html": "<section class=\"ds-panel\"><h3>August budget</h3><p><strong>$3,210.18</strong><br><span>Spent this month</span></p></section>",
+      "css": ".ds-panel { width: 320px; padding: 24px; border: 1px solid #e3e8e5; border-radius: 14px; color: #15243a; background: #fff; font-family: var(--font-geist-sans, system-ui, sans-serif); } .ds-panel h3 { margin: 0 0 24px; font-size: 15px; font-weight: 680; } .ds-panel p { margin: 0; color: #66736d; font-size: 11px; } .ds-panel strong { color: #15243a; font-size: 28px; font-weight: 660; letter-spacing: -.035em; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Active Navigation Item",
+      "kind": "nav",
+      "refersTo": "nav-active",
+      "description": "Quiet active-route treatment for desktop navigation.",
+      "html": "<a class=\"ds-nav-active\" href=\"#\" aria-current=\"page\"><span aria-hidden=\"true\">▦</span><span>Dashboard</span></a>",
+      "css": ".ds-nav-active { display: flex; min-height: 44px; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; color: #315f50; background: #e8f1ed; font: 600 14px var(--font-geist-sans, system-ui, sans-serif); text-decoration: none; transition: background-color 140ms ease, color 140ms ease; } .ds-nav-active:hover { color: #161b22; background: #f1f3f5; } .ds-nav-active:focus-visible { outline: 2px solid #377d63; outline-offset: 2px; }"
+    },
+    {
+      "name": "Financial Summary Rail",
+      "kind": "custom",
+      "description": "Integrated supporting measures inside the dominant financial plane.",
+      "html": "<div class=\"ds-summary-rail\"><div><span>Income</span><strong>$5,400.00</strong><small>August</small></div><div><span>Spending</span><strong>$3,210.18</strong><small>59% of income</small></div></div>",
+      "css": ".ds-summary-rail { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding-top: 24px; border-top: 1px solid rgb(31 61 50 / 10%); color: #15243a; font-family: var(--font-geist-sans, system-ui, sans-serif); } .ds-summary-rail > div { padding: 0 22px; } .ds-summary-rail > div + div { border-left: 1px solid rgb(31 61 50 / 9%); } .ds-summary-rail span, .ds-summary-rail small { display: block; color: #66736d; font-size: 11px; } .ds-summary-rail strong { display: block; margin: 5px 0 4px; font-size: 21px; font-weight: 680; letter-spacing: -.025em; font-variant-numeric: tabular-nums; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Protected Financial Horizon",
+    "overview": "BearVault is a premium, calm, and financially serious household cockpit. Its visual hierarchy makes one protected financial horizon—the household's current position and trend—immediately legible, then lets monthly movement, support measures, budget, investments, and activity unfold with progressively quieter emphasis.\n\nThe system combines the stability of deep navy and graphite with muted green reassurance and rare warm bronze categorization. Opaque precision panels carry detailed information; selective translucent glass belongs only on the dominant net-worth plane and compact controls. The result is modern and polished without drifting into generic admin, crypto, trading, or AI-SaaS styling.",
+    "keyCharacteristics": [
+      "One dominant financial surface instead of an equal-weight metric-card grid.",
+      "Precise, tabular financial figures with restrained supporting copy.",
+      "Deep navy structure, muted green state language, and rare warm bronze accents.",
+      "Selective glass for hierarchy; opaque white panels for detailed reading.",
+      "Calm density and deliberate mobile recomposition rather than desktop shrinkage."
+    ],
+    "rules": [
+      { "name": "The Protected Horizon Rule", "body": "Navy and green establish one dominant financial story; do not distribute equal chromatic authority across every metric.", "section": "colors" },
+      { "name": "The Bronze Rarity Rule", "body": "Warm bronze is a small categorical cue, never a competing primary accent.", "section": "colors" },
+      { "name": "The Stable Number Rule", "body": "Financial amounts use tabular lining numerals, compact tracking, and enough weight to scan before their labels.", "section": "typography" },
+      { "name": "The Hierarchy Before Grid Rule", "body": "Preserve the net-worth plane as the clear visual anchor; supporting modules may align, but must not become a wall of interchangeable cards.", "section": "layout" },
+      { "name": "The Selective Glass Rule", "body": "Glass is hierarchy, not wallpaper: reserve blur and translucency for the protected financial plane, sticky chrome, tooltips, and compact controls.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do make the household's current position the first and strongest financial read.",
+      "Do use tabular numerals and right alignment where financial comparisons depend on stable columns.",
+      "Do keep detailed budget, investment, and activity surfaces opaque and precise.",
+      "Do recompose dense desktop structures for mobile and preserve touch-friendly controls.",
+      "Do use subtle bear, vault, and circular security cues only as structural undertones."
+    ],
+    "donts": [
+      "Don't turn every metric into an equal-weight card.",
+      "Don't spread Liquid Glass across all panels or sacrifice legibility to translucency.",
+      "Don't adopt crypto-terminal, trading-dashboard, generic admin, or AI-SaaS visual patterns.",
+      "Don't use green or bronze as decoration when they do not carry financial meaning.",
+      "Don't replace calm hierarchy with dense widgets, ornamental gradients, or speculative market cues."
+    ]
+  }
+}
