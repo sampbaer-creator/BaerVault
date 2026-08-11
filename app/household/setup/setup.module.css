@@ -1,0 +1,26 @@
+.page { display: grid; min-height: 100dvh; place-items: center; padding: 32px 18px; background: radial-gradient(circle at 50% 0, #e3efe7, transparent 30rem), #f6f8f5; }
+.card { width: min(100%, 590px); padding: clamp(28px, 6vw, 52px); border: 1px solid #dfe7e0; border-radius: 24px; background: rgb(255 255 255 / 94%); box-shadow: 0 24px 70px rgb(34 68 51 / 10%); }
+.progress { display: flex; align-items: center; justify-content: center; gap: 9px; margin-bottom: 34px; color: #89958e; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; }
+.progress span { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+.progress i { width: 28px; height: 1px; background: #dbe3dc; }
+.progress .done, .progress .active { color: #2d684f; }
+.icon { display: grid; width: 48px; height: 48px; place-items: center; margin: 0 auto 18px; border-radius: 14px; color: white; background: #245a45; }
+.eyebrow { margin: 0 0 8px; color: #3c755e; font-size: 11px; font-weight: 750; letter-spacing: .1em; text-align: center; text-transform: uppercase; }
+.card h1 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(34px, 7vw, 46px); font-weight: 500; letter-spacing: -.04em; text-align: center; }
+.intro { max-width: 430px; margin: 14px auto 30px; color: #66736b; line-height: 1.6; text-align: center; }
+.form { display: flex; flex-direction: column; }
+.form > label, .form legend { margin-bottom: 8px; color: #34443b; font-size: 13px; font-weight: 700; }
+.form > input { height: 48px; padding: 0 14px; border: 1px solid #cfd9d1; border-radius: 10px; color: #17211b; background: white; font: inherit; }
+.form > input:focus { outline: 2px solid #4d886f; outline-offset: 2px; }
+.form fieldset { margin: 25px 0 28px; padding: 0; border: 0; }
+.options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
+.options label { cursor: pointer; }
+.options input { position: absolute; opacity: 0; }
+.options span { display: flex; min-height: 76px; flex-direction: column; justify-content: center; gap: 4px; padding: 12px; border: 1px solid #dbe3dc; border-radius: 11px; background: #fafbfa; }
+.options strong { font-size: 13px; }
+.options small { color: #758179; font-size: 11px; }
+.options input:checked + span { border-color: #397259; outline: 1px solid #397259; background: #eef5f0; }
+.options input:focus-visible + span { outline: 2px solid #397259; outline-offset: 2px; }
+.form button { display: flex; height: 50px; align-items: center; justify-content: center; gap: 9px; border: 0; border-radius: 11px; color: white; background: #245a45; font: inherit; font-weight: 700; cursor: pointer; }
+.note { margin: 17px 0 0; color: #859088; font-size: 12px; text-align: center; }
+@media (max-width: 520px) { .card { padding: 28px 20px; border-radius: 18px; } .options { grid-template-columns: 1fr; } .options span { min-height: 62px; } }

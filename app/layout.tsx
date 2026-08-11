@@ -5,7 +5,6 @@ import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 
-import { AppShell } from "@/components/layout/AppShell";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -15,7 +14,7 @@ const geistSans = Geist({
 
 export const metadata: Metadata = {
   title: { default: "BearVault", template: "%s | BearVault" },
-  description: "A modern household finance application.",
+  description: "A calm, shared home for your household finances.",
 };
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1 };
@@ -29,7 +28,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         <ClerkProvider>
           <MantineProvider defaultColorScheme="light">
-          <AppShell>{children}</AppShell>
+            {children}
           </MantineProvider>
         </ClerkProvider>
       </body>
