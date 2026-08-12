@@ -31,7 +31,7 @@ export default function Home() {
               Create your free account <IconArrowRight size={18} />
             </Link>
             <Link className={styles.secondaryCta} href="/sign-in">I already have an account</Link>
-            <Link className={styles.demoCta} href="/demo">Explore the live demo</Link>
+            <Link className={styles.demoCta} href="/demo">Try demo</Link>
           </div>
           <p className={styles.securityNote}><IconLock size={15} /> Secure sign-in with Google and MFA</p>
         </div>
