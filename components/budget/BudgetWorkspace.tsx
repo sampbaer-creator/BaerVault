@@ -179,6 +179,7 @@ export function BudgetWorkspace({ initialBudget, actions=realActions }: { initia
         </div>
       </section>
 
+      <div className={styles.referenceGrid}>
       <section className={styles.sheet} aria-labelledby="categories-title">
         <div className={styles.sheetHeading}><div><h3 id="categories-title">Spending plan</h3><p>Actuals are calculated from the purchases inside each category.</p></div><button type="button" onClick={() => setAddingCategory(true)}><IconPlus size={16} />Add category</button></div>
         <div className={styles.tableHeader} aria-hidden="true"><span>Category</span><span>Budget / projected</span><span>Actual</span><span>Remaining / variance</span><span /></div>
@@ -199,6 +200,12 @@ export function BudgetWorkspace({ initialBudget, actions=realActions }: { initia
           })}
         </div>
       </section>
+
+      <aside className={styles.budgetAside}>
+        <section className={styles.allocationPanel}><h3>Where it goes</h3><div className={styles.allocationRing} style={{ "--used": `${planned ? Math.min(spending / planned * 100, 100) : 0}%` } as React.CSSProperties}><div><strong>{currency.format(spending)}</strong><span>spent</span></div></div><div className={styles.allocationLegend}>{categories.slice(0, 4).map((category) => <div key={category.id}><i /><span>{category.name}</span><strong>{currency.format(categoryActual(category))}</strong></div>)}</div></section>
+        <section className={styles.remainingPanel}><span>Left to spend</span><strong>{currency.format(remaining)}</strong><p>{remaining >= 0 ? "Your plan is on pace for this month." : "Review categories currently over budget."}</p></section>
+      </aside>
+      </div>
 
       <Drawer opened={Boolean(selected)} onClose={() => setSelectedId(null)} position={isMobile ? "bottom" : "right"} size={isMobile ? "88%" : 440} radius={isMobile ? "18px 18px 0 0" : 0} title={selected?.name} classNames={{ content: styles.drawer, header: styles.drawerHeader, body: styles.drawerBody, title: styles.drawerTitle }}>
         {selected && <div className={styles.categoryDetail}>

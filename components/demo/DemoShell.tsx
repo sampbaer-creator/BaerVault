@@ -2,11 +2,13 @@
 
 import {
   IconArrowsExchange,
+  IconBuildingBank,
   IconChartPie,
   IconHome,
   IconLayoutDashboard,
   IconPigMoney,
   IconSettings,
+  IconTargetArrow,
   IconUsers,
 } from "@tabler/icons-react";
 import Link from "next/link";
@@ -17,10 +19,12 @@ import styles from "./DemoShell.module.css";
 import { LiquidGLRuntime } from "@/components/shared/LiquidGLRuntime";
 
 const links = [
-  ["/demo", "Dashboard", IconLayoutDashboard],
-  ["/demo/budget", "Budget", IconPigMoney],
-  ["/demo/cash-flow", "Cash Flow", IconArrowsExchange],
+  ["/demo", "Overview", IconLayoutDashboard],
+  ["/demo/accounts", "Accounts", IconBuildingBank],
+  ["/demo/transactions", "Transactions", IconArrowsExchange],
+  ["/demo/budget", "Budgets", IconPigMoney],
   ["/demo/investments", "Investments", IconChartPie],
+  ["/demo/goals", "Goals", IconTargetArrow],
   ["/demo/household", "Household", IconUsers],
   ["/demo/settings", "Settings", IconSettings],
 ] as const;

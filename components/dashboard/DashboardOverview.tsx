@@ -216,7 +216,7 @@ export function DashboardOverview({ budget, accounts, basePath = "" }: Dashboard
         </section>
 
         <section className={styles.activityPanel} aria-labelledby="activity-title">
-          <SectionHeading id="activity-title" title="Transactions" href={`${basePath}/cash-flow`} action="See all" />
+          <SectionHeading id="activity-title" title="Transactions" href={`${basePath}/transactions`} action="See all" />
           <div className={styles.activityList}>
             {activity.map((item) => (
               <div className={styles.activityRow} key={item.id}>

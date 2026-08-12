@@ -1,6 +1,8 @@
 import {
   IconBuildingCommunity,
+  IconBuildingBank,
   IconChartPie,
+  IconTargetArrow,
   IconArrowsExchange,
   IconLayoutDashboard,
   IconPigMoney,
@@ -16,10 +18,12 @@ export type NavigationItem = {
 };
 
 export const mainNavigation: NavigationItem[] = [
-  { href: "/dashboard", label: "Dashboard", icon: IconLayoutDashboard },
-  { href: "/budget", label: "Budget", icon: IconPigMoney },
-  { href: "/cash-flow", label: "Cash Flow", icon: IconArrowsExchange },
+  { href: "/dashboard", label: "Overview", icon: IconLayoutDashboard },
+  { href: "/accounts", label: "Accounts", icon: IconBuildingBank },
+  { href: "/transactions", label: "Transactions", icon: IconArrowsExchange },
+  { href: "/budget", label: "Budgets", icon: IconPigMoney },
   { href: "/investments", label: "Investments", icon: IconChartPie },
+  { href: "/goals", label: "Goals", icon: IconTargetArrow },
 ];
 
 export const householdNavigation: NavigationItem[] = [
@@ -30,18 +34,22 @@ export const systemNavigation: NavigationItem[] = [
   { href: "/settings", label: "Settings", icon: IconSettings },
 ];
 
-export const mobileNavigation: NavigationItem[] = mainNavigation;
+export const mobileNavigation: NavigationItem[] = mainNavigation.slice(0, 4);
 
 export const moreNavigation: NavigationItem[] = [
+  ...mainNavigation.slice(4),
   ...householdNavigation,
   ...systemNavigation,
 ];
 
 export const pageTitles: Record<string, string> = {
-  "/dashboard": "Dashboard",
-  "/budget": "Budget",
-  "/cash-flow": "Cash Flow",
+  "/dashboard": "Overview",
+  "/accounts": "Accounts",
+  "/transactions": "Transactions",
+  "/budget": "Budgets",
+  "/cash-flow": "Transactions",
   "/investments": "Investments",
+  "/goals": "Goals",
   "/household": "Household",
   "/settings": "Settings",
 };

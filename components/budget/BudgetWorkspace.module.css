@@ -737,3 +737,65 @@
   backdrop-filter: blur(30px) saturate(160%);
   -webkit-backdrop-filter: blur(30px) saturate(160%);
 }
+
+/* Reference-layout refinement: preserve the full editing model in a denser financial workspace. */
+.budget { max-width: 1240px; margin: 0 auto; }
+.intro { align-items: center; margin-bottom: 14px; }
+.intro .eyebrow { display: none; }
+.intro h2 { margin: 0; font-size: 20px; letter-spacing: -0.025em; }
+.intro > div > p:last-child { margin-top: 4px; font-size: 12px; }
+.copyButton { min-height: 38px; border-radius: 10px; box-shadow: none; }
+.monthBar { min-height: 42px; margin: 0 0 14px; border: 1px solid var(--app-border); border-radius: 12px; background: var(--app-surface); }
+.monthBar button { width: 38px; height: 38px; box-shadow: none; }
+.summary { display: grid; grid-template-columns: minmax(230px, .9fr) minmax(0, 1.6fr); margin-bottom: 14px; border: 1px solid var(--app-border); border-radius: 14px; background: var(--app-surface); box-shadow: none; backdrop-filter: none; }
+.summaryLead { padding: 20px 22px; }
+.summaryLead strong { font-size: 32px; }
+.summaryRail { padding: 20px; }
+.sheet { border: 1px solid var(--app-border); border-radius: 14px; background: var(--app-surface); box-shadow: none; }
+.sheetHeading { padding: 18px 20px; }
+.sheetHeading h3 { font-size: 14px; }
+.sheetHeading p { margin-top: 4px; font-size: 11px; }
+.tableHeader { padding: 10px 20px; font-size: 9px; letter-spacing: .06em; }
+.categoryRow { min-height: 58px; padding: 10px 20px; border-radius: 0; background: transparent !important; box-shadow: none !important; backdrop-filter: none; }
+.categoryRow::before { display: none; }
+.categoryName strong, .desktopValue { font-size: 12px; }
+.categoryName small { font-size: 9px; }
+.categoryDetail { border-top: 1px solid var(--app-border); }
+@media (max-width: 48rem) {
+  .intro { align-items: flex-start; }
+  .intro h2 { font-size: 18px; }
+  .summary { grid-template-columns: 1fr; }
+  .summaryLead { padding: 18px; }
+  .summaryRail { padding: 16px 18px; border-top: 1px solid var(--app-border); }
+  .categoryRow { padding-inline: 16px; }
+}
+.summary { display: none; }
+.referenceGrid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(270px, .75fr); gap: 16px; align-items: start; }
+.tableHeader { display: none; }
+.categoryRow { grid-template-columns: minmax(120px, .9fr) minmax(220px, 1.3fr) 18px; gap: 16px; min-height: 72px; }
+.desktopValue { display: none; }
+.mobileProgress { display: grid; gap: 7px; }
+.mobileProgress > span { display: flex; justify-content: space-between; font-size: 11px; }
+.mobileProgress > small { display: none; }
+.mobileProgress i { display: block; height: 7px; overflow: hidden; border-radius: 4px; background: var(--app-border); }
+.mobileProgress b { display: block; height: 100%; border-radius: inherit; background: var(--app-accent); }
+.budgetAside { display: grid; gap: 16px; }
+.allocationPanel, .remainingPanel { padding: 20px; border: 1px solid var(--app-border); border-radius: 14px; background: var(--app-surface); }
+.allocationPanel h3 { margin: 0 0 18px; font-size: 14px; }
+.allocationRing { display: grid; width: 172px; height: 172px; margin: 0 auto 20px; place-items: center; border-radius: 50%; background: conic-gradient(var(--app-accent) var(--used), var(--app-border) 0); }
+.allocationRing::before { grid-area: 1 / 1; width: 126px; height: 126px; border-radius: 50%; background: var(--app-surface); content: ""; }
+.allocationRing > div { z-index: 1; grid-area: 1 / 1; text-align: center; }
+.allocationRing strong, .allocationRing span { display: block; }
+.allocationRing strong { font-size: 20px; }
+.allocationRing span { color: var(--app-text-muted); font-size: 10px; }
+.allocationLegend { display: grid; gap: 10px; }
+.allocationLegend div { display: grid; grid-template-columns: 8px 1fr auto; align-items: center; gap: 8px; font-size: 10px; }
+.allocationLegend i { width: 8px; height: 8px; border-radius: 2px; background: var(--app-accent); }
+.allocationLegend div:nth-child(2) i { background: #4f8389; }
+.allocationLegend div:nth-child(3) i { background: #d4af37; }
+.allocationLegend div:nth-child(4) i { background: #9abfd8; }
+.remainingPanel > span { color: var(--app-text-muted); font-size: 11px; }
+.remainingPanel > strong { display: block; margin-top: 8px; color: var(--app-accent); font-size: 28px; }
+.remainingPanel p { margin: 6px 0 0; color: var(--app-text-muted); font-size: 10px; line-height: 1.5; }
+@media (max-width: 70rem) { .referenceGrid { grid-template-columns: 1fr; } .budgetAside { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 48rem) { .referenceGrid, .budgetAside { grid-template-columns: 1fr; } .categoryRow { grid-template-columns: minmax(0, 1fr) 18px; } .mobileProgress { grid-column: 1; } }

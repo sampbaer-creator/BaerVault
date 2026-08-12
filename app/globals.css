@@ -328,8 +328,7 @@ body {
     var(--app-background);
   background-attachment: fixed;
   font-family:
-    "Panchang",
-    var(--font-geist-sans),
+    var(--font-manrope),
     system-ui,
     -apple-system,
     BlinkMacSystemFont,
@@ -340,7 +339,7 @@ body {
 h1,
 h2,
 .displayType {
-  font-family: "Rosnoc", "Panchang", var(--font-geist-sans), sans-serif;
+  font-family: var(--font-manrope), sans-serif;
 }
 body::before {
   position: fixed;

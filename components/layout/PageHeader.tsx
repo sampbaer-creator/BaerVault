@@ -1,4 +1,5 @@
 import { UserButton } from "@clerk/nextjs";
+import { IconBell, IconChevronDown, IconSearch } from "@tabler/icons-react";
 
 import { BearVaultLogo } from "@/components/brand/BearVaultLogo";
 import styles from "./AppShell.module.css";
@@ -13,9 +14,18 @@ export function PageHeader({ title }: PageHeaderProps) {
       <header className={styles.desktopHeader}>
         <div>
           <h1 className={styles.headerTitle}>{title}</h1>
-          <p className={styles.headerSubtitle}>Household workspace</p>
+          <p className={styles.headerSubtitle}>Your complete household financial picture</p>
         </div>
-        <UserButton />
+        <div className={styles.headerTools}>
+          <label className={styles.searchControl}>
+            <IconSearch size={17} aria-hidden="true" />
+            <span className={styles.srOnly}>Search BearVault</span>
+            <input type="search" placeholder="Search…" />
+          </label>
+          <button className={styles.periodControl} type="button">This month <IconChevronDown size={16} aria-hidden="true" /></button>
+          <button className={styles.iconControl} type="button" aria-label="Notifications"><IconBell size={18} /></button>
+          <UserButton />
+        </div>
       </header>
 
       <header className={styles.mobileHeader}>

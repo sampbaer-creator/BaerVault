@@ -33,29 +33,29 @@ colors:
   hover: "#f1f3f5"
 typography:
   display:
-    fontFamily: "var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+    fontFamily: "var(--font-manrope), system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
     fontSize: "clamp(40px, 5vw, 62px)"
     fontWeight: 660
     lineHeight: 1
     letterSpacing: "-0.04em"
   headline:
-    fontFamily: "var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+    fontFamily: "var(--font-manrope), system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
     fontSize: "clamp(28px, 3vw, 38px)"
     fontWeight: 690
     lineHeight: 1.1
     letterSpacing: "-0.035em"
   title:
-    fontFamily: "var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+    fontFamily: "var(--font-manrope), system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
     fontSize: "15px"
     fontWeight: 680
     letterSpacing: "-0.01em"
   body:
-    fontFamily: "var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+    fontFamily: "var(--font-manrope), system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
     fontSize: "15px"
     fontWeight: 400
     lineHeight: 1.5
   label:
-    fontFamily: "var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+    fontFamily: "var(--font-manrope), system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
     fontSize: "12px"
     fontWeight: 650
 rounded:
@@ -150,8 +150,8 @@ The palette feels protected and grounded: navy carries authority, green communic
 
 ## Typography
 
-**Display Font:** Geist Sans (with system sans-serif fallbacks)  
-**Body Font:** Geist Sans (with system sans-serif fallbacks)
+**Display Font:** Manrope (self-hosted by Next.js, with system sans-serif fallbacks)
+**Body Font:** Manrope (self-hosted by Next.js, with system sans-serif fallbacks)
 
 The operating interface uses a fixed Swiss-derived scale: 12px metadata, 13px controls, 15px body, 18px section headings, 24px shell titles, 30–36px page headings, and large financial figures only where one total genuinely leads the page.
 

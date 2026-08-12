@@ -3,13 +3,13 @@ import "@mantine/core/styles.css";
 
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import type { Metadata, Viewport } from "next";
-import { Geist } from "next/font/google";
+import { Manrope } from "next/font/google";
 
 import "./globals.css";
 import { PreferencesProvider } from "@/components/preferences/PreferencesProvider";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
 });
 
@@ -26,7 +26,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={geistSans.variable} suppressHydrationWarning>
+    <html lang="en" className={manrope.variable} suppressHydrationWarning>
       <head>
         <ColorSchemeScript defaultColorScheme="light" />
       </head>

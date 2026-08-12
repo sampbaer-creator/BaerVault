@@ -26,7 +26,7 @@ Users review their financial position at a glance, add purchases directly to mon
 - Next.js App Router application using TypeScript, Mantine, Tabler Icons, Recharts, and CSS Modules without Tailwind.
 - Current work uses realistic mock data only.
 - No authentication, backend, bank connection, market-data API, payment provider, email provider, or analytics integration is active yet.
-- The responsive application shell remains stable. Primary navigation is Dashboard, Budget, Cash Flow, Investments, Household, and Settings; `/transactions` redirects to `/cash-flow` for compatibility.
+- The responsive application shell remains stable. Primary navigation is Overview, Accounts, Transactions, Budgets, Investments, Goals, Household, and Settings; `/cash-flow` remains available for compatibility.
 - Financial data must use clear formatting and tabular numerals where appropriate.
 
 ## Brand Commitments
