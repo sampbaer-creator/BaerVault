@@ -3,8 +3,8 @@
   vertical-align: middle;
   filter: drop-shadow(0 10px 20px rgb(17 20 57 / 16%));
   transition:
-    transform var(--motion-fast) var(--ease-out),
-    filter var(--motion-fast) ease;
+    transform var(--motion-spatial-fast) var(--ease-out),
+    filter var(--motion-effect-fast) ease;
 }
 .link {
   position: relative;

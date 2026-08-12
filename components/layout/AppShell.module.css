@@ -109,11 +109,11 @@
   text-decoration: none;
   border: 1px solid transparent;
   transition:
-    transform var(--motion-fast) var(--ease-out),
-    background-color var(--motion-fast) ease,
-    color var(--motion-fast) ease,
-    border-color var(--motion-fast) ease,
-    box-shadow var(--motion-fast) ease;
+    transform var(--motion-spatial-fast) var(--ease-out),
+    background-color var(--motion-effect-fast) ease,
+    color var(--motion-effect-fast) ease,
+    border-color var(--motion-effect-fast) ease,
+    box-shadow var(--motion-effect-fast) ease;
 }
 
 .navLink:hover {

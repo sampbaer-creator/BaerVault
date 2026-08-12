@@ -83,9 +83,9 @@
     inset 0 1px 0 rgb(255 255 255 / 28%);
   backdrop-filter: blur(18px) saturate(145%);
   transition:
-    transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 200ms ease,
-    filter 200ms ease;
+    transform var(--motion-spatial-default) var(--ease-expressive),
+    box-shadow var(--motion-effect-default) ease,
+    filter var(--motion-effect-default) ease;
 }
 .navCta {
   padding: 10px 16px;
@@ -173,9 +173,9 @@
   backdrop-filter: blur(26px) saturate(150%);
   transform: rotate(1deg);
   transition:
-    transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 240ms ease,
-    filter 240ms ease;
+    transform var(--motion-spatial-default) var(--ease-expressive),
+    box-shadow var(--motion-effect-default) ease,
+    filter var(--motion-effect-default) ease;
 }
 .preview::before {
   position: absolute;
@@ -190,7 +190,7 @@
     transparent
   );
   content: "";
-  transition: transform 280ms ease;
+  transition: transform var(--motion-spatial-slow) var(--ease-in-out);
 }
 .preview:hover {
   transform: rotate(0.3deg) translateY(-3px);

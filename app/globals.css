@@ -50,9 +50,20 @@
     0 28px 80px rgb(10 12 38 / 28%), inset 0 1px 0 rgb(255 255 255 / 76%);
   --space-page: clamp(24px, 4vw, 52px);
   --control-height: 42px;
-  --motion-fast: 170ms;
-  --motion-standard: 240ms;
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Motion schemes: spatial movement and visual effects use separate tokens. */
+  --motion-spatial-fast: 160ms;
+  --motion-spatial-default: 240ms;
+  --motion-spatial-slow: 280ms;
+  --motion-effect-fast: 140ms;
+  --motion-effect-default: 200ms;
+  --motion-effect-slow: 280ms;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-expressive: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Legacy aliases keep existing components on the shared scheme. */
+  --motion-fast: var(--motion-spatial-fast);
+  --motion-standard: var(--motion-spatial-default);
   --window-radius: 28px;
   --window-edge: rgb(255 255 255 / 72%);
   --window-shadow: 0 24px 70px rgb(17 20 57 / 12%);
@@ -286,8 +297,12 @@
   --control-height: 36px;
 }
 :root[data-motion="reduced"] {
-  --motion-fast: 0ms;
-  --motion-standard: 0ms;
+  --motion-spatial-fast: 0ms;
+  --motion-spatial-default: 0ms;
+  --motion-spatial-slow: 0ms;
+  --motion-effect-fast: 120ms;
+  --motion-effect-default: 160ms;
+  --motion-effect-slow: 200ms;
 }
 *,
 *::before,
@@ -347,17 +362,23 @@ select,
 textarea {
   font: inherit;
 }
-button,
+button {
+  transition:
+    transform var(--motion-spatial-fast) var(--ease-out),
+    border-color var(--motion-effect-fast) ease,
+    background-color var(--motion-effect-fast) ease,
+    color var(--motion-effect-fast) ease,
+    box-shadow var(--motion-effect-fast) ease,
+    filter var(--motion-effect-fast) ease;
+}
 input,
 select,
 textarea {
   transition:
-    transform var(--motion-fast) var(--ease-out),
-    border-color var(--motion-fast) ease,
-    background-color var(--motion-fast) ease,
-    color var(--motion-fast) ease,
-    box-shadow var(--motion-fast) var(--ease-out),
-    filter var(--motion-fast) ease;
+    border-color var(--motion-effect-fast) ease,
+    background-color var(--motion-effect-fast) ease,
+    color var(--motion-effect-fast) ease,
+    box-shadow var(--motion-effect-fast) ease;
 }
 button {
   position: relative;
@@ -521,13 +542,22 @@ button:active {
   background: rgb(17 20 57 / 22%);
 }
 @media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-spatial-fast: 0ms;
+    --motion-spatial-default: 0ms;
+    --motion-spatial-slow: 0ms;
+    --motion-effect-fast: 120ms;
+    --motion-effect-default: 160ms;
+    --motion-effect-slow: 200ms;
+  }
+  html {
+    scroll-behavior: auto !important;
+  }
   *,
   *::before,
   *::after {
-    scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
   }
   button:active {
     transform: none;
