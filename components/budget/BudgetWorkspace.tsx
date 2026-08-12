@@ -17,13 +17,14 @@ import {
 import { FormEvent, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { addCategoryAction, deleteBudgetEntryAction, saveBudgetEntryAction, setPlannedAmountAction } from "@/app/(app)/budget/actions";
+import * as realActions from "@/app/(app)/budget/actions";
+import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
+import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
 
 import {
   categoryActual,
   categoryRemaining,
   compactCurrency,
-  currency,
   netCashFlow,
   totalIncome,
   totalPlanned,
@@ -39,7 +40,9 @@ type PurchaseDraft = { amount: string; description: string; date: string };
 const today = new Date().toISOString().slice(0, 10);
 const emptyPurchase: PurchaseDraft = { amount: "", description: "", date: today };
 
-export function BudgetWorkspace({ initialBudget }: { initialBudget: BudgetMonth & { year: number; monthNumber: number } }) {
+type BudgetActions=Pick<typeof realActions,"addCategoryAction"|"deleteBudgetCategoryAction"|"deleteBudgetEntryAction"|"saveBudgetEntryAction"|"updateBudgetCategoryAction">;
+export function BudgetWorkspace({ initialBudget, actions=realActions }: { initialBudget: BudgetMonth & { year: number; monthNumber: number };actions?:BudgetActions }) {
+  const currency=useCurrencyFormatter();
   const router = useRouter();
   const isMobile = useMediaQuery("(max-width: 47.999rem)");
   const [categories, setCategories] = useState<BudgetCategory[]>(initialBudget.categories);
@@ -53,6 +56,8 @@ export function BudgetWorkspace({ initialBudget }: { initialBudget: BudgetMonth 
   const [editingPlanned, setEditingPlanned] = useState(false);
   const [addingCategory, setAddingCategory] = useState(false);
   const [categoryDraft, setCategoryDraft] = useState({ name: "", plannedAmount: "" });
+  const [categoryNameDraft, setCategoryNameDraft] = useState("");
+  const [pendingDelete, setPendingDelete] = useState<{ kind: "entry" | "category"; id: string; label: string } | null>(null);
 
   const month = useMemo(() => ({ ...initialBudget, categories }), [categories, initialBudget]);
   const selected = categories.find((category) => category.id === selectedId) ?? null;
@@ -65,6 +70,7 @@ export function BudgetWorkspace({ initialBudget }: { initialBudget: BudgetMonth 
   function openCategory(category: BudgetCategory) {
     setSelectedId(category.id);
     setPlannedDraft(category.plannedAmount.toString());
+    setCategoryNameDraft(category.name);
     setEditingPlanned(false);
     setShowPurchaseForm(false);
     setEditingPurchaseId(null);
@@ -88,7 +94,7 @@ export function BudgetWorkspace({ initialBudget }: { initialBudget: BudgetMonth 
         : [{ id: temporaryId, amount, description: purchaseDraft.description.trim(), date: purchaseDraft.date }, ...category.purchases],
     }));
     setSaving(true); setError("");
-    const result = await saveBudgetEntryAction({ id: editingPurchaseId ?? undefined, categoryId: selected.id, description: purchaseDraft.description, amount, date: purchaseDraft.date });
+    const result = await actions.saveBudgetEntryAction({ id: editingPurchaseId ?? undefined, categoryId: selected.id, description: purchaseDraft.description, amount, date: purchaseDraft.date });
     setSaving(false);
     if (!result.ok) { setCategories(previous); setError(result.error); return; }
     if (!editingPurchaseId) setCategories((current) => current.map((category) => category.id === selected.id ? { ...category, purchases: category.purchases.map((purchase) => purchase.id === temporaryId ? { ...purchase, id: result.data.id } : purchase) } : category));
@@ -104,21 +110,25 @@ export function BudgetWorkspace({ initialBudget }: { initialBudget: BudgetMonth 
     setShowPurchaseForm(true);
   }
 
-  async function removePurchase(id: string) {
-    const previous = categories;
-    updateSelected((category) => ({ ...category, purchases: category.purchases.filter((purchase) => purchase.id !== id) }));
-    const result = await deleteBudgetEntryAction(id);
-    if (!result.ok) { setCategories(previous); setError(result.error); } else router.refresh();
-  }
-
   async function savePlanned() {
     const value = Number(plannedDraft);
     if (value >= 0 && selected) {
       const previous = categories; updateSelected((category) => ({ ...category, plannedAmount: value }));
-      const result = await setPlannedAmountAction(selected.id, value);
+      const result = await actions.updateBudgetCategoryAction(selected.id, categoryNameDraft, value);
       if (!result.ok) { setCategories(previous); setError(result.error); } else router.refresh();
     }
     setEditingPlanned(false);
+  }
+
+  async function confirmDelete() {
+    if (!pendingDelete) return;
+    setSaving(true); setError("");
+    const result = pendingDelete.kind === "entry" ? await actions.deleteBudgetEntryAction(pendingDelete.id) : await actions.deleteBudgetCategoryAction(pendingDelete.id);
+    setSaving(false);
+    if (!result.ok) { setError(result.error); return; }
+    if (pendingDelete.kind === "entry") setCategories((current) => current.map((category) => ({ ...category, purchases: category.purchases.filter((purchase) => purchase.id !== pendingDelete.id) })));
+    else { setCategories((current) => current.filter((category) => category.id !== pendingDelete.id)); setSelectedId(null); }
+    setPendingDelete(null); router.refresh();
   }
 
   async function addCategory(event: FormEvent) {
@@ -126,7 +136,7 @@ export function BudgetWorkspace({ initialBudget }: { initialBudget: BudgetMonth 
     const plannedAmount = Number(categoryDraft.plannedAmount);
     if (!categoryDraft.name.trim() || plannedAmount < 0) return;
     setSaving(true); setError("");
-    const result = await addCategoryAction({ year: initialBudget.year, month: initialBudget.monthNumber, name: categoryDraft.name, plannedAmount });
+    const result = await actions.addCategoryAction({ year: initialBudget.year, month: initialBudget.monthNumber, name: categoryDraft.name, plannedAmount });
     setSaving(false);
     if (!result.ok) { setError(result.error); return; }
     setCategories((current) => [...current, result.data]);
@@ -182,6 +192,7 @@ export function BudgetWorkspace({ initialBudget }: { initialBudget: BudgetMonth 
 
       <Drawer opened={Boolean(selected)} onClose={() => setSelectedId(null)} position={isMobile ? "bottom" : "right"} size={isMobile ? "88%" : 440} radius={isMobile ? "18px 18px 0 0" : 0} title={selected?.name} classNames={{ content: styles.drawer, header: styles.drawerHeader, body: styles.drawerBody, title: styles.drawerTitle }}>
         {selected && <div className={styles.categoryDetail}>
+          <label className={styles.categoryForm}>Category name<input value={categoryNameDraft} onChange={(event)=>setCategoryNameDraft(event.target.value)} onBlur={savePlanned}/></label>
           <div className={styles.detailTotals}>
             <div><span>Budget</span>{editingPlanned ? <div className={styles.inlineEdit}><span>$</span><input aria-label="Planned budget amount" inputMode="decimal" value={plannedDraft} onChange={(e) => setPlannedDraft(e.target.value)} autoFocus /><button type="button" onClick={savePlanned} aria-label="Save planned amount"><IconCheck size={17} /></button></div> : <button type="button" onClick={() => setEditingPlanned(true)}>{currency.format(selected.plannedAmount)}<IconEdit size={14} /></button>}</div>
             <div><span>Actual</span><strong>{currency.format(categoryActual(selected))}</strong></div>
@@ -196,14 +207,16 @@ export function BudgetWorkspace({ initialBudget }: { initialBudget: BudgetMonth 
             <div className={styles.formActions}><button type="button" onClick={() => setShowPurchaseForm(false)}><IconX size={15} />Cancel</button><button className={styles.primaryButton} type="submit" disabled={saving}>{saving ? "Saving…" : editingPurchaseId ? "Save purchase" : "Add purchase"}</button></div>
           </form>}
           <div className={styles.purchaseList}>
-            {selected.purchases.map((purchase) => <div className={styles.purchase} key={purchase.id}><div><strong>{purchase.description}</strong><span>{new Date(`${purchase.date}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span></div><strong>{currency.format(purchase.amount)}</strong><div className={styles.purchaseActions}><button type="button" onClick={() => editPurchase(purchase)} aria-label={`Edit ${purchase.description}`}><IconEdit size={16} /></button><button type="button" onClick={() => removePurchase(purchase.id)} aria-label={`Delete ${purchase.description}`}><IconTrash size={16} /></button></div></div>)}
+            {selected.purchases.map((purchase) => <div className={styles.purchase} key={purchase.id}><div><strong>{purchase.description}</strong><span>{new Date(`${purchase.date}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span></div><strong>{currency.format(purchase.amount)}</strong><div className={styles.purchaseActions}><button type="button" onClick={() => editPurchase(purchase)} aria-label={`Edit ${purchase.description}`}><IconEdit size={16} /></button><button type="button" onClick={() => setPendingDelete({kind:"entry",id:purchase.id,label:purchase.description})} aria-label={`Delete ${purchase.description}`}><IconTrash size={16} /></button></div></div>)}
           </div>
+          <button className={styles.copyButton} type="button" onClick={()=>setPendingDelete({kind:"category",id:selected.id,label:selected.name})}><IconTrash size={15}/>Delete category</button>
         </div>}
       </Drawer>
 
       <Drawer opened={addingCategory} onClose={() => setAddingCategory(false)} position={isMobile ? "bottom" : "right"} size={isMobile ? "auto" : 400} radius={isMobile ? "18px 18px 0 0" : 0} title="Add category" classNames={{ content: styles.drawer, header: styles.drawerHeader, body: styles.drawerBody, title: styles.drawerTitle }}>
         <form className={styles.categoryForm} onSubmit={addCategory}><label>Category name<input placeholder="Childcare" value={categoryDraft.name} onChange={(e) => setCategoryDraft({ ...categoryDraft, name: e.target.value })} autoFocus /></label><label>Planned amount<div className={styles.simpleAmount}><span>$</span><input inputMode="decimal" placeholder="0.00" value={categoryDraft.plannedAmount} onChange={(e) => setCategoryDraft({ ...categoryDraft, plannedAmount: e.target.value })} /></div></label><button className={styles.primaryButton} type="submit" disabled={saving}>{saving ? "Saving…" : "Add category"}</button></form>
       </Drawer>
+      <ConfirmDialog opened={Boolean(pendingDelete)} title={`Delete ${pendingDelete?.label ?? "record"}?`} description={pendingDelete?.kind==="category"?"This permanently deletes the category and every spending entry inside it.":"This permanently deletes this spending entry."} confirmLabel={pendingDelete?.kind==="category"?"Delete category":"Delete entry"} busy={saving} onCancel={()=>setPendingDelete(null)} onConfirm={confirmDelete}/>
     </div>
   );
 }

@@ -75,10 +75,16 @@ export async function createBudgetCategory(year: number, month: number, name: st
   return { id: result.data.id, name: result.data.name, plannedAmount: Number(result.data.planned_amount), purchases: [] };
 }
 
-export async function updateBudgetCategory(categoryId: string, plannedAmount: number) {
+export async function updateBudgetCategory(categoryId: string, name: string, plannedAmount: number) {
   const household = await getCurrentHousehold();
-  const result = await createServerSupabaseClient().from("budget_categories").update({ planned_amount: plannedAmount }).eq("id", categoryId).eq("household_id", household.id).select("id").single();
+  const result = await createServerSupabaseClient().from("budget_categories").update({ name, planned_amount: plannedAmount }).eq("id", categoryId).eq("household_id", household.id).select("id").single();
   if (result.error) throwDataError(result.error, "Could not update the planned amount.");
+}
+
+export async function deleteBudgetCategory(categoryId: string) {
+  const household = await getCurrentHousehold();
+  const result = await createServerSupabaseClient().from("budget_categories").delete().eq("id", categoryId).eq("household_id", household.id);
+  if (result.error) throwDataError(result.error, "Could not delete the budget category.");
 }
 
 export async function createBudgetEntry(categoryId: string, description: string, amount: number, entryDate: string) {

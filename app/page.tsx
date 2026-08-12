@@ -1,16 +1,14 @@
-import { IconArrowRight, IconChartPie, IconHome, IconLock } from "@tabler/icons-react";
+import { IconArrowRight, IconChartPie, IconLock } from "@tabler/icons-react";
 import Link from "next/link";
 
 import styles from "./page.module.css";
+import { BearVaultLogo } from "@/components/brand/BearVaultLogo";
 
 export default function Home() {
   return (
     <main className={styles.page}>
       <nav className={styles.nav} aria-label="Main navigation">
-        <Link className={styles.brand} href="/">
-          <span className={styles.brandMark} aria-hidden="true"><IconHome size={19} /></span>
-          BearVault
-        </Link>
+        <Link className={styles.brand} href="/"><BearVaultLogo /></Link>
         <div className={styles.navActions}>
           <Link className={styles.signIn} href="/demo">Try demo</Link>
           <Link className={styles.signIn} href="/sign-in">Sign in</Link>

@@ -1,2 +1,2 @@
-import { DemoWorkspace } from "@/components/demo/DemoWorkspace";
-export default function DemoSettingsPage(){return <DemoWorkspace view="settings"/>}
+import { PreferencesPanel } from "@/components/settings/PreferencesPanel";import styles from "@/components/settings/SettingsWorkspace.module.css";
+export default function DemoSettingsPage(){return <div className={styles.page}><header><h2>Demo settings</h2><p>Theme and formatting preferences work without an account and stay on this device.</p></header><div className={styles.sections}><PreferencesPanel/></div></div>}

@@ -1,0 +1,2 @@
+import styles from "./BearVaultLogo.module.css";
+export function BearVaultLogo({compact=false}:{compact?:boolean}){return <span className={styles.lockup}><svg className={styles.mark} viewBox="0 0 48 48" aria-hidden="true"><path d="M8 22.5C8 13.9 14.9 7 23.5 7h3C34 7 40 13 40 20.5V24l-6-4-7 7-7-7-12 10v-7.5Z"/><path className={styles.vault} d="M9 29.5 20 20l7 7 7-7 6 4v7.5c0 6-4.5 9.9-16 14.5C13.6 41.7 9 37.6 9 29.5Z"/><circle cx="24" cy="32" r="4"/><path className={styles.cut} d="m21.5 34.5 9-9"/></svg>{!compact&&<strong>BearVault</strong>}</span>}

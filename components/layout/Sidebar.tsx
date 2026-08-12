@@ -2,13 +2,13 @@ import { OrganizationSwitcher } from "@clerk/nextjs";
 import Link from "next/link";
 
 import {
-  brandIcon as BrandIcon,
   householdNavigation,
   mainNavigation,
   systemNavigation,
   type NavigationItem,
 } from "./navigation";
 import styles from "./AppShell.module.css";
+import { BearVaultLogo } from "@/components/brand/BearVaultLogo";
 
 type SidebarProps = {
   pathname: string;
@@ -49,10 +49,7 @@ export function Sidebar({ pathname }: SidebarProps) {
   return (
     <aside className={styles.sidebar} aria-label="Primary navigation">
       <div className={styles.brand}>
-        <span className={styles.brandMark} aria-hidden="true">
-          <BrandIcon size={20} stroke={1.9} />
-        </span>
-        BearVault
+        <BearVaultLogo />
       </div>
 
       <nav className={styles.sidebarNav}>

@@ -1,2 +1,2 @@
-import { DemoWorkspace } from "@/components/demo/DemoWorkspace";
-export default function DemoBudgetPage(){return <DemoWorkspace view="budget"/>}
+import { DemoBudget } from "@/components/demo/DemoBudget";
+export default function DemoBudgetPage(){return <DemoBudget/>}

@@ -6,6 +6,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 
 import "./globals.css";
+import { PreferencesProvider } from "@/components/preferences/PreferencesProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,9 +28,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       </head>
       <body>
         <ClerkProvider>
-          <MantineProvider defaultColorScheme="light">
-            {children}
-          </MantineProvider>
+          <MantineProvider defaultColorScheme="auto"><PreferencesProvider>{children}</PreferencesProvider></MantineProvider>
         </ClerkProvider>
       </body>
     </html>

@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createBudgetCategory, createBudgetEntry, deleteBudgetEntry, updateBudgetCategory, updateBudgetEntry } from "@/lib/data/budgets";
+import { createBudgetCategory, createBudgetEntry, deleteBudgetCategory, deleteBudgetEntry, updateBudgetCategory, updateBudgetEntry } from "@/lib/data/budgets";
 import { errorMessage } from "@/lib/data/errors";
 
 type Result<T = undefined> = { ok: true; data: T } | { ok: false; error: string };
@@ -16,11 +16,17 @@ export async function addCategoryAction(input: { year: number; month: number; na
   } catch (error) { return { ok: false, error: errorMessage(error) }; }
 }
 
-export async function setPlannedAmountAction(categoryId: string, amount: number): Promise<Result> {
+export async function updateBudgetCategoryAction(categoryId: string, name: string, amount: number): Promise<Result> {
   try {
-    if (!categoryId || !validAmount(amount, true)) throw new Error("Enter a valid planned amount.");
-    await updateBudgetCategory(categoryId, amount); revalidatePath("/budget"); return { ok: true, data: undefined };
+    const cleanName = name.trim();
+    if (!categoryId || !cleanName || cleanName.length > 80 || !validAmount(amount, true)) throw new Error("Enter a valid category name and planned amount.");
+    await updateBudgetCategory(categoryId, cleanName, amount); revalidatePath("/budget"); revalidatePath("/dashboard"); return { ok: true, data: undefined };
   } catch (error) { return { ok: false, error: errorMessage(error) }; }
+}
+
+export async function deleteBudgetCategoryAction(id: string): Promise<Result> {
+  try { await deleteBudgetCategory(id); revalidatePath("/budget"); revalidatePath("/cash-flow"); revalidatePath("/dashboard"); return { ok:true,data:undefined }; }
+  catch(error){ return {ok:false,error:errorMessage(error)}; }
 }
 
 export async function saveBudgetEntryAction(input: { id?: string; categoryId: string; description: string; amount: number; date: string }): Promise<Result<{ id: string }>> {

@@ -7,11 +7,14 @@ colors:
   growth-green: "#267056"
   soft-green: "#e8f1ed"
   warm-bronze: "#a87546"
+  accent-blue: "#365d81"
+  accent-bronze: "#8a623d"
+  destructive: "#a34444"
   graphite: "#161b22"
   muted-ink: "#66736d"
-  canvas: "#f5f6f8"
+  canvas: "#f3f5f4"
   surface: "#ffffff"
-  border: "#e4e7ec"
+  border: "#dfe5e1"
   hover: "#f1f3f5"
 typography:
   display:
@@ -135,6 +138,8 @@ The palette feels protected and grounded: navy carries authority, green communic
 **Display Font:** Geist Sans (with system sans-serif fallbacks)  
 **Body Font:** Geist Sans (with system sans-serif fallbacks)
 
+The operating interface uses a fixed Swiss-derived scale: 12px metadata, 13px controls, 15px body, 18px section headings, 24px shell titles, 30–36px page headings, and large financial figures only where one total genuinely leads the page.
+
 **Character:** The single sans-serif family is clean and approachable, while tightly tracked, moderately heavy headings provide financial authority. Monetary values use tabular lining numerals so comparisons remain stable and precise.
 
 ### Hierarchy
@@ -169,6 +174,14 @@ BearVault uses a hybrid depth model. Opaque detail panels are defined primarily 
 - **Active Control** (`0 4px 12px rgb(21 36 58 / 16%)`): Selected pill inside a compact control group.
 
 **The Selective Glass Rule.** Glass is hierarchy, not wallpaper: reserve blur and translucency for the protected financial plane, sticky chrome, tooltips, and compact controls.
+
+### Theme and customization
+
+- Light, dark, and system modes share the same hierarchy and semantic contrast.
+- Green is the default accent; blue and bronze are approved restrained alternatives.
+- Comfortable and compact density alter spacing and control height without shrinking touch targets below accessibility requirements.
+- Reduced motion removes decorative transitions while preserving immediate state feedback.
+- Detailed financial tables, lists, and record panels remain opaque in both themes.
 
 ## Shapes
 
