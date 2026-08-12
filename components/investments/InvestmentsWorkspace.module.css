@@ -342,10 +342,11 @@
   font-variant-numeric: tabular-nums;
 }
 .projection > small {
-  grid-column: 3;
+  grid-column: 1/-1;
   color: #8a938f;
   font-size: 9px;
 }
+.projectionChart { grid-column: 1/-1; height: 210px; padding-top: 8px; border-top: 1px solid #edf0ee; }
 .drawer {
   color: var(--navy);
   background: #fbfcfc;

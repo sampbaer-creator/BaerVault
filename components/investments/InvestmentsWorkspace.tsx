@@ -7,7 +7,6 @@ import {
   IconChevronRight,
   IconEdit,
   IconPlus,
-  IconShieldCheck,
   IconTrash,
   IconTrendingUp,
 } from "@tabler/icons-react";
@@ -76,6 +75,11 @@ export function InvestmentsWorkspace({
   const [lotOpen, setLotOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [projectionYears, setProjectionYears] = useState(10);
+  const [expectedReturn, setExpectedReturn] = useState(7);
+  const [monthlyContribution, setMonthlyContribution] = useState(
+    initialAccounts.reduce((sum, item) => sum + (item.contributionAmount ?? 0), 0) || 500,
+  );
   const [accountDraft, setAccountDraft] = useState({
     name: "",
     type: "Joint brokerage",
@@ -161,6 +165,17 @@ export function InvestmentsWorkspace({
       ),
     0,
   );
+  const projection = useMemo(() => {
+    const startingBalance = portfolioValue || portfolioCost;
+    const monthlyRate = expectedReturn / 100 / 12;
+    let balance = startingBalance;
+    const points = [{ year: "Now", balance: Math.round(balance), contributions: Math.round(startingBalance) }];
+    for (let month = 1; month <= projectionYears * 12; month += 1) {
+      balance = balance * (1 + monthlyRate) + monthlyContribution;
+      if (month % 12 === 0) points.push({ year: `Year ${month / 12}`, balance: Math.round(balance), contributions: Math.round(startingBalance + monthlyContribution * month) });
+    }
+    return { points, endingBalance: balance, contributed: startingBalance + monthlyContribution * projectionYears * 12 };
+  }, [expectedReturn, monthlyContribution, portfolioCost, portfolioValue, projectionYears]);
   const accountValue =
     account?.holdings.reduce(
       (sum, item) =>
@@ -632,14 +647,21 @@ export function InvestmentsWorkspace({
       )}
       <section className={styles.projection}>
         <div>
-          <IconShieldCheck size={20} />
-          <h3>Household-isolated ownership</h3>
+          <IconTrendingUp size={20} />
+          <h3>Future projection</h3>
           <p>
-            Accounts, holdings, and purchase lots are saved for the active Clerk
-            household. Market prices are fetched live and are not stored as
-            ownership data.
+            Explore how this portfolio could grow. Adjust the assumptions to
+            model your household&apos;s plan.
           </p>
         </div>
+        <div className={styles.assumptions}>
+          <label>Years<input type="number" min="1" max="50" value={projectionYears} onChange={(event) => setProjectionYears(Math.min(50, Math.max(1, Number(event.target.value) || 1)))}/></label>
+          <label>Return<input type="number" min="0" max="20" step="0.5" value={expectedReturn} onChange={(event) => setExpectedReturn(Math.min(20, Math.max(0, Number(event.target.value) || 0)))}/>%</label>
+          <label>Monthly<input type="number" min="0" step="50" value={monthlyContribution} onChange={(event) => setMonthlyContribution(Math.max(0, Number(event.target.value) || 0))}/></label>
+        </div>
+        <div className={styles.outcomes}><div><span>Projected value</span><strong>{currency.format(projection.endingBalance)}</strong></div><div><span>Total contributed</span><strong>{currency.format(projection.contributed)}</strong></div><div><span>Estimated growth</span><strong>{currency.format(projection.endingBalance - projection.contributed)}</strong></div></div>
+        <div className={styles.projectionChart}><ResponsiveContainer width="100%" height="100%"><AreaChart data={projection.points} margin={{ top: 8, right: 4, left: 4, bottom: 0 }}><defs><linearGradient id="projectionFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#4f8389" stopOpacity={0.28}/><stop offset="100%" stopColor="#4f8389" stopOpacity={0}/></linearGradient></defs><CartesianGrid vertical={false} stroke="#edf0ee"/><XAxis dataKey="year" axisLine={false} tickLine={false} tick={{fontSize:9,fill:"#7e8b85"}}/><YAxis hide/><Tooltip formatter={(value) => currency.format(Number(value))}/><Area type="monotone" dataKey="balance" name="Projected value" stroke="#4f8389" strokeWidth={2} fill="url(#projectionFill)"/><Line type="monotone" dataKey="contributions" name="Contributions" stroke="#d4af37" strokeDasharray="4 4" dot={false}/></AreaChart></ResponsiveContainer></div>
+        <small>Illustrative estimate only. Returns are not guaranteed and inflation, fees, and taxes are not included.</small>
       </section>
 
       <Drawer
