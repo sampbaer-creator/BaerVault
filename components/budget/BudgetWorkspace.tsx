@@ -15,7 +15,7 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { FormEvent, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import * as realActions from "@/app/(app)/budget/actions";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
@@ -44,6 +44,7 @@ type BudgetActions=Pick<typeof realActions,"addCategoryAction"|"deleteBudgetCate
 export function BudgetWorkspace({ initialBudget, actions=realActions }: { initialBudget: BudgetMonth & { year: number; monthNumber: number };actions?:BudgetActions }) {
   const currency=useCurrencyFormatter();
   const router = useRouter();
+  const pathname = usePathname();
   const isMobile = useMediaQuery("(max-width: 47.999rem)");
   const [categories, setCategories] = useState<BudgetCategory[]>(initialBudget.categories);
   const [error, setError] = useState("");
@@ -66,6 +67,15 @@ export function BudgetWorkspace({ initialBudget, actions=realActions }: { initia
   const spending = totalSpending(month);
   const remaining = planned - spending;
   const savings = netCashFlow(month);
+
+  function openMonth(offset: number) {
+    const target = new Date(Date.UTC(initialBudget.year, initialBudget.monthNumber - 1 + offset, 1));
+    const params = new URLSearchParams({
+      year: String(target.getUTCFullYear()),
+      month: String(target.getUTCMonth() + 1),
+    });
+    router.push(`${pathname}?${params.toString()}`);
+  }
 
   function openCategory(category: BudgetCategory) {
     setSelectedId(category.id);
@@ -153,9 +163,9 @@ export function BudgetWorkspace({ initialBudget, actions=realActions }: { initia
       </header>
 
       <section className={styles.monthBar} aria-label="Budget month navigation">
-        <button type="button" aria-label="Previous month" disabled title="Only August mock data is available"><IconArrowLeft size={18} /></button>
+        <button type="button" aria-label="Previous month" onClick={() => openMonth(-1)}><IconArrowLeft size={18} /></button>
         <strong>{initialBudget.month}</strong>
-        <button type="button" aria-label="Next month" disabled title="Only August mock data is available"><IconArrowRight size={18} /></button>
+        <button type="button" aria-label="Next month" onClick={() => openMonth(1)}><IconArrowRight size={18} /></button>
       </section>
 
       {error && <p className={styles.formError} role="alert">{error}</p>}

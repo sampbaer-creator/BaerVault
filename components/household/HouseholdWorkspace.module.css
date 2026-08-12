@@ -1,0 +1,94 @@
+.page {
+  max-width: 1180px;
+  margin: auto;
+}
+
+.page > header {
+  max-width: 720px;
+  margin-bottom: 34px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--app-accent);
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.page h2 {
+  margin: 0;
+  font-size: 36px;
+  letter-spacing: -0.035em;
+}
+
+.intro,
+.heading p {
+  color: var(--app-text-muted);
+  line-height: 1.6;
+}
+
+.management {
+  padding: 26px;
+  border: 1px solid var(--glass-edge);
+  border-radius: 14px;
+  background: var(--glass-strong);
+  box-shadow: var(--shadow-glass), inset 0 1px 0 var(--glass-highlight);
+  backdrop-filter: blur(26px) saturate(155%);
+  -webkit-backdrop-filter: blur(26px) saturate(155%);
+}
+
+.heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.heading h3,
+.heading p {
+  margin: 0;
+}
+
+.heading p {
+  margin-top: 6px;
+}
+
+.heading > span {
+  flex: 0 0 auto;
+  padding: 7px 10px;
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  color: var(--app-text-muted);
+  background: var(--control-glass);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.clerk {
+  margin-top: 22px;
+  overflow: auto;
+}
+
+.clerk > div {
+  max-width: 100%;
+}
+
+@media (max-width: 640px) {
+  .page h2 {
+    font-size: 30px;
+  }
+
+  .management {
+    padding: 20px;
+  }
+
+  .heading {
+    display: grid;
+  }
+
+  .heading > span {
+    justify-self: start;
+  }
+}
