@@ -36,7 +36,7 @@
 }
 
 .navActions, .heroActions { display: flex; align-items: center; gap: 12px; }
-.signIn, .navCta, .primaryCta, .secondaryCta { text-decoration: none; font-weight: 650; }
+.signIn, .navCta, .primaryCta, .secondaryCta, .demoCta { text-decoration: none; font-weight: 650; }
 .signIn { padding: 10px 12px; color: #526259; }
 .navCta, .primaryCta {
   border-radius: 11px;
@@ -86,6 +86,7 @@
 
 .primaryCta { display: inline-flex; align-items: center; gap: 9px; padding: 14px 19px; }
 .secondaryCta { padding: 13px 8px; color: #435249; }
+.demoCta { padding: 13px 8px; color: #245a45; text-decoration: underline; text-underline-offset: 4px; }
 .securityNote { display: flex; align-items: center; gap: 7px; margin: 20px 0 0; color: #708078; font-size: 13px; }
 
 .preview {

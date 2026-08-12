@@ -26,6 +26,10 @@ Create or join a household organization
 Household dashboard
 ```
 
+## Public demo
+
+Visitors can open `/demo` from the landing page without creating an account. The demo mirrors the dashboard, budget, cash-flow, investment, household, and settings navigation with interactive mock records stored only in the browser tab. It does not authenticate, call Supabase repositories, or write to production household tables.
+
 Authenticated users without an active organization are sent to `/onboarding`. Protected application routes include `/dashboard`, `/budget`, `/cash-flow`, `/investments`, `/household`, and `/settings`.
 
 ## Architecture
