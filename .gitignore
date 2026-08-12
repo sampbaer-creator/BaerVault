@@ -44,12 +44,7 @@ next-env.d.ts
 # local agent, skill, editor, and visual-review artifacts
 /.agents/
 /.codex/
-/.cursor/
 /.vscode/
 /skills-lock.json
-/.impeccable/screenshots/
-/.impeccable/edge-*/
-
-
 # clerk configuration (can include secrets)
 /.clerk/
