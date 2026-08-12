@@ -1,5 +1,289 @@
 "use client";
-import { IconArrowRight,IconBuildingBank,IconReceipt,IconShieldCheck } from "@tabler/icons-react";import Link from "next/link";import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";import { categoryActual,totalIncome,totalPlanned,totalSpending,type BudgetMonth } from "@/lib/finance";import { costFor,type InvestmentAccount } from "@/lib/investmentData";import styles from "./DashboardOverview.module.css";
-function Heading({title,href,action,id}:{title:string;href:string;action:string;id:string}){return <div className={styles.sectionHeading}><h3 id={id}>{title}</h3><Link className={styles.textLink} href={href}>{action}<IconArrowRight size={15}/></Link></div>}
-export function DashboardOverview({budget,accounts,basePath=""}:{budget:BudgetMonth;accounts:InvestmentAccount[];basePath?:string}){const money=useCurrencyFormatter(),income=totalIncome(budget),spending=totalSpending(budget),planned=totalPlanned(budget),invested=accounts.reduce((sum,a)=>sum+a.holdings.reduce((s,h)=>s+costFor(h),0),0),entries=budget.categories.flatMap(c=>c.purchases.map(e=>({...e,category:c.name}))).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5),empty=!income&&!spending&&!planned&&!accounts.length;return <div className={styles.dashboard}><section className={styles.intro}><div><h2>Your household overview</h2><p>{empty?"Your vault is ready. Add your first budget, income entry, or investment account.":basePath?"Explore a complete household using mock data.":"Everything here comes from your household’s saved records."}</p></div><div className={styles.secureBadge}><IconShieldCheck size={17}/><span>{basePath?"Demo data":"Household protected"}</span></div></section><section className={styles.netWorthSurface}><div className={styles.netWorthTopline}><div className={styles.netWorthCopy}><h3>Saved financial picture</h3><p className={styles.netWorthValue}>{money.format(invested)}</p><div className={styles.netWorthChange}><span>Invested cost basis</span></div></div></div><div className={styles.summaryRail}><Stat label="Income" value={money.format(income)} detail={budget.month}/><Stat label="Spending" value={money.format(spending)} detail="Derived from entries"/><Stat label="Budget left" value={money.format(planned-spending)} detail="Planned minus actual"/><Stat label="Accounts" value={String(accounts.length)} detail={`${accounts.reduce((n,a)=>n+a.holdings.length,0)} holdings`}/></div></section><div className={styles.detailGrid}><section className={`${styles.panel} ${styles.budgetPanel}`}><Heading id="budget-title" title={`${budget.month} budget`} href={`${basePath}/budget`} action="Open budget"/><div className={styles.budgetLead}><div><span>Spent</span><strong>{money.format(spending)}</strong></div><p><strong>{money.format(planned-spending)}</strong> remaining of {money.format(planned)}</p></div><div className={styles.budgetBar}><span style={{width:`${planned?Math.min(spending/planned*100,100):0}%`}}/></div><div className={styles.budgetCategories}>{budget.categories.slice(0,4).map(c=><div className={styles.budgetCategory} key={c.id}><div><span className={`${styles.categoryDot} ${styles.green}`}/><span>{c.name}</span></div><p><strong>{money.format(categoryActual(c))}</strong> / {money.format(c.plannedAmount)}</p></div>)}</div></section><section className={`${styles.panel} ${styles.investmentPanel}`}><Heading id="investment-title" title="Investments" href={`${basePath}/investments`} action="View portfolio"/><div className={styles.investmentLead}><div><span>Amount invested</span><strong>{money.format(invested)}</strong></div></div><div className={styles.holdings}>{accounts.map(a=><div className={styles.holding} key={a.id}><span className={styles.symbol}><IconBuildingBank size={16}/></span><div className={styles.holdingName}>{a.name}</div><div className={styles.holdingValue}><strong>{a.holdings.length} holdings</strong><small>{a.owner}</small></div></div>)}</div></section><section className={`${styles.panel} ${styles.transactionsPanel}`}><Heading id="transactions-title" title="Recent spending" href={`${basePath}/cash-flow`} action="View cash flow"/><div className={styles.transactions}>{entries.map(e=><div className={styles.transaction} key={e.id}><span className={styles.transactionIcon}><IconReceipt size={18}/></span><div className={styles.transactionName}><strong>{e.description}</strong><span>{e.category} · {e.date}</span></div><span className={styles.outgoing}>−{money.format(e.amount)}</span></div>)}</div></section></div></div>}
-function Stat({label,value,detail}:{label:string;value:string;detail:string}){return <div className={styles.summaryStat}><span>{label}</span><strong>{value}</strong><small>{detail}</small></div>}
+
+import {
+  IconArrowRight,
+  IconArrowUpRight,
+  IconBuildingBank,
+  IconCalendar,
+  IconReceipt,
+  IconShieldCheck,
+  IconWallet,
+} from "@tabler/icons-react";
+import Link from "next/link";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  Cell,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+
+import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
+import {
+  categoryActual,
+  totalIncome,
+  totalPlanned,
+  totalSpending,
+  type BudgetMonth,
+} from "@/lib/finance";
+import { costFor, type InvestmentAccount } from "@/lib/investmentData";
+
+import styles from "./DashboardOverview.module.css";
+
+const chartColors = ["#000080", "#72998a", "#d4af37", "#9abfd8", "#5e7b72", "#cfac87"];
+
+type DashboardProps = {
+  budget: BudgetMonth;
+  accounts: InvestmentAccount[];
+  basePath?: string;
+};
+
+function SectionHeading({ title, href, action, id }: { title: string; href: string; action: string; id?: string }) {
+  return (
+    <div className={styles.sectionHeading}>
+      <h3 id={id}>{title}</h3>
+      <Link className={styles.textLink} href={href}>
+        {action}
+        <IconArrowRight size={15} aria-hidden="true" />
+      </Link>
+    </div>
+  );
+}
+
+function buildCashFlowSeries(budget: BudgetMonth) {
+  const events = [
+    ...budget.incomeEntries.map((entry) => ({ date: entry.date, income: entry.amount, spending: 0 })),
+    ...budget.categories.flatMap((category) =>
+      category.purchases.map((purchase) => ({ date: purchase.date, income: 0, spending: purchase.amount })),
+    ),
+  ].sort((a, b) => a.date.localeCompare(b.date));
+
+  let income = 0;
+  let spending = 0;
+  const byDate = new Map<string, { income: number; spending: number }>();
+
+  for (const event of events) {
+    income += event.income;
+    spending += event.spending;
+    byDate.set(event.date, { income, spending });
+  }
+
+  return Array.from(byDate, ([date, values]) => ({
+    day: new Date(`${date}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+    ...values,
+  }));
+}
+
+function MoneyTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ name: string; value: number; color: string }>; label?: string }) {
+  const money = useCurrencyFormatter();
+  if (!active || !payload?.length) return null;
+  return (
+    <div className={styles.chartTooltip}>
+      <span>{label}</span>
+      {payload.map((item) => (
+        <div key={item.name}>
+          <i style={{ background: item.color }} />
+          <small>{item.name}</small>
+          <strong>{money.format(item.value)}</strong>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function DashboardOverview({ budget, accounts, basePath = "" }: DashboardProps) {
+  const money = useCurrencyFormatter();
+  const income = totalIncome(budget);
+  const spending = totalSpending(budget);
+  const planned = totalPlanned(budget);
+  const cashAvailable = income - spending;
+  const invested = accounts.reduce(
+    (sum, account) => sum + account.holdings.reduce((accountTotal, holding) => accountTotal + costFor(holding), 0),
+    0,
+  );
+  const position = cashAvailable + invested;
+  const budgetUsed = planned ? Math.min((spending / planned) * 100, 100) : 0;
+  const savingsRate = income ? (cashAvailable / income) * 100 : 0;
+  const cashFlowSeries = buildCashFlowSeries(budget);
+  const categories = budget.categories
+    .map((category, index) => ({
+      name: category.name,
+      value: categoryActual(category),
+      planned: category.plannedAmount,
+      color: chartColors[index % chartColors.length],
+    }))
+    .filter((category) => category.value > 0)
+    .sort((a, b) => b.value - a.value);
+  const activity = [
+    ...budget.incomeEntries.map((entry) => ({
+      id: entry.id,
+      name: entry.source,
+      meta: `${entry.owner} · ${entry.date}`,
+      amount: entry.amount,
+      incoming: true,
+    })),
+    ...budget.categories.flatMap((category) =>
+      category.purchases.map((purchase) => ({
+        id: purchase.id,
+        name: purchase.description,
+        meta: `${category.name} · ${purchase.date}`,
+        amount: purchase.amount,
+        incoming: false,
+      })),
+    ),
+  ]
+    .sort((a, b) => b.meta.slice(-10).localeCompare(a.meta.slice(-10)))
+    .slice(0, 5);
+
+  return (
+    <div className={styles.dashboard}>
+      <section className={styles.intro} aria-labelledby="dashboard-title">
+        <div>
+          <h2 id="dashboard-title">Your financial home</h2>
+          <p>{basePath ? "A complete household view using sample data." : "Income, spending, and investments—together in one calm view."}</p>
+        </div>
+        <div className={styles.periodBadge}>
+          <IconCalendar size={16} aria-hidden="true" />
+          {budget.month}
+        </div>
+      </section>
+
+      <div className={styles.cockpit}>
+        <section className={styles.positionCard} aria-labelledby="position-title">
+          <div className={styles.positionTopline}>
+            <span id="position-title">Household position</span>
+            <IconShieldCheck size={20} aria-hidden="true" />
+          </div>
+          <p className={styles.positionValue}>{money.format(position)}</p>
+          <div className={styles.positionChange}>
+            <IconArrowUpRight size={15} aria-hidden="true" />
+            <span>{savingsRate.toFixed(1)}% retained this month</span>
+          </div>
+          <div className={styles.positionBreakdown}>
+            <div>
+              <span>Available cash</span>
+              <strong>{money.format(cashAvailable)}</strong>
+            </div>
+            <div>
+              <span>Invested basis</span>
+              <strong>{money.format(invested)}</strong>
+            </div>
+          </div>
+          <Link className={styles.positionAction} href={`${basePath}/investments`}>
+            View portfolio <IconArrowRight size={15} aria-hidden="true" />
+          </Link>
+        </section>
+
+        <section className={styles.cashFlowPanel} aria-labelledby="cash-flow-title">
+          <div className={styles.chartHeading}>
+            <div>
+              <h3 id="cash-flow-title">Monthly cash flow</h3>
+              <p>How money is moving through the household</p>
+            </div>
+            <div className={styles.legend} aria-hidden="true">
+              <span><i className={styles.incomeDot} />Income</span>
+              <span><i className={styles.spendingDot} />Spending</span>
+            </div>
+          </div>
+          <div className={styles.cashFlowChart} role="img" aria-label={`Cumulative income is ${money.format(income)} and spending is ${money.format(spending)} for ${budget.month}.`}>
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={cashFlowSeries} margin={{ top: 14, right: 6, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="incomeFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#000080" stopOpacity={0.16} />
+                    <stop offset="100%" stopColor="#000080" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid vertical={false} stroke="rgba(29, 42, 54, 0.08)" strokeDasharray="3 5" />
+                <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: "#75807b", fontSize: 10 }} minTickGap={24} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: "#8a938f", fontSize: 10 }} tickFormatter={(value) => `$${Math.round(value / 1000)}k`} width={42} />
+                <Tooltip content={<MoneyTooltip />} cursor={{ stroke: "rgba(0, 0, 128, 0.18)" }} />
+                <Area type="monotone" dataKey="income" name="Income" stroke="#000080" strokeWidth={2.4} fill="url(#incomeFill)" isAnimationActive={false} />
+                <Area type="monotone" dataKey="spending" name="Spending" stroke="#72998a" strokeWidth={2.2} fill="transparent" isAnimationActive={false} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+          <div className={styles.chartStats}>
+            <div><span>Income</span><strong>{money.format(income)}</strong></div>
+            <div><span>Spent</span><strong>{money.format(spending)}</strong></div>
+            <div><span>Net cash flow</span><strong className={cashAvailable >= 0 ? styles.positive : styles.negative}>{money.format(cashAvailable)}</strong></div>
+          </div>
+        </section>
+
+        <section className={styles.activityPanel} aria-labelledby="activity-title">
+          <SectionHeading id="activity-title" title="Transactions" href={`${basePath}/cash-flow`} action="See all" />
+          <div className={styles.activityList}>
+            {activity.map((item) => (
+              <div className={styles.activityRow} key={item.id}>
+                <span className={item.incoming ? styles.incomeIcon : styles.expenseIcon} aria-hidden="true">
+                  {item.incoming ? <IconWallet size={17} /> : <IconReceipt size={17} />}
+                </span>
+                <div className={styles.activityCopy}>
+                  <strong>{item.name}</strong>
+                  <span>{item.meta}</span>
+                </div>
+                <span className={item.incoming ? styles.incoming : styles.outgoing}>
+                  {item.incoming ? "+" : "−"}{money.format(item.amount)}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      <div className={styles.lowerGrid}>
+        <section className={styles.budgetPanel} aria-labelledby="budget-title">
+          <SectionHeading id="budget-title" title="Spending plan" href={`${basePath}/budget`} action="Open budget" />
+          <div className={styles.budgetContent}>
+            <div className={styles.donutWrap} role="img" aria-label={`${budgetUsed.toFixed(0)} percent of the monthly budget has been used.`}>
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie data={categories} dataKey="value" nameKey="name" innerRadius="67%" outerRadius="91%" paddingAngle={2} stroke="none" isAnimationActive={false}>
+                    {categories.map((category) => <Cell key={category.name} fill={category.color} />)}
+                  </Pie>
+                  <Tooltip content={<MoneyTooltip />} />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className={styles.donutCenter}><strong>{budgetUsed.toFixed(0)}%</strong><span>used</span></div>
+            </div>
+            <div className={styles.categoryList}>
+              {categories.slice(0, 5).map((category) => (
+                <div className={styles.categoryRow} key={category.name}>
+                  <i style={{ background: category.color }} />
+                  <span>{category.name}</span>
+                  <strong>{money.format(category.value)}</strong>
+                  <small>of {money.format(category.planned)}</small>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.accountsPanel} aria-labelledby="accounts-title">
+          <SectionHeading id="accounts-title" title="Investment accounts" href={`${basePath}/investments`} action="Manage" />
+          <div className={styles.accountSummary}>
+            <div><span>Amount invested</span><strong>{money.format(invested)}</strong></div>
+            <span className={styles.accountCount}>{accounts.length} accounts</span>
+          </div>
+          <div className={styles.accountList}>
+            {accounts.map((account) => {
+              const value = account.holdings.reduce((sum, holding) => sum + costFor(holding), 0);
+              return (
+                <div className={styles.accountRow} key={account.id}>
+                  <span className={styles.bankIcon}><IconBuildingBank size={18} aria-hidden="true" /></span>
+                  <div><strong>{account.name}</strong><span>{account.owner} · {account.holdings.length} holdings</span></div>
+                  <strong>{money.format(value)}</strong>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+}

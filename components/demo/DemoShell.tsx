@@ -62,7 +62,7 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
       </aside>
       <div className={styles.content}>
         <header>
-          <span className={styles.mobileMark} aria-label="BearVault">
+          <span className={styles.mobileMark} role="img" aria-label="BearVault">
             <BearVaultLogo compact />
           </span>
           <div className={styles.headerCopy}>
