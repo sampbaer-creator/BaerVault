@@ -2,17 +2,32 @@
 name: BearVault
 description: A calm, protected household-finance cockpit built for immediate legibility.
 colors:
-  protected-navy: "#15243a"
-  vault-green: "#315f50"
+  protected-navy: "#000080"
+  royal-blue: "#000080"
+  classic-gold: "#d4af37"
+  bright-gold: "#e8b00f"
+  light-gold: "#f2e7c9"
+  palm-vermilion: "#e62e0a"
+  palm-olive: "#899260"
+  palm-canvas: "#e4e8d1"
+  coffee-cream: "#cfac87"
+  coffee-espresso: "#302016"
+  coffee-teal: "#4f8389"
+  powder-canvas: "#e0e4e8"
+  powder-blue: "#9abfd8"
+  powder-burgundy: "#5e191a"
+  water-depth: "#1f2e37"
+  water-slate: "#5c727b"
+  water-amber: "#f2b968"
   growth-green: "#267056"
   soft-green: "#e8f1ed"
-  warm-bronze: "#a87546"
-  accent-blue: "#365d81"
-  accent-bronze: "#8a623d"
+  warm-bronze: "#d4af37"
+  accent-blue: "#000080"
+  accent-bronze: "#d4af37"
   destructive: "#a34444"
   graphite: "#161b22"
   muted-ink: "#66736d"
-  canvas: "#f3f5f4"
+  canvas: "#f8f7f2"
   surface: "#ffffff"
   border: "#dfe5e1"
   hover: "#f1f3f5"
@@ -86,9 +101,9 @@ components:
 
 ## Overview
 
-**Creative North Star: "The Protected Financial Horizon"**
+**Creative North Star: "The Refracted Vault"**
 
-BearVault is a premium, calm, and financially serious household cockpit. Its visual hierarchy makes one protected financial horizon—the household's current position and trend—immediately legible, then lets monthly movement, support measures, budget, investments, and activity unfold with progressively quieter emphasis.
+BearVault is a premium, calm, and financially serious household operating system. Deep navy provides architectural authority, lilac-white keeps the workspace clear, and restrained vault green identifies progress and healthy financial movement. Selective Liquid Glass gives navigation and high-value controls a polished, tactile material while financial records remain opaque and immediately legible.
 
 The system combines the stability of deep navy and graphite with muted green reassurance and rare warm bronze categorization. Opaque precision panels carry detailed information; selective translucent glass belongs only on the dominant net-worth plane and compact controls. The result is modern and polished without drifting into generic admin, crypto, trading, or AI-SaaS styling.
 

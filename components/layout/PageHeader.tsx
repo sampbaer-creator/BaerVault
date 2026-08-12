@@ -1,5 +1,6 @@
 import { UserButton } from "@clerk/nextjs";
 
+import { BearVaultLogo } from "@/components/brand/BearVaultLogo";
 import styles from "./AppShell.module.css";
 
 type PageHeaderProps = {
@@ -18,8 +19,11 @@ export function PageHeader({ title }: PageHeaderProps) {
       </header>
 
       <header className={styles.mobileHeader}>
-        <span className={styles.mobileBrand}>BearVault</span>
-        <UserButton />
+        <span className={styles.mobileMark} aria-label="BearVault">
+          <BearVaultLogo compact />
+        </span>
+        <strong className={styles.mobileTitle}>{title}</strong>
+        <span className={styles.mobileProfile}><UserButton /></span>
       </header>
     </>
   );

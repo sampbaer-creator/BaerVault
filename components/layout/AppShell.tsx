@@ -7,6 +7,7 @@ import { pageTitles } from "./navigation";
 import { PageHeader } from "./PageHeader";
 import { Sidebar } from "./Sidebar";
 import styles from "./AppShell.module.css";
+import { LiquidGLRuntime } from "@/components/shared/LiquidGLRuntime";
 
 type AppShellProps = {
   children: React.ReactNode;
@@ -18,6 +19,7 @@ export function AppShell({ children }: AppShellProps) {
 
   return (
     <div className={styles.shell}>
+      <LiquidGLRuntime />
       <Sidebar pathname={pathname} />
       <div className={styles.contentColumn}>
         <PageHeader title={title} />
