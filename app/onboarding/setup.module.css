@@ -196,9 +196,49 @@
   }
 }
 @media (max-width: 520px) {
-  .page { align-items: start; padding: max(18px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); }
+  .page {
+    display: block;
+    min-height: 100dvh;
+    overflow-x: clip;
+    overflow-y: auto;
+    padding: max(10px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(28px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+    -webkit-overflow-scrolling: touch;
+  }
+  .card {
+    width: 100%;
+    min-height: calc(100dvh - max(20px, env(safe-area-inset-top)) - max(36px, env(safe-area-inset-bottom)));
+    padding: 22px 14px 28px;
+    border-radius: 16px;
+    box-shadow: 0 12px 34px rgb(17 20 57 / 12%);
+    backdrop-filter: none;
+  }
   .progress { gap: 6px; margin-bottom: 26px; }
   .progress i { width: clamp(12px, 5vw, 24px); }
   .progress span { font-size: 10px; }
+  .card h1 { font-size: clamp(30px, 9vw, 38px); line-height: 1.08; }
+  .intro { margin: 12px auto 20px; font-size: 14px; line-height: 1.5; }
+  .clerkPanel { display: block; width: 100%; min-width: 0; margin-top: 18px; }
+  .clerkPanel :global(.cl-rootBox),
+  .clerkPanel :global(.cl-organizationList-root),
+  .clerkPanel :global(.cl-cardBox),
+  .clerkPanel :global(.cl-card),
+  .clerkPanel :global(.cl-scrollBox) {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+  .clerkPanel :global(.cl-cardBox) { box-shadow: none !important; }
+  .clerkPanel :global(.cl-footer) { padding-inline: 8px; }
 }
-@media (max-width: 23rem) { .progress i { display: none; } }
+@media (max-width: 23rem) {
+  .progress i { display: none; }
+  .progress { justify-content: space-between; }
+  .card { padding-inline: 10px; }
+}
+
+@media (max-height: 700px) and (max-width: 520px) {
+  .progress { margin-bottom: 16px; }
+  .icon { width: 42px; height: 42px; margin-bottom: 12px; }
+  .eyebrow { display: none; }
+  .note { margin-top: 12px; }
+}

@@ -28,15 +28,21 @@ export default function Home() {
             flow, budgets, and investments—without the spreadsheet sprawl.
           </p>
           <div className={styles.heroActions}>
-            <LiquidGlassLink href="/sign-up">
-              Create your free account <IconArrowRight size={18} />
-            </LiquidGlassLink>
-            <LiquidGlassLink href="/sign-in" tone="clear">
-              I already have an account
-            </LiquidGlassLink>
-            <LiquidGlassLink href="/demo" tone="clear">
-              Try demo
-            </LiquidGlassLink>
+            <div className={styles.actionPrimary}>
+              <LiquidGlassLink href="/sign-up">
+                Create your free account <IconArrowRight size={18} />
+              </LiquidGlassLink>
+            </div>
+            <div className={styles.actionExisting}>
+              <LiquidGlassLink href="/sign-in" tone="clear">
+                I already have an account
+              </LiquidGlassLink>
+            </div>
+            <div className={styles.actionDemo}>
+              <LiquidGlassLink href="/demo" tone="clear">
+                Try demo
+              </LiquidGlassLink>
+            </div>
           </div>
           <p className={styles.securityNote}>
             <IconLock size={15} aria-hidden="true" /> Secure sign-in with Google and MFA

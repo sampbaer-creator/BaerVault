@@ -10,6 +10,7 @@ import {
   IconWallet,
 } from "@tabler/icons-react";
 import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
 import {
   Area,
   AreaChart,
@@ -31,7 +32,7 @@ import {
   totalSpending,
   type BudgetMonth,
 } from "@/lib/finance";
-import { costFor, type InvestmentAccount } from "@/lib/investmentData";
+import { valueFor, type InvestmentAccount } from "@/lib/investmentData";
 
 import styles from "./DashboardOverview.module.css";
 
@@ -98,15 +99,50 @@ function MoneyTooltip({ active, payload, label }: { active?: boolean; payload?: 
 
 export function DashboardOverview({ budget, accounts, basePath = "" }: DashboardProps) {
   const money = useCurrencyFormatter();
+  const [marketPrices, setMarketPrices] = useState<Record<string, number>>({});
+  const [marketSettled, setMarketSettled] = useState(false);
+  const symbols = useMemo(
+    () => [...new Set(accounts.flatMap((account) => account.holdings.map((holding) => holding.symbol)))],
+    [accounts],
+  );
+
+  useEffect(() => {
+    if (!symbols.length || basePath) return;
+    const controller = new AbortController();
+    setMarketSettled(false);
+    Promise.allSettled(
+      symbols.map(async (symbol) => {
+        const response = await fetch(`/api/market-data?symbol=${encodeURIComponent(symbol)}&range=1M`, {
+          signal: controller.signal,
+        });
+        const data = await response.json();
+        if (!response.ok || !Number.isFinite(data.price)) throw new Error(data.error ?? "Market price unavailable");
+        return [symbol, Number(data.price)] as const;
+      }),
+    ).then((results) => {
+      if (controller.signal.aborted) return;
+      const prices = results.flatMap((result) => result.status === "fulfilled" ? [result.value] : []);
+      setMarketPrices(Object.fromEntries(prices));
+      setMarketSettled(true);
+    });
+    return () => controller.abort();
+  }, [basePath, symbols]);
+
   const income = totalIncome(budget);
   const spending = totalSpending(budget);
   const planned = totalPlanned(budget);
   const cashAvailable = income - spending;
-  const invested = accounts.reduce(
-    (sum, account) => sum + account.holdings.reduce((accountTotal, holding) => accountTotal + costFor(holding), 0),
+  const portfolioValue = accounts.reduce(
+    (sum, account) => sum + account.holdings.reduce(
+      (accountTotal, holding) => accountTotal + valueFor(holding, marketPrices[holding.symbol] ?? holding.fallbackPrice),
+      0,
+    ),
     0,
   );
-  const position = cashAvailable + invested;
+  const waitingForMarket = !basePath && symbols.length > 0 && !marketSettled;
+  const marketUnavailable = !basePath && marketSettled && symbols.some((symbol) => marketPrices[symbol] === undefined);
+  const portfolioDisplay = waitingForMarket ? "Updating…" : marketUnavailable ? "Unavailable" : money.format(portfolioValue);
+  const position = cashAvailable + portfolioValue;
   const budgetUsed = planned ? Math.min((spending / planned) * 100, 100) : 0;
   const savingsRate = income ? (cashAvailable / income) * 100 : 0;
   const cashFlowSeries = buildCashFlowSeries(budget);
@@ -156,10 +192,10 @@ export function DashboardOverview({ budget, accounts, basePath = "" }: Dashboard
       <div className={styles.cockpit}>
         <section className={styles.positionCard} aria-labelledby="position-title">
           <div className={styles.positionTopline}>
-            <span id="position-title">Household position</span>
+            <span id="position-title">Total net worth</span>
             <IconShieldCheck size={20} aria-hidden="true" />
           </div>
-          <p className={styles.positionValue}>{money.format(position)}</p>
+          <p className={styles.positionValue}>{waitingForMarket ? "Updating…" : marketUnavailable ? "Unavailable" : money.format(position)}</p>
           <div className={styles.positionChange}>
             <IconArrowUpRight size={15} aria-hidden="true" />
             <span>{savingsRate.toFixed(1)}% retained this month</span>
@@ -170,8 +206,8 @@ export function DashboardOverview({ budget, accounts, basePath = "" }: Dashboard
               <strong>{money.format(cashAvailable)}</strong>
             </div>
             <div>
-              <span>Invested basis</span>
-              <strong>{money.format(invested)}</strong>
+              <span>Portfolio value</span>
+              <strong>{portfolioDisplay}</strong>
             </div>
           </div>
           <Link className={styles.positionAction} href={`${basePath}/investments`}>
@@ -267,17 +303,21 @@ export function DashboardOverview({ budget, accounts, basePath = "" }: Dashboard
         <section className={styles.accountsPanel} aria-labelledby="accounts-title">
           <SectionHeading id="accounts-title" title="Investment accounts" href={`${basePath}/investments`} action="Manage" />
           <div className={styles.accountSummary}>
-            <div><span>Amount invested</span><strong>{money.format(invested)}</strong></div>
+            <div><span>Current portfolio value</span><strong>{portfolioDisplay}</strong></div>
             <span className={styles.accountCount}>{accounts.length} accounts</span>
           </div>
           <div className={styles.accountList}>
             {accounts.map((account) => {
-              const value = account.holdings.reduce((sum, holding) => sum + costFor(holding), 0);
+              const value = account.holdings.reduce(
+                (sum, holding) => sum + valueFor(holding, marketPrices[holding.symbol] ?? holding.fallbackPrice),
+                0,
+              );
+              const accountUnavailable = !basePath && marketSettled && account.holdings.some((holding) => marketPrices[holding.symbol] === undefined);
               return (
                 <div className={styles.accountRow} key={account.id}>
                   <span className={styles.bankIcon}><IconBuildingBank size={18} aria-hidden="true" /></span>
                   <div><strong>{account.name}</strong><span>{account.owner} · {account.holdings.length} holdings</span></div>
-                  <strong>{money.format(value)}</strong>
+                  <strong>{waitingForMarket ? "Updating…" : accountUnavailable ? "Unavailable" : money.format(value)}</strong>
                 </div>
               );
             })}
