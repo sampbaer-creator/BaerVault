@@ -490,6 +490,11 @@
   }
 }
 @media (max-width: 47.999rem) {
+  .drawer { width: 100%; max-width: 100%; }
+  .drawerBody { min-width: 0; overflow-x: hidden; }
+  .incomeForm { width: 100%; min-width: 0; max-width: 100%; }
+  .incomeForm input,
+  .incomeForm select { min-width: 0; font-size: 16px; }
   .cashFlow {
     margin: -4px -2px 0;
   }

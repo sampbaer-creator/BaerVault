@@ -232,6 +232,11 @@
   font-size: 12px;
 }
 @media (max-width: 48rem) {
+  .drawer { width: 100%; max-width: 100%; }
+  .drawerBody { min-width: 0; overflow-x: hidden; padding: 18px 16px max(24px, env(safe-area-inset-bottom)); }
+  .form { width: 100%; min-width: 0; }
+  .form input,
+  .form select { min-width: 0; font-size: 16px; }
   .intro {
     align-items: flex-start;
   }
@@ -258,4 +263,5 @@
   .formRow {
     grid-template-columns: 1fr;
   }
+  .submit { width: 100%; min-height: 48px; }
 }

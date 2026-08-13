@@ -504,6 +504,13 @@
   }
 }
 @media (max-width: 47.999rem) {
+  .drawer { width: 100%; max-width: 100%; }
+  .drawerBody { min-width: 0; overflow-x: hidden; }
+  .purchaseForm,
+  .categoryForm { width: 100%; min-width: 0; max-width: 100%; }
+  .purchaseForm input,
+  .categoryForm input,
+  .inlineEdit input { min-width: 0; font-size: 16px; }
   .budget {
     margin: -4px -2px 0;
   }

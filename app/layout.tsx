@@ -7,6 +7,7 @@ import { Manrope } from "next/font/google";
 
 import "./globals.css";
 import { PreferencesProvider } from "@/components/preferences/PreferencesProvider";
+import { MobileViewportRuntime } from "@/components/shared/MobileViewportRuntime";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -40,6 +41,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <ColorSchemeScript defaultColorScheme="light" />
       </head>
       <body>
+        <MobileViewportRuntime />
         <ClerkProvider>
           <MantineProvider defaultColorScheme="auto"><PreferencesProvider>{children}</PreferencesProvider></MantineProvider>
         </ClerkProvider>

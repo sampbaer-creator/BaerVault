@@ -483,6 +483,11 @@
   }
 }
 @media (max-width: 47.999rem) {
+  .drawer { width: 100%; max-width: 100%; }
+  .drawerBody { min-width: 0; overflow-x: hidden; }
+  .holdingForm { width: 100%; min-width: 0; max-width: 100%; }
+  .holdingForm input,
+  .holdingForm select { min-width: 0; font-size: 16px; }
   .workspace {
     margin: -4px -2px 0;
   }
