@@ -44,6 +44,17 @@ export default function Home() {
               </LiquidGlassLink>
             </div>
           </div>
+          <div className={styles.mobileHeroActions} aria-label="Get started">
+            <Link className={styles.mobilePrimaryAction} href="/sign-up">
+              Create your free account <IconArrowRight size={18} aria-hidden="true" />
+            </Link>
+            <Link className={styles.mobileSecondaryAction} href="/sign-in">
+              I already have an account
+            </Link>
+            <Link className={styles.mobileSecondaryAction} href="/demo">
+              Try demo
+            </Link>
+          </div>
           <p className={styles.securityNote}>
             <IconLock size={15} aria-hidden="true" /> Secure sign-in with Google and MFA
           </p>
