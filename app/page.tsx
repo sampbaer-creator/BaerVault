@@ -12,6 +12,9 @@ export default function Home() {
         <Link className={styles.brand} href="/">
           <BearVaultLogo />
         </Link>
+        <Link className={styles.mobileSignIn} href="/sign-in">
+          Sign in
+        </Link>
       </nav>
 
       <section className={styles.hero}>
@@ -36,7 +39,7 @@ export default function Home() {
             </LiquidGlassLink>
           </div>
           <p className={styles.securityNote}>
-            <IconLock size={15} /> Secure sign-in with Google and MFA
+            <IconLock size={15} aria-hidden="true" /> Secure sign-in with Google and MFA
           </p>
         </div>
 
@@ -46,7 +49,7 @@ export default function Home() {
         >
           <div className={styles.previewHeader}>
             <span className={styles.previewBrand}>
-              <IconChartPie size={18} /> Household overview
+              <IconChartPie size={18} aria-hidden="true" /> Household overview
             </span>
             <span className={styles.livePill}>This month</span>
           </div>

@@ -39,6 +39,9 @@
 .brand {
   font-size: 20px;
 }
+.mobileSignIn {
+  display: none;
+}
 .brandMark {
   display: grid;
   width: 34px;
@@ -334,24 +337,68 @@
   }
 }
 @media (max-width: 560px) {
+  .page {
+    background:
+      radial-gradient(circle at 88% 12%, rgb(96 106 207 / 24%), transparent 20rem),
+      linear-gradient(180deg, #fbfbfd 0%, #f3f2f8 100%);
+  }
   .nav {
     width: min(100% - 28px, 1180px);
+    height: auto;
+    min-height: calc(68px + env(safe-area-inset-top));
+    padding-top: env(safe-area-inset-top);
   }
-  .navCta {
-    display: none;
+  .mobileSignIn {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 4px 8px 14px;
+    color: #000060;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
   }
   .hero {
     width: min(100% - 36px, 1180px);
     min-height: auto;
-    gap: 52px;
-    padding: 56px 0 70px;
+    gap: 38px;
+    padding: 34px 0 56px;
+  }
+  .heroCopy {
+    text-align: center;
+  }
+  .eyebrow {
+    max-width: 28ch;
+    margin: 0 auto 14px;
+    font-size: 11px;
+    line-height: 1.45;
   }
   .hero h1 {
-    font-size: 48px;
+    max-width: 11ch;
+    margin-inline: auto;
+    font-size: clamp(38px, 11.5vw, 48px);
+    letter-spacing: -0.04em;
+    line-height: 1.01;
+    text-wrap: balance;
+  }
+  .lede {
+    margin: 20px auto 24px;
+    font-size: 16px;
+    line-height: 1.55;
   }
   .heroActions {
     align-items: stretch;
     flex-direction: column;
+    gap: 9px;
+  }
+  .heroActions > * {
+    width: 100%;
+  }
+  .heroActions > * :global(a) {
+    width: 100%;
+    min-height: 50px;
+    white-space: normal;
   }
   .primaryCta,
   .secondaryCta {
@@ -359,13 +406,33 @@
     text-align: center;
   }
   .preview {
-    padding: 14px;
+    padding: 12px;
+    border-radius: 16px;
+    box-shadow: 0 18px 48px rgb(17 20 57 / 14%);
   }
   .metrics {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .metrics div {
+    min-width: 0;
+    gap: 5px;
+    padding: 12px 8px;
+    text-align: center;
+  }
+  .metrics strong {
+    font-size: clamp(12px, 3.8vw, 15px);
+    font-variant-numeric: tabular-nums;
   }
   .chart {
-    height: 100px;
+    height: 88px;
+    gap: 6px;
+    padding: 16px 12px 0;
+  }
+  .securityNote {
+    justify-content: center;
+    margin-top: 16px;
+    font-size: 12px;
   }
 }
 
@@ -373,4 +440,17 @@
   .preview {
     transform: none;
   }
+}
+
+@media (max-width: 560px) {
+  .balanceCard { padding: 20px; }
+  .balanceCard strong { font-size: clamp(27px, 9vw, 34px); }
+  .trustStrip { width: min(100% - 36px, 1180px); }
+  .trustStrip div { padding-inline: 0; border-left: 0; border-top: 1px solid #dce4dd; }
+}
+@media (max-width: 23rem) {
+  .hero, .trustStrip { width: min(100% - 24px, 1180px); }
+  .previewHeader { align-items: flex-start; gap: 8px; }
+  .livePill { padding-inline: 8px; font-size: 10px; }
+  .metrics span { font-size: 10px; }
 }

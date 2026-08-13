@@ -562,3 +562,31 @@ button:active {
     transform: none;
   }
 }
+
+/* Mobile foundation: safe sizing, iOS form behavior, and cheaper narrow-screen paint. */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+img, picture, video, canvas, svg { max-width: 100%; }
+img, video { height: auto; }
+main, section, article, form, fieldset, [class*="grid"], [class*="row"] { min-width: 0; }
+p, h1, h2, h3, h4, label, legend { overflow-wrap: anywhere; }
+@media (max-width: 47.999rem) {
+  :root { --space-page: clamp(14px, 4.5vw, 22px); --control-height: 44px; }
+  body { min-height: 100dvh; background-attachment: scroll; }
+  body::before { display: none; }
+  button, [role="button"], input, select, textarea { min-height: 44px; }
+  input, select, textarea { max-width: 100%; font-size: 16px; }
+  button { max-width: 100%; white-space: normal; }
+  .mantine-Modal-inner, .mantine-Drawer-inner { padding-inline: max(10px, env(safe-area-inset-left)); }
+}
+
+@media (display-mode: standalone) {
+  html,
+  body {
+    min-height: 100dvh;
+    overscroll-behavior-y: none;
+  }
+
+  body { -webkit-touch-callout: none; }
+  input,
+  textarea { -webkit-touch-callout: default; }
+}

@@ -5,6 +5,7 @@ import {
   IconChartPie,
   IconHome,
   IconLayoutDashboard,
+  IconDots,
   IconPigMoney,
   IconSettings,
   IconTargetArrow,
@@ -12,6 +13,8 @@ import {
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { Drawer } from "@mantine/core";
 
 import { BearVaultLogo } from "@/components/brand/BearVaultLogo";
 import styles from "./DemoShell.module.css";
@@ -27,8 +30,13 @@ const links = [
   ["/demo/settings", "Settings", IconSettings],
 ] as const;
 
+const mobileLinks = links.slice(0, 4);
+const moreLinks = links.slice(4);
+
 export function DemoShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [moreOpened, setMoreOpened] = useState(false);
+  const moreIsActive = moreLinks.some(([href]) => href === pathname);
   return (
     <div className={styles.shell}>
       <LiquidGLRuntime />
@@ -77,18 +85,53 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
         </header>
         <main>{children}</main>
       </div>
-      <nav className={styles.mobileNav}>
-        {links.map(([href, label, Icon]) => (
+      <nav className={styles.mobileNav} aria-label="Demo mobile navigation">
+        {mobileLinks.map(([href, label, Icon]) => (
           <Link
             key={href}
             href={href}
             className={pathname === href ? styles.active : undefined}
+            aria-current={pathname === href ? "page" : undefined}
           >
             <Icon size={19} />
             <small>{label}</small>
           </Link>
         ))}
+        <button
+          type="button"
+          className={moreIsActive ? styles.active : undefined}
+          onClick={() => setMoreOpened(true)}
+          aria-haspopup="dialog"
+          aria-expanded={moreOpened}
+          aria-label="Open more demo navigation options"
+        >
+          <IconDots size={20} aria-hidden="true" />
+          <small>More</small>
+        </button>
       </nav>
+      <Drawer
+        opened={moreOpened}
+        onClose={() => setMoreOpened(false)}
+        position="bottom"
+        size="auto"
+        radius="lg"
+        title="More"
+      >
+        <nav className={styles.drawerNav} aria-label="Additional demo navigation">
+          {moreLinks.map(([href, label, Icon]) => (
+            <Link
+              key={href}
+              href={href}
+              className={pathname === href ? styles.active : undefined}
+              aria-current={pathname === href ? "page" : undefined}
+              onClick={() => setMoreOpened(false)}
+            >
+              <Icon size={22} aria-hidden="true" />
+              {label}
+            </Link>
+          ))}
+        </nav>
+      </Drawer>
     </div>
   );
 }

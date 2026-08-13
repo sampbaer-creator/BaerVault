@@ -203,7 +203,7 @@
     top: 0;
     z-index: 15;
     height: 72px;
-    padding: max(12px, env(safe-area-inset-top)) 16px 10px;
+    padding: max(12px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left));
     border-bottom: 0;
   }
   .mobileMark {
@@ -228,16 +228,14 @@
     display: none;
   }
   .content main {
-    padding: 22px 14px calc(104px + env(safe-area-inset-bottom));
+    padding: 22px max(14px, env(safe-area-inset-right)) calc(108px + env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
   }
   .mobileNav {
     position: fixed;
-    inset: auto 12px max(10px, env(safe-area-inset-bottom));
+    inset: auto max(8px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
     z-index: 30;
     display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(68px, 1fr);
-    overflow-x: auto;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     padding: 6px 5px max(6px, env(safe-area-inset-bottom));
     border: 1px solid var(--glass-border);
     border-radius: 22px;
@@ -246,9 +244,12 @@
       0 18px 44px rgb(17 20 57 / 16%),
       inset 0 1px 0 var(--glass-highlight);
     backdrop-filter: blur(28px) saturate(150%);
+    transition: opacity var(--motion-effect-fast) ease, transform var(--motion-spatial-fast) var(--ease-out);
   }
-  .mobileNav a {
+  .mobileNav a,
+  .mobileNav button {
     display: flex;
+    min-width: 0;
     min-height: 56px;
     flex-direction: column;
     align-items: center;
@@ -258,6 +259,13 @@
     color: var(--app-text-muted);
     text-decoration: none;
   }
+  .mobileNav button {
+    padding: 5px 2px;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+  .mobileNav button::before { display: none; }
   .mobileNav .active {
     color: var(--app-accent);
     background: var(--app-accent-soft);
@@ -270,6 +278,14 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+  .shell:has(input:focus, textarea:focus, select:focus) .mobileNav {
+    opacity: 0;
+    transform: translateY(calc(100% + 32px));
+    pointer-events: none;
+  }
+  .drawerNav { display: grid; gap: 4px; padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+  .drawerNav a { display: flex; min-height: 52px; align-items: center; gap: 14px; padding: 12px 14px; border-radius: 12px; color: var(--app-text-muted); font-weight: 650; text-decoration: none; }
+  .drawerNav .active { color: var(--app-accent); background: var(--app-accent-soft); }
 }
 @media (prefers-reduced-transparency: reduce) {
   .sidebarGlass,

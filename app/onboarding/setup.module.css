@@ -195,3 +195,10 @@
     min-height: 62px;
   }
 }
+@media (max-width: 520px) {
+  .page { align-items: start; padding: max(18px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); }
+  .progress { gap: 6px; margin-bottom: 26px; }
+  .progress i { width: clamp(12px, 5vw, 24px); }
+  .progress span { font-size: 10px; }
+}
+@media (max-width: 23rem) { .progress i { display: none; } }

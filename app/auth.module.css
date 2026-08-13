@@ -47,3 +47,20 @@
   font-size: 12px;
   text-align: center;
 }
+
+@media (max-width: 47.999rem) {
+  .page {
+    justify-content: flex-start;
+    padding: max(82px, calc(env(safe-area-inset-top) + 64px)) max(14px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+  }
+
+  .brand {
+    top: max(22px, env(safe-area-inset-top));
+    left: max(18px, env(safe-area-inset-left));
+  }
+
+  .authCard {
+    width: 100%;
+    min-width: 0;
+  }
+}
