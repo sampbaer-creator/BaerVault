@@ -1,5 +1,6 @@
 .page {
   display: flex;
+  width: 100%;
   min-height: 100dvh;
   flex-direction: column;
   align-items: center;
@@ -31,6 +32,12 @@
 }
 .authCard {
   position: relative;
+  display: flex;
+  width: min(100%, 440px);
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  margin-inline: auto;
 }
 .step {
   margin: 0 0 10px;
@@ -51,6 +58,8 @@
 @media (max-width: 47.999rem) {
   .page {
     justify-content: flex-start;
+    overflow-x: hidden;
+    overflow-y: auto;
     padding: max(82px, calc(env(safe-area-inset-top) + 64px)) max(14px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
   }
 
@@ -62,5 +71,47 @@
   .authCard {
     width: 100%;
     min-width: 0;
+  }
+
+  .authCard :global(.cl-rootBox),
+  .authCard :global(.cl-signIn-root),
+  .authCard :global(.cl-signUp-root),
+  .authCard :global(.cl-cardBox),
+  .authCard :global(.cl-card),
+  .authCard :global(.cl-main),
+  .authCard :global(.cl-socialButtons),
+  .authCard :global(.cl-form),
+  .authCard :global(.cl-footer) {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin-inline: auto !important;
+  }
+
+  .authCard :global(.cl-cardBox),
+  .authCard :global(.cl-card) {
+    overflow: hidden;
+  }
+
+  .authCard :global(.cl-socialButtonsBlockButton),
+  .authCard :global(.cl-formButtonPrimary) {
+    display: flex !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    margin-inline: 0 !important;
+  }
+
+  .authCard :global(.cl-socialButtonsBlockButtonText) {
+    min-width: 0;
+    text-align: center;
+  }
+
+  .authCard :global(.cl-formFieldInput) {
+    width: 100%;
+    min-width: 0;
+    font-size: 16px !important;
   }
 }
