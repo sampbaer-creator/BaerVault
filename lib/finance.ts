@@ -3,6 +3,8 @@ export type Purchase = {
   amount: number;
   description: string;
   date: string;
+  accountId?: string | null;
+  accountName?: string | null;
 };
 
 export type BudgetCategory = {

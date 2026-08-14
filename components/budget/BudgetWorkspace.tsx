@@ -15,6 +15,7 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { FormEvent, useMemo, useState } from "react";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 import * as realActions from "@/app/(app)/budget/actions";
@@ -36,15 +37,33 @@ import {
 
 import styles from "./BudgetWorkspace.module.css";
 
-type PurchaseDraft = { amount: string; description: string; date: string };
+type BudgetAccountOption = {
+  id: string;
+  name: string;
+  institution: string;
+  type: string;
+};
+
+type PurchaseDraft = {
+  amount: string;
+  description: string;
+  date: string;
+  accountId: string;
+};
 const today = new Date().toISOString().slice(0, 10);
-const emptyPurchase: PurchaseDraft = { amount: "", description: "", date: today };
+const emptyPurchase: PurchaseDraft = {
+  amount: "",
+  description: "",
+  date: today,
+  accountId: "",
+};
 
 type BudgetActions=Pick<typeof realActions,"addCategoryAction"|"deleteBudgetCategoryAction"|"deleteBudgetEntryAction"|"saveBudgetEntryAction"|"updateBudgetCategoryAction">;
-export function BudgetWorkspace({ initialBudget, actions=realActions }: { initialBudget: BudgetMonth & { year: number; monthNumber: number };actions?:BudgetActions }) {
+export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActions }: { initialBudget: BudgetMonth & { year: number; monthNumber: number }; accounts?: BudgetAccountOption[]; actions?:BudgetActions }) {
   const currency=useCurrencyFormatter();
   const router = useRouter();
   const pathname = usePathname();
+  const accountsPath = pathname.startsWith("/demo") ? "/demo/accounts" : "/accounts";
   const isMobile = useMediaQuery("(max-width: 47.999rem)");
   const [categories, setCategories] = useState<BudgetCategory[]>(initialBudget.categories);
   const [error, setError] = useState("");
@@ -97,14 +116,16 @@ export function BudgetWorkspace({ initialBudget, actions=realActions }: { initia
     if (!selected || !amount || amount < 0 || !purchaseDraft.description.trim()) return;
     const previous = categories;
     const temporaryId = editingPurchaseId ?? "pending-new-entry";
+    const accountId = purchaseDraft.accountId || null;
+    const accountName = accounts.find((account) => account.id === accountId)?.name ?? null;
     updateSelected((category) => ({
       ...category,
       purchases: editingPurchaseId
-        ? category.purchases.map((purchase) => purchase.id === editingPurchaseId ? { ...purchase, amount, description: purchaseDraft.description.trim(), date: purchaseDraft.date } : purchase)
-        : [{ id: temporaryId, amount, description: purchaseDraft.description.trim(), date: purchaseDraft.date }, ...category.purchases],
+        ? category.purchases.map((purchase) => purchase.id === editingPurchaseId ? { ...purchase, amount, description: purchaseDraft.description.trim(), date: purchaseDraft.date, accountId, accountName } : purchase)
+        : [{ id: temporaryId, amount, description: purchaseDraft.description.trim(), date: purchaseDraft.date, accountId, accountName }, ...category.purchases],
     }));
     setSaving(true); setError("");
-    const result = await actions.saveBudgetEntryAction({ id: editingPurchaseId ?? undefined, categoryId: selected.id, description: purchaseDraft.description, amount, date: purchaseDraft.date });
+    const result = await actions.saveBudgetEntryAction({ id: editingPurchaseId ?? undefined, categoryId: selected.id, description: purchaseDraft.description, amount, date: purchaseDraft.date, accountId });
     setSaving(false);
     if (!result.ok) { setCategories(previous); setError(result.error); return; }
     if (!editingPurchaseId) setCategories((current) => current.map((category) => category.id === selected.id ? { ...category, purchases: category.purchases.map((purchase) => purchase.id === temporaryId ? { ...purchase, id: result.data.id } : purchase) } : category));
@@ -115,7 +136,7 @@ export function BudgetWorkspace({ initialBudget, actions=realActions }: { initia
   }
 
   function editPurchase(purchase: Purchase) {
-    setPurchaseDraft({ amount: purchase.amount.toString(), description: purchase.description, date: purchase.date });
+    setPurchaseDraft({ amount: purchase.amount.toString(), description: purchase.description, date: purchase.date, accountId: purchase.accountId ?? "" });
     setEditingPurchaseId(purchase.id);
     setShowPurchaseForm(true);
   }
@@ -220,11 +241,13 @@ export function BudgetWorkspace({ initialBudget, actions=realActions }: { initia
           {showPurchaseForm && <form className={styles.purchaseForm} onSubmit={submitPurchase}>
             <div className={styles.amountField}><span>$</span><input aria-label="Purchase amount" placeholder="0.00" inputMode="decimal" min="0.01" step="0.01" required value={purchaseDraft.amount} onChange={(e) => setPurchaseDraft({ ...purchaseDraft, amount: e.target.value })} autoFocus /></div>
             <label>Description<input placeholder="Costco" required value={purchaseDraft.description} onChange={(e) => setPurchaseDraft({ ...purchaseDraft, description: e.target.value })} /></label>
+            <label>Paid from<select required={accounts.length > 0} disabled={accounts.length === 0} value={purchaseDraft.accountId} onChange={(e) => setPurchaseDraft({ ...purchaseDraft, accountId: e.target.value })}><option value="">{accounts.length ? "Select an account" : "No accounts added yet"}</option>{accounts.map((account) => <option value={account.id} key={account.id}>{account.name}{account.institution ? ` · ${account.institution}` : ""}</option>)}</select></label>
+            {accounts.length === 0 ? <p className={styles.accountHint}>Add checking, cash, or a credit card in <Link href={accountsPath}>Accounts</Link> to identify where purchases were paid from.</p> : null}
             <label>Date<input type="date" required value={purchaseDraft.date} onChange={(e) => setPurchaseDraft({ ...purchaseDraft, date: e.target.value })} /></label>
             <div className={styles.formActions}><button type="button" onClick={() => setShowPurchaseForm(false)}><IconX size={15} />Cancel</button><button className={styles.primaryButton} type="submit" disabled={saving}>{saving ? "Saving…" : editingPurchaseId ? "Save purchase" : "Add purchase"}</button></div>
           </form>}
           <div className={styles.purchaseList}>
-            {selected.purchases.map((purchase) => <div className={styles.purchase} key={purchase.id}><div><strong>{purchase.description}</strong><span>{new Date(`${purchase.date}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span></div><strong>{currency.format(purchase.amount)}</strong><div className={styles.purchaseActions}><button type="button" onClick={() => editPurchase(purchase)} aria-label={`Edit ${purchase.description}`}><IconEdit size={16} /></button><button type="button" onClick={() => setPendingDelete({kind:"entry",id:purchase.id,label:purchase.description})} aria-label={`Delete ${purchase.description}`}><IconTrash size={16} /></button></div></div>)}
+            {selected.purchases.map((purchase) => <div className={styles.purchase} key={purchase.id}><div><strong>{purchase.description}</strong><span>{new Date(`${purchase.date}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric" })} · {purchase.accountName ?? "Account not assigned"}</span></div><strong>{currency.format(purchase.amount)}</strong><div className={styles.purchaseActions}><button type="button" onClick={() => editPurchase(purchase)} aria-label={`Edit ${purchase.description}`}><IconEdit size={16} /></button><button type="button" onClick={() => setPendingDelete({kind:"entry",id:purchase.id,label:purchase.description})} aria-label={`Delete ${purchase.description}`}><IconTrash size={16} /></button></div></div>)}
           </div>
           <button className={styles.copyButton} type="button" onClick={()=>setPendingDelete({kind:"category",id:selected.id,label:selected.name})}><IconTrash size={15}/>Delete category</button>
         </div>}

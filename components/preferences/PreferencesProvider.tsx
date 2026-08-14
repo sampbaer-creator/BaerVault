@@ -2,34 +2,28 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
+import {
+  isFinancePaletteId,
+  paletteVariables,
+  type FinancePaletteId,
+} from "@/lib/themePalettes";
+
 export type ThemeMode = "light" | "dark" | "system";
-export type Accent = "navy" | "gold" | "bright-gold";
-export type Palette = "vault" | "palm" | "coffee" | "powder-blue" | "water";
 export type Density = "comfortable" | "compact";
 type Preferences = {
   theme: ThemeMode;
-  accent: Accent;
-  palette: Palette;
+  palette: FinancePaletteId;
   density: Density;
   reducedMotion: boolean;
   currency: string;
 };
 const defaults: Preferences = {
   theme: "system",
-  accent: "navy",
-  palette: "vault",
+  palette: "vault-green",
   density: "comfortable",
   reducedMotion: false,
   currency: "USD",
 };
-const accents: Accent[] = ["navy", "gold", "bright-gold"];
-const palettes: Palette[] = ["vault", "palm", "coffee", "powder-blue", "water"];
-function isAccent(value: unknown): value is Accent {
-  return typeof value === "string" && accents.includes(value as Accent);
-}
-function isPalette(value: unknown): value is Palette {
-  return typeof value === "string" && palettes.includes(value as Palette);
-}
 type ContextValue = {
   preferences: Preferences;
   update: (next: Partial<Preferences>) => void;
@@ -50,13 +44,10 @@ export function PreferencesProvider({
         const saved = localStorage.getItem("bearvault-preferences");
         if (saved) {
           const parsed = JSON.parse(saved) as Partial<Preferences>;
-          const accent = isAccent(parsed.accent)
-            ? parsed.accent
-            : defaults.accent;
-          const palette = isPalette(parsed.palette)
+          const palette = isFinancePaletteId(parsed.palette)
             ? parsed.palette
             : defaults.palette;
-          setPreferences({ ...defaults, ...parsed, accent, palette });
+          setPreferences({ ...defaults, ...parsed, palette });
         }
       } catch {}
       setStorageReady(true);
@@ -66,16 +57,30 @@ export function PreferencesProvider({
   useEffect(() => {
     if (!storageReady) return;
     const root = document.documentElement;
-    const system = matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
-    root.dataset.theme =
-      preferences.theme === "system" ? system : preferences.theme;
-    root.dataset.accent = preferences.accent;
-    root.dataset.palette = preferences.palette;
-    root.dataset.density = preferences.density;
-    root.dataset.motion = preferences.reducedMotion ? "reduced" : "full";
+    const colorScheme = matchMedia("(prefers-color-scheme: dark)");
+
+    function applyPreferences() {
+      const resolvedTheme =
+        preferences.theme === "system"
+          ? colorScheme.matches
+            ? "dark"
+            : "light"
+          : preferences.theme;
+      root.dataset.theme = resolvedTheme;
+      root.dataset.palette = preferences.palette;
+      root.dataset.density = preferences.density;
+      root.dataset.motion = preferences.reducedMotion ? "reduced" : "full";
+      for (const [property, value] of Object.entries(
+        paletteVariables(preferences.palette, resolvedTheme === "dark"),
+      )) {
+        root.style.setProperty(property, value);
+      }
+    }
+
+    applyPreferences();
+    colorScheme.addEventListener("change", applyPreferences);
     localStorage.setItem("bearvault-preferences", JSON.stringify(preferences));
+    return () => colorScheme.removeEventListener("change", applyPreferences);
   }, [preferences, storageReady]);
   const value = useMemo(
     () => ({

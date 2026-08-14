@@ -26,7 +26,21 @@ export function TransactionsWorkspace({ initialMonth }: { initialMonth: BudgetMo
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
   const income = incomeEntries.reduce((sum, entry) => sum + entry.amount, 0);
   const spending = totalSpending(initialMonth);
-  const items = useMemo(() => [...incomeEntries.map((entry) => ({ id: entry.id, name: entry.source, category: "Income", account: entry.owner, date: entry.date, amount: entry.amount, incoming: true })), ...initialMonth.categories.flatMap((category) => category.purchases.map((purchase) => ({ id: purchase.id, name: purchase.description, category: category.name, account: "Household", date: purchase.date, amount: purchase.amount, incoming: false })))].filter((item) => filter === "all" || (filter === "income" ? item.incoming : !item.incoming)).sort((a, b) => b.date.localeCompare(a.date)), [filter, incomeEntries, initialMonth.categories]);
+  const accountSpending = useMemo(() => {
+    const totals = new Map<string, number>();
+    for (const category of initialMonth.categories) {
+      for (const purchase of category.purchases) {
+        const account = purchase.accountName ?? "Account not assigned";
+        totals.set(account, (totals.get(account) ?? 0) + purchase.amount);
+      }
+    }
+    return [...totals.entries()]
+      .map(([account, amount]) => ({ account, amount }))
+      .sort((a, b) => b.amount - a.amount)
+      .slice(0, 5);
+  }, [initialMonth.categories]);
+  const largestAccountSpend = accountSpending[0]?.amount ?? 0;
+  const items = useMemo(() => [...incomeEntries.map((entry) => ({ id: entry.id, name: entry.source, category: "Income", account: entry.owner, date: entry.date, amount: entry.amount, incoming: true })), ...initialMonth.categories.flatMap((category) => category.purchases.map((purchase) => ({ id: purchase.id, name: purchase.description, category: category.name, account: purchase.accountName ?? "Account not assigned", date: purchase.date, amount: purchase.amount, incoming: false })))].filter((item) => filter === "all" || (filter === "income" ? item.incoming : !item.incoming)).sort((a, b) => b.date.localeCompare(a.date)), [filter, incomeEntries, initialMonth.categories]);
 
   function launch(id?: string) {
     const entry = incomeEntries.find((item) => item.id === id);
@@ -52,7 +66,20 @@ export function TransactionsWorkspace({ initialMonth }: { initialMonth: BudgetMo
   return <div className={styles.page}>
     <header className={styles.intro}><div><span>Household activity</span><h2>Every dollar, in one ledger.</h2><p>Income entered here also updates Cash Flow, Budget, and your Dashboard.</p></div><button onClick={() => launch()}><IconPlus size={16}/>Add income</button></header>
     <div className={styles.summary}><Summary label="Money in" value={`+${money.format(income)}`} positive/><Summary label="Money out" value={`−${money.format(spending)}`} negative/><Summary label="Net" value={money.format(income-spending)}/></div>
-    <section className={styles.panel}><div className={styles.tabs}>{(["all","income","expenses"] as Filter[]).map((value) => <button className={filter === value ? styles.active : ""} key={value} onClick={() => setFilter(value)}>{value[0].toUpperCase()+value.slice(1)}</button>)}<span>{items.length} transactions</span></div><table><thead><tr><th>Merchant</th><th>Category</th><th>Account</th><th>Date</th><th>Amount</th><th/></tr></thead><tbody>{items.map((item) => <tr key={item.id}><td><div className={styles.merchant}><i>{item.name.slice(0,1)}</i><strong>{item.name}</strong></div></td><td><span className={styles.chip}><i style={{background:item.incoming?"#267056":"#d4af37"}}/>{item.category}</span></td><td className={styles.muted}>{item.account}</td><td className={styles.muted}>{item.date}</td><td className={item.incoming?styles.positive:styles.negative}><strong>{item.incoming?"+":"−"}{money.format(item.amount)}</strong></td><td>{item.incoming&&<div className={styles.actions}><button aria-label={`Edit ${item.name}`} onClick={() => launch(item.id)}><IconEdit size={15}/></button><button aria-label={`Delete ${item.name}`} onClick={() => setPendingDelete(item.id)}><IconTrash size={15}/></button></div>}</td></tr>)}</tbody></table></section>
+    <section className={styles.accountChart} aria-labelledby="account-spending-title">
+      <div className={styles.chartHeading}>
+        <div><span>Spending by account</span><h3 id="account-spending-title">Where this month&apos;s money came from</h3></div>
+        <strong>{money.format(spending)}</strong>
+      </div>
+      {accountSpending.length ? <div className={styles.accountBars}>
+        {accountSpending.map((item) => <div className={styles.accountBarRow} key={item.account}>
+          <span>{item.account}</span>
+          <div className={styles.accountTrack} aria-hidden="true"><i style={{ width: `${largestAccountSpend ? (item.amount / largestAccountSpend) * 100 : 0}%` }} /></div>
+          <strong>{money.format(item.amount)}</strong>
+        </div>)}
+      </div> : <p className={styles.emptyChart}>Add a budget purchase to see account spending here.</p>}
+    </section>
+    <section className={styles.panel}><div className={styles.tabs}>{(["all","income","expenses"] as Filter[]).map((value) => <button className={filter === value ? styles.active : ""} key={value} onClick={() => setFilter(value)}>{value[0].toUpperCase()+value.slice(1)}</button>)}<span>{items.length} transactions</span></div><table><thead><tr><th>Merchant</th><th>Category</th><th>Account</th><th>Date</th><th>Amount</th><th/></tr></thead><tbody>{items.map((item) => <tr key={item.id}><td><div className={styles.merchant}><i>{item.name.slice(0,1)}</i><strong>{item.name}</strong></div></td><td><span className={styles.chip}><i style={{background:item.incoming?"var(--money-positive)":"var(--chart-secondary)"}}/>{item.category}</span></td><td className={styles.muted}>{item.account}</td><td className={styles.muted}>{item.date}</td><td className={item.incoming?styles.positive:styles.negative}><strong>{item.incoming?"+":"−"}{money.format(item.amount)}</strong></td><td>{item.incoming&&<div className={styles.actions}><button aria-label={`Edit ${item.name}`} onClick={() => launch(item.id)}><IconEdit size={15}/></button><button aria-label={`Delete ${item.name}`} onClick={() => setPendingDelete(item.id)}><IconTrash size={15}/></button></div>}</td></tr>)}</tbody></table></section>
     <Drawer opened={open} onClose={() => setOpen(false)} position={mobile?"bottom":"right"} size={mobile?"auto":430} title={editingId?"Edit income":"Add income"} classNames={{content:styles.drawer,header:styles.drawerHeader,body:styles.drawerBody,title:styles.drawerTitle}}><form className={styles.form} onSubmit={save}>{error&&<p className={styles.error}>{error}</p>}<label>Amount<div className={styles.moneyInput}><span>$</span><input type="number" min="0.01" step="0.01" required autoFocus value={draft.amount} onChange={(event) => setDraft({...draft,amount:event.target.value})} placeholder="0.00"/></div></label><label>Income source<input required maxLength={160} value={draft.source} onChange={(event) => setDraft({...draft,source:event.target.value})} placeholder="Payroll"/></label><div className={styles.formRow}><label>Date<input type="date" required value={draft.date} onChange={(event) => setDraft({...draft,date:event.target.value})}/></label><label>Owner<select value={draft.owner} onChange={(event) => setDraft({...draft,owner:event.target.value})}><option>Household</option><option>User</option><option>Spouse</option><option>Joint</option></select></label></div><button className={styles.submit} disabled={saving}>{saving?"Saving…":editingId?"Save changes":"Add income"}</button></form></Drawer>
     <ConfirmDialog opened={Boolean(pendingDelete)} title="Delete this income entry?" description="This updates income totals everywhere in BearVault." confirmLabel="Delete income" onCancel={() => setPendingDelete(null)} onConfirm={() => { void remove(); }}/>
   </div>;

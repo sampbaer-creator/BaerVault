@@ -11,7 +11,7 @@
   margin: 4px 0 18px;
 }
 .intro > div > span {
-  color: #4f8389;
+  color: var(--app-accent);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.14em;
@@ -37,7 +37,7 @@
   min-height: 40px;
   padding: 10px 15px;
   border: 0;
-  background: var(--navy);
+  background: var(--app-accent);
   color: #fff;
   font-weight: 800;
   cursor: pointer;
@@ -65,11 +65,53 @@
   font-variant-numeric: tabular-nums;
 }
 .positive {
-  color: #267056 !important;
+  color: var(--money-positive) !important;
 }
 .negative {
-  color: var(--app-danger) !important;
+  color: var(--money-negative) !important;
 }
+.accountChart {
+  margin-bottom: 14px;
+  padding: 20px;
+  border: 1px solid var(--app-border);
+  border-radius: 14px;
+  background: var(--app-surface);
+}
+.chartHeading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 18px;
+}
+.chartHeading span {
+  color: var(--app-accent);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.chartHeading h3 { margin: 4px 0 0; font-size: 16px; }
+.chartHeading > strong { font-size: 20px; font-variant-numeric: tabular-nums; }
+.accountBars { display: grid; gap: 12px; }
+.accountBarRow {
+  display: grid;
+  grid-template-columns: minmax(130px, 0.65fr) minmax(160px, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  font-size: 11px;
+}
+.accountBarRow > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.accountBarRow > strong { min-width: 76px; text-align: right; font-variant-numeric: tabular-nums; }
+.accountTrack { height: 8px; overflow: hidden; border-radius: 999px; background: var(--app-surface-raised); }
+.accountTrack i {
+  display: block;
+  min-width: 4px;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--chart-primary), var(--chart-secondary));
+}
+.emptyChart { margin: 0; color: var(--app-text-muted); font-size: 12px; }
 .panel {
   overflow: hidden;
   border: 1px solid var(--app-border);
@@ -171,10 +213,10 @@
   cursor: pointer;
 }
 .drawer {
-  background: #f7f8f5;
+  background: var(--app-background);
 }
 .drawerHeader {
-  background: #f7f8f5;
+  background: var(--app-background);
   border-bottom: 1px solid var(--app-border);
 }
 .drawerTitle {
@@ -200,9 +242,9 @@
   width: 100%;
   min-height: 44px;
   padding: 10px 12px;
-  border: 1px solid #ccd8d2;
-  background: #fff;
-  color: var(--navy);
+  border: 1px solid var(--app-border);
+  background: var(--app-surface);
+  color: var(--app-text-strong);
 }
 .formRow {
   display: grid;
@@ -250,6 +292,11 @@
     grid-template-columns: 1fr;
     gap: 9px;
   }
+  .accountChart { padding: 17px 14px; }
+  .chartHeading { align-items: flex-start; }
+  .chartHeading > strong { font-size: 16px; }
+  .accountBarRow { grid-template-columns: minmax(92px, 0.8fr) minmax(80px, 1fr) auto; gap: 8px; }
+  .accountBarRow > strong { min-width: 66px; font-size: 10px; }
   .panel th:nth-child(3),
   .panel td:nth-child(3),
   .panel th:nth-child(4),

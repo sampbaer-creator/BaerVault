@@ -95,22 +95,25 @@
 }
 .palettes {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 10px;
+}
+.field:has(.palettes) {
+  grid-template-columns: 1fr;
 }
 .palettes button {
   display: grid;
-  min-height: 82px;
+  min-height: 104px;
   justify-items: start;
-  gap: 10px;
+  align-content: start;
+  gap: 7px;
   padding: 12px;
   border-radius: 12px;
-  text-transform: capitalize;
 }
 .palettes button > span {
   display: grid;
   width: 100%;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   overflow: hidden;
   border: 1px solid rgb(255 255 255 / 38%);
   border-radius: 8px;
@@ -119,25 +122,22 @@
 .palettes i {
   height: 24px;
 }
+.palettes i:nth-child(1) { background: var(--palette-1); }
+.palettes i:nth-child(2) { background: var(--palette-2); }
+.palettes i:nth-child(3) { background: var(--palette-3); }
+.palettes i:nth-child(4) { background: var(--palette-4); }
+.palettes i:nth-child(5) { background: var(--palette-5); }
+.palettes strong { font-size: 12px; }
+.palettes small {
+  color: var(--app-text-muted);
+  font-size: 10px;
+  line-height: 1.35;
+  text-align: left;
+}
 .palettes button[aria-pressed="true"] {
   outline: 2px solid var(--app-focus);
   outline-offset: 2px;
 }
-.palettes [data-palette-preview="vault"] i:nth-child(1) { background: #000080; }
-.palettes [data-palette-preview="vault"] i:nth-child(2) { background: #d4af37; }
-.palettes [data-palette-preview="vault"] i:nth-child(3) { background: #f2e7c9; }
-.palettes [data-palette-preview="palm"] i:nth-child(1) { background: #e62e0a; }
-.palettes [data-palette-preview="palm"] i:nth-child(2) { background: #899260; }
-.palettes [data-palette-preview="palm"] i:nth-child(3) { background: #e4e8d1; }
-.palettes [data-palette-preview="coffee"] i:nth-child(1) { background: #cfac87; }
-.palettes [data-palette-preview="coffee"] i:nth-child(2) { background: #302016; }
-.palettes [data-palette-preview="coffee"] i:nth-child(3) { background: #4f8389; }
-.palettes [data-palette-preview="powder-blue"] i:nth-child(1) { background: #e0e4e8; }
-.palettes [data-palette-preview="powder-blue"] i:nth-child(2) { background: #9abfd8; }
-.palettes [data-palette-preview="powder-blue"] i:nth-child(3) { background: #5e191a; }
-.palettes [data-palette-preview="water"] i:nth-child(1) { background: #1f2e37; }
-.palettes [data-palette-preview="water"] i:nth-child(2) { background: #5c727b; }
-.palettes [data-palette-preview="water"] i:nth-child(3) { background: #f2b968; }
 .swatches button {
   min-height: 38px;
   padding: 8px 12px;

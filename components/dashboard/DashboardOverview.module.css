@@ -1,22 +1,22 @@
 .dashboard {
-  --navy: #0b1230;
-  --blue: #000080;
-  --green: #365f51;
-  --soft-green: #edf4f1;
+  --navy: var(--app-text-strong);
+  --blue: var(--chart-primary);
+  --green: var(--app-accent);
+  --soft-green: var(--app-accent-soft);
   --muted: var(--app-text-muted);
-  --dashboard-chart-primary: #000080;
-  --dashboard-chart-secondary: #557c6f;
-  --dashboard-chart-axis: #62647c;
-  --dashboard-chart-grid: rgb(29 42 54 / 10%);
-  --dashboard-chart-cursor: rgb(0 0 128 / 18%);
-  --dashboard-positive: #267056;
-  --dashboard-negative: #796451;
-  --dashboard-category-1: #000080;
-  --dashboard-category-2: #72998a;
-  --dashboard-category-3: #9b7900;
-  --dashboard-category-4: #6a91aa;
-  --dashboard-category-5: #5e7b72;
-  --dashboard-category-6: #9a7254;
+  --dashboard-chart-primary: var(--chart-primary);
+  --dashboard-chart-secondary: var(--chart-secondary);
+  --dashboard-chart-axis: var(--app-text-muted);
+  --dashboard-chart-grid: color-mix(in srgb, var(--app-border) 72%, transparent);
+  --dashboard-chart-cursor: color-mix(in srgb, var(--chart-primary) 18%, transparent);
+  --dashboard-positive: var(--money-positive);
+  --dashboard-negative: var(--money-negative);
+  --dashboard-category-1: var(--chart-primary);
+  --dashboard-category-2: var(--chart-secondary);
+  --dashboard-category-3: var(--app-accent);
+  --dashboard-category-4: var(--brand-gold);
+  --dashboard-category-5: var(--money-positive);
+  --dashboard-category-6: var(--chart-tertiary);
   max-width: 1320px;
   margin: 0 auto;
   color: var(--app-text-strong);
@@ -563,21 +563,10 @@
 
 :global(:root[data-theme="dark"]) .positionCard { background: var(--app-surface); }
 :global(:root[data-theme="dark"]) .dashboard {
-  --green: #9fd1bd;
-  --soft-green: #18352d;
-  --dashboard-chart-primary: #a7a9ff;
-  --dashboard-chart-secondary: #9fd1bd;
-  --dashboard-chart-axis: #c3c6da;
-  --dashboard-chart-grid: rgb(255 255 255 / 13%);
-  --dashboard-chart-cursor: rgb(167 169 255 / 28%);
-  --dashboard-positive: #9fd1bd;
-  --dashboard-negative: #e0b991;
-  --dashboard-category-1: #a7a9ff;
-  --dashboard-category-2: #9fd1bd;
-  --dashboard-category-3: #f0cb58;
-  --dashboard-category-4: #9abfd8;
-  --dashboard-category-5: #c0ddd1;
-  --dashboard-category-6: #d3b89f;
+  --green: var(--chart-secondary);
+  --soft-green: var(--app-accent-soft);
+  --dashboard-chart-grid: color-mix(in srgb, var(--app-border) 72%, transparent);
+  --dashboard-chart-cursor: color-mix(in srgb, var(--chart-primary) 28%, transparent);
 }
 :global(:root[data-theme="dark"]) .positionValue { color: var(--app-text-strong); }
 :global(:root[data-theme="dark"]) .positionAction { color: var(--app-text-strong); background: var(--app-accent-soft); }

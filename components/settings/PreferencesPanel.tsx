@@ -1,11 +1,11 @@
 "use client";
 
 import { IconRefresh } from "@tabler/icons-react";
+import type { CSSProperties } from "react";
 
 import { usePreferences } from "@/components/preferences/PreferencesProvider";
+import { financePaletteIds, financePalettes } from "@/lib/themePalettes";
 import styles from "./SettingsWorkspace.module.css";
-
-const palettes = ["vault", "palm", "coffee", "powder-blue", "water"] as const;
 
 export function PreferencesPanel() {
   const { preferences, update, reset } = usePreferences();
@@ -14,33 +14,36 @@ export function PreferencesPanel() {
     <>
       <section id="appearance">
         <h3>Appearance</h3>
-        <p>Choose a complete visual environment for this device.</p>
+        <p>Choose a finance palette for this device. Vault Green is the BearVault default.</p>
         <Field label="Color palette">
           <div className={styles.palettes}>
-            {palettes.map((palette) => (
-              <button
-                key={palette}
-                data-palette-preview={palette}
-                aria-pressed={preferences.palette === palette}
-                onClick={() => update({ palette })}
-              >
-                <span aria-hidden="true"><i /><i /><i /></span>
-                <strong>{palette.replace("-", " ")}</strong>
-              </button>
-            ))}
+            {financePaletteIds.map((paletteId) => {
+              const palette = financePalettes[paletteId];
+              const previewStyle = {
+                "--palette-1": palette.colors[0],
+                "--palette-2": palette.colors[1],
+                "--palette-3": palette.colors[2],
+                "--palette-4": palette.colors[3],
+                "--palette-5": palette.colors[4],
+              } as CSSProperties;
+              return (
+                <button
+                  key={paletteId}
+                  style={previewStyle}
+                  aria-label={`${palette.name}: ${palette.mood}`}
+                  aria-pressed={preferences.palette === paletteId}
+                  onClick={() => update({ palette: paletteId })}
+                >
+                  <span aria-hidden="true"><i /><i /><i /><i /><i /></span>
+                  <strong>{palette.name}</strong>
+                  <small>{palette.mood}</small>
+                </button>
+              );
+            })}
           </div>
         </Field>
         <Field label="Light and dark mode">
           <Segment value={preferences.theme} options={["light", "dark", "system"]} onChange={(theme) => update({ theme: theme as typeof preferences.theme })} />
-        </Field>
-        <Field label="Action accent">
-          <div className={styles.swatches}>
-            {(["navy", "gold", "bright-gold"] as const).map((accent) => (
-              <button key={accent} data-color={accent} aria-pressed={preferences.accent === accent} onClick={() => update({ accent })}>
-                {accent.replace("-", " ")}
-              </button>
-            ))}
-          </div>
         </Field>
         <Field label="Density">
           <Segment value={preferences.density} options={["comfortable", "compact"]} onChange={(density) => update({ density: density as typeof preferences.density })} />

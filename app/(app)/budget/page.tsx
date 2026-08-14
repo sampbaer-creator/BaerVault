@@ -1,4 +1,5 @@
 import { BudgetWorkspace } from "@/components/budget/BudgetWorkspace";
+import { getFinancialAccounts } from "@/lib/data/accounts";
 import { getBudgetMonth } from "@/lib/data/budgets";
 
 export default async function BudgetPage({
@@ -16,6 +17,15 @@ export default async function BudgetPage({
   const month = Number.isInteger(requestedMonth) && requestedMonth >= 1 && requestedMonth <= 12
     ? requestedMonth
     : now.getUTCMonth() + 1;
-  const budget = await getBudgetMonth(year, month);
-  return <BudgetWorkspace key={`${year}-${month}`} initialBudget={budget} />;
+  const [budget, accounts] = await Promise.all([
+    getBudgetMonth(year, month),
+    getFinancialAccounts(),
+  ]);
+  return (
+    <BudgetWorkspace
+      key={`${year}-${month}`}
+      initialBudget={budget}
+      accounts={accounts.map(({ id, name, institution, type }) => ({ id, name, institution, type }))}
+    />
+  );
 }

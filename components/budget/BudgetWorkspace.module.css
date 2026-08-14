@@ -348,6 +348,7 @@
   font-weight: 650;
 }
 .purchaseForm label input,
+.purchaseForm label select,
 .categoryForm label > input,
 .simpleAmount {
   min-height: 42px;
@@ -358,6 +359,13 @@
   background: #fff;
   font: inherit;
 }
+.accountHint {
+  margin: -5px 0 0;
+  color: var(--app-text-muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.accountHint a { color: var(--app-accent); font-weight: 700; }
 .amountField {
   display: flex;
   align-items: baseline;
@@ -509,6 +517,7 @@
   .purchaseForm,
   .categoryForm { width: 100%; min-width: 0; max-width: 100%; }
   .purchaseForm input,
+  .purchaseForm select,
   .categoryForm input,
   .inlineEdit input { min-width: 0; font-size: 16px; }
   .budget {

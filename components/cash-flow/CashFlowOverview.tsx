@@ -167,7 +167,7 @@ export function CashFlowOverview({
               <BarChart data={chartData}>
                 <CartesianGrid
                   vertical={false}
-                  stroke="#e8ecea"
+                  stroke="var(--app-border)"
                   strokeDasharray="3 5"
                 />
                 <XAxis dataKey="month" axisLine={false} tickLine={false} />
@@ -183,13 +183,13 @@ export function CashFlowOverview({
                 <Bar
                   dataKey="income"
                   name="Income"
-                  fill="#000080"
+                  fill="var(--chart-primary)"
                   radius={[4, 4, 0, 0]}
                 />
                 <Bar
                   dataKey="spending"
                   name="Spending"
-                  fill="#d4af37"
+                  fill="var(--chart-secondary)"
                   radius={[4, 4, 0, 0]}
                 />
               </BarChart>

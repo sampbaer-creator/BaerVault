@@ -1,4 +1,5 @@
 import type { BudgetMonth } from "./finance";
+import { demoFinancialAccounts } from "./accounts";
 
 export const augustBudget: BudgetMonth = {
   month: "August 2026",
@@ -47,6 +48,27 @@ export const augustBudget: BudgetMonth = {
     ] },
   ],
 };
+
+export function withDemoSpendingAccounts(month: BudgetMonth): BudgetMonth {
+  const checking = demoFinancialAccounts.find((account) => account.type === "checking");
+  const card = demoFinancialAccounts.find((account) => account.type === "credit_card");
+  return {
+    ...month,
+    categories: month.categories.map((category) => {
+      const account = ["Housing", "Utilities", "Gas & transport"].includes(category.name)
+        ? checking
+        : card;
+      return {
+        ...category,
+        purchases: category.purchases.map((purchase) => ({
+          ...purchase,
+          accountId: account?.id ?? null,
+          accountName: account?.name ?? null,
+        })),
+      };
+    }),
+  };
+}
 
 export const cashFlowHistory = [
   { month: "Jan", income: 5100, spending: 3900, net: 1200 },

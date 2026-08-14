@@ -29,12 +29,13 @@ export async function deleteBudgetCategoryAction(id: string): Promise<Result> {
   catch(error){ return {ok:false,error:errorMessage(error)}; }
 }
 
-export async function saveBudgetEntryAction(input: { id?: string; categoryId: string; description: string; amount: number; date: string }): Promise<Result<{ id: string }>> {
+export async function saveBudgetEntryAction(input: { id?: string; categoryId: string; description: string; amount: number; date: string; accountId: string | null }): Promise<Result<{ id: string }>> {
   try {
     const description = input.description.trim();
     if (!input.categoryId || !description || description.length > 160 || !validAmount(input.amount) || !/^\d{4}-\d{2}-\d{2}$/.test(input.date)) throw new Error("Enter a valid description, amount, and date.");
-    if (input.id) await updateBudgetEntry(input.id, description, input.amount, input.date);
-    const entry = input.id ? { id: input.id } : await createBudgetEntry(input.categoryId, description, input.amount, input.date);
+    if (input.accountId !== null && !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(input.accountId)) throw new Error("Select a valid spending account.");
+    if (input.id) await updateBudgetEntry(input.id, description, input.amount, input.date, input.accountId);
+    const entry = input.id ? { id: input.id } : await createBudgetEntry(input.categoryId, description, input.amount, input.date, input.accountId);
     revalidatePath("/budget"); revalidatePath("/cash-flow"); revalidatePath("/dashboard");
     return { ok: true, data: { id: entry.id } };
   } catch (error) { return { ok: false, error: errorMessage(error) }; }

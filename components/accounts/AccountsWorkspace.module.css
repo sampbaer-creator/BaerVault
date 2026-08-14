@@ -1,10 +1,10 @@
 .workspace {
-  --accounts-blue: #3977f6;
-  --accounts-blue-soft: #edf3ff;
-  --accounts-green: #16834f;
-  --accounts-green-soft: #e9f7ef;
-  --accounts-orange: #d26b3f;
-  --accounts-orange-soft: #fff0e9;
+  --accounts-blue: var(--chart-primary);
+  --accounts-blue-soft: var(--app-accent-soft);
+  --accounts-green: var(--money-positive);
+  --accounts-green-soft: color-mix(in srgb, var(--money-positive) 12%, var(--app-surface));
+  --accounts-orange: var(--money-negative);
+  --accounts-orange-soft: color-mix(in srgb, var(--money-negative) 10%, var(--app-surface));
   width: 100%;
   max-width: 1500px;
   margin: 0 auto;
@@ -55,7 +55,7 @@
   border-radius: 10px;
   color: white !important;
   background: var(--accounts-blue) !important;
-  box-shadow: 0 7px 18px rgb(57 119 246 / 18%) !important;
+  box-shadow: 0 7px 18px color-mix(in srgb, var(--accounts-blue) 20%, transparent) !important;
   text-shadow: none !important;
   white-space: nowrap;
   cursor: pointer;
@@ -175,7 +175,7 @@
   height: 95px;
 }
 
-.lineFill { fill: rgb(57 119 246 / 8%); }
+.lineFill { fill: color-mix(in srgb, var(--accounts-blue) 10%, transparent); }
 .lineStroke { fill: none; stroke: var(--accounts-blue); stroke-width: 2.5; vector-effect: non-scaling-stroke; }
 .linePoint { fill: var(--app-surface); stroke: var(--accounts-blue); stroke-width: 3; vector-effect: non-scaling-stroke; }
 
@@ -394,12 +394,12 @@
 .submitButton { width: 100%; min-height: 48px; }
 
 :global(:root[data-theme="dark"]) .workspace {
-  --accounts-blue: #8db4ff;
-  --accounts-blue-soft: #18264a;
+  --accounts-blue: var(--chart-secondary);
+  --accounts-blue-soft: var(--app-accent-soft);
   --accounts-green: #79d4a5;
-  --accounts-green-soft: #173427;
-  --accounts-orange: #efad8e;
-  --accounts-orange-soft: #42251d;
+  --accounts-green-soft: color-mix(in srgb, var(--money-positive) 18%, var(--app-surface));
+  --accounts-orange: #ef9a9a;
+  --accounts-orange-soft: color-mix(in srgb, var(--money-negative) 18%, var(--app-surface));
 }
 
 :global(:root[data-theme="dark"]) .addButton,

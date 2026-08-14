@@ -118,7 +118,7 @@ export function createDashboardViewModel(
       category.purchases.map((purchase) => ({
         id: purchase.id,
         name: purchase.description,
-        meta: `${category.name} · ${purchase.date}`,
+        meta: `${category.name}${purchase.accountName ? ` · ${purchase.accountName}` : ""} · ${purchase.date}`,
         date: purchase.date,
         amount: purchase.amount,
         incoming: false,

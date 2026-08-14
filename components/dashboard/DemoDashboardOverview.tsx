@@ -72,8 +72,8 @@ function NetWorthChart({ timeframe }: { timeframe: Timeframe }) {
         >
           <defs>
             <linearGradient id="netWorthFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#6f9f8d" stopOpacity={0.3} />
-              <stop offset="100%" stopColor="#6f9f8d" stopOpacity={0} />
+              <stop offset="0%" stopColor="var(--chart-secondary)" stopOpacity={0.3} />
+              <stop offset="100%" stopColor="var(--chart-secondary)" stopOpacity={0} />
             </linearGradient>
           </defs>
           <CartesianGrid
@@ -85,7 +85,7 @@ function NetWorthChart({ timeframe }: { timeframe: Timeframe }) {
             dataKey="label"
             axisLine={false}
             tickLine={false}
-            tick={{ fill: "#718078", fontSize: 11 }}
+            tick={{ fill: "var(--app-text-muted)", fontSize: 11 }}
             minTickGap={28}
           />
           <YAxis hide domain={["dataMin - 800", "dataMax + 500"]} />
@@ -97,12 +97,12 @@ function NetWorthChart({ timeframe }: { timeframe: Timeframe }) {
             type="monotone"
             dataKey="value"
             isAnimationActive={false}
-            stroke="#000080"
+            stroke="var(--chart-primary)"
             strokeWidth={2.25}
             fill="url(#netWorthFill)"
             activeDot={{
               r: 4,
-              fill: "#000080",
+              fill: "var(--chart-primary)",
               stroke: "#ffffff",
               strokeWidth: 2,
             }}

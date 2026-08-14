@@ -1,12 +1,12 @@
 import styles from "./ReferenceWorkspace.module.css";
 
 const goals = [
-  { name: "Emergency Fund", target: "Nov 2026", saved: "$15,000", detail: "of $18,000 · $3,000 to go", monthly: "$500/mo", progress: 83, color: "#4f8389" },
-  { name: "House Down Payment", target: "Dec 2027", saved: "$28,400", detail: "of $60,000 · $31,600 to go", monthly: "$1,200/mo", progress: 47, color: "#d4af37" },
-  { name: "New Car", target: "Mar 2027", saved: "$6,200", detail: "of $12,000 · $5,800 to go", monthly: "$400/mo", progress: 52, color: "#000080" },
-  { name: "Trip to Japan", target: "Sep 2026", saved: "$3,100", detail: "of $5,000 · $1,900 to go", monthly: "$300/mo", progress: 62, color: "#5e191a" },
-  { name: "Home Renovation", target: "2028", saved: "$4,800", detail: "of $20,000 · $15,200 to go", monthly: "$350/mo", progress: 24, color: "#cfac87" },
-  { name: "Retirement", target: "2050", saved: "$148,000", detail: "of $500,000 · $352,000 to go", monthly: "$1,500/mo", progress: 30, color: "#e8b00f" },
+  { name: "Emergency Fund", target: "Nov 2026", saved: "$15,000", detail: "of $18,000 · $3,000 to go", monthly: "$500/mo", progress: 83, color: "var(--chart-primary)" },
+  { name: "House Down Payment", target: "Dec 2027", saved: "$28,400", detail: "of $60,000 · $31,600 to go", monthly: "$1,200/mo", progress: 47, color: "var(--chart-secondary)" },
+  { name: "New Car", target: "Mar 2027", saved: "$6,200", detail: "of $12,000 · $5,800 to go", monthly: "$400/mo", progress: 52, color: "var(--app-accent)" },
+  { name: "Trip to Japan", target: "Sep 2026", saved: "$3,100", detail: "of $5,000 · $1,900 to go", monthly: "$300/mo", progress: 62, color: "var(--money-positive)" },
+  { name: "Home Renovation", target: "2028", saved: "$4,800", detail: "of $20,000 · $15,200 to go", monthly: "$350/mo", progress: 24, color: "var(--brand-gold)" },
+  { name: "Retirement", target: "2050", saved: "$148,000", detail: "of $500,000 · $352,000 to go", monthly: "$1,500/mo", progress: 30, color: "var(--chart-tertiary)" },
 ];
 
 export function GoalsWorkspace() {
