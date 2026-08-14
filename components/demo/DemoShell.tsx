@@ -13,7 +13,7 @@ import {
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Drawer } from "@mantine/core";
 
 import { BearVaultLogo } from "@/components/brand/BearVaultLogo";
@@ -37,8 +37,21 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [moreOpened, setMoreOpened] = useState(false);
   const moreIsActive = moreLinks.some(([href]) => href === pathname);
+  const mainRef = useRef<HTMLElement>(null);
+  const previousPathname = useRef(pathname);
+
+  useEffect(() => {
+    if (previousPathname.current !== pathname) {
+      mainRef.current?.focus();
+      previousPathname.current = pathname;
+    }
+  }, [pathname]);
+
   return (
     <div className={styles.shell}>
+      <a className={styles.skipLink} href="#demo-main-content">
+        Skip to main content
+      </a>
       <LiquidGLRuntime />
       <aside className={styles.sidebar}>
         <div
@@ -59,7 +72,7 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
               href={href}
               className={pathname === href ? styles.active : undefined}
             >
-              <Icon size={18} />
+              <Icon size={18} aria-hidden="true" />
               {label}
             </Link>
           ))}
@@ -83,7 +96,9 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
           </div>
           <Link href="/sign-up">Create account</Link>
         </header>
-        <main>{children}</main>
+        <main id="demo-main-content" ref={mainRef} tabIndex={-1}>
+          {children}
+        </main>
       </div>
       <nav className={styles.mobileNav} aria-label="Demo mobile navigation">
         {mobileLinks.map(([href, label, Icon]) => (
@@ -93,7 +108,7 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
             className={pathname === href ? styles.active : undefined}
             aria-current={pathname === href ? "page" : undefined}
           >
-            <Icon size={19} />
+            <Icon size={19} aria-hidden="true" />
             <small>{label}</small>
           </Link>
         ))}

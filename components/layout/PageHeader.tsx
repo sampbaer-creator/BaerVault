@@ -19,11 +19,16 @@ export function PageHeader({ title }: PageHeaderProps) {
         <div className={styles.headerTools}>
           <label className={styles.searchControl}>
             <IconSearch size={17} aria-hidden="true" />
-            <span className={styles.srOnly}>Search BearVault</span>
-            <input type="search" placeholder="Search…" />
+            <span className={styles.srOnly}>Search BearVault (coming soon)</span>
+            <input
+              type="search"
+              placeholder="Search coming soon"
+              disabled
+              title="Search is coming soon"
+            />
           </label>
-          <button className={styles.periodControl} type="button">This month <IconChevronDown size={16} aria-hidden="true" /></button>
-          <button className={styles.iconControl} type="button" aria-label="Notifications"><IconBell size={18} /></button>
+          <button className={styles.periodControl} type="button" disabled title="Additional periods are coming soon">This month <IconChevronDown size={16} aria-hidden="true" /></button>
+          <button className={styles.iconControl} type="button" disabled aria-label="Notifications (coming soon)" title="Notifications are coming soon"><IconBell size={18} aria-hidden="true" /></button>
           <UserButton />
         </div>
       </header>

@@ -1,9 +1,22 @@
 .dashboard {
   --navy: #0b1230;
   --blue: #000080;
-  --green: #557c6f;
+  --green: #365f51;
   --soft-green: #edf4f1;
   --muted: var(--app-text-muted);
+  --dashboard-chart-primary: #000080;
+  --dashboard-chart-secondary: #557c6f;
+  --dashboard-chart-axis: #62647c;
+  --dashboard-chart-grid: rgb(29 42 54 / 10%);
+  --dashboard-chart-cursor: rgb(0 0 128 / 18%);
+  --dashboard-positive: #267056;
+  --dashboard-negative: #796451;
+  --dashboard-category-1: #000080;
+  --dashboard-category-2: #72998a;
+  --dashboard-category-3: #9b7900;
+  --dashboard-category-4: #6a91aa;
+  --dashboard-category-5: #5e7b72;
+  --dashboard-category-6: #9a7254;
   max-width: 1320px;
   margin: 0 auto;
   color: var(--app-text-strong);
@@ -51,7 +64,7 @@
 
 .cockpit {
   display: grid;
-  grid-template-columns: minmax(235px, 0.76fr) minmax(430px, 1.55fr) minmax(285px, 0.94fr);
+  grid-template-columns: minmax(280px, 0.82fr) minmax(410px, 1.5fr) minmax(285px, 0.94fr);
   gap: 16px;
   align-items: stretch;
 }
@@ -104,19 +117,20 @@
 .positionValue {
   margin: 28px 0 10px;
   color: var(--blue);
-  font-size: clamp(32px, 3vw, 45px);
+  font-size: clamp(32px, 2.65vw, 42px);
   font-variant-numeric: tabular-nums;
   font-weight: 690;
   letter-spacing: -0.04em;
   line-height: 1;
+  white-space: nowrap;
 }
 
 .positionChange {
   display: flex;
   align-items: center;
   gap: 5px;
-  color: #267056;
-  font-size: 11px;
+  color: var(--dashboard-positive);
+  font-size: 12px;
   font-weight: 650;
 }
 
@@ -137,7 +151,7 @@
 
 .positionBreakdown span {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .positionBreakdown strong {
@@ -205,7 +219,7 @@
   display: flex;
   gap: 12px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .legend span {
@@ -222,13 +236,87 @@
   border-radius: 50%;
 }
 
-.incomeDot { background: var(--blue); }
-.spendingDot { background: #72998a; }
+.incomeDot { background: var(--dashboard-chart-primary); }
+.spendingDot { background: var(--dashboard-chart-secondary); }
 
 .cashFlowChart {
   width: 100%;
   height: 230px;
   margin-top: 16px;
+}
+
+.chartLoading {
+  display: grid;
+  width: 100%;
+  height: 230px;
+  margin-top: 16px;
+  place-items: center;
+  border-radius: 12px;
+  color: var(--muted);
+  background: var(--app-hover);
+  font-size: 12px;
+}
+
+.donutLoading {
+  display: grid;
+  width: 180px;
+  height: 180px;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--muted);
+  background: var(--app-hover);
+  font-size: 12px;
+}
+
+.chartDataDetails {
+  margin: 2px 0 10px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.chartDataDetails summary {
+  width: fit-content;
+  min-height: 32px;
+  padding: 7px 2px;
+  color: var(--green);
+  font-weight: 680;
+  cursor: pointer;
+}
+
+.chartDataDetails summary:focus-visible {
+  outline: 2px solid var(--app-focus);
+  outline-offset: 2px;
+}
+
+.chartTableWrap {
+  max-height: 180px;
+  overflow: auto;
+  border: 1px solid var(--app-border);
+  border-radius: 10px;
+}
+
+.chartTableWrap table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--app-text-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+.chartTableWrap caption {
+  padding: 10px;
+  color: var(--muted);
+  text-align: left;
+}
+
+.chartTableWrap th,
+.chartTableWrap td {
+  padding: 8px 10px;
+  border-top: 1px solid var(--app-border);
+  text-align: right;
+}
+
+.chartTableWrap th:first-child {
+  text-align: left;
 }
 
 .chartTooltip {
@@ -269,7 +357,7 @@
 .chartStats div { padding: 0 15px; }
 .chartStats div:first-child { padding-left: 0; }
 .chartStats div + div { border-left: 1px solid var(--app-border); }
-.chartStats span { display: block; color: var(--muted); font-size: 10px; }
+.chartStats span { display: block; color: var(--muted); font-size: 11px; }
 .chartStats strong { display: block; margin-top: 4px; font-size: 13px; font-variant-numeric: tabular-nums; }
 
 .activityPanel {
@@ -320,14 +408,14 @@
 .activityCopy { min-width: 0; }
 .activityCopy strong,
 .activityCopy span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.activityCopy strong { font-size: 11px; font-weight: 680; }
-.activityCopy span { margin-top: 3px; color: var(--muted); font-size: 9px; }
+.activityCopy strong { font-size: 13px; font-weight: 680; }
+.activityCopy span { margin-top: 3px; color: var(--muted); font-size: 11px; }
 .incoming,
-.outgoing { font-size: 10px; font-variant-numeric: tabular-nums; font-weight: 700; }
+.outgoing { font-size: 12px; font-variant-numeric: tabular-nums; font-weight: 700; }
 .incoming,
-.positive { color: #267056; }
+.positive { color: var(--dashboard-positive); }
 .outgoing,
-.negative { color: #796451; }
+.negative { color: var(--dashboard-negative); }
 
 .lowerGrid {
   display: grid;
@@ -373,15 +461,15 @@
   align-items: center;
   gap: 9px;
   border-bottom: 1px solid var(--app-border);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .categoryRow span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .categoryRow strong { font-variant-numeric: tabular-nums; }
-.categoryRow small { color: var(--muted); font-size: 9px; font-variant-numeric: tabular-nums; }
+.categoryRow small { color: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
 
 .accountSummary { align-items: flex-end; margin-bottom: 18px; }
-.accountSummary > div span { display: block; color: var(--muted); font-size: 10px; }
+.accountSummary > div span { display: block; color: var(--muted); font-size: 11px; }
 .accountSummary > div strong { display: block; margin-top: 5px; font-size: 25px; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
 .accountCount { min-height: 30px; padding: 6px 9px; font-size: 10px; }
 .accountList { display: grid; }
@@ -398,9 +486,9 @@
 .accountRow > div { min-width: 0; }
 .accountRow > div strong,
 .accountRow > div span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.accountRow > div strong { font-size: 12px; }
-.accountRow > div span { margin-top: 3px; color: var(--muted); font-size: 10px; }
-.accountRow > strong { font-size: 12px; font-variant-numeric: tabular-nums; }
+.accountRow > div strong { font-size: 13px; }
+.accountRow > div span { margin-top: 3px; color: var(--muted); font-size: 11px; }
+.accountRow > strong { font-size: 13px; font-variant-numeric: tabular-nums; }
 
 .positionAction:focus-visible,
 .textLink:focus-visible {
@@ -428,10 +516,10 @@
 
 @media (max-width: 47.999rem) {
   .dashboard { margin: -2px -1px 0; }
-  .intro { align-items: flex-start; margin-bottom: 18px; }
+  .intro { align-items: flex-start; flex-direction: column; gap: 12px; margin-bottom: 18px; }
   .intro h2 { font-size: 29px; }
-  .intro p { max-width: 300px; font-size: 13px; }
-  .periodBadge { display: none; }
+  .intro p { max-width: 320px; font-size: 14px; }
+  .periodBadge { display: inline-flex; min-height: 36px; }
   .cockpit,
   .lowerGrid { gap: 13px; }
   .positionCard { min-height: 315px; padding: 22px; }
@@ -442,12 +530,14 @@
   .accountsPanel { padding: 20px 17px; border-radius: 14px; }
   .cashFlowPanel { min-height: 380px; }
   .cashFlowChart { height: 220px; margin-inline: -6px; width: calc(100% + 12px); }
-  .legend { display: none; }
+  .chartLoading { height: 220px; }
+  .legend { flex-basis: 100%; }
   .chartStats div { padding: 0 9px; }
-  .chartStats strong { font-size: 11px; }
+  .chartStats strong { font-size: 12px; }
   .activityList { grid-template-columns: 1fr; }
   .budgetContent { grid-template-columns: 1fr; gap: 14px; }
-  .donutWrap { width: 170px; height: 170px; margin: 0 auto; }
+  .donutWrap,
+  .donutLoading { width: 170px; height: 170px; margin: 0 auto; }
   .categoryRow { grid-template-columns: 8px minmax(80px, 1fr) auto; }
   .categoryRow small { display: none; }
   .lowerGrid { margin-top: 13px; }
@@ -459,6 +549,23 @@
 }
 
 :global(:root[data-theme="dark"]) .positionCard { background: var(--app-surface); }
+:global(:root[data-theme="dark"]) .dashboard {
+  --green: #9fd1bd;
+  --soft-green: #18352d;
+  --dashboard-chart-primary: #a7a9ff;
+  --dashboard-chart-secondary: #9fd1bd;
+  --dashboard-chart-axis: #c3c6da;
+  --dashboard-chart-grid: rgb(255 255 255 / 13%);
+  --dashboard-chart-cursor: rgb(167 169 255 / 28%);
+  --dashboard-positive: #9fd1bd;
+  --dashboard-negative: #e0b991;
+  --dashboard-category-1: #a7a9ff;
+  --dashboard-category-2: #9fd1bd;
+  --dashboard-category-3: #f0cb58;
+  --dashboard-category-4: #9abfd8;
+  --dashboard-category-5: #c0ddd1;
+  --dashboard-category-6: #d3b89f;
+}
 :global(:root[data-theme="dark"]) .positionValue { color: var(--app-text-strong); }
 :global(:root[data-theme="dark"]) .positionAction { color: var(--app-text-strong); background: var(--app-accent-soft); }
 :global(:root[data-theme="dark"]) .incomeIcon { color: #9fd1bd; background: #18352d; }
