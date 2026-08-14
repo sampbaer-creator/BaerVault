@@ -2,6 +2,7 @@
 
 import {
   IconArrowsExchange,
+  IconBuildingBank,
   IconChartPie,
   IconHome,
   IconLayoutDashboard,
@@ -23,6 +24,7 @@ import { LiquidGLRuntime } from "@/components/shared/LiquidGLRuntime";
 const links = [
   ["/demo", "Overview", IconLayoutDashboard],
   ["/demo/transactions", "Transactions", IconArrowsExchange],
+  ["/demo/accounts", "Accounts", IconBuildingBank],
   ["/demo/budget", "Budgets", IconPigMoney],
   ["/demo/investments", "Investments", IconChartPie],
   ["/demo/goals", "Goals", IconTargetArrow],

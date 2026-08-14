@@ -124,7 +124,7 @@ export function DashboardOverview({ model, basePath = "" }: DashboardProps) {
     0,
   );
   const portfolioDisplay = waitingForMarket ? "Updating…" : marketUnavailable ? "Unavailable" : money.format(portfolioValue);
-  const position = model.cashAvailable + portfolioValue;
+  const position = model.cashAssets - model.debts + portfolioValue;
   const budgetUsed = model.planned ? Math.min((model.spending / model.planned) * 100, 100) : 0;
   const savingsRate = model.income ? (model.cashAvailable / model.income) * 100 : 0;
 
@@ -154,16 +154,16 @@ export function DashboardOverview({ model, basePath = "" }: DashboardProps) {
           </div>
           <div className={styles.positionBreakdown}>
             <div>
-              <span>Available cash</span>
-              <strong>{money.format(model.cashAvailable)}</strong>
+              <span>Cash &amp; savings</span>
+              <strong>{money.format(model.cashAssets)}</strong>
             </div>
             <div>
               <span>Portfolio value</span>
               <strong>{portfolioDisplay}</strong>
             </div>
           </div>
-          <Link className={styles.positionAction} href={`${basePath}/investments`}>
-            View portfolio <IconArrowRight size={15} aria-hidden="true" />
+          <Link className={styles.positionAction} href={`${basePath}/accounts`}>
+            View all accounts <IconArrowRight size={15} aria-hidden="true" />
           </Link>
         </section>
 
@@ -231,26 +231,24 @@ export function DashboardOverview({ model, basePath = "" }: DashboardProps) {
         </section>
 
         <section className={styles.accountsPanel} aria-labelledby="accounts-title">
-          <SectionHeading id="accounts-title" title="Investment accounts" href={`${basePath}/investments`} action="Manage" />
+          <SectionHeading id="accounts-title" title="Cash accounts" href={`${basePath}/accounts`} action="Manage" />
           <div className={styles.accountSummary}>
-            <div><span>Current portfolio value</span><strong>{portfolioDisplay}</strong></div>
-            <span className={styles.accountCount}>{model.accounts.length} accounts</span>
+            <div><span>Cash &amp; savings</span><strong>{money.format(model.cashAssets)}</strong></div>
+            <span className={styles.accountCount}>{model.financialAccounts.length} accounts</span>
           </div>
           <div className={styles.accountList}>
-            {model.accounts.map((account) => {
-              const value = account.holdings.reduce(
-                (sum, holding) => sum + holding.shares * (marketState.prices[holding.symbol] ?? holding.fallbackPrice),
-                0,
-              );
-              const accountUnavailable = !basePath && account.holdings.some((holding) => marketState.unavailable.includes(holding.symbol));
-              return (
-                <div className={styles.accountRow} key={account.id}>
-                  <span className={styles.bankIcon}><IconBuildingBank size={18} aria-hidden="true" /></span>
-                  <div><strong>{account.name}</strong><span>{account.owner} · {account.holdings.length} holdings</span></div>
-                  <strong>{waitingForMarket ? "Updating…" : accountUnavailable ? "Unavailable" : money.format(value)}</strong>
-                </div>
-              );
-            })}
+            {model.financialAccounts.length ? model.financialAccounts.slice(0, 4).map((account) => (
+              <div className={styles.accountRow} key={account.id}>
+                <span className={styles.bankIcon}><IconBuildingBank size={18} aria-hidden="true" /></span>
+                <div><strong>{account.name}</strong><span>{account.institution || "Manual account"}</span></div>
+                <strong>{money.format(account.balance)}</strong>
+              </div>
+            )) : (
+              <Link className={styles.emptyAccountLink} href={`${basePath}/accounts`}>
+                Add checking or savings to complete your net worth
+                <IconArrowRight size={15} aria-hidden="true" />
+              </Link>
+            )}
           </div>
         </section>
       </div>

@@ -473,6 +473,19 @@
 .accountSummary > div strong { display: block; margin-top: 5px; font-size: 25px; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
 .accountCount { min-height: 30px; padding: 6px 9px; font-size: 10px; }
 .accountList { display: grid; }
+.emptyAccountLink {
+  display: flex;
+  min-height: 70px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px;
+  border-top: 1px solid var(--app-border);
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 680;
+  text-decoration: none;
+}
 
 .accountRow {
   display: grid;

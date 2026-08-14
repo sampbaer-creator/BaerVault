@@ -5,6 +5,7 @@ import {
   totalSpending,
   type BudgetMonth,
 } from "@/lib/finance";
+import { isDebtAccount, type FinancialAccount } from "@/lib/accounts";
 import { sharesFor, type InvestmentAccount } from "@/lib/investmentData";
 
 export type DashboardCashFlowPoint = {
@@ -38,22 +39,31 @@ export type DashboardAccount = {
   }>;
 };
 
+export type DashboardFinancialAccount = Pick<
+  FinancialAccount,
+  "id" | "name" | "institution" | "type" | "balance"
+>;
+
 export type DashboardViewModel = {
   month: string;
   income: number;
   spending: number;
   planned: number;
   cashAvailable: number;
+  cashAssets: number;
+  debts: number;
   cashFlowSeries: DashboardCashFlowPoint[];
   categories: DashboardCategory[];
   activity: DashboardActivity[];
   accounts: DashboardAccount[];
+  financialAccounts: DashboardFinancialAccount[];
   symbols: string[];
 };
 
 export function createDashboardViewModel(
   budget: BudgetMonth,
   accounts: InvestmentAccount[],
+  financialAccounts: FinancialAccount[] = [],
 ): DashboardViewModel {
   const events = [
     ...budget.incomeEntries.map((entry) => ({
@@ -131,6 +141,14 @@ export function createDashboardViewModel(
     spending,
     planned: totalPlanned(budget),
     cashAvailable: income - spending,
+    cashAssets: financialAccounts.reduce(
+      (sum, account) => sum + (isDebtAccount(account.type) ? 0 : account.balance),
+      0,
+    ),
+    debts: financialAccounts.reduce(
+      (sum, account) => sum + (isDebtAccount(account.type) ? account.balance : 0),
+      0,
+    ),
     cashFlowSeries: Array.from(cashFlowByDate, ([date, values]) => ({
       day: new Date(`${date}T12:00:00`).toLocaleDateString("en-US", {
         month: "short",
@@ -148,6 +166,15 @@ export function createDashboardViewModel(
       .sort((a, b) => b.value - a.value),
     activity,
     accounts: dashboardAccounts,
+    financialAccounts: financialAccounts.map(
+      ({ id, name, institution, type, balance }) => ({
+        id,
+        name,
+        institution,
+        type,
+        balance,
+      }),
+    ),
     symbols: [...new Set(dashboardAccounts.flatMap((account) =>
       account.holdings.map((holding) => holding.symbol),
     ))],

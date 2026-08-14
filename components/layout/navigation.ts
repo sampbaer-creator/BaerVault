@@ -1,5 +1,6 @@
 import {
   IconBuildingCommunity,
+  IconBuildingBank,
   IconChartPie,
   IconTargetArrow,
   IconArrowsExchange,
@@ -19,6 +20,7 @@ export type NavigationItem = {
 export const mainNavigation: NavigationItem[] = [
   { href: "/dashboard", label: "Overview", icon: IconLayoutDashboard },
   { href: "/transactions", label: "Transactions", icon: IconArrowsExchange },
+  { href: "/accounts", label: "Accounts", icon: IconBuildingBank },
   { href: "/budget", label: "Budgets", icon: IconPigMoney },
   { href: "/investments", label: "Investments", icon: IconChartPie },
   { href: "/goals", label: "Goals", icon: IconTargetArrow },
@@ -43,6 +45,7 @@ export const moreNavigation: NavigationItem[] = [
 export const pageTitles: Record<string, string> = {
   "/dashboard": "Overview",
   "/transactions": "Transactions",
+  "/accounts": "Accounts",
   "/budget": "Budgets",
   "/cash-flow": "Transactions",
   "/investments": "Investments",
