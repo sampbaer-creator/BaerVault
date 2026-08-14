@@ -457,3 +457,28 @@
 @media (prefers-reduced-motion: reduce) {
   .detailPanel { transition: none; }
 }
+
+/* Compact desktop composition aligned with the reference workspace. */
+@media (min-width: 48rem) {
+  .pageHeader {
+    min-height: 38px;
+    align-items: center;
+    justify-content: flex-end;
+    margin-bottom: 12px;
+  }
+  .pageHeader > div { display: none; }
+  .addButton { min-height: 36px; padding-inline: 12px; border-radius: 8px; box-shadow: none !important; font-size: 11px; }
+  .demoNotice { margin-bottom: 12px; padding-block: 8px; border-radius: 8px; font-size: 10px; }
+  .accountLayout { grid-template-columns: minmax(0, 1.55fr) minmax(330px, .85fr); gap: 14px; }
+  .netWorthCard { min-height: 290px; padding: 22px; border-radius: 16px; box-shadow: none; }
+  .summaryHeader { justify-content: center; text-align: center; }
+  .summaryHeader > div > span { display: none; }
+  .summaryHeader > div > strong { font-size: 28px; }
+  .privateBadge { position: absolute; top: 0; right: 0; }
+  .totalsGrid { margin: 16px auto 0; text-align: left; }
+  .netWorthLine { bottom: 32px; height: 110px; }
+  .groups { margin-top: 14px; border-radius: 14px; box-shadow: none; }
+  .groupHeader { min-height: 42px; padding: 8px 14px; }
+  .accountRow { min-height: 62px; }
+  .detailPanel { top: 66px; min-height: 620px; border-radius: 14px; box-shadow: none; }
+}

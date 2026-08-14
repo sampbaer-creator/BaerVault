@@ -11,6 +11,7 @@ import {
   IconSettings,
   IconTargetArrow,
   IconUsers,
+  IconChevronDown,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -22,7 +23,7 @@ import styles from "./DemoShell.module.css";
 import { LiquidGLRuntime } from "@/components/shared/LiquidGLRuntime";
 
 const links = [
-  ["/demo", "Overview", IconLayoutDashboard],
+  ["/demo", "Dashboard", IconLayoutDashboard],
   ["/demo/transactions", "Transactions", IconArrowsExchange],
   ["/demo/accounts", "Accounts", IconBuildingBank],
   ["/demo/budget", "Budgets", IconPigMoney],
@@ -34,6 +35,12 @@ const links = [
 
 const mobileLinks = links.slice(0, 4);
 const moreLinks = links.slice(4);
+
+const accountGroups = [
+  { label: "Credit cards", accounts: [["BearVault Card", "$552"], ["Everyday Visa", "$0"]] },
+  { label: "Cash", accounts: [["Household checking", "$8,420"], ["Emergency savings", "$12,600"]] },
+  { label: "Investments", accounts: [["Joint brokerage", "$17,817"], ["Retirement", "$21,603"]] },
+] as const;
 
 export function DemoShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -79,6 +86,20 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
             </Link>
           ))}
         </nav>
+        <div className={styles.accountRail} aria-label="Demo accounts">
+          {accountGroups.map((group) => (
+            <section key={group.label}>
+              <h2><IconChevronDown size={12} aria-hidden="true" />{group.label}</h2>
+              {group.accounts.map(([name, balance]) => (
+                <Link href="/demo/accounts" key={name}>
+                  <i aria-hidden="true" />
+                  <span>{name}</span>
+                  <strong>{balance}</strong>
+                </Link>
+              ))}
+            </section>
+          ))}
+        </div>
         <div className={styles.sidebarFooter}>
           <strong>Demo Household</strong>
           <small>Mock data only · never saved</small>

@@ -15,7 +15,7 @@ const manrope = Manrope({
   subsets: ["latin"],
 });
 
-const preferenceBootstrap = `(function(){try{var root=document.documentElement;var defaults={theme:"system",accent:"navy",palette:"vault",density:"comfortable",reducedMotion:false};var saved=localStorage.getItem("bearvault-preferences");var value=saved?Object.assign({},defaults,JSON.parse(saved)):defaults;var system=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";root.dataset.theme=value.theme==="system"?system:value.theme;root.dataset.accent=value.accent;root.dataset.palette=value.palette;root.dataset.density=value.density;root.dataset.motion=value.reducedMotion?"reduced":"full";}catch(e){}})();`;
+const preferenceBootstrap = `(function(){try{var root=document.documentElement;var defaults={theme:"system",palette:"ledger-navy",density:"comfortable",reducedMotion:false};var saved=localStorage.getItem("bearvault-preferences");var value=saved?Object.assign({},defaults,JSON.parse(saved)):defaults;var system=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";root.dataset.theme=value.theme==="system"?system:value.theme;root.dataset.palette=value.palette;root.dataset.density=value.density;root.dataset.motion=value.reducedMotion?"reduced":"full";}catch(e){}})();`;
 
 export const metadata: Metadata = {
   title: { default: "BearVault", template: "%s | BearVault" },

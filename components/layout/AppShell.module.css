@@ -28,7 +28,7 @@
   inset: 0 auto 0 0;
   z-index: 20;
   display: flex;
-  width: 248px;
+  width: 232px;
   overflow: hidden;
   border-right: 1px solid var(--app-border);
   border-radius: 0;
@@ -40,7 +40,7 @@
   position: fixed;
   inset: 0 auto 0 0;
   z-index: 0;
-  width: 248px;
+  width: 232px;
   border: 0;
   border-radius: 0;
   background: var(--app-surface);
@@ -71,12 +71,13 @@
 
 .brand {
   display: flex;
-  height: 82px;
+  height: 52px;
   align-items: center;
   gap: 12px;
-  padding: 0 24px;
+  padding: 0 16px;
   color: var(--app-text-strong);
-  font-size: 20px;
+  border-bottom: 1px solid var(--app-border);
+  font-size: 16px;
   font-weight: 750;
   letter-spacing: -0.035em;
 }
@@ -93,18 +94,18 @@
 
 .sidebarNav {
   flex: 1;
-  padding: 8px 14px 24px;
+  padding: 10px 8px 18px;
   overflow-y: auto;
 }
 
 .navSection + .navSection {
-  margin-top: 26px;
+  margin-top: 16px;
 }
 
 .navLabel {
-  margin: 0 12px 8px;
+  margin: 0 10px 6px;
   color: var(--app-text-muted);
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 750;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -113,14 +114,14 @@
 .navLink {
   position: relative;
   display: flex;
-  min-height: 44px;
+  min-height: 36px;
   align-items: center;
-  gap: 12px;
+  gap: 9px;
   margin-bottom: 2px;
-  padding: 10px 12px;
-  border-radius: 8px;
+  padding: 7px 10px;
+  border-radius: 7px;
   color: var(--app-text-muted);
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   text-decoration: none;
   border: 1px solid transparent;
@@ -150,15 +151,15 @@
 }
 
 .navLinkActive {
-  color: var(--app-text-strong);
-  border-color: var(--app-border);
-  background: var(--app-accent-soft);
+  color: var(--app-accent);
+  border-color: color-mix(in srgb, var(--app-accent) 28%, var(--app-border));
+  background: color-mix(in srgb, var(--app-accent-soft) 72%, var(--app-surface));
   box-shadow: none;
 }
 .navLinkActive::after {
   position: absolute;
-  inset: 10px auto 10px 4px;
-  width: 3px;
+  inset: 8px auto 8px 3px;
+  width: 2px;
   border-radius: 999px;
   background: var(--app-accent);
   box-shadow: 0 0 12px color-mix(in srgb, var(--app-accent) 48%, transparent);
@@ -166,7 +167,7 @@
 }
 
 .sidebarFooter {
-  padding: 18px 20px 22px;
+  padding: 12px 14px 16px;
   border-top: 1px solid var(--app-border);
 }
 
@@ -203,7 +204,7 @@
 .contentColumn {
   min-width: 0;
   min-height: 100dvh;
-  margin-left: 248px;
+  margin-left: 232px;
   overflow: clip;
   border: 0;
   border-radius: 0;
@@ -216,11 +217,11 @@
   top: 0;
   z-index: 10;
   display: flex;
-  min-height: 88px;
+  min-height: 52px;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 16px clamp(24px, 3vw, 40px);
+  padding: 8px 24px;
   border-bottom: 1px solid var(--app-border);
   background: var(--app-surface);
   box-shadow: none;
@@ -229,24 +230,22 @@
 .headerTitle {
   margin: 0;
   color: var(--app-text-strong);
-  font-size: clamp(23px, 2vw, 28px);
+  font-size: 14px;
   font-weight: 720;
   letter-spacing: -0.035em;
   line-height: 1.2;
 }
 
 .headerSubtitle {
-  margin: 5px 0 0;
-  color: var(--app-text-muted);
-  font-size: 13px;
+  display: none;
 }
 
 .headerTools { display: flex; align-items: center; gap: 10px; }
-.searchControl { display: flex; width: min(230px, 19vw); min-height: 40px; align-items: center; gap: 9px; padding: 0 12px; border: 1px solid var(--app-border); border-radius: 10px; color: var(--app-text-muted); background: var(--app-background); }
+.searchControl { display: flex; width: min(210px, 18vw); min-height: 34px; align-items: center; gap: 8px; padding: 0 10px; border: 1px solid var(--app-border); border-radius: 8px; color: var(--app-text-muted); background: var(--app-background); font-size: 11px; }
 .searchControl input { min-width: 0; width: 100%; border: 0; outline: 0; color: var(--app-text-strong); background: transparent; }
-.periodControl, .iconControl { min-height: 40px; border: 1px solid var(--app-border) !important; border-radius: 10px; background: var(--app-background) !important; box-shadow: none !important; backdrop-filter: none; }
+.periodControl, .iconControl { min-height: 34px; border: 1px solid var(--app-border) !important; border-radius: 8px; background: var(--app-background) !important; box-shadow: none !important; backdrop-filter: none; font-size: 11px; }
 .periodControl { display: inline-flex; align-items: center; gap: 10px; padding: 0 13px; }
-.iconControl { display: grid; width: 40px; place-items: center; padding: 0; }
+.iconControl { display: grid; width: 34px; place-items: center; padding: 0; }
 .periodControl::before, .iconControl::before { display: none; }
 .searchControl:has(input:disabled),
 .periodControl:disabled,
@@ -255,9 +254,9 @@
 
 .main {
   width: 100%;
-  max-width: 1440px;
+  max-width: 1600px;
   margin: 0 auto;
-  padding: 28px clamp(24px, 3vw, 40px) 56px;
+  padding: 24px clamp(20px, 2.5vw, 36px) 48px;
 }
 
 .main:focus {

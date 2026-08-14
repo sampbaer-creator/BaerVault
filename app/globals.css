@@ -1,26 +1,26 @@
 :root {
   color-scheme: light;
-  --brand-navy: #0e3b2e;
-  --brand-gold: #5fb88a;
-  --brand-gold-bright: #5fb88a;
-  --brand-gold-soft: #d7e7dd;
-  --app-background: #f6fbf7;
+  --brand-navy: #062650;
+  --brand-gold: #4f8ff7;
+  --brand-gold-bright: #4f8ff7;
+  --brand-gold-soft: #eaf1ff;
+  --app-background: #f7f8fa;
   --app-surface: #fff;
-  --app-surface-raised: #e8f2eb;
-  --app-border: #bfd3c6;
-  --app-hover: #d7e7dd;
-  --app-text-strong: #0e3b2e;
-  --app-text-muted: #46685d;
-  --app-accent: #1f6f54;
-  --app-accent-soft: #d7e7dd;
-  --app-focus: #1f6f54;
+  --app-surface-raised: #f0f3f7;
+  --app-border: #e0e4ea;
+  --app-hover: #f1f3f6;
+  --app-text-strong: #062650;
+  --app-text-muted: #7d89a2;
+  --app-accent: #3578f6;
+  --app-accent-soft: #edf3ff;
+  --app-focus: #3578f6;
   --app-danger: #b84352;
   --brand-green: #16834f;
   --money-positive: #16834f;
   --money-negative: #b84352;
-  --chart-primary: #1f6f54;
-  --chart-secondary: #5fb88a;
-  --chart-tertiary: #d7e7dd;
+  --chart-primary: #4f8ff7;
+  --chart-secondary: #09b85a;
+  --chart-tertiary: #dce8ff;
   --glass-surface: linear-gradient(
     145deg,
     rgb(255 255 255 / 60%),
@@ -123,9 +123,9 @@
   --window-shadow: 0 28px 90px rgb(0 0 0 / 42%);
 }
 :root[data-accent="navy"] {
-  --app-accent: #000080;
-  --app-accent-soft: #f2e7c9;
-  --app-focus: #d4af37;
+  --app-accent: #3578f6;
+  --app-accent-soft: #edf3ff;
+  --app-focus: #3578f6;
 }
 :root[data-theme="dark"][data-accent="navy"] {
   --app-accent: #f0cb58;

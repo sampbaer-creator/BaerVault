@@ -1,5 +1,5 @@
 import { UserButton } from "@clerk/nextjs";
-import { IconBell, IconChevronDown, IconSearch } from "@tabler/icons-react";
+import { IconBell, IconPlus, IconSearch } from "@tabler/icons-react";
 
 import { BearVaultLogo } from "@/components/brand/BearVaultLogo";
 import styles from "./AppShell.module.css";
@@ -27,7 +27,7 @@ export function PageHeader({ title }: PageHeaderProps) {
               title="Search is coming soon"
             />
           </label>
-          <button className={styles.periodControl} type="button" disabled title="Additional periods are coming soon">This month <IconChevronDown size={16} aria-hidden="true" /></button>
+          <button className={styles.periodControl} type="button" disabled title="Quick add is coming soon"><IconPlus size={15} aria-hidden="true" /> Add</button>
           <button className={styles.iconControl} type="button" disabled aria-label="Notifications (coming soon)" title="Notifications are coming soon"><IconBell size={18} aria-hidden="true" /></button>
           <UserButton />
         </div>

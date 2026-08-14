@@ -18,7 +18,7 @@ export type NavigationItem = {
 };
 
 export const mainNavigation: NavigationItem[] = [
-  { href: "/dashboard", label: "Overview", icon: IconLayoutDashboard },
+  { href: "/dashboard", label: "Dashboard", icon: IconLayoutDashboard },
   { href: "/transactions", label: "Transactions", icon: IconArrowsExchange },
   { href: "/accounts", label: "Accounts", icon: IconBuildingBank },
   { href: "/budget", label: "Budgets", icon: IconPigMoney },
@@ -43,7 +43,7 @@ export const moreNavigation: NavigationItem[] = [
 ];
 
 export const pageTitles: Record<string, string> = {
-  "/dashboard": "Overview",
+  "/dashboard": "Dashboard",
   "/transactions": "Transactions",
   "/accounts": "Accounts",
   "/budget": "Budgets",

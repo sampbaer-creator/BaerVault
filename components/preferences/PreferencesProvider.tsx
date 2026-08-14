@@ -19,7 +19,7 @@ type Preferences = {
 };
 const defaults: Preferences = {
   theme: "system",
-  palette: "vault-green",
+  palette: "ledger-navy",
   density: "comfortable",
   reducedMotion: false,
   currency: "USD",
