@@ -4,6 +4,7 @@ import "@mantine/core/styles.css";
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import type { Metadata, Viewport } from "next";
 import { Manrope } from "next/font/google";
+import Script from "next/script";
 
 import "./globals.css";
 import { PreferencesProvider } from "@/components/preferences/PreferencesProvider";
@@ -13,6 +14,8 @@ const manrope = Manrope({
   variable: "--font-manrope",
   subsets: ["latin"],
 });
+
+const preferenceBootstrap = `(function(){try{var root=document.documentElement;var defaults={theme:"system",accent:"navy",palette:"vault",density:"comfortable",reducedMotion:false};var saved=localStorage.getItem("bearvault-preferences");var value=saved?Object.assign({},defaults,JSON.parse(saved)):defaults;var system=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";root.dataset.theme=value.theme==="system"?system:value.theme;root.dataset.accent=value.accent;root.dataset.palette=value.palette;root.dataset.density=value.density;root.dataset.motion=value.reducedMotion?"reduced":"full";}catch(e){}})();`;
 
 export const metadata: Metadata = {
   title: { default: "BearVault", template: "%s | BearVault" },
@@ -38,9 +41,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className={manrope.variable} suppressHydrationWarning>
       <head>
-        <ColorSchemeScript defaultColorScheme="light" />
+        <ColorSchemeScript defaultColorScheme="auto" />
       </head>
       <body>
+        <Script id="bearvault-preferences" strategy="beforeInteractive">
+          {preferenceBootstrap}
+        </Script>
         <MobileViewportRuntime />
         <ClerkProvider>
           <MantineProvider defaultColorScheme="auto"><PreferencesProvider>{children}</PreferencesProvider></MantineProvider>

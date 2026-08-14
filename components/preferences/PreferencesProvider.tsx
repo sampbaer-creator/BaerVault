@@ -43,6 +43,7 @@ export function PreferencesProvider({
   children: React.ReactNode;
 }) {
   const [preferences, setPreferences] = useState(defaults);
+  const [storageReady, setStorageReady] = useState(false);
   useEffect(() => {
     const timer = window.setTimeout(() => {
       try {
@@ -58,10 +59,12 @@ export function PreferencesProvider({
           setPreferences({ ...defaults, ...parsed, accent, palette });
         }
       } catch {}
+      setStorageReady(true);
     }, 0);
     return () => clearTimeout(timer);
   }, []);
   useEffect(() => {
+    if (!storageReady) return;
     const root = document.documentElement;
     const system = matchMedia("(prefers-color-scheme: dark)").matches
       ? "dark"
@@ -73,7 +76,7 @@ export function PreferencesProvider({
     root.dataset.density = preferences.density;
     root.dataset.motion = preferences.reducedMotion ? "reduced" : "full";
     localStorage.setItem("bearvault-preferences", JSON.stringify(preferences));
-  }, [preferences]);
+  }, [preferences, storageReady]);
   const value = useMemo(
     () => ({
       preferences,

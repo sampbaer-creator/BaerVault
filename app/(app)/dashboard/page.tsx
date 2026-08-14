@@ -1,12 +1,15 @@
 import { DashboardOverview } from "@/components/dashboard/DashboardOverview";
+import { createDashboardViewModel } from "@/components/dashboard/dashboardViewModel";
+import { getFinancialAccounts } from "@/lib/data/accounts";
 import { getBudgetMonth } from "@/lib/data/budgets";
 import { getInvestmentAccounts } from "@/lib/data/investments";
 
 export default async function DashboardPage() {
   const now = new Date();
-  const [budget, accounts] = await Promise.all([
+  const [budget, accounts, financialAccounts] = await Promise.all([
     getBudgetMonth(now.getUTCFullYear(), now.getUTCMonth() + 1),
     getInvestmentAccounts(),
+    getFinancialAccounts(),
   ]);
-  return <DashboardOverview budget={budget} accounts={accounts} />;
+  return <DashboardOverview model={createDashboardViewModel(budget, accounts, financialAccounts)} />;
 }

@@ -4,6 +4,25 @@
   background: var(--app-background);
 }
 
+.skipLink {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 1000;
+  padding: 10px 14px;
+  border-radius: 10px;
+  color: white;
+  background: var(--app-accent);
+  font-weight: 700;
+  text-decoration: none;
+  transform: translateY(-160%);
+  transition: transform var(--motion-spatial-fast) var(--ease-out);
+}
+
+.skipLink:focus {
+  transform: translateY(0);
+}
+
 .sidebar {
   position: fixed;
   inset: 0 auto 0 0;
@@ -229,6 +248,9 @@
 .periodControl { display: inline-flex; align-items: center; gap: 10px; padding: 0 13px; }
 .iconControl { display: grid; width: 40px; place-items: center; padding: 0; }
 .periodControl::before, .iconControl::before { display: none; }
+.searchControl:has(input:disabled),
+.periodControl:disabled,
+.iconControl:disabled { opacity: 0.62; cursor: not-allowed; }
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 .main {
@@ -236,6 +258,10 @@
   max-width: 1440px;
   margin: 0 auto;
   padding: 28px clamp(24px, 3vw, 40px) 56px;
+}
+
+.main:focus {
+  outline: none;
 }
 
 .pageIntro {
@@ -457,7 +483,7 @@
 
   .mobileLink span,
   .moreButton span {
-    font-size: 9px;
+    font-size: 10px;
   }
 }
 
@@ -487,7 +513,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .navLink {
+  .navLink,
+  .skipLink {
     transition: none;
   }
 }
