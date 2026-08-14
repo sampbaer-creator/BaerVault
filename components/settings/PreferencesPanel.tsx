@@ -1,46 +1,62 @@
 "use client";
 
-import { IconRefresh } from "@tabler/icons-react";
-import type { CSSProperties } from "react";
+import { IconCheck, IconChevronDown, IconRefresh } from "@tabler/icons-react";
+import { type CSSProperties, useRef } from "react";
 
 import { usePreferences } from "@/components/preferences/PreferencesProvider";
-import { financePaletteIds, financePalettes } from "@/lib/themePalettes";
+import {
+  financePaletteIds,
+  financePalettes,
+  type FinancePaletteId,
+} from "@/lib/themePalettes";
 import styles from "./SettingsWorkspace.module.css";
 
 export function PreferencesPanel() {
   const { preferences, update, reset } = usePreferences();
+  const paletteMenuRef = useRef<HTMLDetailsElement>(null);
+  const selectedPalette = financePalettes[preferences.palette];
 
   return (
     <>
       <section id="appearance">
         <h3>Appearance</h3>
-        <p>Choose a finance palette for this device. Vault Green is the BearVault default.</p>
+        <p>Choose a finance palette for this device. Ledger Navy is the BearVault default.</p>
         <Field label="Color palette">
-          <div className={styles.palettes}>
-            {financePaletteIds.map((paletteId) => {
-              const palette = financePalettes[paletteId];
-              const previewStyle = {
-                "--palette-1": palette.colors[0],
-                "--palette-2": palette.colors[1],
-                "--palette-3": palette.colors[2],
-                "--palette-4": palette.colors[3],
-                "--palette-5": palette.colors[4],
-              } as CSSProperties;
-              return (
-                <button
-                  key={paletteId}
-                  style={previewStyle}
-                  aria-label={`${palette.name}: ${palette.mood}`}
-                  aria-pressed={preferences.palette === paletteId}
-                  onClick={() => update({ palette: paletteId })}
-                >
-                  <span aria-hidden="true"><i /><i /><i /><i /><i /></span>
-                  <strong>{palette.name}</strong>
-                  <small>{palette.mood}</small>
-                </button>
-              );
-            })}
-          </div>
+          <details className={styles.palettePicker} ref={paletteMenuRef}>
+            <summary style={paletteStyle(preferences.palette)}>
+              <span className={styles.palettePreview} aria-hidden="true"><i /><i /><i /><i /><i /></span>
+              <span className={styles.paletteSummaryCopy}>
+                <strong>{selectedPalette.name}</strong>
+                <small>{selectedPalette.mood}</small>
+              </span>
+              <IconChevronDown className={styles.paletteChevron} size={18} aria-hidden="true" />
+            </summary>
+            <div className={styles.paletteMenu} role="group" aria-label="Color palette options">
+              {financePaletteIds.map((paletteId) => {
+                const palette = financePalettes[paletteId];
+                const selected = preferences.palette === paletteId;
+                return (
+                  <button
+                    key={paletteId}
+                    type="button"
+                    style={paletteStyle(paletteId)}
+                    aria-pressed={selected}
+                    onClick={() => {
+                      update({ palette: paletteId });
+                      paletteMenuRef.current?.removeAttribute("open");
+                    }}
+                  >
+                    <span className={styles.palettePreview} aria-hidden="true"><i /><i /><i /><i /><i /></span>
+                    <span className={styles.paletteChoiceCopy}>
+                      <strong>{palette.name}</strong>
+                      <small>{palette.mood}</small>
+                    </span>
+                    {selected ? <IconCheck size={17} aria-hidden="true" /> : null}
+                  </button>
+                );
+              })}
+            </div>
+          </details>
         </Field>
         <Field label="Light and dark mode">
           <Segment value={preferences.theme} options={["light", "dark", "system"]} onChange={(theme) => update({ theme: theme as typeof preferences.theme })} />
@@ -65,6 +81,17 @@ export function PreferencesPanel() {
       </section>
     </>
   );
+}
+
+function paletteStyle(paletteId: FinancePaletteId) {
+  const colors = financePalettes[paletteId].colors;
+  return {
+    "--palette-1": colors[0],
+    "--palette-2": colors[1],
+    "--palette-3": colors[2],
+    "--palette-4": colors[3],
+    "--palette-5": colors[4],
+  } as CSSProperties;
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {

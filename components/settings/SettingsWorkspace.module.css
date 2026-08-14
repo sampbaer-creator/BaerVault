@@ -93,51 +93,101 @@
   display: flex;
   gap: 8px;
 }
-.palettes {
+.palettePicker {
+  position: relative;
+  min-width: 0;
+}
+.palettePicker summary {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 10px;
+  min-height: 64px;
+  grid-template-columns: 112px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--app-border);
+  border-radius: 11px;
+  background: var(--app-surface);
+  cursor: pointer;
+  list-style: none;
 }
-.field:has(.palettes) {
-  grid-template-columns: 1fr;
+.palettePicker summary::-webkit-details-marker { display: none; }
+.palettePicker summary:focus-visible {
+  outline: 2px solid var(--app-focus);
+  outline-offset: 2px;
 }
-.palettes button {
-  display: grid;
-  min-height: 104px;
-  justify-items: start;
-  align-content: start;
-  gap: 7px;
-  padding: 12px;
-  border-radius: 12px;
-}
-.palettes button > span {
+.palettePreview {
   display: grid;
   width: 100%;
   grid-template-columns: repeat(5, 1fr);
   overflow: hidden;
   border: 1px solid rgb(255 255 255 / 38%);
-  border-radius: 8px;
+  border-radius: 7px;
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 48%);
 }
-.palettes i {
-  height: 24px;
-}
-.palettes i:nth-child(1) { background: var(--palette-1); }
-.palettes i:nth-child(2) { background: var(--palette-2); }
-.palettes i:nth-child(3) { background: var(--palette-3); }
-.palettes i:nth-child(4) { background: var(--palette-4); }
-.palettes i:nth-child(5) { background: var(--palette-5); }
-.palettes strong { font-size: 12px; }
-.palettes small {
+.palettePreview i { height: 26px; }
+.palettePreview i:nth-child(1) { background: var(--palette-1); }
+.palettePreview i:nth-child(2) { background: var(--palette-2); }
+.palettePreview i:nth-child(3) { background: var(--palette-3); }
+.palettePreview i:nth-child(4) { background: var(--palette-4); }
+.palettePreview i:nth-child(5) { background: var(--palette-5); }
+.paletteSummaryCopy,
+.paletteChoiceCopy { min-width: 0; }
+.paletteSummaryCopy strong,
+.paletteSummaryCopy small,
+.paletteChoiceCopy strong,
+.paletteChoiceCopy small { display: block; }
+.paletteSummaryCopy strong,
+.paletteChoiceCopy strong { font-size: 12px; }
+.paletteSummaryCopy small,
+.paletteChoiceCopy small {
+  margin-top: 3px;
   color: var(--app-text-muted);
   font-size: 10px;
   line-height: 1.35;
   text-align: left;
 }
-.palettes button[aria-pressed="true"] {
-  outline: 2px solid var(--app-focus);
-  outline-offset: 2px;
+.paletteChevron {
+  color: var(--app-text-muted);
+  transition: transform var(--motion-spatial-fast) var(--ease-out);
 }
+.palettePicker[open] .paletteChevron { transform: rotate(180deg); }
+.paletteMenu {
+  position: absolute;
+  top: calc(100% + 7px);
+  right: 0;
+  z-index: 20;
+  display: grid;
+  width: min(430px, calc(100vw - 48px));
+  max-height: min(430px, 60vh);
+  padding: 7px;
+  overflow-y: auto;
+  border: 1px solid var(--glass-edge);
+  border-radius: 12px;
+  background: var(--glass-strong);
+  box-shadow: var(--shadow-dialog);
+  backdrop-filter: blur(28px) saturate(155%);
+}
+.paletteMenu button {
+  display: grid;
+  min-height: 58px;
+  grid-template-columns: 96px minmax(0, 1fr) 20px;
+  align-items: center;
+  gap: 11px;
+  padding: 8px 10px;
+  border: 0 !important;
+  border-radius: 8px;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-align: left;
+  text-shadow: none !important;
+  cursor: pointer;
+}
+.paletteMenu button::before { display: none; }
+.paletteMenu button:hover,
+.paletteMenu button[aria-pressed="true"] { background: var(--app-hover) !important; }
+.paletteMenu button[aria-pressed="true"] { color: var(--app-accent) !important; }
+.paletteMenu button:focus-visible { position: relative; z-index: 1; outline: 2px solid var(--app-focus); outline-offset: -2px; }
+.paletteMenu button > svg { justify-self: end; }
 .swatches button {
   min-height: 38px;
   padding: 8px 12px;
@@ -285,11 +335,16 @@
   }
 }
 .page nav,
-.page section,
-.palettes button {
+.page section {
   border-color: var(--glass-edge);
   background: var(--glass-strong);
   box-shadow: var(--shadow-glass), inset 0 1px 0 var(--glass-highlight);
   backdrop-filter: blur(26px) saturate(155%);
   -webkit-backdrop-filter: blur(26px) saturate(155%);
+}
+
+@media (max-width: 520px) {
+  .palettePicker summary { grid-template-columns: 88px minmax(0, 1fr) auto; }
+  .paletteMenu { right: auto; left: 0; width: min(430px, calc(100vw - 64px)); }
+  .paletteMenu button { grid-template-columns: 74px minmax(0, 1fr) 18px; }
 }
