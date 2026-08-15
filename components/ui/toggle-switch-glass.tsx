@@ -82,14 +82,14 @@ function AnimatedLiquidGlass({
 
 const sizeConfig = {
   sm: {
-    trackWidth: 51,
-    trackHeight: 31,
-    knobWidth: 27,
-    knobMargin: 2,
-    indicatorWidth: 2,
-    indicatorHeight: 9,
-    indicatorOffset: 11,
-    circleSize: 7,
+    trackWidth: 36,
+    trackHeight: 20,
+    knobWidth: 18,
+    knobMargin: 1.5,
+    indicatorWidth: 1.5,
+    indicatorHeight: 7,
+    indicatorOffset: 8,
+    circleSize: 5.5,
   },
   md: {
     trackWidth: 60,

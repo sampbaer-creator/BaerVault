@@ -21,7 +21,7 @@
 .sidebar {
   position: fixed;
   inset: 0 auto 0 0;
-  width: 232px;
+  width: 248px;
   padding: 0 8px 12px;
   display: flex;
   flex-direction: column;
@@ -35,7 +35,7 @@
   position: fixed;
   inset: 0 auto 0 0;
   z-index: 0;
-  width: 232px;
+  width: 248px;
   border: 0;
   border-radius: 0;
   background: var(--app-surface);
@@ -65,7 +65,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  height: 52px;
+  height: 48px;
   padding: 0 8px;
   border-bottom: 1px solid var(--app-border);
   color: var(--app-text-strong);
@@ -86,8 +86,8 @@
   margin: 10px 5px 8px;
   padding: 6px 8px;
   border-radius: 9px;
-  color: #000060;
-  background: #f2e7c9;
+  color: var(--app-accent);
+  background: var(--app-accent-soft);
   font-size: 9px;
   font-weight: 750;
   text-transform: uppercase;
@@ -146,7 +146,7 @@
 }
 .content {
   min-height: 100dvh;
-  margin-left: 232px;
+  margin-left: 248px;
   overflow: clip;
   border: 0;
   border-radius: 0;
@@ -154,7 +154,7 @@
   box-shadow: none;
 }
 .content > header {
-  height: 52px;
+  height: 48px;
   padding: 0 24px;
   display: flex;
   align-items: center;
@@ -181,14 +181,8 @@
   border-radius: 8px;
   border: 1px solid rgb(255 255 255 / 20%);
   color: white;
-  background: linear-gradient(
-    145deg,
-    color-mix(in srgb, var(--app-accent) 88%, white),
-    #000060
-  );
-  box-shadow:
-    0 10px 26px rgb(17 20 57 / 18%),
-    inset 0 1px 0 rgb(255 255 255 / 28%);
+  background: var(--app-accent);
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--app-accent) 22%, transparent);
   font-size: 11px;
   font-weight: 700;
   text-decoration: none;

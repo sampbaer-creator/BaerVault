@@ -33,6 +33,7 @@ export function isFinancePaletteId(value: unknown): value is FinancePaletteId {
 
 export function paletteVariables(paletteId: FinancePaletteId, dark: boolean) {
   const [deep, mid, accent, tint, canvas] = financePalettes[paletteId].colors;
+  const darkAccent = `color-mix(in srgb, ${accent} 58%, white)`;
   const common = {
     "--brand-gold": accent,
     "--brand-gold-bright": accent,
@@ -46,7 +47,7 @@ export function paletteVariables(paletteId: FinancePaletteId, dark: boolean) {
       "--brand-green": "#79D4A5",
       "--money-positive": "#79D4A5",
       "--money-negative": "#FF9AA6",
-      "--chart-primary": accent,
+      "--chart-primary": darkAccent,
       "--chart-secondary": tint,
       "--brand-navy": canvas,
       "--brand-gold-soft": `color-mix(in srgb, ${accent} 18%, ${deep})`,
@@ -57,9 +58,9 @@ export function paletteVariables(paletteId: FinancePaletteId, dark: boolean) {
       "--app-hover": `color-mix(in srgb, ${mid} 62%, ${deep})`,
       "--app-text-strong": canvas,
       "--app-text-muted": tint,
-      "--app-accent": accent,
+      "--app-accent": darkAccent,
       "--app-accent-soft": `color-mix(in srgb, ${accent} 18%, ${deep})`,
-      "--app-focus": accent,
+      "--app-focus": darkAccent,
     };
   }
 

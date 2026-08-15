@@ -1,72 +1,72 @@
 "use client";
 
-import { IconCheck, IconChevronDown, IconRefresh } from "@tabler/icons-react";
-import { type CSSProperties, useRef } from "react";
+import {
+  IconAdjustmentsHorizontal,
+  IconCurrencyDollar,
+  IconMoonStars,
+  IconPalette,
+  IconRefresh,
+} from "@tabler/icons-react";
 
 import { usePreferences } from "@/components/preferences/PreferencesProvider";
 import ToggleSwitch from "@/components/ui/toggle-switch-glass";
-import {
-  financePaletteIds,
-  financePalettes,
-  type FinancePaletteId,
-} from "@/lib/themePalettes";
+import { PaletteDropdown } from "./PaletteDropdown";
 import styles from "./SettingsWorkspace.module.css";
 
 export function PreferencesPanel() {
   const { preferences, update, reset } = usePreferences();
-  const paletteMenuRef = useRef<HTMLDetailsElement>(null);
-  const selectedPalette = financePalettes[preferences.palette];
-
   return (
     <>
-      <section id="appearance">
-        <h3>Appearance</h3>
-        <p>Choose a finance palette for this device. Ledger Navy is the BearVault default.</p>
-        <Field label="Color palette">
-          <details className={styles.palettePicker} ref={paletteMenuRef}>
-            <summary style={paletteStyle(preferences.palette)}>
-              <span className={styles.palettePreview} aria-hidden="true"><i /><i /><i /><i /><i /></span>
-              <span className={styles.paletteSummaryCopy}>
-                <strong>{selectedPalette.name}</strong>
-                <small>{selectedPalette.mood}</small>
-              </span>
-              <IconChevronDown className={styles.paletteChevron} size={18} aria-hidden="true" />
-            </summary>
-            <div className={styles.paletteMenu} role="group" aria-label="Color palette options">
-              {financePaletteIds.map((paletteId) => {
-                const palette = financePalettes[paletteId];
-                const selected = preferences.palette === paletteId;
-                return (
-                  <button
-                    key={paletteId}
-                    type="button"
-                    style={paletteStyle(paletteId)}
-                    aria-pressed={selected}
-                    onClick={() => {
-                      update({ palette: paletteId });
-                      paletteMenuRef.current?.removeAttribute("open");
-                    }}
-                  >
-                    <span className={styles.palettePreview} aria-hidden="true"><i /><i /><i /><i /><i /></span>
-                    <span className={styles.paletteChoiceCopy}>
-                      <strong>{palette.name}</strong>
-                      <small>{palette.mood}</small>
-                    </span>
-                    {selected ? <IconCheck size={17} aria-hidden="true" /> : null}
-                  </button>
-                );
-              })}
-            </div>
-          </details>
+      <section id="appearance" aria-labelledby="appearance-title">
+        <div className={styles.sectionHeading}>
+          <span>
+            <IconPalette size={18} aria-hidden="true" />
+          </span>
+          <div>
+            <h3 id="appearance-title">Appearance</h3>
+            <p>Make BearVault feel at home on this device.</p>
+          </div>
+        </div>
+        <Field
+          label="Color palette"
+          description="Changes accents and supporting surfaces across the app."
+        >
+          <PaletteDropdown
+            value={preferences.palette}
+            onChange={(palette) => update({ palette })}
+          />
         </Field>
-        <Field label="Light and dark mode">
-          <Segment value={preferences.theme} options={["light", "dark", "system"]} onChange={(theme) => update({ theme: theme as typeof preferences.theme })} />
+        <Field
+          label="Appearance"
+          description="Follow your device or choose a fixed theme."
+          icon={<IconMoonStars size={17} />}
+        >
+          <Segment
+            value={preferences.theme}
+            options={["light", "dark", "system"]}
+            onChange={(theme) =>
+              update({ theme: theme as typeof preferences.theme })
+            }
+          />
         </Field>
-        <Field label="Density">
-          <Segment value={preferences.density} options={["comfortable", "compact"]} onChange={(density) => update({ density: density as typeof preferences.density })} />
+        <Field
+          label="Content density"
+          description="Adjust how much information fits on screen."
+          icon={<IconAdjustmentsHorizontal size={17} />}
+        >
+          <Segment
+            value={preferences.density}
+            options={["comfortable", "compact"]}
+            onChange={(density) =>
+              update({ density: density as typeof preferences.density })
+            }
+          />
         </Field>
         <div className={styles.toggle}>
-          <span><strong>Reduce motion</strong><small>Minimize non-essential transitions.</small></span>
+          <span>
+            <strong>Reduce motion</strong>
+            <small>Minimize non-essential transitions.</small>
+          </span>
           <ToggleSwitch
             isActive={preferences.reducedMotion}
             onChange={(reducedMotion) => update({ reducedMotion })}
@@ -76,13 +76,33 @@ export function PreferencesPanel() {
             reduceMotion={preferences.reducedMotion}
           />
         </div>
-        <button className={styles.reset} onClick={reset}><IconRefresh size={16} />Reset appearance</button>
+        <button className={styles.reset} type="button" onClick={reset}>
+          <IconRefresh size={16} aria-hidden="true" />
+          Reset appearance
+        </button>
       </section>
-      <section id="formatting">
-        <h3>Formatting</h3>
-        <Field label="Currency">
-          <select value={preferences.currency} onChange={(event) => update({ currency: event.target.value })}>
-            <option value="USD">USD — US Dollar</option><option value="CAD">CAD — Canadian Dollar</option><option value="EUR">EUR — Euro</option><option value="GBP">GBP — British Pound</option>
+      <section id="formatting" aria-labelledby="formatting-title">
+        <div className={styles.sectionHeading}>
+          <span>
+            <IconCurrencyDollar size={18} aria-hidden="true" />
+          </span>
+          <div>
+            <h3 id="formatting-title">Regional formatting</h3>
+            <p>Choose how values are displayed.</p>
+          </div>
+        </div>
+        <Field
+          label="Display currency"
+          description="Used throughout budgets, accounts, and reports."
+        >
+          <select
+            value={preferences.currency}
+            onChange={(event) => update({ currency: event.target.value })}
+          >
+            <option value="USD">USD — US Dollar</option>
+            <option value="CAD">CAD — Canadian Dollar</option>
+            <option value="EUR">EUR — Euro</option>
+            <option value="GBP">GBP — British Pound</option>
           </select>
         </Field>
         <p className={styles.note}>This changes display formatting, not exchange rates.</p>
@@ -91,21 +111,52 @@ export function PreferencesPanel() {
   );
 }
 
-function paletteStyle(paletteId: FinancePaletteId) {
-  const colors = financePalettes[paletteId].colors;
-  return {
-    "--palette-1": colors[0],
-    "--palette-2": colors[1],
-    "--palette-3": colors[2],
-    "--palette-4": colors[3],
-    "--palette-5": colors[4],
-  } as CSSProperties;
+function Field({
+  label,
+  description,
+  icon,
+  children,
+}: {
+  label: string;
+  description?: string;
+  icon?: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className={styles.field}>
+      <span className={styles.fieldCopy}>
+        {icon ? <i aria-hidden="true">{icon}</i> : null}
+        <span>
+          <strong>{label}</strong>
+          {description ? <small>{description}</small> : null}
+        </span>
+      </span>
+      {children}
+    </div>
+  );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div className={styles.field}><strong>{label}</strong>{children}</div>;
-}
-
-function Segment({ value, options, onChange }: { value: string; options: string[]; onChange: (value: string) => void }) {
-  return <div className={styles.segment}>{options.map((option) => <button key={option} aria-pressed={value === option} onClick={() => onChange(option)}>{option}</button>)}</div>;
+function Segment({
+  value,
+  options,
+  onChange,
+}: {
+  value: string;
+  options: string[];
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div className={styles.segment}>
+      {options.map((option) => (
+        <button
+          type="button"
+          key={option}
+          aria-pressed={value === option}
+          onClick={() => onChange(option)}
+        >
+          {option}
+        </button>
+      ))}
+    </div>
+  );
 }

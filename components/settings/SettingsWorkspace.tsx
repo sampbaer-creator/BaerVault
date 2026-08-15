@@ -1,6 +1,7 @@
 "use client";
 
 import { UserProfile } from "@clerk/nextjs";
+import { IconShieldLock } from "@tabler/icons-react";
 import { PreferencesPanel } from "./PreferencesPanel";
 import styles from "./SettingsWorkspace.module.css";
 
@@ -19,9 +20,16 @@ export function SettingsWorkspace() {
         </nav>
         <div className={styles.sections}>
           <PreferencesPanel />
-          <section id="account">
-            <h3>Account and security</h3>
-            <p>Manage your profile, connected login methods, password, and MFA settings.</p>
+          <section id="account" aria-labelledby="account-title">
+            <div className={styles.sectionHeading}>
+              <span>
+                <IconShieldLock size={18} aria-hidden="true" />
+              </span>
+              <div>
+                <h3 id="account-title">Account and security</h3>
+                <p>Manage your profile, login methods, password, and MFA.</p>
+              </div>
+            </div>
             <div className={styles.clerk}>
               <UserProfile routing="hash" />
             </div>
