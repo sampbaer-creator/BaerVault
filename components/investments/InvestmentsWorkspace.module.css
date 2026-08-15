@@ -2,6 +2,9 @@
   --navy: var(--app-text-strong);
   --green: var(--app-accent);
   --muted: var(--app-text-muted);
+  --allocation-1: var(--app-accent);
+  --allocation-2: var(--chart-primary);
+  --allocation-3: var(--chart-secondary);
   max-width: 1220px;
   margin: 0 auto;
   color: var(--navy);
@@ -125,6 +128,77 @@
   overflow-x: auto;
   scrollbar-width: none;
 }
+.moversPanel,
+.allocationStrip {
+  margin-bottom: 14px;
+  overflow: hidden;
+  border: 1px solid var(--app-border);
+  border-radius: 14px;
+  background: var(--app-surface);
+}
+.moversHeading {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--app-border);
+}
+.moversHeading h3,
+.allocationStrip h3 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+}
+.moversHeading span,
+.allocationStrip p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+}
+.moversStrip {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(126px, 1fr));
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.mover {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 8px;
+  min-width: 126px;
+  padding: 13px 16px;
+  border-right: 1px solid var(--app-border);
+  font-size: 10px;
+}
+.mover:last-child { border-right: 0; }
+.moverSymbol { color: var(--navy); font-size: 11px; font-weight: 750; }
+.mover svg { grid-row: 1 / 3; grid-column: 2; width: 54px; height: 25px; }
+.mover svg path { fill: none; stroke: currentColor; stroke-width: 1.75; vector-effect: non-scaling-stroke; }
+.mover:has(.negative) svg { color: #b8534b; }
+.mover:has(.positive) svg { color: #198754; }
+.mover strong { grid-column: 1 / -1; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.allocationStrip {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr);
+  align-items: center;
+  gap: 24px;
+  padding: 18px 20px;
+}
+.allocationStrip p { margin-top: 4px; }
+.allocationBars { display: grid; gap: 10px; }
+.allocationRow {
+  display: grid;
+  grid-template-columns: minmax(110px, 190px) minmax(100px, 1fr) 46px;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 10px;
+}
+.allocationRow > div { height: 6px; overflow: hidden; border-radius: 999px; background: var(--app-hover); }
+.allocationRow i { display: block; height: 100%; min-width: 3px; border-radius: inherit; }
+.allocationRow strong { text-align: right; font-variant-numeric: tabular-nums; }
 .accountTabs button {
   display: flex;
   min-width: 230px;
@@ -1047,5 +1121,8 @@
   .hero { grid-template-columns: 1fr; padding: 18px; }
   .heroRail { margin-top: 18px; padding: 16px 0 0; border-top: 1px solid var(--app-border); border-left: 0; }
   .portfolioChartPanel { padding: 17px; }
+  .moversStrip { grid-template-columns: repeat(6, 138px); }
+  .allocationStrip { grid-template-columns: 1fr; gap: 14px; padding: 17px; }
+  .allocationRow { grid-template-columns: minmax(90px, 130px) minmax(80px, 1fr) 42px; }
   .holdingRow { padding-inline: 16px; }
 }

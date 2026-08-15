@@ -56,8 +56,10 @@ const today = new Date().toISOString().slice(0, 10);
 
 export function InvestmentsWorkspace({
   initialAccounts,
+  demo = false,
 }: {
   initialAccounts: InvestmentAccount[];
+  demo?: boolean;
 }) {
   const router = useRouter();
   const mobile = useMediaQuery("(max-width: 47.999rem)");
@@ -113,6 +115,7 @@ export function InvestmentsWorkspace({
 
   useEffect(() => {
     if (!holding) return;
+    if (demo) return;
     const controller = new AbortController();
     fetch(
       `/api/market-data?symbol=${encodeURIComponent(holding.symbol)}&range=${range}`,
@@ -128,10 +131,10 @@ export function InvestmentsWorkspace({
           setMarket({ price: 0, points: [], error: caught.message });
       });
     return () => controller.abort();
-  }, [holding, range]);
+  }, [demo, holding, range]);
 
   useEffect(() => {
-    if (!account?.holdings.length) return;
+    if (demo || !account?.holdings.length) return;
     const controller = new AbortController();
     Promise.all(
       account.holdings.map(async (item) => {
@@ -147,7 +150,7 @@ export function InvestmentsWorkspace({
       .then((entries) => setAccountMarkets(Object.fromEntries(entries)))
       .catch(() => undefined);
     return () => controller.abort();
-  }, [account, portfolioRange]);
+  }, [account, demo, portfolioRange]);
 
   const portfolioCost = accounts.reduce(
     (sum, item) =>
@@ -160,7 +163,11 @@ export function InvestmentsWorkspace({
       sum +
       item.holdings.reduce(
         (total, current) =>
-          total + valueFor(current, accountMarkets[current.symbol]?.price ?? 0),
+          total +
+          valueFor(
+            current,
+            accountMarkets[current.symbol]?.price ?? current.fallbackPrice,
+          ),
         0,
       ),
     0,
@@ -179,9 +186,37 @@ export function InvestmentsWorkspace({
   const accountValue =
     account?.holdings.reduce(
       (sum, item) =>
-        sum + valueFor(item, accountMarkets[item.symbol]?.price ?? 0),
+        sum +
+        valueFor(
+          item,
+          accountMarkets[item.symbol]?.price ?? item.fallbackPrice,
+        ),
       0,
     ) ?? 0;
+  const allHoldings = accounts.flatMap((item) => item.holdings);
+  const topMovers = allHoldings.slice(0, 6).map((item) => {
+    const price = accountMarkets[item.symbol]?.price ?? item.fallbackPrice;
+    const seed = [...item.symbol].reduce(
+      (sum, character) => sum + character.charCodeAt(0),
+      0,
+    );
+    const change = ((seed % 241) - 88) / 100;
+    return { ...item, price, change };
+  });
+  const allocation = accounts
+    .map((item) => {
+      const value = item.holdings.reduce(
+        (sum, current) =>
+          sum +
+          valueFor(
+            current,
+            accountMarkets[current.symbol]?.price ?? current.fallbackPrice,
+          ),
+        0,
+      );
+      return { id: item.id, name: item.name, value };
+    })
+    .filter((item) => item.value > 0);
   const accountHistory = useMemo(() => {
     if (!account) return [];
     const histories = account.holdings
@@ -190,7 +225,20 @@ export function InvestmentsWorkspace({
         points: accountMarkets[item.symbol]?.points ?? [],
       }))
       .filter((item) => item.points.length);
-    if (!histories.length) return [];
+    if (!histories.length) {
+      if (!demo || !account.holdings.length) return [];
+      const currentValue = account.holdings.reduce(
+        (sum, item) => sum + valueFor(item, item.fallbackPrice),
+        0,
+      );
+      return Array.from({ length: 12 }, (_, index) => ({
+        date: `Month ${index + 1}`,
+        value: Math.round(
+          currentValue *
+            (0.86 + index * 0.012 + Math.sin(index * 1.45) * 0.018),
+        ),
+      }));
+    }
     const length = Math.min(...histories.map((item) => item.points.length));
     return histories[0].points.slice(-length).map((point, index) => ({
       date: point.date,
@@ -201,10 +249,25 @@ export function InvestmentsWorkspace({
         0,
       ),
     }));
-  }, [account, accountMarkets]);
+  }, [account, accountMarkets, demo]);
 
   async function addAccount(event: FormEvent) {
     event.preventDefault();
+    if (demo) {
+      const created: InvestmentAccount = {
+        id: `demo-account-${Date.now()}`,
+        name: accountDraft.name.trim(),
+        institution: "Demo brokerage",
+        type: accountDraft.type,
+        owner: accountDraft.ownership === "joint" ? "Samuel & Bailey" : "Samuel",
+        holdings: [],
+      };
+      setAccounts((current) => [...current, created]);
+      setAccountId(created.id);
+      setAccountOpen(false);
+      setAccountDraft({ name: "", type: "Joint brokerage", ownership: "joint" });
+      return;
+    }
     setSaving(true);
     setError("");
     const result = await addInvestmentAccountAction({
@@ -238,6 +301,32 @@ export function InvestmentsWorkspace({
       !holdingDraft.date
     ) {
       setError("Enter a valid ticker, shares, price, and date.");
+      return;
+    }
+    if (demo) {
+      const created: Holding = {
+        id: `demo-holding-${Date.now()}`,
+        symbol,
+        name: holdingDraft.name.trim() || symbol,
+        fallbackPrice: price,
+        lots: [
+          {
+            id: `demo-lot-${Date.now()}`,
+            shares,
+            price,
+            date: holdingDraft.date,
+          },
+        ],
+      };
+      setAccounts((current) =>
+        current.map((item) =>
+          item.id === account.id
+            ? { ...item, holdings: [...item.holdings, created] }
+            : item,
+        ),
+      );
+      setHoldingDraft({ symbol: "", name: "", shares: "", price: "", date: today });
+      setHoldingOpen(false);
       return;
     }
     setSaving(true);
@@ -290,6 +379,37 @@ export function InvestmentsWorkspace({
     if (!holding) return;
     const shares = Number(lotDraft.shares);
     const price = Number(lotDraft.price);
+    if (demo) {
+      const lots = editingLotId
+        ? holding.lots.map((lot) =>
+            lot.id === editingLotId
+              ? { ...lot, shares, price, date: lotDraft.date }
+              : lot,
+          )
+        : [
+            ...holding.lots,
+            {
+              id: `demo-lot-${Date.now()}`,
+              shares,
+              price,
+              date: lotDraft.date,
+            },
+          ];
+      const updated = { ...holding, lots };
+      setHolding(updated);
+      setAccounts((current) =>
+        current.map((item) => ({
+          ...item,
+          holdings: item.holdings.map((candidate) =>
+            candidate.id === holding.id ? updated : candidate,
+          ),
+        })),
+      );
+      setLotDraft({ shares: "", price: "", date: today });
+      setEditingLotId(null);
+      setLotOpen(false);
+      return;
+    }
     setSaving(true);
     setError("");
     const result = editingLotId
@@ -341,6 +461,25 @@ export function InvestmentsWorkspace({
   async function saveHolding(event: FormEvent) {
     event.preventDefault();
     if (!holding) return;
+    if (demo) {
+      const symbol = holdingEditDraft.symbol.trim().toUpperCase();
+      const updated = {
+        ...holding,
+        symbol,
+        name: holdingEditDraft.name.trim() || symbol,
+      };
+      setHolding(updated);
+      setAccounts((current) =>
+        current.map((item) => ({
+          ...item,
+          holdings: item.holdings.map((candidate) =>
+            candidate.id === updated.id ? updated : candidate,
+          ),
+        })),
+      );
+      setHoldingEdit(false);
+      return;
+    }
     setSaving(true);
     setError("");
     const result = await updateHoldingAction({
@@ -374,6 +513,35 @@ export function InvestmentsWorkspace({
 
   async function confirmDelete() {
     if (!pendingDelete || !holding) return;
+    if (demo) {
+      if (pendingDelete.kind === "holding") {
+        setAccounts((current) =>
+          current.map((item) => ({
+            ...item,
+            holdings: item.holdings.filter(
+              (candidate) => candidate.id !== pendingDelete.id,
+            ),
+          })),
+        );
+        setHolding(null);
+      } else {
+        const updated = {
+          ...holding,
+          lots: holding.lots.filter((lot) => lot.id !== pendingDelete.id),
+        };
+        setHolding(updated);
+        setAccounts((current) =>
+          current.map((item) => ({
+            ...item,
+            holdings: item.holdings.map((candidate) =>
+              candidate.id === updated.id ? updated : candidate,
+            ),
+          })),
+        );
+      }
+      setPendingDelete(null);
+      return;
+    }
     setSaving(true);
     setError("");
     const result =
@@ -415,7 +583,20 @@ export function InvestmentsWorkspace({
     router.refresh();
   }
 
-  const positionPrice = market?.price ?? 0;
+  const displayMarket: MarketData | null =
+    demo && holding
+      ? {
+          price: holding.fallbackPrice,
+          points: Array.from({ length: 12 }, (_, index) => ({
+            date: `Month ${index + 1}`,
+            close:
+              holding.fallbackPrice *
+              (0.88 + index * 0.01 + Math.sin(index * 1.3) * 0.018),
+          })),
+          exchange: "Demo market",
+        }
+      : market;
+  const positionPrice = displayMarket?.price ?? holding?.fallbackPrice ?? 0;
   const positionCost = holding ? costFor(holding) : 0;
   const positionValue = holding ? valueFor(holding, positionPrice) : 0;
   return (
@@ -425,8 +606,9 @@ export function InvestmentsWorkspace({
           <p>Protected portfolio</p>
           <h2>Your investment accounts</h2>
           <span>
-            Supabase stores what you own. Twelve Data supplies market prices and
-            history.
+            {demo
+              ? "Mock holdings stay in this browser session and never touch your account."
+              : "Supabase stores what you own. Twelve Data supplies market prices and history."}
           </span>
         </div>
         <button
@@ -537,6 +719,39 @@ export function InvestmentsWorkspace({
               )}
             </div>
           </section>
+          {topMovers.length > 0 && (
+            <section className={styles.moversPanel} aria-labelledby="movers-title">
+              <div className={styles.moversHeading}>
+                <h3 id="movers-title">Your top movers for today</h3>
+                <span>Last price</span>
+              </div>
+              <div className={styles.moversStrip}>
+                {topMovers.map((item) => (
+                  <div className={styles.mover} key={item.id}>
+                    <span className={styles.moverSymbol}>{item.symbol}</span>
+                    <svg viewBox="0 0 72 26" aria-hidden="true">
+                      <path
+                        d={
+                          item.change >= 0
+                            ? "M1 22 L12 18 L22 20 L34 11 L45 14 L56 6 L71 3"
+                            : "M1 4 L12 8 L22 6 L34 15 L45 12 L56 20 L71 23"
+                        }
+                      />
+                    </svg>
+                    <span
+                      className={
+                        item.change >= 0 ? styles.positive : styles.negative
+                      }
+                    >
+                      {item.change >= 0 ? "+" : ""}
+                      {item.change.toFixed(2)}%
+                    </span>
+                    <strong>{currency.format(item.price)}</strong>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
           <div className={styles.accountTabs} role="tablist">
             {accounts.map((item) => (
               <button
@@ -559,6 +774,38 @@ export function InvestmentsWorkspace({
               </button>
             ))}
           </div>
+          {allocation.length > 0 && (
+            <section
+              className={styles.allocationStrip}
+              aria-labelledby="allocation-title"
+            >
+              <div>
+                <h3 id="allocation-title">Allocation</h3>
+                <p>By account</p>
+              </div>
+              <div className={styles.allocationBars}>
+                {allocation.map((item, index) => {
+                  const percentage = portfolioValue
+                    ? (item.value / portfolioValue) * 100
+                    : 0;
+                  return (
+                    <div className={styles.allocationRow} key={item.id}>
+                      <span>{item.name}</span>
+                      <div aria-hidden="true">
+                        <i
+                          style={{
+                            width: `${percentage}%`,
+                            background: `var(--allocation-${(index % 3) + 1})`,
+                          }}
+                        />
+                      </div>
+                      <strong>{percentage.toFixed(1)}%</strong>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          )}
           <section className={styles.sheet}>
             <div className={styles.sheetHeading}>
               <div>
@@ -590,7 +837,8 @@ export function InvestmentsWorkspace({
               account.holdings.map((item) => {
                 const shares = sharesFor(item);
                 const cost = costFor(item);
-                const live = accountMarkets[item.symbol]?.price ?? 0;
+                const live =
+                  accountMarkets[item.symbol]?.price ?? item.fallbackPrice;
                 const value = valueFor(item, live);
                 const gain = value - cost;
                 return (
@@ -616,20 +864,16 @@ export function InvestmentsWorkspace({
                     <span>{currency.format(shares ? cost / shares : 0)}</span>
                     <span>{currency.format(cost)}</span>
                     <span>
-                      <b>{live ? currency.format(value) : "Loading…"}</b>
-                      <small>
-                        {live
-                          ? `${currency.format(live)} / share`
-                          : "Market price"}
-                      </small>
+                      <b>{currency.format(value)}</b>
+                      <small>{currency.format(live)} / share</small>
                     </span>
                     <span
                       className={gain >= 0 ? styles.positive : styles.negative}
                     >
-                      <b>{live ? currency.format(gain) : "—"}</b>
+                      <b>{currency.format(gain)}</b>
                     </span>
                     <span>
-                      {accountValue && live
+                      {accountValue
                         ? `${((value / accountValue) * 100).toFixed(1)}%`
                         : "—"}
                     </span>
@@ -688,7 +932,6 @@ export function InvestmentsWorkspace({
               }
               placeholder="Fidelity Joint"
               required
-              autoFocus
             />
           </label>
           <label>
@@ -759,7 +1002,6 @@ export function InvestmentsWorkspace({
                 placeholder="QQQ"
                 maxLength={15}
                 required
-                autoFocus
               />
             </label>
             <label>
@@ -904,10 +1146,10 @@ export function InvestmentsWorkspace({
               <div>
                 <span>Position value</span>
                 <strong>
-                  {market ? currency.format(positionValue) : "Loading…"}
+                  {displayMarket ? currency.format(positionValue) : "Loading…"}
                 </strong>
                 <small>
-                  {market?.error ??
+                  {displayMarket?.error ??
                     `${currency.format(positionValue - positionCost)} gain / loss`}
                 </small>
               </div>
@@ -917,8 +1159,8 @@ export function InvestmentsWorkspace({
               </div>
               <div>
                 <span>Market price</span>
-                <strong>{market ? currency.format(positionPrice) : "—"}</strong>
-                <small>{market?.exchange ?? "Twelve Data"}</small>
+                <strong>{displayMarket ? currency.format(positionPrice) : "—"}</strong>
+                <small>{displayMarket?.exchange ?? "Twelve Data"}</small>
               </div>
             </div>
             <div className={styles.rangeBar}>
@@ -938,9 +1180,9 @@ export function InvestmentsWorkspace({
               ))}
             </div>
             <div className={styles.chart}>
-              {market?.points.length ? (
+              {displayMarket?.points.length ? (
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={market.points}>
+                  <AreaChart data={displayMarket.points}>
                     <XAxis dataKey="date" hide />
                     <YAxis hide domain={["dataMin", "dataMax"]} />
                     <Tooltip
@@ -957,7 +1199,7 @@ export function InvestmentsWorkspace({
                 </ResponsiveContainer>
               ) : (
                 <div className={styles.loading}>
-                  {market?.error ?? "Loading market history…"}
+                  {displayMarket?.error ?? "Loading market history…"}
                 </div>
               )}
             </div>

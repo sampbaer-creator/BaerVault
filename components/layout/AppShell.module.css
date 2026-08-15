@@ -156,15 +156,6 @@
   background: color-mix(in srgb, var(--app-accent-soft) 72%, var(--app-surface));
   box-shadow: none;
 }
-.navLinkActive::after {
-  position: absolute;
-  inset: 8px auto 8px 3px;
-  width: 2px;
-  border-radius: 999px;
-  background: var(--app-accent);
-  box-shadow: 0 0 12px color-mix(in srgb, var(--app-accent) 48%, transparent);
-  content: "";
-}
 
 .sidebarFooter {
   padding: 12px 14px 16px;

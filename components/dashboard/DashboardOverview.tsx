@@ -3,8 +3,6 @@
 import {
   IconArrowRight,
   IconArrowUpRight,
-  IconBuildingBank,
-  IconCreditCard,
   IconReceipt,
   IconWallet,
 } from "@tabler/icons-react";
@@ -172,16 +170,8 @@ export function DashboardOverview({ model, basePath = "" }: DashboardProps) {
           <section className={styles.upcomingPanel}>
             <PanelHeading title="Next two weeks" href={`${basePath}/budget`} action="Budgets" />
             <div className={styles.upcomingEmpty}>
-              <IconCreditCard size={24} aria-hidden="true" />
               <p>There are no upcoming payments</p>
-              <span>Recurring bills will appear here.</span>
             </div>
-          </section>
-          <section className={styles.accountsPanel}>
-            <PanelHeading title="Accounts" href={`${basePath}/accounts`} action="Manage" />
-            {model.financialAccounts.slice(0, 3).map((account) => (
-              <div className={styles.accountRow} key={account.id}><IconBuildingBank size={17} /><span>{account.name}</span><strong>{money.format(account.balance)}</strong></div>
-            ))}
           </section>
         </div>
       </div>

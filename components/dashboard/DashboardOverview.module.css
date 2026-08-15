@@ -29,9 +29,9 @@
   min-width: 0;
   overflow: hidden;
   border: 1px solid var(--app-border);
-  border-radius: 18px;
+  border-radius: 14px;
   background: var(--app-surface);
-  box-shadow: 0 2px 8px rgb(23 35 70 / 3%);
+  box-shadow: none;
 }
 
 .spendingPanel { grid-area: spending; min-height: 325px; padding: 24px 24px 12px; }
@@ -97,7 +97,7 @@
 .categoryList strong { font-variant-numeric: tabular-nums; }
 
 .upcomingEmpty { display: grid; min-height: 125px; place-items: center; align-content: center; color: var(--target-muted); text-align: center; }
-.upcomingEmpty p { margin: 9px 0 0; color: var(--target-muted); font-size: 12px; font-style: italic; }
+.upcomingEmpty p { margin: 0; color: var(--target-muted); font-size: 12px; font-style: italic; }
 .upcomingEmpty span { margin-top: 4px; font-size: 10px; }
 
 .accountRow { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; min-height: 46px; align-items: center; gap: 8px; border-top: 1px solid var(--app-border); color: var(--target-muted); font-size: 11px; }
