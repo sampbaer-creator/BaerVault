@@ -12,6 +12,7 @@ import { BearVaultLogo } from "@/components/brand/BearVaultLogo";
 
 type SidebarProps = {
   pathname: string;
+  collapsed?: boolean;
 };
 
 type NavigationSectionProps = {
@@ -48,15 +49,18 @@ function NavigationSection({ label, items, pathname }: NavigationSectionProps) {
   );
 }
 
-export function Sidebar({ pathname }: SidebarProps) {
+export function Sidebar({ pathname, collapsed = false }: SidebarProps) {
   return (
-    <aside className={styles.sidebar} aria-label="Primary navigation">
+    <aside
+      className={`${styles.sidebar} ${collapsed ? styles.sidebarCompact : ""}`}
+      aria-label="Primary navigation"
+    >
       <div
         className={`${styles.sidebarGlass} liquid-gl-pane`}
         aria-hidden="true"
       />
       <div className={styles.brand}>
-        <BearVaultLogo />
+        <BearVaultLogo compact={collapsed} />
       </div>
 
       <nav className={styles.sidebarNav}>

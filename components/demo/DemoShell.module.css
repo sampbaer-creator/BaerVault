@@ -178,6 +178,10 @@
   font-weight: 700;
   text-decoration: none;
 }
+:global(:root[data-theme="dark"]) .content > header > a {
+  color: #0b1d35;
+  background: #c6d6e5;
+}
 .content main {
   max-width: 1600px;
   margin: auto;

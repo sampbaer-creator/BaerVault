@@ -433,7 +433,7 @@
 }
 .projection > small {
   grid-column: 1/-1;
-  color: #8a938f;
+  color: #5d6863;
   font-size: 9px;
 }
 .projectionChart { grid-column: 1/-1; height: 210px; padding-top: 8px; border-top: 1px solid #edf0ee; }
@@ -1128,6 +1128,7 @@
 .sheetHeading { padding: 17px 20px; }
 .sheetHeading h3 { font-size: 14px; }
 .tableHead { padding: 10px 20px; font-size: 9px; letter-spacing: .05em; }
+.tableHead { color: #5f6a65; }
 .holdingRow { min-height: 58px; padding: 10px 20px; border-radius: 0; background: transparent !important; box-shadow: none !important; }
 .holdingRow::before { display: none; }
 .projection { margin-top: 14px; border: 1px solid var(--app-border); border-radius: 14px; background: var(--app-surface); }
@@ -1142,3 +1143,253 @@
   .allocationRow { grid-template-columns: minmax(90px, 130px) minmax(80px, 1fr) 42px; }
   .holdingRow { padding-inline: 16px; }
 }
+
+/* Workspace navigation and market-detail surfaces. */
+.sectionTabs {
+  position: sticky;
+  z-index: 4;
+  top: 58px;
+  display: flex;
+  gap: 4px;
+  width: max-content;
+  max-width: 100%;
+  margin: 0 0 14px;
+  overflow-x: auto;
+  padding: 4px;
+  border: 1px solid var(--app-border);
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--app-surface) 92%, transparent);
+  box-shadow: var(--shadow-subtle);
+  backdrop-filter: blur(18px);
+  scrollbar-width: none;
+}
+.sectionTabs button {
+  min-height: 32px;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 8px;
+  color: var(--app-text-muted);
+  background: transparent;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.sectionTabs button[aria-pressed="true"] {
+  color: var(--app-text);
+  background: var(--app-surface-raised);
+  box-shadow: 0 1px 5px rgb(28 43 37 / 0.09);
+}
+.accountTabs button {
+  display: grid;
+  min-width: 250px;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto 28px;
+  align-items: start;
+  gap: 8px 14px;
+  padding: 14px !important;
+}
+.accountCardTop {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+}
+.accountCardTop > span {
+  min-width: 0;
+  color: var(--app-text);
+  font-size: 11px;
+  font-weight: 720;
+}
+.accountCardTop small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.accountCardValue {
+  text-align: right;
+}
+.accountCardValue strong {
+  display: block;
+  color: var(--app-text);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.accountCardValue small {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+  color: var(--money-positive);
+}
+.accountTabs button > svg {
+  grid-column: 1 / -1;
+  width: 100%;
+  height: 28px;
+  color: var(--money-positive);
+}
+.accountTabs button > svg path,
+.watchlistRows svg path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  vector-effect: non-scaling-stroke;
+}
+.marketTools {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.6fr);
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.marketTools .allocationStrip {
+  height: 100%;
+  margin-bottom: 0;
+}
+.watchlistPanel {
+  overflow: hidden;
+  border: 1px solid var(--app-border);
+  border-radius: 14px;
+  background: var(--app-surface);
+}
+.watchlistHeading,
+.activityHeading {
+  display: flex;
+  min-height: 58px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--app-border);
+}
+.watchlistHeading h3,
+.activityHeading h3 {
+  margin: 0;
+  color: var(--app-text);
+  font-size: 13px;
+}
+.watchlistHeading p,
+.activityHeading p {
+  margin: 3px 0 0;
+  color: var(--app-text-muted);
+  font-size: 9px;
+}
+.watchlistHeading > span,
+.activityHeading > span {
+  color: var(--app-text-muted);
+  font-size: 9px;
+  font-weight: 700;
+}
+.watchlistRows > div {
+  display: grid;
+  min-height: 49px;
+  grid-template-columns: minmax(0, 1fr) 46px auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+}
+.watchlistRows > div + div { border-top: 1px solid var(--app-border); }
+.watchlistRows span { min-width: 0; }
+.watchlistRows strong,
+.watchlistRows small { display: block; }
+.watchlistRows strong { color: var(--app-text); font-size: 10px; font-variant-numeric: tabular-nums; }
+.watchlistRows small { overflow: hidden; margin-top: 2px; color: var(--app-text-muted); font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+.watchlistRows svg { width: 46px; height: 18px; color: var(--money-positive); }
+.watchlistRows > div > span:last-child { text-align: right; }
+.tableHead,
+.holdingRow {
+  grid-template-columns: minmax(150px, 1.5fr) repeat(6, minmax(88px, 1fr)) 18px;
+}
+.tableHead button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+.tableHead button:first-child { justify-content: flex-start; }
+.tableHead button[aria-pressed="true"] { color: var(--app-text); }
+.activityPanel {
+  margin-top: 14px;
+  overflow: hidden;
+  scroll-margin-top: 112px;
+  border: 1px solid var(--app-border);
+  border-radius: 14px;
+  background: var(--app-surface);
+}
+.activityHeading > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.activityHeading > div > svg { color: var(--app-accent); }
+.activityRow {
+  display: grid;
+  min-height: 58px;
+  grid-template-columns: 30px minmax(180px, 1fr) minmax(150px, .7fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+}
+.activityRow + .activityRow { border-top: 1px solid var(--app-border); }
+.activityRow > span:not(.activitySymbol) strong,
+.activityRow > span:not(.activitySymbol) small { display: block; }
+.activityRow strong { color: var(--app-text); font-size: 10px; font-variant-numeric: tabular-nums; }
+.activityRow small { margin-top: 3px; color: var(--app-text-muted); font-size: 9px; }
+.activityRow > strong { text-align: right; font-size: 11px; }
+.activitySymbol {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 9px;
+  color: var(--app-accent);
+  background: color-mix(in srgb, var(--app-accent) 12%, transparent);
+  font-size: 9px;
+  font-weight: 800;
+}
+#portfolio-overview,
+#portfolio-holdings,
+#portfolio-performance { scroll-margin-top: 112px; }
+
+@media (max-width: 68rem) {
+  .marketTools { grid-template-columns: 1fr; }
+  .tableHead,
+  .holdingRow {
+    grid-template-columns: minmax(150px, 1.4fr) repeat(4, minmax(86px, 1fr)) 18px;
+  }
+  .tableHead > :nth-child(4),
+  .tableHead > :nth-child(7),
+  .holdingRow > :nth-child(4),
+  .holdingRow > :nth-child(7) { display: none; }
+}
+
+@media (max-width: 47.999rem) {
+  .sectionTabs { top: 54px; width: 100%; }
+  .sectionTabs button { flex: 1 0 auto; }
+  .accountTabs button { min-width: 238px; }
+  .activityHeading { align-items: flex-start; }
+  .activityRow {
+    grid-template-columns: 30px minmax(0, 1fr) auto;
+  }
+  .activityRow > span:nth-child(3) { display: none; }
+}
+
+:global(:root[data-theme="dark"]) .tableHead {
+  border-color: var(--app-border);
+  color: var(--app-text-muted);
+  background: var(--app-surface-raised);
+}
+:global(:root[data-theme="dark"]) .portfolioRanges button[aria-pressed="true"] {
+  color: #0b1d35 !important;
+  background: #c6d6e5 !important;
+}
+:global(:root[data-theme="dark"]) .positive { color: #72d39f !important; }
+:global(:root[data-theme="dark"]) .negative { color: #ff8b7f !important; }

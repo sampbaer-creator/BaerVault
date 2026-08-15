@@ -192,6 +192,16 @@
       "decision": "Present investment movers as compact rounded market cards with price, direction, company context, and sparklines.",
       "reason": "Adopts the fast-scanning strengths of the supplied Google Finance references without copying its branding or turning BearVault into a trading terminal.",
       "source": "User-provided Google Finance screenshots and URL"
+    },
+    {
+      "decision": "Use a collapsible application rail, functional page search, and explicit workspace labels in the authenticated shell.",
+      "reason": "Carries the strongest structural ideas from the supplied Cadence reference into BearVault while making the product easier to navigate for new users.",
+      "source": "User direction and supplied Cadence reference"
+    },
+    {
+      "decision": "Organize investments with anchored overview tabs, richer account cards, an owned-position watchlist, sortable holdings, and recent activity.",
+      "reason": "Improves market scanning and portfolio comprehension using the supplied Google Finance references while retaining BearVault account and lot management workflows.",
+      "source": "User-provided Google Finance screenshots and URL"
     }
   ],
   "evidence": [

@@ -1,14 +1,19 @@
 import {
   IconArrowRight,
+  IconArrowsExchange,
   IconBuildingBank,
   IconChartPie,
   IconCheck,
+  IconDatabase,
+  IconKey,
   IconLock,
   IconPigMoney,
   IconReceipt,
   IconShieldCheck,
+  IconTargetArrow,
   IconTrendingUp,
   IconUsers,
+  IconWallet,
 } from "@tabler/icons-react";
 import Link from "next/link";
 
@@ -37,6 +42,21 @@ const productAreas = [
   [IconReceipt, "Spending", "Review transactions and monthly activity."],
   [IconPigMoney, "Budgets", "Plan categories and understand what remains."],
   [IconChartPie, "Investments", "Track holdings, allocation, and long-term growth."],
+] as const;
+
+const featureCards = [
+  [IconBuildingBank, "Accounts", "See cash, credit, debt, and investment accounts in one organized view."],
+  [IconArrowsExchange, "Transactions", "Review household activity with clear merchants, categories, and amounts."],
+  [IconPigMoney, "Budgets", "Plan monthly categories and see what remains before spending gets away from you."],
+  [IconChartPie, "Investments", "Understand holdings, allocation, performance, purchase lots, and projections."],
+  [IconTargetArrow, "Goals", "Turn future plans into visible targets with measurable household progress."],
+  [IconUsers, "Household", "Give the right people one shared financial picture without mixing households."],
+] as const;
+
+const setupSteps = [
+  ["01", "Create your household", "Sign in securely and create the private workspace your records belong to."],
+  ["02", "Add what matters", "Start with accounts, a monthly budget, goals, or the investments you already own."],
+  ["03", "Review together", "Use the dashboard to see changes, priorities, and progress in one place."],
 ] as const;
 
 function DashboardPreview() {
@@ -128,6 +148,7 @@ export default function Home() {
           </Link>
           <div className={styles.navLinks}>
             <a href="#product">Product</a>
+            <a href="#how">How it works</a>
             <a href="#security">Security</a>
           </div>
           <div className={styles.navActions}>
@@ -165,6 +186,13 @@ export default function Home() {
             <span><strong>{title}</strong><small>{copy}</small></span>
           </div>
         ))}
+      </section>
+
+      <section className={styles.factStrip} aria-label="BearVault product coverage">
+        <div><strong>9</strong><span>connected workspaces</span></div>
+        <div><strong>1</strong><span>shared household view</span></div>
+        <div><strong>Light + dark</strong><span>theme support</span></div>
+        <div><strong>Desktop + mobile</strong><span>responsive layouts</span></div>
       </section>
 
       <section className={styles.productSection} aria-labelledby="product-heading">
@@ -211,6 +239,39 @@ export default function Home() {
         </div>
       </section>
 
+      <section className={styles.featuresSection} aria-labelledby="features-heading">
+        <div className={styles.sectionHeading}>
+          <p>One system, clearly divided</p>
+          <h2 id="features-heading">Every important part of the household picture.</h2>
+          <span>Each area has a specific purpose, consistent controls, and a direct path back to the overview.</span>
+        </div>
+        <div className={styles.featureGrid}>
+          {featureCards.map(([Icon, title, copy]) => (
+            <article key={title}>
+              <Icon size={20} aria-hidden="true" />
+              <h3>{title}</h3>
+              <p>{copy}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className={styles.howSection} id="how" aria-labelledby="how-heading">
+        <div className={styles.sectionHeading}>
+          <p>How it works</p>
+          <h2 id="how-heading">From setup to a useful household routine.</h2>
+        </div>
+        <div className={styles.stepGrid}>
+          {setupSteps.map(([number, title, copy]) => (
+            <article key={number}>
+              <span>{number}</span>
+              <h3>{title}</h3>
+              <p>{copy}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className={styles.securitySection} id="security" aria-labelledby="security-heading">
         <div>
           <IconShieldCheck size={24} aria-hidden="true" />
@@ -219,10 +280,11 @@ export default function Home() {
             <h2 id="security-heading">Your household is the security boundary.</h2>
           </span>
         </div>
-        <p>
-          Clerk protects identity and household membership. Supabase row-level
-          security keeps financial records inside the correct household.
-        </p>
+        <div className={styles.securityList}>
+          <div><IconKey size={18} aria-hidden="true" /><span><strong>Protected identity</strong><small>Clerk handles secure sign-in, MFA, and membership.</small></span></div>
+          <div><IconDatabase size={18} aria-hidden="true" /><span><strong>Household-isolated records</strong><small>Supabase row-level security keeps data in the correct household.</small></span></div>
+          <div><IconWallet size={18} aria-hidden="true" /><span><strong>Clear ownership</strong><small>Market services provide prices; BearVault stores what your household owns.</small></span></div>
+        </div>
       </section>
 
       <section className={styles.finalCta}>

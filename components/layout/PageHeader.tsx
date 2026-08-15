@@ -1,32 +1,100 @@
+"use client";
+
 import { UserButton } from "@clerk/nextjs";
-import { IconBell, IconPlus, IconSearch } from "@tabler/icons-react";
+import {
+  IconBell,
+  IconLayoutSidebarLeftCollapse,
+  IconLayoutSidebarLeftExpand,
+  IconPlus,
+  IconSearch,
+} from "@tabler/icons-react";
+import Link from "next/link";
+import { useMemo, useState } from "react";
 
 import { BearVaultLogo } from "@/components/brand/BearVaultLogo";
+import {
+  householdNavigation,
+  mainNavigation,
+  systemNavigation,
+} from "./navigation";
 import styles from "./AppShell.module.css";
 
 type PageHeaderProps = {
   title: string;
+  sidebarCollapsed: boolean;
+  onToggleSidebar: () => void;
 };
 
-export function PageHeader({ title }: PageHeaderProps) {
+const searchablePages = [
+  ...mainNavigation,
+  ...householdNavigation,
+  ...systemNavigation,
+];
+
+export function PageHeader({
+  title,
+  sidebarCollapsed,
+  onToggleSidebar,
+}: PageHeaderProps) {
+  const [query, setQuery] = useState("");
+  const results = useMemo(() => {
+    const normalized = query.trim().toLowerCase();
+    if (!normalized) return [];
+    return searchablePages.filter(({ label }) =>
+      label.toLowerCase().includes(normalized),
+    );
+  }, [query]);
+
   return (
     <>
       <header className={styles.desktopHeader}>
-        <div>
-          <h1 className={styles.headerTitle}>{title}</h1>
-          <p className={styles.headerSubtitle}>Your complete household financial picture</p>
+        <div className={styles.headerIdentity}>
+          <button
+            className={styles.sidebarToggle}
+            type="button"
+            onClick={onToggleSidebar}
+            aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-pressed={sidebarCollapsed}
+          >
+            {sidebarCollapsed ? (
+              <IconLayoutSidebarLeftExpand size={17} aria-hidden="true" />
+            ) : (
+              <IconLayoutSidebarLeftCollapse size={17} aria-hidden="true" />
+            )}
+          </button>
+          <div>
+            <h1 className={styles.headerTitle}>{title}</h1>
+            <p className={styles.headerSubtitle}>Household finance workspace</p>
+          </div>
         </div>
         <div className={styles.headerTools}>
-          <label className={styles.searchControl}>
-            <IconSearch size={17} aria-hidden="true" />
-            <span className={styles.srOnly}>Search BearVault (coming soon)</span>
-            <input
-              type="search"
-              placeholder="Search coming soon"
-              disabled
-              title="Search is coming soon"
-            />
-          </label>
+          <div className={styles.searchWrap}>
+            <label className={styles.searchControl}>
+              <IconSearch size={16} aria-hidden="true" />
+              <span className={styles.srOnly}>Search BearVault pages</span>
+              <input
+                type="search"
+                placeholder="Search pages"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                aria-controls="page-search-results"
+              />
+            </label>
+            {results.length > 0 && (
+              <nav
+                className={styles.searchResults}
+                id="page-search-results"
+                aria-label="Matching pages"
+              >
+                {results.map(({ href, label, icon: Icon }) => (
+                  <Link href={href} key={href} onClick={() => setQuery("")}>
+                    <Icon size={16} aria-hidden="true" />
+                    <span>{label}</span>
+                  </Link>
+                ))}
+              </nav>
+            )}
+          </div>
           <button className={styles.periodControl} type="button" disabled title="Quick add is coming soon"><IconPlus size={15} aria-hidden="true" /> Add</button>
           <button className={styles.iconControl} type="button" disabled aria-label="Notifications (coming soon)" title="Notifications are coming soon"><IconBell size={18} aria-hidden="true" /></button>
           <UserButton />

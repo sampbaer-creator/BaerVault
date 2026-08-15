@@ -86,7 +86,7 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
             </Link>
           ))}
         </nav>
-        <div className={styles.accountRail} aria-label="Demo accounts">
+        <div className={styles.accountRail} role="region" aria-label="Demo accounts">
           {accountGroups.map((group) => (
             <section key={group.label}>
               <h2><IconChevronDown size={12} aria-hidden="true" />{group.label}</h2>

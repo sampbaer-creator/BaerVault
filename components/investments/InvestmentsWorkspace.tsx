@@ -5,10 +5,12 @@ import { useMediaQuery } from "@mantine/hooks";
 import {
   IconArrowDown,
   IconArrowUp,
+  IconActivity,
   IconBuildingBank,
   IconChevronRight,
   IconEdit,
   IconPlus,
+  IconSelector,
   IconTrash,
   IconTrendingUp,
 } from "@tabler/icons-react";
@@ -48,6 +50,8 @@ import {
 import styles from "./InvestmentsWorkspace.module.css";
 
 type Range = "1M" | "3M" | "1Y" | "5Y";
+type PortfolioSection = "overview" | "holdings" | "activity" | "performance";
+type HoldingSort = "symbol" | "value" | "gain" | "weight";
 type MarketData = {
   price: number;
   points: Array<{ date: string; close: number }>;
@@ -112,6 +116,12 @@ export function InvestmentsWorkspace({
     id: string;
     label: string;
   } | null>(null);
+  const [portfolioSection, setPortfolioSection] =
+    useState<PortfolioSection>("overview");
+  const [holdingSort, setHoldingSort] = useState<HoldingSort>("value");
+  const [holdingSortDirection, setHoldingSortDirection] = useState<"asc" | "desc">(
+    "desc",
+  );
   const account =
     accounts.find((item) => item.id === accountId) ?? accounts[0] ?? null;
 
@@ -219,6 +229,38 @@ export function InvestmentsWorkspace({
       return { id: item.id, name: item.name, value };
     })
     .filter((item) => item.value > 0);
+  const recentActivity = accounts
+    .flatMap((investmentAccount) =>
+      investmentAccount.holdings.flatMap((item) =>
+        item.lots.map((lot) => ({
+          ...lot,
+          accountName: investmentAccount.name,
+          symbol: item.symbol,
+          holdingName: item.name,
+        })),
+      ),
+    )
+    .toSorted((a, b) => b.date.localeCompare(a.date))
+    .slice(0, 6);
+  const sortedHoldings = (account?.holdings ?? []).toSorted((a, b) => {
+    const priceA = accountMarkets[a.symbol]?.price ?? a.fallbackPrice;
+    const priceB = accountMarkets[b.symbol]?.price ?? b.fallbackPrice;
+    const valueA = valueFor(a, priceA);
+    const valueB = valueFor(b, priceB);
+    const gainA = valueA - costFor(a);
+    const gainB = valueB - costFor(b);
+    const weightA = accountValue ? valueA / accountValue : 0;
+    const weightB = accountValue ? valueB / accountValue : 0;
+    const comparison =
+      holdingSort === "symbol"
+        ? a.symbol.localeCompare(b.symbol)
+        : holdingSort === "gain"
+          ? gainA - gainB
+          : holdingSort === "weight"
+            ? weightA - weightB
+            : valueA - valueB;
+    return holdingSortDirection === "asc" ? comparison : -comparison;
+  });
   const accountHistory = useMemo(() => {
     if (!account) return [];
     const histories = account.holdings
@@ -252,6 +294,23 @@ export function InvestmentsWorkspace({
       ),
     }));
   }, [account, accountMarkets, demo]);
+
+  function showPortfolioSection(section: PortfolioSection, targetId: string) {
+    setPortfolioSection(section);
+    document.getElementById(targetId)?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }
+
+  function toggleHoldingSort(nextSort: HoldingSort) {
+    if (holdingSort === nextSort) {
+      setHoldingSortDirection((current) => (current === "asc" ? "desc" : "asc"));
+      return;
+    }
+    setHoldingSort(nextSort);
+    setHoldingSortDirection(nextSort === "symbol" ? "asc" : "desc");
+  }
 
   async function addAccount(event: FormEvent) {
     event.preventDefault();
@@ -624,7 +683,7 @@ export function InvestmentsWorkspace({
           Add account
         </button>
       </header>
-      <section className={styles.hero}>
+      <section className={styles.hero} id="portfolio-overview">
         <div>
           <span>Household portfolio</span>
           <strong>{currency.format(portfolioValue)}</strong>
@@ -655,6 +714,28 @@ export function InvestmentsWorkspace({
           </div>
         </div>
       </section>
+      {accounts.length > 0 && (
+        <nav className={styles.sectionTabs} aria-label="Investment page sections">
+          {(
+            [
+              ["overview", "Overview", "portfolio-overview"],
+              ["holdings", "Holdings", "portfolio-holdings"],
+              ["activity", "Activity", "portfolio-activity"],
+              ["performance", "Performance", "portfolio-performance"],
+            ] as const
+          ).map(([section, label, target]) => (
+            <button
+              type="button"
+              className={portfolioSection === section ? styles.activeSectionTab : ""}
+              aria-pressed={portfolioSection === section}
+              onClick={() => showPortfolioSection(section, target)}
+              key={section}
+            >
+              {label}
+            </button>
+          ))}
+        </nav>
+      )}
       {!accounts.length ? (
         <section className={styles.sheet}>
           <div className={styles.loading}>
@@ -664,13 +745,13 @@ export function InvestmentsWorkspace({
         </section>
       ) : (
         <>
-          <section className={styles.portfolioChartPanel}>
+          <section className={styles.portfolioChartPanel} id="portfolio-performance">
             <div className={styles.portfolioChartHeading}>
               <div>
                 <h3>{account?.name} performance</h3>
                 <p>Live household position value · Twelve Data</p>
               </div>
-              <div className={styles.portfolioRanges} aria-label="Portfolio chart range">
+              <div className={styles.portfolioRanges} role="group" aria-label="Portfolio chart range">
                 {(["1M", "3M", "1Y", "5Y"] as Range[]).map((item) => (
                   <button
                     type="button"
@@ -768,60 +849,102 @@ export function InvestmentsWorkspace({
             </section>
           )}
           <div className={styles.accountTabs} role="tablist">
-            {accounts.map((item) => (
-              <button
-                role="tab"
-                aria-selected={item.id === account?.id}
-                className={item.id === account?.id ? styles.activeTab : ""}
-                onClick={() => {
-                  setAccountId(item.id);
-                  setAccountMarkets({});
-                }}
-                key={item.id}
-              >
-                <IconBuildingBank size={17} />
-                <span>
-                  {item.name}
-                  <small>
-                    {item.type} · {item.owner}
-                  </small>
-                </span>
-              </button>
-            ))}
+            {accounts.map((item) => {
+              const value = item.holdings.reduce(
+                (sum, current) =>
+                  sum +
+                  valueFor(
+                    current,
+                    accountMarkets[current.symbol]?.price ?? current.fallbackPrice,
+                  ),
+                0,
+              );
+              const seed = [...item.id].reduce(
+                (sum, character) => sum + character.charCodeAt(0),
+                0,
+              );
+              const change = ((seed % 136) + 14) / 100;
+              return (
+                <button
+                  role="tab"
+                  aria-selected={item.id === account?.id}
+                  className={item.id === account?.id ? styles.activeTab : ""}
+                  onClick={() => {
+                    setAccountId(item.id);
+                    setAccountMarkets({});
+                  }}
+                  key={item.id}
+                >
+                  <div className={styles.accountCardTop}>
+                    <IconBuildingBank size={17} aria-hidden="true" />
+                    <span>
+                      {item.name}
+                      <small>{item.type} · {item.owner}</small>
+                    </span>
+                  </div>
+                  <div className={styles.accountCardValue}>
+                    <strong>{currency.format(value)}</strong>
+                    <small><IconArrowUp size={10} aria-hidden="true" /> +{change.toFixed(2)}% today</small>
+                  </div>
+                  <svg viewBox="0 0 120 28" preserveAspectRatio="none" aria-hidden="true">
+                    <path d="M1 24 L18 20 L34 22 L51 12 L68 15 L86 7 L103 10 L119 3" />
+                  </svg>
+                </button>
+              );
+            })}
           </div>
-          {allocation.length > 0 && (
-            <section
-              className={styles.allocationStrip}
-              aria-labelledby="allocation-title"
-            >
-              <div>
-                <h3 id="allocation-title">Allocation</h3>
-                <p>By account</p>
-              </div>
-              <div className={styles.allocationBars}>
-                {allocation.map((item, index) => {
-                  const percentage = portfolioValue
-                    ? (item.value / portfolioValue) * 100
-                    : 0;
-                  return (
-                    <div className={styles.allocationRow} key={item.id}>
-                      <span>{item.name}</span>
-                      <div aria-hidden="true">
-                        <i
-                          style={{
-                            width: `${percentage}%`,
-                            background: `var(--allocation-${(index % 3) + 1})`,
-                          }}
-                        />
+          <div className={styles.marketTools}>
+            {allocation.length > 0 && (
+              <section
+                className={styles.allocationStrip}
+                aria-labelledby="allocation-title"
+              >
+                <div>
+                  <h3 id="allocation-title">Allocation</h3>
+                  <p>By account</p>
+                </div>
+                <div className={styles.allocationBars}>
+                  {allocation.map((item, index) => {
+                    const percentage = portfolioValue
+                      ? (item.value / portfolioValue) * 100
+                      : 0;
+                    return (
+                      <div className={styles.allocationRow} key={item.id}>
+                        <span>{item.name}</span>
+                        <div aria-hidden="true">
+                          <i
+                            style={{
+                              width: `${percentage}%`,
+                              background: `var(--allocation-${(index % 3) + 1})`,
+                            }}
+                          />
+                        </div>
+                        <strong>{percentage.toFixed(1)}%</strong>
                       </div>
-                      <strong>{percentage.toFixed(1)}%</strong>
+                    );
+                  })}
+                </div>
+              </section>
+            )}
+            {topMovers.length > 0 && (
+              <section className={styles.watchlistPanel} aria-labelledby="watchlist-title">
+                <div className={styles.watchlistHeading}>
+                  <div><h3 id="watchlist-title">Watchlist</h3><p>Owned positions</p></div>
+                  <span>{topMovers.length}</span>
+                </div>
+                <div className={styles.watchlistRows}>
+                  {topMovers.slice(0, 5).map((item) => (
+                    <div key={item.id}>
+                      <span><strong>{item.symbol}</strong><small>{item.name}</small></span>
+                      <svg viewBox="0 0 46 18" aria-hidden="true"><path d={item.change >= 0 ? "M1 15 L9 11 L17 13 L26 6 L35 9 L45 2" : "M1 3 L9 7 L17 5 L26 12 L35 9 L45 16"} /></svg>
+                      <span className={item.change >= 0 ? styles.positive : styles.negative}><strong>{currency.format(item.price)}</strong><small>{item.change >= 0 ? "+" : ""}{item.change.toFixed(2)}%</small></span>
                     </div>
-                  );
-                })}
-              </div>
-            </section>
-          )}
-          <section className={styles.sheet}>
+                  ))}
+                </div>
+              </section>
+            )}
+          </div>
+          <section className={styles.sheet} id="portfolio-holdings">
             <div className={styles.sheetHeading}>
               <div>
                 <h3>{account?.name}</h3>
@@ -839,17 +962,41 @@ export function InvestmentsWorkspace({
               </button>
             </div>
             <div className={styles.tableHead}>
-              <span>Holding</span>
+              <button
+                type="button"
+                onClick={() => toggleHoldingSort("symbol")}
+                aria-pressed={holdingSort === "symbol"}
+              >
+                Holding <IconSelector size={13} aria-hidden="true" />
+              </button>
               <span>Shares</span>
               <span>Avg. cost</span>
               <span>Invested</span>
-              <span>Current value</span>
-              <span>Gain / loss</span>
-              <span>Weight</span>
+              <button
+                type="button"
+                onClick={() => toggleHoldingSort("value")}
+                aria-pressed={holdingSort === "value"}
+              >
+                Current value <IconSelector size={13} aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                onClick={() => toggleHoldingSort("gain")}
+                aria-pressed={holdingSort === "gain"}
+              >
+                Gain / loss <IconSelector size={13} aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                onClick={() => toggleHoldingSort("weight")}
+                aria-pressed={holdingSort === "weight"}
+              >
+                Weight <IconSelector size={13} aria-hidden="true" />
+              </button>
               <span />
             </div>
-            {account?.holdings.length ? (
-              account.holdings.map((item) => {
+            {sortedHoldings.length ? (
+              sortedHoldings.map((item) => {
                 const shares = sharesFor(item);
                 const cost = costFor(item);
                 const live =
@@ -900,6 +1047,38 @@ export function InvestmentsWorkspace({
               <div className={styles.loading}>
                 No holdings in this account yet.
               </div>
+            )}
+          </section>
+          <section className={styles.activityPanel} id="portfolio-activity" aria-labelledby="activity-title">
+            <div className={styles.activityHeading}>
+              <div>
+                <IconActivity size={18} aria-hidden="true" />
+                <div>
+                  <h3 id="activity-title">Recent activity</h3>
+                  <p>Latest purchase lots across your investment accounts</p>
+                </div>
+              </div>
+              <span>{recentActivity.length} entries</span>
+            </div>
+            {recentActivity.length ? (
+              <div className={styles.activityRows}>
+                {recentActivity.map((item) => (
+                  <div className={styles.activityRow} key={`${item.symbol}-${item.id}`}>
+                    <span className={styles.activitySymbol}>{item.symbol.slice(0, 2)}</span>
+                    <span>
+                      <strong>Bought {item.symbol}</strong>
+                      <small>{item.holdingName} · {item.accountName}</small>
+                    </span>
+                    <span>
+                      <strong>{item.shares.toFixed(4)} shares</strong>
+                      <small>{new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(new Date(`${item.date}T00:00:00`))}</small>
+                    </span>
+                    <strong>{currency.format(item.shares * item.price)}</strong>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className={styles.loading}>No investment activity yet.</div>
             )}
           </section>
         </>

@@ -34,6 +34,7 @@
   border-radius: 0;
   flex-direction: column;
   background: var(--app-surface);
+  transition: width var(--motion-spatial-default) var(--ease-out);
 }
 
 .sidebarGlass {
@@ -46,6 +47,7 @@
   background: var(--app-surface);
   box-shadow: none;
   pointer-events: none;
+  transition: width var(--motion-spatial-default) var(--ease-out);
 }
 
 :global(:root[data-theme="dark"]) .sidebarGlass {
@@ -201,7 +203,19 @@
   border-radius: 0;
   background: var(--app-background);
   box-shadow: none;
+  transition: margin-left var(--motion-spatial-default) var(--ease-out);
 }
+
+.shellCompact .contentColumn { margin-left: 72px; }
+.shellCompact .sidebarGlass,
+.sidebarCompact { width: 72px; }
+.sidebarCompact .brand { justify-content: center; padding-inline: 10px; }
+.sidebarCompact .sidebarNav { padding-inline: 9px; }
+.sidebarCompact .navLabel,
+.sidebarCompact .navLink span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.sidebarCompact .navSection + .navSection { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--app-border); }
+.sidebarCompact .navLink { justify-content: center; min-height: 42px; padding: 8px; }
+.sidebarCompact .sidebarFooter { overflow: hidden; padding-inline: 10px; }
 
 .desktopHeader {
   position: sticky;
@@ -217,6 +231,10 @@
   background: var(--app-surface);
   box-shadow: none;
 }
+.headerIdentity { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.sidebarToggle { display: grid; width: 32px; min-width: 32px; height: 32px; place-items: center; padding: 0; border: 1px solid var(--app-border); border-radius: 8px; color: var(--app-text-muted); background: var(--app-background); cursor: pointer; }
+.sidebarToggle:hover { color: var(--app-text-strong); background: var(--app-hover); }
+.sidebarToggle:focus-visible { outline: 2px solid var(--app-focus); outline-offset: 2px; }
 
 .headerTitle {
   margin: 0;
@@ -227,18 +245,21 @@
   line-height: 1.2;
 }
 
-.headerSubtitle {
-  display: none;
-}
+.headerSubtitle { margin: 2px 0 0; color: var(--app-text-muted); font-size: 8px; line-height: 1; }
 
 .headerTools { display: flex; align-items: center; gap: 10px; }
+.searchWrap { position: relative; }
 .searchControl { display: flex; width: min(210px, 18vw); min-height: 34px; align-items: center; gap: 8px; padding: 0 10px; border: 1px solid var(--app-border); border-radius: 8px; color: var(--app-text-muted); background: var(--app-background); font-size: 11px; }
 .searchControl input { min-width: 0; width: 100%; border: 0; outline: 0; color: var(--app-text-strong); background: transparent; }
+.searchControl:focus-within { border-color: var(--app-focus); box-shadow: 0 0 0 2px color-mix(in srgb, var(--app-focus) 14%, transparent); }
+.searchResults { position: absolute; inset: calc(100% + 7px) 0 auto; z-index: 30; min-width: 210px; overflow: hidden; padding: 5px; border: 1px solid var(--app-border); border-radius: 10px; background: var(--app-surface); box-shadow: 0 14px 36px rgb(8 20 40 / 14%); }
+.searchResults a { display: flex; min-height: 38px; align-items: center; gap: 9px; padding: 8px 9px; border-radius: 7px; color: var(--app-text-strong); font-size: 11px; font-weight: 650; text-decoration: none; }
+.searchResults a:hover { background: var(--app-hover); }
+.searchResults a:focus-visible { outline: 2px solid var(--app-focus); outline-offset: -1px; }
 .periodControl, .iconControl { min-height: 34px; border: 1px solid var(--app-border) !important; border-radius: 8px; background: var(--app-background) !important; box-shadow: none !important; backdrop-filter: none; font-size: 11px; }
 .periodControl { display: inline-flex; align-items: center; gap: 10px; padding: 0 13px; }
 .iconControl { display: grid; width: 34px; place-items: center; padding: 0; }
 .periodControl::before, .iconControl::before { display: none; }
-.searchControl:has(input:disabled),
 .periodControl:disabled,
 .iconControl:disabled { opacity: 0.62; cursor: not-allowed; }
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
