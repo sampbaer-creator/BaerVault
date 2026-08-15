@@ -4,6 +4,7 @@ import { IconCheck, IconChevronDown, IconRefresh } from "@tabler/icons-react";
 import { type CSSProperties, useRef } from "react";
 
 import { usePreferences } from "@/components/preferences/PreferencesProvider";
+import ToggleSwitch from "@/components/ui/toggle-switch-glass";
 import {
   financePaletteIds,
   financePalettes,
@@ -64,10 +65,17 @@ export function PreferencesPanel() {
         <Field label="Density">
           <Segment value={preferences.density} options={["comfortable", "compact"]} onChange={(density) => update({ density: density as typeof preferences.density })} />
         </Field>
-        <label className={styles.toggle}>
+        <div className={styles.toggle}>
           <span><strong>Reduce motion</strong><small>Minimize non-essential transitions.</small></span>
-          <input type="checkbox" checked={preferences.reducedMotion} onChange={(event) => update({ reducedMotion: event.target.checked })} />
-        </label>
+          <ToggleSwitch
+            isActive={preferences.reducedMotion}
+            onChange={(reducedMotion) => update({ reducedMotion })}
+            size="sm"
+            colorTheme="success"
+            label="Reduce motion"
+            reduceMotion={preferences.reducedMotion}
+          />
+        </div>
         <button className={styles.reset} onClick={reset}><IconRefresh size={16} />Reset appearance</button>
       </section>
       <section id="formatting">
