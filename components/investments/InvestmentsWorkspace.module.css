@@ -128,7 +128,6 @@
   overflow-x: auto;
   scrollbar-width: none;
 }
-.moversPanel,
 .allocationStrip {
   margin-bottom: 14px;
   overflow: hidden;
@@ -136,14 +135,14 @@
   border-radius: 14px;
   background: var(--app-surface);
 }
+.moversPanel { margin-bottom: 14px; }
 .moversHeading {
   display: flex;
-  min-height: 42px;
+  min-height: 48px;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 0 18px;
-  border-bottom: 1px solid var(--app-border);
+  padding: 0 2px 10px;
 }
 .moversHeading h3,
 .allocationStrip h3 {
@@ -157,28 +156,45 @@
   color: var(--muted);
   font-size: 10px;
 }
+.moversHeading p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 10px;
+}
 .moversStrip {
   display: grid;
-  grid-template-columns: repeat(6, minmax(126px, 1fr));
+  grid-template-columns: repeat(6, minmax(154px, 1fr));
+  gap: 10px;
   overflow-x: auto;
+  padding-bottom: 3px;
   scrollbar-width: thin;
 }
 .mover {
   display: grid;
+  min-width: 154px;
+  min-height: 116px;
   grid-template-columns: 1fr auto;
-  gap: 4px 8px;
-  min-width: 126px;
-  padding: 13px 16px;
-  border-right: 1px solid var(--app-border);
+  align-items: start;
+  gap: 7px 10px;
+  overflow: hidden;
+  padding: 13px 14px 0;
+  border: 1px solid var(--app-border);
+  border-radius: 12px;
+  background: var(--app-surface-raised);
   font-size: 10px;
 }
-.mover:last-child { border-right: 0; }
-.moverSymbol { color: var(--navy); font-size: 11px; font-weight: 750; }
-.mover svg { grid-row: 1 / 3; grid-column: 2; width: 54px; height: 25px; }
+.moverSummary { display: grid; grid-column: 1 / -1; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 10px; }
+.moverSummary > strong { color: var(--navy); font-size: 11px; font-variant-numeric: tabular-nums; }
+.moverSymbol { display: grid; min-width: 0; color: var(--navy); font-size: 11px; font-weight: 750; }
+.moverSymbol small { overflow: hidden; margin-top: 3px; color: var(--muted); font-size: 8px; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+.mover > span { display: inline-flex; width: max-content; align-items: center; gap: 3px; font-size: 10px; font-weight: 750; }
+.mover > span svg { width: 14px; height: 14px; padding: 2px; border-radius: 50%; color: #fff; }
+.mover > span.positive svg { background: #198754; }
+.mover > span.negative svg { background: #b8534b; }
+.mover > svg { grid-column: 1 / -1; width: calc(100% + 28px); height: 42px; margin: -2px -14px 0; align-self: end; }
 .mover svg path { fill: none; stroke: currentColor; stroke-width: 1.75; vector-effect: non-scaling-stroke; }
-.mover:has(.negative) svg { color: #b8534b; }
-.mover:has(.positive) svg { color: #198754; }
-.mover strong { grid-column: 1 / -1; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.mover:has(.negative) > svg { color: #b8534b; }
+.mover:has(.positive) > svg { color: #198754; }
 .allocationStrip {
   display: grid;
   grid-template-columns: 130px minmax(0, 1fr);
@@ -1121,7 +1137,7 @@
   .hero { grid-template-columns: 1fr; padding: 18px; }
   .heroRail { margin-top: 18px; padding: 16px 0 0; border-top: 1px solid var(--app-border); border-left: 0; }
   .portfolioChartPanel { padding: 17px; }
-  .moversStrip { grid-template-columns: repeat(6, 138px); }
+  .moversStrip { grid-template-columns: repeat(6, 154px); }
   .allocationStrip { grid-template-columns: 1fr; gap: 14px; padding: 17px; }
   .allocationRow { grid-template-columns: minmax(90px, 130px) minmax(80px, 1fr) 42px; }
   .holdingRow { padding-inline: 16px; }

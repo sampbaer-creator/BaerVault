@@ -3,6 +3,8 @@
 import { Drawer } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import {
+  IconArrowDown,
+  IconArrowUp,
   IconBuildingBank,
   IconChevronRight,
   IconEdit,
@@ -722,13 +724,35 @@ export function InvestmentsWorkspace({
           {topMovers.length > 0 && (
             <section className={styles.moversPanel} aria-labelledby="movers-title">
               <div className={styles.moversHeading}>
-                <h3 id="movers-title">Your top movers for today</h3>
+                <div>
+                  <h3 id="movers-title">Your top movers for today</h3>
+                  <p>A quick market view of the holdings you own</p>
+                </div>
                 <span>Last price</span>
               </div>
               <div className={styles.moversStrip}>
                 {topMovers.map((item) => (
                   <div className={styles.mover} key={item.id}>
-                    <span className={styles.moverSymbol}>{item.symbol}</span>
+                    <div className={styles.moverSummary}>
+                      <span className={styles.moverSymbol}>
+                        {item.symbol}
+                        <small>{item.name}</small>
+                      </span>
+                      <strong>{currency.format(item.price)}</strong>
+                    </div>
+                    <span
+                      className={
+                        item.change >= 0 ? styles.positive : styles.negative
+                      }
+                    >
+                      {item.change >= 0 ? "+" : ""}
+                      {item.change.toFixed(2)}%
+                      {item.change >= 0 ? (
+                        <IconArrowUp size={10} aria-hidden="true" />
+                      ) : (
+                        <IconArrowDown size={10} aria-hidden="true" />
+                      )}
+                    </span>
                     <svg viewBox="0 0 72 26" aria-hidden="true">
                       <path
                         d={
@@ -738,15 +762,6 @@ export function InvestmentsWorkspace({
                         }
                       />
                     </svg>
-                    <span
-                      className={
-                        item.change >= 0 ? styles.positive : styles.negative
-                      }
-                    >
-                      {item.change >= 0 ? "+" : ""}
-                      {item.change.toFixed(2)}%
-                    </span>
-                    <strong>{currency.format(item.price)}</strong>
                   </div>
                 ))}
               </div>

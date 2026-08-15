@@ -182,6 +182,16 @@
       "decision": "Use a 248px desktop rail, 48px application header, 14px panel radius, and 44px minimum interactive hit areas.",
       "reason": "Brings the application proportions closer to the reference layouts without compromising accessibility.",
       "source": "User-provided design screenshots and Figma references"
+    },
+    {
+      "decision": "Make the public landing page feel like the product itself by using the same flat financial surfaces, dashboard hierarchy, typography, palette tokens, and 14px geometry.",
+      "reason": "Creates a continuous experience between marketing, demo, and authenticated pages while keeping the landing page understandable to new visitors.",
+      "source": "User direction and supplied Ledger/Cadence references"
+    },
+    {
+      "decision": "Present investment movers as compact rounded market cards with price, direction, company context, and sparklines.",
+      "reason": "Adopts the fast-scanning strengths of the supplied Google Finance references without copying its branding or turning BearVault into a trading terminal.",
+      "source": "User-provided Google Finance screenshots and URL"
     }
   ],
   "evidence": [

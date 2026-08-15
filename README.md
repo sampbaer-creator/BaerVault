@@ -2,6 +2,23 @@
 
 BearVault is a household finance application for managing budgets, cash flow, and investments in one shared workspace. Clerk Organizations represent households, while Supabase stores financial records with PostgreSQL row-level security.
 
+## Start here if you are new
+
+Read [`PROJECT_STRUCTURE.md`](PROJECT_STRUCTURE.md) first. It explains, in plain language:
+
+- what every source folder is for;
+- which file controls each page;
+- where every page gets its data;
+- how the public demo differs from the signed-in application;
+- how the desktop and mobile layouts are assembled; and
+- which file to change for common design or feature updates.
+
+The shortest mental model is:
+
+```text
+app/ page route -> components/ workspace -> lib/ data function -> Supabase or mock data
+```
+
 ## What BearVault does
 
 - Creates a shared financial workspace for a household
@@ -28,9 +45,9 @@ Household dashboard
 
 ## Public demo
 
-Visitors can open `/demo` from the landing page without creating an account. The demo mirrors the dashboard, budget, cash-flow, investment, household, and settings navigation with interactive mock records stored only in the browser tab. It does not authenticate, call Supabase repositories, or write to production household tables.
+Visitors can open `/demo` from the landing page without creating an account. The demo covers dashboard, transactions, accounts, budgets, cash flow, investments, goals, household, and settings with interactive mock records stored only in the browser tab. It does not authenticate, call Supabase repositories, or write to production household tables.
 
-Authenticated users without an active organization are sent to `/onboarding`. Protected application routes include `/dashboard`, `/budget`, `/cash-flow`, `/investments`, `/household`, and `/settings`.
+Authenticated users without an active organization are sent to `/onboarding`. Protected application routes include `/dashboard`, `/transactions`, `/accounts`, `/budget`, `/cash-flow`, `/investments`, `/goals`, `/household`, and `/settings`.
 
 ## Architecture
 
