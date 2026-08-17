@@ -250,7 +250,7 @@ export function AccountsWorkspace({
           <h2>Every balance, in one calm view.</h2>
           <p>Add checking, savings, cash, cards, and loans to see your complete net worth.</p>
         </div>
-        <button className={styles.addButton} type="button" onClick={() => openAdd()}>
+        <button className={`${styles.addButton} btn btn-primary`} type="button" onClick={() => openAdd()}>
           <IconPlus size={18} aria-hidden="true" />
           Add account
         </button>
@@ -265,7 +265,7 @@ export function AccountsWorkspace({
 
       <div className={`${styles.accountLayout} ${selected ? styles.hasSelection : ""}`}>
         <div className={styles.accountMain}>
-          <section className={styles.netWorthCard} aria-labelledby="net-worth-title">
+          <section className={`${styles.netWorthCard} card chart-summary`} aria-labelledby="net-worth-title">
             <div className={styles.summaryHeader}>
               <div>
                 <span id="net-worth-title">Net worth</span>
@@ -316,7 +316,7 @@ export function AccountsWorkspace({
                 const IconComponent = groupIcons[type];
                 const groupTotal = grouped.reduce((sum, account) => sum + account.balance, 0);
                 return (
-                  <section className={styles.accountGroup} aria-labelledby={`group-${type}`} key={type}>
+                  <section className={`${styles.accountGroup} card`} aria-labelledby={`group-${type}`} key={type}>
                     <div className={styles.groupHeader}>
                       <div>
                         <IconComponent size={17} aria-hidden="true" />
@@ -362,7 +362,7 @@ export function AccountsWorkspace({
         </div>
 
         <aside
-          className={styles.detailPanel}
+                  className={`${styles.detailPanel} card glass-panel`}
           aria-label="Selected account details"
           onKeyDown={(event) => {
             if (event.key === "Escape") closeDetails();
@@ -398,7 +398,7 @@ export function AccountsWorkspace({
               ) : null}
               <div className={styles.detailActions}>
                 <button type="button" onClick={() => openEdit(selected)}><IconPencil size={17} aria-hidden="true" />Edit account</button>
-                <button className={styles.deleteButton} type="button" onClick={() => removeAccount(selected)}><IconTrash size={17} aria-hidden="true" />Delete</button>
+                <button className={`${styles.deleteButton} btn btn-ghost`} type="button" onClick={() => removeAccount(selected)}><IconTrash size={17} aria-hidden="true" />Delete</button>
               </div>
             </>
           ) : (
@@ -454,7 +454,7 @@ export function AccountsWorkspace({
             </label>
           ) : null}
           <p className={styles.formError} role="alert">{message}</p>
-          <button className={styles.submitButton} type="submit" disabled={saving}>
+          <button className={`${styles.submitButton} btn btn-primary`} type="submit" disabled={saving}>
             {saving ? "Saving…" : editingId ? "Save changes" : "Add account"}
           </button>
         </form>

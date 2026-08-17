@@ -185,7 +185,7 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
     <div className={styles.budget}>
       <header className={styles.intro}>
         <div><p className={styles.eyebrow}>Monthly plan</p><h2>{initialBudget.month} budget</h2><p>Plan the month, then add purchases where they belong.</p></div>
-        <button className={styles.copyButton} type="button" disabled title="Available when another month has been created"><IconCopy size={16} />Copy previous month</button>
+        <button className={`${styles.copyButton} btn btn-ghost`} type="button" disabled title="Available when another month has been created"><IconCopy size={16} />Copy previous month</button>
       </header>
 
       <section className={styles.monthBar} aria-label="Budget month navigation">
@@ -196,7 +196,7 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
 
       {error && <p className={styles.formError} role="alert">{error}</p>}
 
-      <section className={styles.summary} aria-labelledby="budget-summary-title">
+      <section className={`${styles.summary} chart-summary card`} aria-labelledby="budget-summary-title">
         <div className={styles.summaryLead}><span id="budget-summary-title">Available after spending</span><strong>{currency.format(savings)}</strong><small>{currency.format(income)} income this month</small></div>
         <div className={styles.summaryRail}>
           <div><span>Planned</span><strong>{currency.format(planned)}</strong></div>
@@ -206,7 +206,7 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
       </section>
 
       <div className={styles.referenceGrid}>
-      <section className={styles.sheet} aria-labelledby="categories-title">
+      <section className={`${styles.sheet} card`} aria-labelledby="categories-title">
         <div className={styles.sheetHeading}><div><h3 id="categories-title">Spending plan</h3><p>Actuals are calculated from the purchases inside each category.</p></div><button type="button" onClick={() => setAddingCategory(true)}><IconPlus size={16} />Add category</button></div>
         <div className={styles.tableHeader} aria-hidden="true"><span>Category</span><span>Budget / projected</span><span>Actual</span><span>Remaining / variance</span><span /></div>
         <div className={styles.rows}>
@@ -228,8 +228,8 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
       </section>
 
       <aside className={styles.budgetAside}>
-        <section className={styles.allocationPanel}><h3>Where it goes</h3><div className={styles.allocationRing} style={{ "--used": `${planned ? Math.min(spending / planned * 100, 100) : 0}%` } as React.CSSProperties}><div><strong>{currency.format(spending)}</strong><span>spent</span></div></div><div className={styles.allocationLegend}>{categories.slice(0, 4).map((category) => <div key={category.id}><i /><span>{category.name}</span><strong>{currency.format(categoryActual(category))}</strong></div>)}</div></section>
-        <section className={styles.remainingPanel}><span>Left to spend</span><strong>{currency.format(remaining)}</strong><p>{remaining >= 0 ? "Your plan is on pace for this month." : "Review categories currently over budget."}</p></section>
+        <section className={`${styles.allocationPanel} card chart-summary`}><h3>Where it goes</h3><div className={styles.allocationRing} style={{ "--used": `${planned ? Math.min(spending / planned * 100, 100) : 0}%` } as React.CSSProperties}><div><strong>{currency.format(spending)}</strong><span>spent</span></div></div><div className={styles.allocationLegend}>{categories.slice(0, 4).map((category) => <div key={category.id}><i /><span>{category.name}</span><strong>{currency.format(categoryActual(category))}</strong></div>)}</div></section>
+        <section className={`${styles.remainingPanel} card`}><span>Left to spend</span><strong>{currency.format(remaining)}</strong><p>{remaining >= 0 ? "Your plan is on pace for this month." : "Review categories currently over budget."}</p></section>
       </aside>
       </div>
 
@@ -249,12 +249,12 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
             <label>Paid from<select required={accounts.length > 0} disabled={accounts.length === 0} value={purchaseDraft.accountId} onChange={(e) => setPurchaseDraft({ ...purchaseDraft, accountId: e.target.value })}><option value="">{accounts.length ? "Select an account" : "No accounts added yet"}</option>{accounts.map((account) => <option value={account.id} key={account.id}>{account.name}{account.institution ? ` · ${account.institution}` : ""}</option>)}</select></label>
             {accounts.length === 0 ? <p className={styles.accountHint}>Add checking, cash, or a credit card in <Link href={accountsPath}>Accounts</Link> to identify where purchases were paid from.</p> : null}
             <label>Date<input type="date" required value={purchaseDraft.date} onChange={(e) => setPurchaseDraft({ ...purchaseDraft, date: e.target.value })} /></label>
-            <div className={styles.formActions}><button type="button" onClick={() => setShowPurchaseForm(false)}><IconX size={15} />Cancel</button><button className={styles.primaryButton} type="submit" disabled={saving}>{saving ? "Saving…" : editingPurchaseId ? "Save purchase" : "Add purchase"}</button></div>
+            <div className={styles.formActions}><button type="button" onClick={() => setShowPurchaseForm(false)}><IconX size={15} />Cancel</button><button className={`${styles.primaryButton} btn btn-primary`} type="submit" disabled={saving}>{saving ? "Saving…" : editingPurchaseId ? "Save purchase" : "Add purchase"}</button></div>
           </form>}
           <div className={styles.purchaseList}>
             {selected.purchases.map((purchase) => <div className={styles.purchase} key={purchase.id}><div><strong>{purchase.description}</strong><span>{new Date(`${purchase.date}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric" })} · {purchase.accountName ?? "Account not assigned"}</span></div><strong>{currency.format(purchase.amount)}</strong><div className={styles.purchaseActions}><button type="button" onClick={() => editPurchase(purchase)} aria-label={`Edit ${purchase.description}`}><IconEdit size={16} /></button><button type="button" onClick={() => setPendingDelete({kind:"entry",id:purchase.id,label:purchase.description})} aria-label={`Delete ${purchase.description}`}><IconTrash size={16} /></button></div></div>)}
           </div>
-          <button className={styles.copyButton} type="button" onClick={()=>setPendingDelete({kind:"category",id:selected.id,label:selected.name})}><IconTrash size={15}/>Delete category</button>
+          <button className={`${styles.copyButton} btn btn-ghost`} type="button" onClick={()=>setPendingDelete({kind:"category",id:selected.id,label:selected.name})}><IconTrash size={15}/>Delete category</button>
         </div>}
       </Drawer>
 

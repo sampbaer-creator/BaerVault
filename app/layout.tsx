@@ -7,6 +7,7 @@ import { Manrope } from "next/font/google";
 import Script from "next/script";
 
 import "./globals.css";
+import "./redesign.css";
 import { PreferencesProvider } from "@/components/preferences/PreferencesProvider";
 import { MobileViewportRuntime } from "@/components/shared/MobileViewportRuntime";
 

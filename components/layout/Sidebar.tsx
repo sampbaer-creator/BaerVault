@@ -56,7 +56,7 @@ export function Sidebar({ pathname, collapsed = false }: SidebarProps) {
       aria-label="Primary navigation"
     >
       <div
-        className={`${styles.sidebarGlass} liquid-gl-pane`}
+        className={`${styles.sidebarGlass} liquid-gl-pane glass-panel`}
         aria-hidden="true"
       />
       <div className={styles.brand}>

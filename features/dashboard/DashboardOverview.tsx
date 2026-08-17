@@ -125,7 +125,7 @@ export function DashboardOverview({ model, basePath = "" }: DashboardProps) {
   return (
     <div className={styles.dashboard}>
       <div className={styles.dashboardGrid}>
-        <section className={styles.spendingPanel}>
+        <section className={`${styles.spendingPanel} card glass-panel`}>
           <PanelHeading title="Monthly spending" href={`${basePath}/transactions`} action="Transactions" />
           <div className={styles.spendingSummary}>
             <strong>{money.format(Math.abs(budgetLeft))} {budgetLeft >= 0 ? "left" : "over"}</strong>
@@ -135,7 +135,7 @@ export function DashboardOverview({ model, basePath = "" }: DashboardProps) {
           <span className={styles.chartPill}>{money.format(model.spending)} spent</span>
         </section>
 
-        <section className={styles.netWorthPanel}>
+        <section className={`${styles.netWorthPanel} card glass-panel`}>
           <PanelHeading title="Net worth" href={`${basePath}/accounts`} action="Accounts" />
           <div className={styles.netWorthSummary}>
             <div><span><i className={styles.assetDot} />Assets</span><strong>{waitingForMarket ? "Updating…" : marketUnavailable ? money.format(model.cashAssets) : money.format(netWorth + model.debts)}</strong><small><IconArrowUpRight size={12} /> 5.67%</small></div>
@@ -145,7 +145,7 @@ export function DashboardOverview({ model, basePath = "" }: DashboardProps) {
           <TimeRange />
         </section>
 
-        <section className={styles.transactionsPanel}>
+        <section className={`${styles.transactionsPanel} card`}>
           <PanelHeading title="Transactions to review" href={`${basePath}/transactions`} action="View all" />
           <div className={styles.transactionList}>
             {model.activity.length ? model.activity.concat(model.activity.slice(0, 3)).map((item, index) => (
@@ -159,7 +159,7 @@ export function DashboardOverview({ model, basePath = "" }: DashboardProps) {
         </section>
 
         <div className={styles.sideStack}>
-          <section className={styles.categoriesPanel}>
+          <section className={`${styles.categoriesPanel} card`}>
             <PanelHeading title="Top categories" href={`${basePath}/budget`} action="View all" />
             <div className={styles.categoryList}>
               {topCategories.length ? topCategories.map((category, index) => (
@@ -167,7 +167,7 @@ export function DashboardOverview({ model, basePath = "" }: DashboardProps) {
               )) : <div><span><i />Other</span><strong>{money.format(0)}</strong></div>}
             </div>
           </section>
-          <section className={styles.upcomingPanel}>
+          <section className={`${styles.upcomingPanel} card`}>
             <PanelHeading title="Next two weeks" href={`${basePath}/budget`} action="Budgets" />
             <div className={styles.upcomingEmpty}>
               <p>There are no upcoming payments</p>

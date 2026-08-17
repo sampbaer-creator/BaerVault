@@ -1,0 +1,125 @@
+/* BearVault redesign overrides — liquid glass aesthetic, shared components and tokens */
+:root {
+  /* refine radii, spacing, and shadows for premium feel */
+  --window-radius: 20px;
+  --radius-panel: 16px;
+  --radius-control: 10px;
+  --space-page: clamp(20px, 3.6vw, 48px);
+  --control-height: 48px;
+  /* subtle lift and deeper glass shadow */
+  --shadow-surface: 0 20px 50px rgb(17 20 57 / 9%);
+  --shadow-glass: 0 20px 60px rgb(17 20 57 / 14%), inset 0 1px 0 var(--glass-edge);
+  --shadow-dialog: 0 36px 110px rgb(10 12 38 / 30%), inset 0 1px 0 var(--glass-edge);
+  /* glass blur intensities (desktop/mobile) */
+  --glass-blur: 28px;
+  --glass-sheen: 0.9;
+}
+
+/* High level glass panel used for nav, headers and feature panels */
+.glass-panel {
+  background: var(--glass-surface) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--shadow-glass) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  border-radius: var(--radius-panel);
+}
+
+/* Controls */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 16px;
+  min-height: var(--control-height);
+  border-radius: var(--radius-control);
+  border: 1px solid var(--glass-button-border);
+  background: var(--glass-button-surface);
+  color: var(--glass-button-text);
+  box-shadow: 0 6px 20px rgb(17 20 57 / 8%), inset 0 1px 0 var(--glass-edge);
+  font-weight: 700;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--app-accent) 78%, black), var(--app-accent));
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 12px 36px color-mix(in srgb, var(--app-accent) 20%, black / 10%);
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: color-mix(in srgb, var(--app-accent) 18%, var(--app-border));
+  color: var(--app-text-strong);
+}
+
+/* Form inputs */
+.input {
+  min-height: var(--control-height);
+  padding: 10px 12px;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--app-border);
+  background: color-mix(in srgb, var(--app-surface) 86%, transparent);
+  color: var(--app-text-strong);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, white 86%, transparent);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--app-focus);
+  box-shadow: 0 6px 24px color-mix(in srgb, var(--app-focus) 10%, transparent);
+}
+
+/* Card */
+.card {
+  border-radius: 14px;
+  border: 1px solid var(--app-border);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--app-surface) 94%, transparent), var(--app-surface));
+  box-shadow: var(--shadow-surface);
+  padding: 16px;
+}
+
+.card-compact { padding: 10px; }
+
+/* Table wrapper — keep tables readable by reducing transparency */
+.table-wrapper {
+  background: color-mix(in srgb, var(--app-surface) 100%, transparent);
+  border: 1px solid var(--app-border);
+  border-radius: 12px;
+  overflow: auto;
+  box-shadow: 0 8px 26px rgb(17 20 57 / 6%);
+}
+
+.table thead th { color: var(--app-text-muted); font-weight: 700; font-size: 12px; }
+.table tbody td { font-variant-numeric: tabular-nums; }
+
+/* Chart wrapper with subtle glass backdrop for summary panels */
+.chart-summary {
+  padding: 14px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--app-surface) 96%, transparent), var(--app-surface));
+  box-shadow: 0 18px 48px rgb(17 20 57 / 7%);
+}
+
+/* Mobile bottom nav enhancement */
+.mobile-nav-enhanced {
+  border-radius: 22px !important;
+  padding: 6px !important;
+  box-shadow: 0 18px 44px rgb(17 20 57 / 16%); 
+  backdrop-filter: blur(26px) saturate(150%);
+}
+
+/* Utility spacing */
+.u-gap-sm { gap: 8px; }
+.u-gap { gap: 16px; }
+.u-gap-lg { gap: 24px; }
+
+/* Accessibility helpers */
+.focus-ring:focus { outline: 3px solid color-mix(in srgb, var(--app-focus) 30%, white); outline-offset: 2px; }
+
+@media (max-width: 47.999rem) {
+  :root { --glass-blur: 18px; --control-height: 56px; --radius-panel: 12px; }
+  .glass-panel { border-radius: 12px; }
+  .btn { min-height: 56px; }
+}
