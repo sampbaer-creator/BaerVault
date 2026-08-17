@@ -64,8 +64,3 @@ export function totalSpending(month: BudgetMonth) {
 export function netSavings(month: BudgetMonth) {
   return totalIncome(month) - totalSpending(month);
 }
-
-export function savingsRate(month: BudgetMonth) {
-  const income = totalIncome(month);
-  return income === 0 ? 0 : netSavings(month) / income;
-}

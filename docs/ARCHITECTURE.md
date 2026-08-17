@@ -117,5 +117,4 @@ High-value future tests are repository validation, finance calculations, server-
 - Several older workspaces use densely compressed JSX or CSS. Formatting them is safe, but component extraction should happen feature by feature.
 - The authenticated and demo shells intentionally differ, but their navigation definitions are duplicated. A future shared navigation model could remove drift while preserving distinct route prefixes.
 - There is no automated test suite. Finance calculations, repository contracts, server-action validation, and navigation reachability are the best first targets.
-- `idea/` and `Photos/` are historical design evidence at the repository root. They are documented and unused at runtime; moving binary references into `docs/assets/` can be handled separately without affecting application code.
 - The `cloudy-cashflow` palette key remains for saved-preference compatibility even though its displayed name is “Cloudy Slate.” Renaming the persisted key requires a preference migration.

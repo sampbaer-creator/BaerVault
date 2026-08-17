@@ -12,7 +12,6 @@ lib/            Shared domain models, calculations, repositories, and service cl
 supabase/       Ordered PostgreSQL migrations and row-level-security policies
 types/          Ambient TypeScript declarations
 docs/           Architecture and repository documentation
-idea/, Photos/  Tracked visual references; not loaded by the application
 ```
 
 Generated or local-only folders such as `.next/`, `node_modules/`, and `.vercel/` are not application source.
@@ -61,7 +60,7 @@ Each folder under `features/` owns the main workspace component and its CSS Modu
 
 ## Styling and assets
 
-Global tokens and browser defaults live in `app/globals.css`. Page-specific styles use colocated CSS Modules. `DESIGN.md` documents the visual system. `idea/` and `Photos/` contain historical design references and are intentionally not runtime assets; runtime assets should go in `public/`.
+Global tokens and browser defaults live in `app/globals.css`. Page-specific styles use colocated CSS Modules. `DESIGN.md` documents the visual system. Runtime static assets should go in `public/`; generated icons live in the special `app/icon.tsx` and `app/apple-icon.tsx` routes.
 
 ## Where to make common changes
 
@@ -75,4 +74,3 @@ Global tokens and browser defaults live in `app/globals.css`. Page-specific styl
 | Change theme behavior | `components/preferences/`, `features/settings/`, and `lib/themePalettes.ts` |
 | Change global design tokens | `app/globals.css` and `DESIGN.md` |
 | Change market-data behavior | `app/api/market-data/route.ts` |
-

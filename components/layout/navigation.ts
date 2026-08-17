@@ -7,7 +7,6 @@ import {
   IconLayoutDashboard,
   IconPigMoney,
   IconSettings,
-  IconWallet,
   type Icon,
 } from "@tabler/icons-react";
 
@@ -61,5 +60,3 @@ export const pageTitles: Record<string, string> = {
   "/household": "Household",
   "/settings": "Settings",
 };
-
-export const brandIcon = IconWallet;
