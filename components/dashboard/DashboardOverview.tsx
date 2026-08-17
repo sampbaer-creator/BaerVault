@@ -3,6 +3,9 @@
 import {
   IconArrowRight,
   IconArrowUpRight,
+  IconArrowsExchange,
+  IconChartPie,
+  IconPigMoney,
   IconReceipt,
   IconWallet,
 } from "@tabler/icons-react";
@@ -124,6 +127,19 @@ export function DashboardOverview({ model, basePath = "" }: DashboardProps) {
 
   return (
     <div className={styles.dashboard}>
+      <nav className={styles.quickActions} aria-label="Dashboard shortcuts">
+        {[
+          { href: `${basePath}/transactions`, label: "Transactions", icon: IconArrowsExchange },
+          { href: `${basePath}/budget`, label: "Budget", icon: IconPigMoney },
+          { href: `${basePath}/investments`, label: "Investments", icon: IconChartPie },
+          { href: `${basePath}/cash-flow`, label: "Cash flow", icon: IconWallet },
+        ].map(({ href, label, icon: Icon }) => (
+          <Link className={styles.quickAction} href={href} key={href}>
+            <span><Icon size={20} stroke={1.8} aria-hidden="true" /></span>
+            {label}
+          </Link>
+        ))}
+      </nav>
       <div className={styles.dashboardGrid}>
         <section className={styles.spendingPanel}>
           <PanelHeading title="Monthly spending" href={`${basePath}/transactions`} action="Transactions" />

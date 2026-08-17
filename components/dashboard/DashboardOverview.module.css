@@ -19,6 +19,8 @@
   gap: 18px;
 }
 
+.quickActions { display: none; }
+
 .spendingPanel,
 .netWorthPanel,
 .transactionsPanel,
@@ -110,6 +112,43 @@
 }
 
 @media (max-width: 47.999rem) {
+  .quickActions {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .quickAction {
+    display: flex;
+    min-width: 0;
+    min-height: 76px;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 10px 4px;
+    border: 1px solid var(--glass-border);
+    border-radius: 15px;
+    color: var(--target-muted);
+    background: var(--glass-surface);
+    box-shadow: inset 0 1px 0 var(--glass-highlight);
+    flex-direction: column;
+    font-size: 10px;
+    font-weight: 680;
+    text-decoration: none;
+    transition:
+      color var(--motion-effect-fast) ease,
+      transform var(--motion-spatial-fast) var(--ease-out);
+  }
+  .quickAction span {
+    display: grid;
+    width: 36px;
+    height: 36px;
+    place-items: center;
+    border-radius: 12px;
+    color: var(--app-accent);
+    background: var(--app-accent-soft);
+  }
+  .quickAction:active { transform: scale(0.97); }
   .dashboardGrid { gap: 12px; }
   .spendingPanel, .netWorthPanel, .transactionsPanel, .categoriesPanel, .upcomingPanel, .accountsPanel { border-radius: 14px; }
   .spendingPanel, .netWorthPanel { min-height: 300px; padding: 19px 17px 10px; }
@@ -119,4 +158,25 @@
   .netWorthSummary strong { font-size: 18px; }
   .timeRange { gap: 1px; }
   .timeRange span { min-width: 34px; padding-inline: 5px; }
+  .spendingPanel,
+  .netWorthPanel,
+  .transactionsPanel,
+  .sideStack {
+    animation: dashboard-enter var(--motion-spatial-default) var(--ease-out) both;
+  }
+  .netWorthPanel { animation-delay: 40ms; }
+  .transactionsPanel { animation-delay: 80ms; }
+}
+
+@keyframes dashboard-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quickAction { transition: none; }
+  .spendingPanel,
+  .netWorthPanel,
+  .transactionsPanel,
+  .sideStack { animation: none; }
 }

@@ -71,6 +71,13 @@ async function fetchMarketSeries(
     const points = data.values
       .map((point) => ({ date: point.datetime, close: Number(point.close) }))
       .filter((point) => Number.isFinite(point.close));
+    if (points.length === 0) {
+      return {
+        ok: false,
+        error: data.message ?? "Market history is unavailable.",
+        status: 502,
+      };
+    }
     return {
       ok: true,
       data: {

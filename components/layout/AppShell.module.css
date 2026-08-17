@@ -135,14 +135,15 @@
     box-shadow var(--motion-effect-fast) ease;
 }
 
-.navLink:hover {
-  transform: translateY(-1px);
-  border-color: var(--glass-border);
-  color: var(--app-text-strong);
-  background: var(--control-glass);
-  box-shadow:
-    0 8px 22px rgb(17 20 57 / 8%),
-    inset 0 1px 0 var(--glass-highlight);
+@media (hover: hover) and (pointer: fine) {
+  .navLink:hover {
+    border-color: var(--glass-border);
+    color: var(--app-text-strong);
+    background: var(--control-glass);
+    box-shadow:
+      0 8px 22px rgb(17 20 57 / 8%),
+      inset 0 1px 0 var(--glass-highlight);
+  }
 }
 
 .navLink:focus-visible,
@@ -525,7 +526,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .navLink,
-  .skipLink {
+  .skipLink,
+  .mobileNav {
     transition: none;
   }
 }
