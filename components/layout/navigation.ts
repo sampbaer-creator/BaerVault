@@ -23,6 +23,7 @@ export const mainNavigation: NavigationItem[] = [
   { href: "/accounts", label: "Accounts", icon: IconBuildingBank },
   { href: "/budget", label: "Budgets", icon: IconPigMoney },
   { href: "/investments", label: "Investments", icon: IconChartPie },
+  { href: "/cash-flow", label: "Cash Flow", icon: IconWallet },
   { href: "/goals", label: "Goals", icon: IconTargetArrow },
 ];
 
@@ -34,10 +35,20 @@ export const systemNavigation: NavigationItem[] = [
   { href: "/settings", label: "Settings", icon: IconSettings },
 ];
 
-export const mobileNavigation: NavigationItem[] = mainNavigation.slice(0, 4);
+const mobileHrefs = new Set([
+  "/dashboard",
+  "/transactions",
+  "/budget",
+  "/investments",
+  "/cash-flow",
+]);
+
+export const mobileNavigation: NavigationItem[] = mainNavigation.filter(({ href }) =>
+  mobileHrefs.has(href),
+);
 
 export const moreNavigation: NavigationItem[] = [
-  ...mainNavigation.slice(4),
+  ...mainNavigation.filter(({ href }) => !mobileHrefs.has(href)),
   ...householdNavigation,
   ...systemNavigation,
 ];
@@ -47,7 +58,7 @@ export const pageTitles: Record<string, string> = {
   "/transactions": "Transactions",
   "/accounts": "Accounts",
   "/budget": "Budgets",
-  "/cash-flow": "Transactions",
+  "/cash-flow": "Cash Flow",
   "/investments": "Investments",
   "/goals": "Goals",
   "/household": "Household",

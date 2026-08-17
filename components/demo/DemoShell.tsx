@@ -6,17 +6,16 @@ import {
   IconChartPie,
   IconHome,
   IconLayoutDashboard,
-  IconDots,
   IconPigMoney,
   IconSettings,
   IconTargetArrow,
   IconUsers,
+  IconWallet,
   IconChevronDown,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { Drawer } from "@mantine/core";
+import { useEffect, useRef } from "react";
 
 import { BearVaultLogo } from "@/components/brand/BearVaultLogo";
 import styles from "./DemoShell.module.css";
@@ -28,13 +27,20 @@ const links = [
   ["/demo/accounts", "Accounts", IconBuildingBank],
   ["/demo/budget", "Budgets", IconPigMoney],
   ["/demo/investments", "Investments", IconChartPie],
+  ["/demo/cash-flow", "Cash Flow", IconWallet],
   ["/demo/goals", "Goals", IconTargetArrow],
   ["/demo/household", "Household", IconUsers],
   ["/demo/settings", "Settings", IconSettings],
 ] as const;
 
-const mobileLinks = links.slice(0, 4);
-const moreLinks = links.slice(4);
+const mobileHrefs = new Set([
+  "/demo",
+  "/demo/transactions",
+  "/demo/budget",
+  "/demo/investments",
+  "/demo/cash-flow",
+]);
+const mobileLinks = links.filter(([href]) => mobileHrefs.has(href));
 
 const accountGroups = [
   { label: "Credit cards", accounts: [["BearVault Card", "$552"], ["Everyday Visa", "$0"]] },
@@ -44,8 +50,6 @@ const accountGroups = [
 
 export function DemoShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [moreOpened, setMoreOpened] = useState(false);
-  const moreIsActive = moreLinks.some(([href]) => href === pathname);
   const mainRef = useRef<HTMLElement>(null);
   const previousPathname = useRef(pathname);
 
@@ -135,41 +139,7 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
             <small>{label}</small>
           </Link>
         ))}
-        <button
-          type="button"
-          className={moreIsActive ? styles.active : undefined}
-          onClick={() => setMoreOpened(true)}
-          aria-haspopup="dialog"
-          aria-expanded={moreOpened}
-          aria-label="Open more demo navigation options"
-        >
-          <IconDots size={20} aria-hidden="true" />
-          <small>More</small>
-        </button>
       </nav>
-      <Drawer
-        opened={moreOpened}
-        onClose={() => setMoreOpened(false)}
-        position="bottom"
-        size="auto"
-        radius="lg"
-        title="More"
-      >
-        <nav className={styles.drawerNav} aria-label="Additional demo navigation">
-          {moreLinks.map(([href, label, Icon]) => (
-            <Link
-              key={href}
-              href={href}
-              className={pathname === href ? styles.active : undefined}
-              aria-current={pathname === href ? "page" : undefined}
-              onClick={() => setMoreOpened(false)}
-            >
-              <Icon size={22} aria-hidden="true" />
-              {label}
-            </Link>
-          ))}
-        </nav>
-      </Drawer>
     </div>
   );
 }
