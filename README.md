@@ -1,6 +1,6 @@
 # BearVault
 
-BearVault is a household finance application for managing budgets, cash flow, and investments in one shared workspace. Clerk Organizations represent households, while Supabase stores financial records with PostgreSQL row-level security.
+BearVault is a household finance application for managing transactions, budgets, accounts, and investments in one shared workspace. Clerk Organizations represent households, while Supabase stores financial records with PostgreSQL row-level security.
 
 ## Start here if you are new
 
@@ -23,7 +23,7 @@ app/ page route -> components/ workspace -> lib/ data function -> Supabase or mo
 
 - Creates a shared financial workspace for a household
 - Tracks monthly budgets, planned amounts, and individual spending entries
-- Records household income and derives net cash flow and savings rate
+- Records household income alongside spending in one transaction ledger
 - Manages investment accounts, holdings, and purchase lots
 - Uses live and historical Twelve Data market information for portfolio calculations
 - Keeps demo data separate from authenticated household data
@@ -45,9 +45,9 @@ Household dashboard
 
 ## Public demo
 
-Visitors can open `/demo` from the landing page without creating an account. The demo covers dashboard, transactions, accounts, budgets, cash flow, investments, goals, household, and settings with interactive mock records stored only in the browser tab. It does not authenticate, call Supabase repositories, or write to production household tables.
+Visitors can open `/demo` from the landing page without creating an account. The demo covers dashboard, transactions, accounts, budgets, investments, goals, household, and settings with interactive mock records stored only in the browser tab. It does not authenticate, call Supabase repositories, or write to production household tables.
 
-Authenticated users without an active organization are sent to `/onboarding`. Protected application routes include `/dashboard`, `/transactions`, `/accounts`, `/budget`, `/cash-flow`, `/investments`, `/goals`, `/household`, and `/settings`.
+Authenticated users without an active organization are sent to `/onboarding`. Protected application routes include `/dashboard`, `/transactions`, `/accounts`, `/budget`, `/investments`, `/goals`, `/household`, and `/settings`.
 
 ## Architecture
 

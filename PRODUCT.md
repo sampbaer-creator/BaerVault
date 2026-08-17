@@ -11,7 +11,7 @@ Households, including spouses or household members, who need a shared and approa
 
 ## Product Purpose
 
-BearVault helps a household understand its current financial position, build monthly spending from category-level purchases, track income and cash flow, maintain investments, and plan ahead. Success means the household can answer how it is doing financially without navigating a complex transaction ledger, trading terminal, or accounting interface.
+BearVault helps a household understand its current financial position, build monthly spending from category-level purchases, track income and transactions, maintain investments, and plan ahead. Success means the household can answer how it is doing financially without navigating a complex accounting interface or trading terminal.
 
 ## Positioning
 
@@ -19,14 +19,14 @@ BearVault combines a calm household-finance overview with explicit shared-househ
 
 ## Operating Context
 
-Users review their financial position at a glance, add purchases directly to monthly budget categories, record income in Cash Flow, maintain investment holdings, and share the workspace with another household member. Budget is the primary spending-entry workflow; Cash Flow is the analytical view of money in, money out, and savings. The product must work comfortably on phones and larger screens.
+Users review their financial position at a glance, add purchases directly to monthly budget categories, record income in Transactions, maintain investment holdings, and share the workspace with another household member. Budget is the primary spending-entry workflow; Transactions is the unified ledger for money in and money out. The product must work comfortably on phones and larger screens.
 
 ## Capabilities and Constraints
 
 - Next.js App Router application using TypeScript, Mantine, Tabler Icons, Recharts, and CSS Modules without Tailwind.
 - The public demo uses realistic mock data, while protected pages use household records stored in Supabase.
 - Clerk authentication, Clerk household organizations, Supabase persistence, and the Twelve Data market-data integration are active. Direct bank connections, payments, email, and analytics are not currently integrated.
-- The responsive application shell remains stable. Primary navigation is Overview, Transactions, Budgets, Investments, Goals, Household, and Settings; `/cash-flow` remains available for compatibility.
+- The responsive application shell remains stable. Primary navigation is Dashboard, Transactions, Accounts, Budgets, Investments, Goals, Household, and Settings.
 - Financial data must use clear formatting and tabular numerals where appropriate.
 
 ## Brand Commitments

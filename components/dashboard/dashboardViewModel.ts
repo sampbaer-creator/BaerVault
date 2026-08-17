@@ -8,12 +8,6 @@ import {
 import { isDebtAccount, type FinancialAccount } from "@/lib/accounts";
 import { sharesFor, type InvestmentAccount } from "@/lib/investmentData";
 
-export type DashboardCashFlowPoint = {
-  day: string;
-  income: number;
-  spending: number;
-};
-
 export type DashboardCategory = {
   name: string;
   value: number;
@@ -52,7 +46,6 @@ export type DashboardViewModel = {
   cashAvailable: number;
   cashAssets: number;
   debts: number;
-  cashFlowSeries: DashboardCashFlowPoint[];
   categories: DashboardCategory[];
   activity: DashboardActivity[];
   accounts: DashboardAccount[];
@@ -65,33 +58,6 @@ export function createDashboardViewModel(
   accounts: InvestmentAccount[],
   financialAccounts: FinancialAccount[] = [],
 ): DashboardViewModel {
-  const events = [
-    ...budget.incomeEntries.map((entry) => ({
-      date: entry.date,
-      income: entry.amount,
-      spending: 0,
-    })),
-    ...budget.categories.flatMap((category) =>
-      category.purchases.map((purchase) => ({
-        date: purchase.date,
-        income: 0,
-        spending: purchase.amount,
-      })),
-    ),
-  ].sort((a, b) => a.date.localeCompare(b.date));
-
-  let cumulativeIncome = 0;
-  let cumulativeSpending = 0;
-  const cashFlowByDate = new Map<string, { income: number; spending: number }>();
-  for (const event of events) {
-    cumulativeIncome += event.income;
-    cumulativeSpending += event.spending;
-    cashFlowByDate.set(event.date, {
-      income: cumulativeIncome,
-      spending: cumulativeSpending,
-    });
-  }
-
   const income = totalIncome(budget);
   const spending = totalSpending(budget);
   const dashboardAccounts = accounts.map((account) => ({
@@ -149,13 +115,6 @@ export function createDashboardViewModel(
       (sum, account) => sum + (isDebtAccount(account.type) ? account.balance : 0),
       0,
     ),
-    cashFlowSeries: Array.from(cashFlowByDate, ([date, values]) => ({
-      day: new Date(`${date}T12:00:00`).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-      }),
-      ...values,
-    })),
     categories: budget.categories
       .map((category) => ({
         name: category.name,

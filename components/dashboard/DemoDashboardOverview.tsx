@@ -295,8 +295,8 @@ export function DemoDashboardOverview() {
           <SectionHeading
             id="transactions-title"
             title="Recent activity"
-            href="/demo/cash-flow"
-            action="View cash flow"
+            href="/demo/transactions"
+            action="View transactions"
           />
           <div className={styles.transactions}>
             {recentTransactions.map((transaction, index) => {

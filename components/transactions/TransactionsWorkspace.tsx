@@ -4,7 +4,7 @@ import { Drawer } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import { FormEvent, useMemo, useState } from "react";
-import { deleteIncomeAction, saveIncomeAction } from "@/app/(app)/cash-flow/actions";
+import { deleteIncomeAction, saveIncomeAction } from "@/app/(app)/transactions/actions";
 import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { totalSpending, type BudgetMonth } from "@/lib/finance";
@@ -64,7 +64,7 @@ export function TransactionsWorkspace({ initialMonth }: { initialMonth: BudgetMo
   }
 
   return <div className={styles.page}>
-    <header className={styles.intro}><div><span>Household activity</span><h2>Every dollar, in one ledger.</h2><p>Income entered here also updates Cash Flow, Budget, and your Dashboard.</p></div><button onClick={() => launch()}><IconPlus size={16}/>Add income</button></header>
+    <header className={styles.intro}><div><span>Household activity</span><h2>Every dollar, in one ledger.</h2><p>Income entered here also updates your Budget and Dashboard totals.</p></div><button onClick={() => launch()}><IconPlus size={16}/>Add income</button></header>
     <div className={styles.summary}><Summary label="Money in" value={`+${money.format(income)}`} positive/><Summary label="Money out" value={`−${money.format(spending)}`} negative/><Summary label="Net" value={money.format(income-spending)}/></div>
     <section className={styles.accountChart} aria-labelledby="account-spending-title">
       <div className={styles.chartHeading}>

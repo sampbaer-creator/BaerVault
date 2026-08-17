@@ -26,7 +26,7 @@ import {
   categoryActual,
   categoryRemaining,
   compactCurrency,
-  netCashFlow,
+  netSavings,
   totalIncome,
   totalPlanned,
   totalSpending,
@@ -90,7 +90,7 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
   const planned = totalPlanned(month);
   const spending = totalSpending(month);
   const remaining = planned - spending;
-  const savings = netCashFlow(month);
+  const savings = netSavings(month);
 
   function openMonth(offset: number) {
     const target = new Date(Date.UTC(initialBudget.year, initialBudget.monthNumber - 1 + offset, 1));

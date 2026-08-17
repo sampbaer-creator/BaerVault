@@ -23,7 +23,6 @@ export const mainNavigation: NavigationItem[] = [
   { href: "/accounts", label: "Accounts", icon: IconBuildingBank },
   { href: "/budget", label: "Budgets", icon: IconPigMoney },
   { href: "/investments", label: "Investments", icon: IconChartPie },
-  { href: "/cash-flow", label: "Cash Flow", icon: IconWallet },
   { href: "/goals", label: "Goals", icon: IconTargetArrow },
 ];
 
@@ -40,7 +39,6 @@ const mobileHrefs = new Set([
   "/transactions",
   "/budget",
   "/investments",
-  "/cash-flow",
 ]);
 
 export const mobileNavigation: NavigationItem[] = mainNavigation.filter(({ href }) =>
@@ -58,7 +56,6 @@ export const pageTitles: Record<string, string> = {
   "/transactions": "Transactions",
   "/accounts": "Accounts",
   "/budget": "Budgets",
-  "/cash-flow": "Cash Flow",
   "/investments": "Investments",
   "/goals": "Goals",
   "/household": "Household",

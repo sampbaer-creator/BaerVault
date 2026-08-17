@@ -69,14 +69,3 @@ export function withDemoSpendingAccounts(month: BudgetMonth): BudgetMonth {
     }),
   };
 }
-
-export const cashFlowHistory = [
-  { month: "Jan", income: 5100, spending: 3900, net: 1200 },
-  { month: "Feb", income: 5200, spending: 4050, net: 1150 },
-  { month: "Mar", income: 5300, spending: 3820, net: 1480 },
-  { month: "Apr", income: 5250, spending: 4100, net: 1150 },
-  { month: "May", income: 5400, spending: 3950, net: 1450 },
-  { month: "Jun", income: 5400, spending: 3720, net: 1680 },
-  { month: "Jul", income: 5400, spending: 3180, net: 2220 },
-  { month: "Aug", income: 5400, spending: 3210.18, net: 2189.82 },
-];

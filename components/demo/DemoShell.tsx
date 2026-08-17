@@ -10,7 +10,6 @@ import {
   IconSettings,
   IconTargetArrow,
   IconUsers,
-  IconWallet,
   IconChevronDown,
 } from "@tabler/icons-react";
 import Link from "next/link";
@@ -27,7 +26,6 @@ const links = [
   ["/demo/accounts", "Accounts", IconBuildingBank],
   ["/demo/budget", "Budgets", IconPigMoney],
   ["/demo/investments", "Investments", IconChartPie],
-  ["/demo/cash-flow", "Cash Flow", IconWallet],
   ["/demo/goals", "Goals", IconTargetArrow],
   ["/demo/household", "Household", IconUsers],
   ["/demo/settings", "Settings", IconSettings],
@@ -38,7 +36,6 @@ const mobileHrefs = new Set([
   "/demo/transactions",
   "/demo/budget",
   "/demo/investments",
-  "/demo/cash-flow",
 ]);
 const mobileLinks = links.filter(([href]) => mobileHrefs.has(href));
 

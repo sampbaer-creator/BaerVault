@@ -42,7 +42,6 @@ Files ending in `.module.css` style the component with the same name. For exampl
 | Goals | `app/(app)/goals/page.tsx` | `app/demo/goals/page.tsx` | `components/goals/GoalsWorkspace.tsx` | Tracks savings targets, progress and contributions. |
 | Household | `app/(app)/household/page.tsx` | `app/demo/household/page.tsx` | `components/household/HouseholdWorkspace.tsx` | Explains and manages the shared household workspace. |
 | Settings | `app/(app)/settings/page.tsx` | `app/demo/settings/page.tsx` | `components/settings/SettingsWorkspace.tsx` | Controls theme, palette, density, currency and reduced motion. |
-| Cash flow | `app/(app)/cash-flow/page.tsx` | `app/demo/cash-flow/page.tsx` | `components/cash-flow/CashFlowOverview.tsx` | Provides the compatibility view for income, spending and savings flow. |
 | Onboarding | `app/onboarding/page.tsx` | Not applicable | Onboarding markup | Creates or joins a Clerk household organization before entering the protected app. |
 | Sign in | `app/sign-in/[[...sign-in]]/page.tsx` | Not applicable | Clerk interface | Authenticates an existing user. |
 | Sign up | `app/sign-up/[[...sign-up]]/page.tsx` | Not applicable | Clerk interface | Creates a new BearVault account. |
@@ -106,7 +105,6 @@ This is where most of the visible application is built.
 | `components/accounts/` | Account list, net-worth chart, account selection and account-detail interface. |
 | `components/brand/` | BearVault logo components and their styling. |
 | `components/budget/` | Monthly budget categories, planned values and spending-entry interface. |
-| `components/cash-flow/` | Income/spending/savings analysis. |
 | `components/dashboard/` | Dashboard layout, charts, demo data and the view-model that combines budgets, cash accounts and investments. |
 | `components/demo/` | Demo-only navigation shell and older/shared demo helpers. It should not contain production persistence. |
 | `components/goals/` | Savings-goal cards, progress and editing. |
@@ -139,7 +137,7 @@ Important layout files:
 | --- | --- |
 | `lib/data/accounts.ts` | Reads and writes financial account records. |
 | `lib/data/budgets.ts` | Reads budget months, categories and entries. |
-| `lib/data/cash-flow.ts` | Reads income and cash-flow information. |
+| `lib/data/income.ts` | Reads and writes household income entries. |
 | `lib/data/goals.ts` | Reads savings-goal information. |
 | `lib/data/households.ts` | Resolves the active Clerk organization to a BearVault household. |
 | `lib/data/investments.ts` | Reads investment accounts, holdings and purchase lots. |
