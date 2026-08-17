@@ -31,4 +31,3 @@
 .status { padding: 5px 8px; border-radius: 7px; color: #267056; background: #e8f1ed; font-weight: 700; }
 @media (max-width: 70rem) { .goalsGrid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 48rem) { .metrics, .accountGrid, .goalsGrid { grid-template-columns: 1fr; } .metric { padding: 17px; } .card { min-height: 142px; } }
-

@@ -1,4 +1,4 @@
-import styles from "./ReferenceWorkspace.module.css";
+import styles from "./DemoGoals.module.css";
 
 const goals = [
   { name: "Emergency Fund", target: "Nov 2026", saved: "$15,000", detail: "of $18,000 · $3,000 to go", monthly: "$500/mo", progress: 83, color: "var(--chart-primary)" },
@@ -9,7 +9,7 @@ const goals = [
   { name: "Retirement", target: "2050", saved: "$148,000", detail: "of $500,000 · $352,000 to go", monthly: "$1,500/mo", progress: 30, color: "var(--chart-tertiary)" },
 ];
 
-export function GoalsWorkspace() {
+export function DemoGoals() {
   return <div className={styles.page}>
     <div className={styles.metrics}><Metric label="Total saved" value="$205,500" /><Metric label="Combined target" value="$615,000" /><Metric label="On track" value="6 of 6" positive /></div>
     <section className={styles.goalsGrid} aria-label="Savings goals">{goals.map((goal) => <article className={styles.goal} key={goal.name}>

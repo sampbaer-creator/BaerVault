@@ -1,4 +1,4 @@
-import { BudgetWorkspace } from "@/components/budget/BudgetWorkspace";
+import { BudgetWorkspace } from "@/features/budget/BudgetWorkspace";
 import { getFinancialAccounts } from "@/lib/data/accounts";
 import { getBudgetMonth } from "@/lib/data/budgets";
 

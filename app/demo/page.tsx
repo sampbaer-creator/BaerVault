@@ -1,5 +1,5 @@
-import { DashboardOverview } from "@/components/dashboard/DashboardOverview";
-import { createDashboardViewModel } from "@/components/dashboard/dashboardViewModel";
+import { DashboardOverview } from "@/features/dashboard/DashboardOverview";
+import { createDashboardViewModel } from "@/features/dashboard/dashboardViewModel";
 import { demoFinancialAccounts } from "@/lib/accounts";
 import { investmentAccounts } from "@/lib/investmentData";
 import { augustBudget } from "@/lib/mockFinanceData";

@@ -1,4 +1,4 @@
-import { AccountsWorkspace } from "@/components/accounts/AccountsWorkspace";
+import { AccountsWorkspace } from "@/features/accounts/AccountsWorkspace";
 import { getFinancialAccounts } from "@/lib/data/accounts";
 
 export default async function AccountsPage() {

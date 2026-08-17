@@ -1,4 +1,4 @@
-import { InvestmentsWorkspace } from "@/components/investments/InvestmentsWorkspace";
+import { InvestmentsWorkspace } from "@/features/investments/InvestmentsWorkspace";
 import { investmentAccounts } from "@/lib/investmentData";
 
 export default function DemoInvestmentsPage() {

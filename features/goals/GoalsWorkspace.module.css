@@ -1,0 +1,262 @@
+.page {
+  display: grid;
+  gap: 22px;
+  color: var(--navy);
+}
+.top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 8px 2px;
+}
+.eyebrow {
+  color: #4f8389;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.top h2 {
+  margin: 6px 0 4px;
+  font-family: var(--font-heading);
+  font-size: 32px;
+  letter-spacing: -0.035em;
+}
+.top p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.add,
+.submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 0;
+  background: var(--navy);
+  color: #fff;
+  min-height: 40px;
+  padding: 10px 15px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid #dfe7e3;
+  background: #fff;
+}
+.metric {
+  display: grid;
+  gap: 5px;
+  padding: 20px 24px;
+  border-right: 1px solid #e7ece9;
+}
+.metric:last-child {
+  border: 0;
+}
+.metric span,
+.goalHead span,
+.detail {
+  color: var(--muted);
+  font-size: 11px;
+}
+.metric strong {
+  font-family: var(--font-heading);
+  font-size: 24px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.goal {
+  display: grid;
+  gap: 19px;
+  min-height: 244px;
+  padding: 22px;
+  border: 1px solid #dde5e1;
+  background: #fff;
+  box-shadow: 0 10px 24px rgb(35 55 47/0.04);
+}
+.goalHead {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+}
+.goalHead h3 {
+  margin: 0 0 4px;
+  font-size: 15px;
+}
+.goalHead button,
+.footer button {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.ring {
+  --progress: 0;
+  --ring: #4f8389;
+  display: grid;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  border-radius: 50%;
+  background: conic-gradient(var(--ring) calc(var(--progress) * 1%), #e8eeeb 0);
+  position: relative;
+}
+.ring:after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: #fff;
+}
+.ring strong {
+  z-index: 1;
+  font-size: 11px;
+}
+.amount {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 800;
+}
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid #edf0ee;
+  font-size: 11px;
+  font-weight: 800;
+}
+.footer button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.empty {
+  display: grid;
+  justify-items: center;
+  gap: 9px;
+  padding: 70px 24px;
+  border: 1px solid #dfe7e3;
+  background: #fff;
+  text-align: center;
+}
+.empty h3,
+.empty p {
+  margin: 0;
+}
+.empty p {
+  color: var(--muted);
+  font-size: 13px;
+}
+.drawer {
+  background: #f7f8f5;
+}
+.drawerHeader {
+  background: #f7f8f5;
+  border-bottom: 1px solid #dde5e1;
+}
+.drawerTitle {
+  font-family: var(--font-heading);
+  font-size: 21px;
+  font-weight: 800;
+}
+.drawerBody {
+  padding: 24px;
+}
+.form {
+  display: grid;
+  gap: 18px;
+}
+.form label {
+  display: grid;
+  gap: 7px;
+  color: var(--navy);
+  font-size: 12px;
+  font-weight: 800;
+}
+.form input {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid #ccd8d2;
+  background: #fff;
+  padding: 10px 12px;
+  color: var(--navy);
+}
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.submit {
+  margin-top: 6px;
+}
+.submit:disabled {
+  opacity: 0.55;
+}
+.error {
+  margin: 0;
+  padding: 10px 12px;
+  background: #f7e8e8;
+  color: #7b2424;
+  font-size: 12px;
+}
+@media (max-width: 68rem) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 47.999rem) {
+  .top {
+    align-items: flex-start;
+  }
+  .top h2 {
+    font-size: 27px;
+  }
+  .top p {
+    display: none;
+  }
+  .metrics {
+    grid-template-columns: 1fr;
+  }
+  .metric {
+    border-right: 0;
+    border-bottom: 1px solid #e7ece9;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+  .drawer {
+    width: 100%;
+    max-width: 100%;
+  }
+  .drawerBody {
+    min-width: 0;
+    overflow-x: hidden;
+    padding: 18px 16px max(24px, env(safe-area-inset-bottom));
+  }
+  .form {
+    width: 100%;
+    min-width: 0;
+  }
+  .form input {
+    min-width: 0;
+    font-size: 16px;
+  }
+  .submit {
+    width: 100%;
+    min-height: 48px;
+  }
+}

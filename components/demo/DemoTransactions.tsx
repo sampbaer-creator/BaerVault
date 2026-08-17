@@ -3,7 +3,7 @@ import { Area, AreaChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContaine
 import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
 import { categoryActual, totalIncome, totalPlanned, totalSpending, type BudgetMonth } from "@/lib/finance";
 import { costFor, type InvestmentAccount } from "@/lib/investmentData";
-import styles from "./FinancePages.module.css";
+import styles from "./DemoTransactions.module.css";
 
 const colors = ["var(--chart-primary)", "var(--chart-secondary)", "var(--money-positive)", "var(--chart-tertiary)", "var(--app-accent)", "var(--brand-gold)"];
 const history = [{ month: "Mar", value: 22100 }, { month: "Apr", value: 22800 }, { month: "May", value: 23600 }, { month: "Jun", value: 24800 }, { month: "Jul", value: 25500 }, { month: "Aug", value: 26224 }];
@@ -16,7 +16,7 @@ export function BudgetReference({ budget }: { budget: BudgetMonth }) {
   </div></div>;
 }
 
-export function TransactionsReference({ budget }: { budget: BudgetMonth }) {
+export function DemoTransactions({ budget }: { budget: BudgetMonth }) {
   const money = useCurrencyFormatter();
   const income = totalIncome(budget);
   const spent = totalSpending(budget);

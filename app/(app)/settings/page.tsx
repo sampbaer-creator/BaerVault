@@ -1,2 +1,2 @@
-import { SettingsWorkspace } from "@/components/settings/SettingsWorkspace";
+import { SettingsWorkspace } from "@/features/settings/SettingsWorkspace";
 export default function SettingsPage(){return <SettingsWorkspace/>}

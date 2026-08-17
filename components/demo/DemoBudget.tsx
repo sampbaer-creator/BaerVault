@@ -1,5 +1,5 @@
 "use client";
-import { BudgetWorkspace } from "@/components/budget/BudgetWorkspace";import { augustBudget, withDemoSpendingAccounts } from "@/lib/mockFinanceData";
+import { BudgetWorkspace } from "@/features/budget/BudgetWorkspace";import { augustBudget, withDemoSpendingAccounts } from "@/lib/mockFinanceData";
 import { demoFinancialAccounts } from "@/lib/accounts";
 import type { BudgetMonth } from "@/lib/finance";
 const ok=<T,>(data:T)=>Promise.resolve({ok:true as const,data});const id=()=>`demo-${Date.now()}-${Math.random().toString(16).slice(2)}`;

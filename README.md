@@ -4,7 +4,12 @@ BearVault is a household finance application for managing transactions, budgets,
 
 ## Start here if you are new
 
-Read [`PROJECT_STRUCTURE.md`](PROJECT_STRUCTURE.md) first. It explains, in plain language:
+Start with the repository documentation:
+
+- [`docs/PROJECT_MAP.md`](docs/PROJECT_MAP.md) explains where routes, features, shared components, data repositories, and configuration live.
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) explains the frontend, backend, database, authentication, and major data flows.
+
+Together they explain:
 
 - what every source folder is for;
 - which file controls each page;
@@ -16,7 +21,7 @@ Read [`PROJECT_STRUCTURE.md`](PROJECT_STRUCTURE.md) first. It explains, in plain
 The shortest mental model is:
 
 ```text
-app/ page route -> components/ workspace -> lib/ data function -> Supabase or mock data
+app/ route -> features/ workspace -> lib/ repository -> Supabase or mock data
 ```
 
 ## What BearVault does
@@ -126,6 +131,7 @@ Do not configure Clerk's deprecated JWT-template integration and do not use a Su
 ## Verification
 
 ```bash
+npm run typecheck
 npm run lint
 npm run build
 ```
@@ -142,6 +148,17 @@ Production testing should cover new-household empty states, persistence after re
 - CSS Modules
 - Twelve Data API
 - Vercel
+
+## Repository structure
+
+```text
+app/         routes, layouts, API endpoints, and server actions
+features/    product-area UI and feature-specific view models
+components/  shared UI, app shells, providers, and demo infrastructure
+lib/         domain logic, repositories, and external-service clients
+supabase/    database migrations and row-level-security policies
+docs/        project map and architecture documentation
+```
 
 ## Production deployment
 
