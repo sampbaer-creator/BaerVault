@@ -18,7 +18,7 @@ export function MobileNav({ pathname }: MobileNavProps) {
 
   return (
     <>
-      <nav className={styles.mobileNav} aria-label="Mobile navigation">
+      <nav className={`${styles.mobileNav} mobile-nav-enhanced`} aria-label="Mobile navigation">
         {mobileNavigation.map(({ href, label, icon: Icon }) => {
           const isActive = pathname === href;
 

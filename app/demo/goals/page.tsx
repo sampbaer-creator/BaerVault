@@ -1,2 +1,2 @@
-import { GoalsWorkspace } from "@/components/reference/GoalsWorkspace";
-export default function DemoGoalsPage() { return <GoalsWorkspace />; }
+import { DemoGoals } from "@/components/demo/DemoGoals";
+export default function DemoGoalsPage() { return <DemoGoals />; }

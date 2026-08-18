@@ -61,11 +61,6 @@ export function totalSpending(month: BudgetMonth) {
   return month.categories.reduce((sum, category) => sum + categoryActual(category), 0);
 }
 
-export function netCashFlow(month: BudgetMonth) {
+export function netSavings(month: BudgetMonth) {
   return totalIncome(month) - totalSpending(month);
-}
-
-export function savingsRate(month: BudgetMonth) {
-  const income = totalIncome(month);
-  return income === 0 ? 0 : netCashFlow(month) / income;
 }

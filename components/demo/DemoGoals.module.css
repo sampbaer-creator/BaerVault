@@ -1,0 +1,63 @@
+.page { max-width: 1240px; margin: 0 auto; }
+.metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 16px; }
+.metric, .card, .goal { border: 1px solid var(--app-border); border-radius: 14px; background: var(--app-surface); }
+.metric { padding: 20px; }
+.metric span, .cardMeta, .goalMeta { display: block; color: var(--app-text-muted); font-size: 12px; }
+.metric strong { display: block; margin-top: 8px; font-size: 26px; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+.positive { color: #267056 !important; }
+.negative { color: var(--app-danger) !important; }
+.accountGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.card { position: relative; min-height: 150px; padding: 20px; overflow: hidden; }
+.cardTop { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.cardIdentity { display: flex; min-width: 0; align-items: center; gap: 12px; }
+.iconTile { display: grid; width: 40px; height: 40px; flex: 0 0 auto; place-items: center; border-radius: 10px; color: var(--app-accent); background: var(--app-accent-soft); font-weight: 800; }
+.cardIdentity strong, .cardIdentity small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cardIdentity strong { font-size: 14px; }
+.cardIdentity small { margin-top: 3px; color: var(--app-text-muted); font-size: 11px; }
+.type { padding: 5px 8px; border: 1px solid var(--app-border); border-radius: 8px; color: var(--app-text-muted); font-size: 10px; }
+.balance { margin: 23px 0 3px; font-size: 25px; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+.spark { position: absolute; right: 20px; bottom: 20px; width: 115px; height: 38px; }
+.spark polyline { fill: none; stroke: #267056; stroke-width: 2; }
+.debt polyline { stroke: var(--app-danger); }
+.goalsGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.goal { padding: 20px; }
+.goalHead { display: grid; grid-template-columns: 80px minmax(0, 1fr); align-items: center; gap: 16px; }
+.ring { --progress: 50; --ring: var(--app-accent); display: grid; width: 76px; height: 76px; place-items: center; border-radius: 50%; background: conic-gradient(var(--ring) calc(var(--progress) * 1%), var(--app-border) 0); }
+.ring::before { grid-area: 1 / 1; width: 58px; height: 58px; border-radius: 50%; background: var(--app-surface); content: ""; }
+.ring strong { z-index: 1; grid-area: 1 / 1; font-size: 13px; }
+.goal h3 { margin: 0; font-size: 15px; }
+.goalValue { margin: 22px 0 3px; font-size: 21px; font-variant-numeric: tabular-nums; }
+.goalFooter { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; padding-top: 15px; border-top: 1px solid var(--app-border); color: var(--app-text-muted); font-size: 11px; }
+.status { padding: 5px 8px; border-radius: 7px; color: #267056; background: #e8f1ed; font-weight: 700; }
+@media (max-width: 70rem) { .goalsGrid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 48rem) {
+  .metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    overflow: hidden;
+    border: 1px solid var(--app-border);
+    border-radius: 17px;
+    background: var(--app-border);
+    box-shadow: 0 10px 30px rgb(19 38 63 / 5%);
+  }
+  .metric {
+    min-width: 0;
+    padding: 15px 10px;
+    border: 0;
+    border-radius: 0;
+    text-align: center;
+  }
+  .metric span { font-size: 10px; }
+  .metric strong {
+    overflow: hidden;
+    margin-top: 5px;
+    font-size: clamp(13px, 3.8vw, 16px);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .accountGrid,
+  .goalsGrid { grid-template-columns: 1fr; }
+  .goalsGrid { gap: 10px; }
+  .goal { padding: 18px; border-radius: 18px; box-shadow: 0 10px 30px rgb(19 38 63 / 5%); }
+  .card { min-height: 142px; }
+}

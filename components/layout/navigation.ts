@@ -7,7 +7,6 @@ import {
   IconLayoutDashboard,
   IconPigMoney,
   IconSettings,
-  IconWallet,
   type Icon,
 } from "@tabler/icons-react";
 
@@ -34,10 +33,19 @@ export const systemNavigation: NavigationItem[] = [
   { href: "/settings", label: "Settings", icon: IconSettings },
 ];
 
-export const mobileNavigation: NavigationItem[] = mainNavigation.slice(0, 4);
+const mobileHrefs = new Set([
+  "/dashboard",
+  "/transactions",
+  "/budget",
+  "/investments",
+]);
+
+export const mobileNavigation: NavigationItem[] = mainNavigation.filter(({ href }) =>
+  mobileHrefs.has(href),
+);
 
 export const moreNavigation: NavigationItem[] = [
-  ...mainNavigation.slice(4),
+  ...mainNavigation.filter(({ href }) => !mobileHrefs.has(href)),
   ...householdNavigation,
   ...systemNavigation,
 ];
@@ -47,11 +55,8 @@ export const pageTitles: Record<string, string> = {
   "/transactions": "Transactions",
   "/accounts": "Accounts",
   "/budget": "Budgets",
-  "/cash-flow": "Transactions",
   "/investments": "Investments",
   "/goals": "Goals",
   "/household": "Household",
   "/settings": "Settings",
 };
-
-export const brandIcon = IconWallet;

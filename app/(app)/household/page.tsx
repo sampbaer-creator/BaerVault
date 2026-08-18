@@ -1,4 +1,4 @@
-import { HouseholdWorkspace } from "@/components/household/HouseholdWorkspace";
+import { HouseholdWorkspace } from "@/features/household/HouseholdWorkspace";
 
 export default function HouseholdPage() {
   return <HouseholdWorkspace />;

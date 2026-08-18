@@ -13,10 +13,10 @@ import {
   IconUsers,
   IconChevronDown,
 } from "@tabler/icons-react";
+import { Drawer } from "@mantine/core";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Drawer } from "@mantine/core";
 
 import { BearVaultLogo } from "@/components/brand/BearVaultLogo";
 import styles from "./DemoShell.module.css";
@@ -33,8 +33,14 @@ const links = [
   ["/demo/settings", "Settings", IconSettings],
 ] as const;
 
-const mobileLinks = links.slice(0, 4);
-const moreLinks = links.slice(4);
+const mobileHrefs = new Set([
+  "/demo",
+  "/demo/transactions",
+  "/demo/budget",
+  "/demo/investments",
+]);
+const mobileLinks = links.filter(([href]) => mobileHrefs.has(href));
+const moreLinks = links.filter(([href]) => !mobileHrefs.has(href));
 
 const accountGroups = [
   { label: "Credit cards", accounts: [["BearVault Card", "$552"], ["Everyday Visa", "$0"]] },

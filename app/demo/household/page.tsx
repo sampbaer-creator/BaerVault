@@ -1,2 +1,5 @@
-import { DemoWorkspace } from "@/components/demo/DemoWorkspace";
-export default function DemoHouseholdPage(){return <DemoWorkspace view="household"/>}
+import { DemoHousehold } from "@/components/demo/DemoHousehold";
+
+export default function DemoHouseholdPage() {
+  return <DemoHousehold />;
+}

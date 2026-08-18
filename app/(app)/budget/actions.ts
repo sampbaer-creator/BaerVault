@@ -25,7 +25,7 @@ export async function updateBudgetCategoryAction(categoryId: string, name: strin
 }
 
 export async function deleteBudgetCategoryAction(id: string): Promise<Result> {
-  try { await deleteBudgetCategory(id); revalidatePath("/budget"); revalidatePath("/cash-flow"); revalidatePath("/dashboard"); return { ok:true,data:undefined }; }
+  try { await deleteBudgetCategory(id); revalidatePath("/budget"); revalidatePath("/dashboard"); return { ok:true,data:undefined }; }
   catch(error){ return {ok:false,error:errorMessage(error)}; }
 }
 
@@ -36,12 +36,12 @@ export async function saveBudgetEntryAction(input: { id?: string; categoryId: st
     if (input.accountId !== null && !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(input.accountId)) throw new Error("Select a valid spending account.");
     if (input.id) await updateBudgetEntry(input.id, description, input.amount, input.date, input.accountId);
     const entry = input.id ? { id: input.id } : await createBudgetEntry(input.categoryId, description, input.amount, input.date, input.accountId);
-    revalidatePath("/budget"); revalidatePath("/cash-flow"); revalidatePath("/dashboard");
+    revalidatePath("/budget"); revalidatePath("/dashboard");
     return { ok: true, data: { id: entry.id } };
   } catch (error) { return { ok: false, error: errorMessage(error) }; }
 }
 
 export async function deleteBudgetEntryAction(id: string): Promise<Result> {
-  try { await deleteBudgetEntry(id); revalidatePath("/budget"); revalidatePath("/cash-flow"); revalidatePath("/dashboard"); return { ok: true, data: undefined }; }
+  try { await deleteBudgetEntry(id); revalidatePath("/budget"); revalidatePath("/dashboard"); return { ok: true, data: undefined }; }
   catch (error) { return { ok: false, error: errorMessage(error) }; }
 }

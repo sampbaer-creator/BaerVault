@@ -1,4 +1,4 @@
-import { GoalsWorkspace } from "@/components/goals/GoalsWorkspace";
+import { GoalsWorkspace } from "@/features/goals/GoalsWorkspace";
 import { getSavingsGoals } from "@/lib/data/goals";
 
 export default async function GoalsPage() {

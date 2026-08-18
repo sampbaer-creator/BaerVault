@@ -47,7 +47,7 @@ export function PageHeader({
 
   return (
     <>
-      <header className={styles.desktopHeader}>
+      <header className={`${styles.desktopHeader} glass-panel`}>
         <div className={styles.headerIdentity}>
           <button
             className={styles.sidebarToggle}
@@ -101,7 +101,7 @@ export function PageHeader({
         </div>
       </header>
 
-      <header className={styles.mobileHeader}>
+      <header className={`${styles.mobileHeader} glass-panel`}>
         <span className={styles.mobileMark} aria-label="BearVault">
           <BearVaultLogo compact />
         </span>

@@ -16,7 +16,7 @@ export const financePalettes = {
   "indigo-ledgerlines": { name: "Indigo Ledgerlines", mood: "Smart and analytical", colors: ["#141B3A", "#2B3A8C", "#7C83FD", "#C7D2FE", "#F5F6FF"] },
   "silver-interest": { name: "Silver Interest", mood: "Precise and modern", colors: ["#0B1220", "#334155", "#94A3B8", "#E2E8F0", "#FFFFFF"] },
   "cocoa-capital": { name: "Cocoa Capital", mood: "Warm and established", colors: ["#1F1410", "#4B2E24", "#8B5E34", "#D6C2AE", "#F7F1EA"] },
-  "cloudy-cashflow": { name: "Cloudy Cashflow", mood: "Calm and readable", colors: ["#0F172A", "#475569", "#A8B3C5", "#E6EDF7", "#F9FBFF"] },
+  "cloudy-cashflow": { name: "Cloudy Slate", mood: "Calm and readable", colors: ["#0F172A", "#475569", "#A8B3C5", "#E6EDF7", "#F9FBFF"] },
   "burgundy-benchmark": { name: "Burgundy Benchmark", mood: "Bold and decisive", colors: ["#1F0D12", "#5B1A2B", "#9F2D45", "#E7C6CF", "#FFF5F7"] },
   "sunrise-yield": { name: "Sunrise Yield", mood: "Energizing and optimistic", colors: ["#1A1A1A", "#3A3A3A", "#F2B705", "#F6D365", "#FFF3D6"] },
   "harbor-balance": { name: "Harbor Balance", mood: "Calm and trustworthy", colors: ["#061A24", "#0B3A53", "#0FA3B1", "#B5E2FA", "#F3FAFF"] },

@@ -1,10 +1,15 @@
 # BearVault
 
-BearVault is a household finance application for managing budgets, cash flow, and investments in one shared workspace. Clerk Organizations represent households, while Supabase stores financial records with PostgreSQL row-level security.
+BearVault is a household finance application for managing transactions, budgets, accounts, and investments in one shared workspace. Clerk Organizations represent households, while Supabase stores financial records with PostgreSQL row-level security.
 
 ## Start here if you are new
 
-Read [`PROJECT_STRUCTURE.md`](PROJECT_STRUCTURE.md) first. It explains, in plain language:
+Start with the repository documentation:
+
+- [`docs/PROJECT_MAP.md`](docs/PROJECT_MAP.md) explains where routes, features, shared components, data repositories, and configuration live.
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) explains the frontend, backend, database, authentication, and major data flows.
+
+Together they explain:
 
 - what every source folder is for;
 - which file controls each page;
@@ -16,14 +21,14 @@ Read [`PROJECT_STRUCTURE.md`](PROJECT_STRUCTURE.md) first. It explains, in plain
 The shortest mental model is:
 
 ```text
-app/ page route -> components/ workspace -> lib/ data function -> Supabase or mock data
+app/ route -> features/ workspace -> lib/ repository -> Supabase or mock data
 ```
 
 ## What BearVault does
 
 - Creates a shared financial workspace for a household
 - Tracks monthly budgets, planned amounts, and individual spending entries
-- Records household income and derives net cash flow and savings rate
+- Records household income alongside spending in one transaction ledger
 - Manages investment accounts, holdings, and purchase lots
 - Uses live and historical Twelve Data market information for portfolio calculations
 - Keeps demo data separate from authenticated household data
@@ -45,9 +50,9 @@ Household dashboard
 
 ## Public demo
 
-Visitors can open `/demo` from the landing page without creating an account. The demo covers dashboard, transactions, accounts, budgets, cash flow, investments, goals, household, and settings with interactive mock records stored only in the browser tab. It does not authenticate, call Supabase repositories, or write to production household tables.
+Visitors can open `/demo` from the landing page without creating an account. The demo covers dashboard, transactions, accounts, budgets, investments, goals, household, and settings with interactive mock records stored only in the browser tab. It does not authenticate, call Supabase repositories, or write to production household tables.
 
-Authenticated users without an active organization are sent to `/onboarding`. Protected application routes include `/dashboard`, `/transactions`, `/accounts`, `/budget`, `/cash-flow`, `/investments`, `/goals`, `/household`, and `/settings`.
+Authenticated users without an active organization are sent to `/onboarding`. Protected application routes include `/dashboard`, `/transactions`, `/accounts`, `/budget`, `/investments`, `/goals`, `/household`, and `/settings`.
 
 ## Architecture
 
@@ -126,6 +131,7 @@ Do not configure Clerk's deprecated JWT-template integration and do not use a Su
 ## Verification
 
 ```bash
+npm run typecheck
 npm run lint
 npm run build
 ```
@@ -142,6 +148,17 @@ Production testing should cover new-household empty states, persistence after re
 - CSS Modules
 - Twelve Data API
 - Vercel
+
+## Repository structure
+
+```text
+app/         routes, layouts, API endpoints, and server actions
+features/    product-area UI and feature-specific view models
+components/  shared UI, app shells, providers, and demo infrastructure
+lib/         domain logic, repositories, and external-service clients
+supabase/    database migrations and row-level-security policies
+docs/        project map and architecture documentation
+```
 
 ## Production deployment
 

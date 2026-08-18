@@ -1,4 +1,4 @@
-import { InvestmentsWorkspace } from "@/components/investments/InvestmentsWorkspace";
+import { InvestmentsWorkspace } from "@/features/investments/InvestmentsWorkspace";
 import { getInvestmentAccounts } from "@/lib/data/investments";
 
 export default async function InvestmentsPage() {
