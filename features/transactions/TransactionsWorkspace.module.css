@@ -466,3 +466,51 @@
   .panel td { padding: 14px 18px; }
   .panel tbody tr:hover { background: color-mix(in srgb, var(--app-accent-soft) 34%, transparent); }
 }
+
+/* Mobile transaction ledger follows the reference: search, dated groups, and dense rows. */
+@media (max-width: 47.999rem) {
+  .page { overflow: visible; }
+  .mobileSearch {
+    position: relative;
+    z-index: 5;
+    display: grid !important;
+    height: 64px !important;
+    grid-template-columns: 34px minmax(0, 1fr) 34px;
+    align-items: center;
+    gap: 10px;
+    margin: -8px 20px 30px !important;
+    padding: 0 18px;
+    border: 1px solid rgb(255 255 255 / 80%);
+    border-radius: 26px;
+    color: #8d9ab2;
+    background: rgb(255 255 255 / 94%);
+    box-shadow: 0 18px 36px rgb(38 112 176 / 12%);
+    backdrop-filter: blur(22px) saturate(145%);
+  }
+  .mobileSearch input { min-width: 0; border: 0; outline: 0; color: var(--app-text-strong); background: transparent; font: inherit; font-size: 18px; text-align: center; }
+  .mobileSearch input::placeholder { color: #9ca7ba; opacity: 1; }
+  .mobileSearch button { display: grid; width: 34px; height: 34px; padding: 0; place-items: center; border: 0; color: #8d9ab2; background: transparent; }
+  .tabs { display: none !important; }
+  .mobileLedger { padding: 0 22px 96px; }
+  .mobileDateGroup + .mobileDateGroup { margin-top: 24px; }
+  .mobileDateGroup h3 { margin: 0 0 10px; color: #8d99b0; font-size: 12px; font-weight: 800; letter-spacing: .035em; text-transform: uppercase; }
+  .mobileTransaction {
+    display: grid;
+    min-height: 50px;
+    grid-template-columns: minmax(0, 1fr) auto minmax(72px, auto);
+    align-items: center;
+    gap: 8px;
+    padding: 7px 0;
+    border: 0;
+    color: var(--app-text-strong);
+    background: transparent;
+    text-align: left;
+  }
+  .mobileTransaction > strong { min-width: 0; overflow: hidden; font-size: 15px; font-weight: 560; text-overflow: ellipsis; white-space: nowrap; }
+  .mobileTransaction > span { max-width: 100px; overflow: hidden; padding: 4px 9px; border-radius: 999px; color: #5f6879; background: #eef0f3; font-size: 9px; font-weight: 800; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
+  .mobileTransaction > b { justify-self: end; font-size: 14px; font-variant-numeric: tabular-nums; }
+  .mobileActions { position: fixed; right: 18px; bottom: max(18px, env(safe-area-inset-bottom)); z-index: 30; display: block; margin: 0; padding: 0; background: transparent; box-shadow: none; }
+  .mobileActions button { width: 58px; height: 58px; min-height: 58px; overflow: hidden; padding: 0; border: 1px solid #dfe3e8; border-radius: 50%; color: transparent; background: rgb(255 255 255 / 94%); box-shadow: 0 10px 28px rgb(30 58 96 / 16%); backdrop-filter: blur(20px); }
+  .mobileActions button svg { position: absolute; color: #102653; transform: rotate(45deg); }
+  .mobileActions a { display: none; }
+}

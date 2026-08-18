@@ -64,6 +64,35 @@ const emptyPurchase: PurchaseDraft = {
   accountId: "",
 };
 
+const budgetGroups = [
+  { name: "Housing", color: "#168cf4", terms: ["housing", "rent", "mortgage", "utilities", "electric", "internet", "home maintenance"] },
+  { name: "Food", color: "#ff650f", terms: ["food", "groceries", "grocery", "restaurants", "dining", "coffee"] },
+  { name: "Transportation", color: "#c5aa12", terms: ["transport", "gas", "car payment", "auto insurance", "parking", "car maintenance"] },
+  { name: "Personal", color: "#bd0ee5", terms: ["personal", "clothing", "haircut", "shopping", "self care"] },
+  { name: "Entertainment", color: "#d20d18", terms: ["entertainment", "streaming", "movie", "concert", "games", "subscription"] },
+] as const;
+
+function budgetGroupFor(name: string) {
+  const normalized = name.toLowerCase();
+  return budgetGroups.find((group) => group.terms.some((term) => normalized.includes(term))) ?? { name: "Other", color: "#7d20ef", terms: [] };
+}
+
+function categoryEmoji(name: string) {
+  const normalized = name.toLowerCase();
+  if (normalized.includes("rent") || normalized.includes("mortgage") || normalized === "housing") return "🏡";
+  if (normalized.includes("util") || normalized.includes("electric")) return "💡";
+  if (normalized.includes("internet")) return "📶";
+  if (normalized.includes("grocer")) return "🥑";
+  if (normalized.includes("restaurant") || normalized.includes("dining")) return "🍔";
+  if (normalized.includes("coffee")) return "☕";
+  if (normalized.includes("gas") || normalized.includes("transport")) return "⛽";
+  if (normalized.includes("clothing") || normalized.includes("shopping")) return "🛍️";
+  if (normalized.includes("entertain")) return "🎟️";
+  if (normalized.includes("subscription") || normalized.includes("stream")) return "📺";
+  if (normalized.includes("personal") || normalized.includes("care")) return "✨";
+  return "💳";
+}
+
 type BudgetActions=Pick<typeof realActions,"addCategoryAction"|"deleteBudgetCategoryAction"|"deleteBudgetEntryAction"|"saveBudgetEntryAction"|"updateBudgetCategoryAction">;
 export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActions }: { initialBudget: BudgetMonth & { year: number; monthNumber: number }; accounts?: BudgetAccountOption[]; actions?:BudgetActions }) {
   const currency=useCurrencyFormatter();
@@ -92,6 +121,11 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
   const spending = totalSpending(month);
   const remaining = planned - spending;
   const savings = netSavings(month);
+  const groupedCategories = useMemo(() => {
+    const groups = [...budgetGroups.map((group) => ({ ...group, categories: [] as BudgetCategory[] })), { name: "Other", color: "#7d20ef", terms: [] as readonly string[], categories: [] as BudgetCategory[] }];
+    categories.forEach((category) => groups.find((group) => group.name === budgetGroupFor(category.name).name)?.categories.push(category));
+    return groups.filter((group) => group.categories.length > 0);
+  }, [categories]);
 
   function openMonth(offset: number) {
     const target = new Date(Date.UTC(initialBudget.year, initialBudget.monthNumber - 1 + offset, 1));
@@ -182,6 +216,22 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
     router.refresh();
   }
 
+  function renderCategory(category: BudgetCategory) {
+    const actual = categoryActual(category);
+    const variance = categoryRemaining(category);
+    const percent = category.plannedAmount ? Math.min((actual / category.plannedAmount) * 100, 100) : 0;
+    return <SwipeActionRow key={category.id} onEdit={() => openCategory(category)} onDelete={() => setPendingDelete({kind:"category",id:category.id,label:category.name})}>
+      <button className={styles.categoryRow} type="button" onClick={() => openCategory(category)} aria-haspopup="dialog" aria-expanded={selectedId === category.id}>
+      <span className={styles.categoryName}><i aria-hidden="true">{categoryEmoji(category.name)}</i><strong>{category.name}</strong><small>{category.purchases.length} {category.purchases.length === 1 ? "purchase" : "purchases"}</small></span>
+      <span className={styles.desktopValue}>{currency.format(category.plannedAmount)}</span>
+      <span className={styles.desktopValue}>{currency.format(actual)}</span>
+      <span className={`${styles.desktopValue} ${variance < 0 ? styles.over : ""}`}>{variance < 0 ? "−" : ""}{currency.format(Math.abs(variance))}</span>
+      <span className={styles.mobileProgress}><span><strong>{currency.format(actual)}</strong><em>{compactCurrency.format(category.plannedAmount)}</em></span><small className={variance < 0 ? styles.over : ""}>{variance < 0 ? `${currency.format(Math.abs(variance))} over` : `${currency.format(variance)} remaining`}</small><i role="progressbar" aria-label={`${category.name} budget used`} aria-valuemin={0} aria-valuemax={category.plannedAmount} aria-valuenow={actual}><b data-animate-progress style={{ width: `${percent}%` }} /></i></span>
+      <IconChevronRight className={styles.rowChevron} size={17} aria-hidden="true" />
+      </button>
+    </SwipeActionRow>;
+  }
+
   return (
     <div className={styles.budget}>
       <header className={styles.intro}>
@@ -218,21 +268,16 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
         <div className={styles.rows}>
           <div className={styles.mobileTableHeader}><span>Category</span><span>Spent</span><span>Budget</span></div>
           {!categories.length && <div className={styles.emptyState}>No budget categories yet. Add your first category to start planning this month.</div>}
-          {categories.map((category) => {
-            const actual = categoryActual(category);
-            const variance = categoryRemaining(category);
-            const percent = category.plannedAmount ? Math.min((actual / category.plannedAmount) * 100, 100) : 0;
-            return <SwipeActionRow key={category.id} onEdit={() => openCategory(category)} onDelete={() => setPendingDelete({kind:"category",id:category.id,label:category.name})}>
-              <button className={styles.categoryRow} type="button" onClick={() => openCategory(category)} aria-haspopup="dialog" aria-expanded={selectedId === category.id}>
-              <span className={styles.categoryName}><strong>{category.name}</strong><small>{category.purchases.length} {category.purchases.length === 1 ? "purchase" : "purchases"}</small></span>
-              <span className={styles.desktopValue}>{currency.format(category.plannedAmount)}</span>
-              <span className={styles.desktopValue}>{currency.format(actual)}</span>
-              <span className={`${styles.desktopValue} ${variance < 0 ? styles.over : ""}`}>{variance < 0 ? "−" : ""}{currency.format(Math.abs(variance))}</span>
-              <span className={styles.mobileProgress}><span><strong>{currency.format(actual)}</strong><em>{compactCurrency.format(category.plannedAmount)}</em></span><small className={variance < 0 ? styles.over : ""}>{variance < 0 ? `${currency.format(Math.abs(variance))} over` : `${currency.format(variance)} remaining`}</small><i role="progressbar" aria-label={`${category.name} budget used`} aria-valuemin={0} aria-valuemax={category.plannedAmount} aria-valuenow={actual}><b data-animate-progress style={{ width: `${percent}%` }} /></i></span>
-              <IconChevronRight className={styles.rowChevron} size={17} aria-hidden="true" />
-              </button>
-            </SwipeActionRow>;
-          })}
+          <div className={styles.desktopCategoryRows}>{categories.map(renderCategory)}</div>
+          <div className={styles.mobileBudgetGroups}>{groupedCategories.map((group) => {
+            const groupSpent = group.categories.reduce((sum, category) => sum + categoryActual(category), 0);
+            const groupBudget = group.categories.reduce((sum, category) => sum + category.plannedAmount, 0);
+            const groupPercent = groupBudget ? Math.min(groupSpent / groupBudget * 100, 100) : 0;
+            return <section className={styles.mobileBudgetGroup} style={{ "--group-color": group.color } as React.CSSProperties} key={group.name}>
+              <header><span><i aria-hidden="true" />{group.name}</span><strong>{currency.format(groupSpent)}</strong><b data-animate-progress style={{ width: `${groupPercent}%` }} /><em>{currency.format(groupBudget)}</em></header>
+              {group.categories.map(renderCategory)}
+            </section>;
+          })}</div>
         </div>
       </section>
 

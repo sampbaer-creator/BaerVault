@@ -44,6 +44,8 @@ export function DemoTransactions({ budget }: { budget: BudgetMonth }) {
       })),
     ),
   ].sort((a, b) => b.date.localeCompare(a.date));
+  const dateGroups = new Map<string, typeof items>();
+  items.forEach((item) => dateGroups.set(item.date, [...(dateGroups.get(item.date) ?? []), item]));
 
   return (
     <div className={styles.page}>
@@ -94,6 +96,7 @@ export function DemoTransactions({ budget }: { budget: BudgetMonth }) {
             ))}
           </tbody>
         </table>
+        <div className={styles.mobileLedger}>{[...dateGroups.entries()].map(([date, group]) => <section key={date}><h3>{new Date(`${date}T12:00:00`).toLocaleDateString(undefined, { weekday: "short", month: "long", day: "numeric" })}</h3>{group.map((item) => <div className={styles.mobileTransaction} key={item.id}><strong>{item.name}</strong><span>{item.category}</span><b className={item.incoming ? styles.positive : undefined}>{item.incoming ? "+" : ""}{money.format(item.amount)}</b></div>)}</section>)}</div>
       </section>
     </div>
   );
