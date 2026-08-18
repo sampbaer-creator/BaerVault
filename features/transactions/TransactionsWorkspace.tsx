@@ -102,7 +102,7 @@ export function TransactionsWorkspace({ initialMonth }: { initialMonth: BudgetMo
       {accountSpending.length ? <div className={styles.accountBars}>
         {accountSpending.map((item) => <div className={styles.accountBarRow} key={item.account}>
           <span>{item.account}</span>
-          <div className={styles.accountTrack} aria-hidden="true"><i style={{ width: `${largestAccountSpend ? (item.amount / largestAccountSpend) * 100 : 0}%` }} /></div>
+          <div className={styles.accountTrack} aria-hidden="true"><i data-animate-progress style={{ width: `${largestAccountSpend ? (item.amount / largestAccountSpend) * 100 : 0}%` }} /></div>
           <strong>{money.format(item.amount)}</strong>
         </div>)}
       </div> : <p className={styles.emptyChart}>Add a budget purchase to see account spending here.</p>}

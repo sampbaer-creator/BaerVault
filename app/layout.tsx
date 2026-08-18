@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   title: { default: "BearVault", template: "%s | BearVault" },
   description: "A calm, shared home for your household finances.",
   applicationName: "BearVault",
-  appleWebApp: { capable: true, statusBarStyle: "default", title: "BearVault" },
+  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "BearVault" },
   formatDetection: { telephone: false },
   icons: {
     icon: [{ url: "/icon.png", type: "image/png", sizes: "512x512" }],
@@ -35,7 +35,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: "cover",
   interactiveWidget: "resizes-content",
-  themeColor: [{ media: "(prefers-color-scheme: light)", color: "#f8f7f2" }, { media: "(prefers-color-scheme: dark)", color: "#03031c" }],
+  themeColor: "#0879dd",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

@@ -292,9 +292,9 @@ export function AccountsWorkspace({
               preserveAspectRatio="none"
               aria-hidden="true"
             >
-              <path className={styles.lineFill} d="M0 78 C180 74 285 76 420 63 S690 49 900 22 L900 100 L0 100 Z" />
-              <path className={styles.lineStroke} d="M0 78 C180 74 285 76 420 63 S690 49 900 22" />
-              <circle className={styles.linePoint} cx="900" cy="22" r="5" />
+              <path className={`${styles.lineFill} finance-chart-area`} d="M0 78 C180 74 285 76 420 63 S690 49 900 22 L900 100 L0 100 Z" />
+              <path className={`${styles.lineStroke} finance-chart-line`} pathLength="1" d="M0 78 C180 74 285 76 420 63 S690 49 900 22" />
+              <circle className={`${styles.linePoint} finance-chart-point`} cx="900" cy="22" r="5" />
             </svg>
             <div className={styles.summaryCaption}>
               <IconChartLine size={15} aria-hidden="true" />
@@ -395,7 +395,7 @@ export function AccountsWorkspace({
               {selected.creditLimit ? (
                 <div className={styles.utilization}>
                   <div><span>Credit utilization</span><strong>{((selected.balance / selected.creditLimit) * 100).toFixed(1)}%</strong></div>
-                  <div className={styles.utilizationTrack}><i style={{ width: `${Math.min((selected.balance / selected.creditLimit) * 100, 100)}%` }} /></div>
+                  <div className={styles.utilizationTrack}><i data-animate-progress style={{ width: `${Math.min((selected.balance / selected.creditLimit) * 100, 100)}%` }} /></div>
                 </div>
               ) : null}
               <div className={styles.detailActions}>

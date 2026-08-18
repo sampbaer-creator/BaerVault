@@ -50,7 +50,7 @@ export function GoalsWorkspace({ initialGoals }: { initialGoals: SavingsGoal[] }
     <div className={styles.top}><div><span className={styles.eyebrow}>Household plan</span><h2>Goals that move with your life.</h2><p>Build, fund, and revise every savings target in one place.</p></div><button className={styles.add} onClick={() => launch()}><IconPlus size={17}/>Add goal</button></div>
     <div className={styles.mobileGoalSummary}>
       <div><strong>{currency.format(totalSaved)}</strong><span>saved toward goals</span></div>
-      <i style={{ "--progress": totalTarget ? `${Math.min(100, totalSaved / totalTarget * 100)}%` : "0%" } as React.CSSProperties}><b>{totalTarget ? `${Math.round(totalSaved / totalTarget * 100)}%` : "—"}</b></i>
+      <i data-animate-ring-progress style={{ "--progress": totalTarget ? `${Math.min(100, totalSaved / totalTarget * 100)}%` : "0%" } as React.CSSProperties}><b>{totalTarget ? `${Math.round(totalSaved / totalTarget * 100)}%` : "—"}</b></i>
       <div><strong>{currency.format(Math.max(0, totalTarget - totalSaved))}</strong><span>left to save</span></div>
     </div>
     <div className={styles.metrics}><Metric label="Total saved" value={currency.format(totalSaved)} /><Metric label="Combined target" value={currency.format(totalTarget)} /><Metric label="Overall progress" value={totalTarget ? `${Math.round(totalSaved / totalTarget * 100)}%` : "—"} /></div>
@@ -58,7 +58,7 @@ export function GoalsWorkspace({ initialGoals }: { initialGoals: SavingsGoal[] }
       const progress = Math.min(100, Math.round(goal.savedAmount / goal.targetAmount * 100));
       const remaining = Math.max(0, goal.targetAmount - goal.savedAmount);
       return <article className={styles.goal} key={goal.id}>
-        <div className={styles.goalHead}><div className={styles.ring} style={{ "--progress": progress, "--ring": colors[index % colors.length] } as React.CSSProperties}><strong>{progress}%</strong></div><div><h3>{goal.name}</h3><span>{goal.targetDate ? `Target ${new Date(`${goal.targetDate}T12:00:00`).toLocaleDateString(undefined, { month: "short", year: "numeric" })}` : "No deadline"}</span></div><button aria-label={`Edit ${goal.name}`} onClick={() => launch(goal)}><IconEdit size={16}/></button></div>
+        <div className={styles.goalHead}><div className={styles.ring} data-animate-ring-progress style={{ "--progress": `${progress}%`, "--ring": colors[index % colors.length] } as React.CSSProperties}><strong>{progress}%</strong></div><div><h3>{goal.name}</h3><span>{goal.targetDate ? `Target ${new Date(`${goal.targetDate}T12:00:00`).toLocaleDateString(undefined, { month: "short", year: "numeric" })}` : "No deadline"}</span></div><button aria-label={`Edit ${goal.name}`} onClick={() => launch(goal)}><IconEdit size={16}/></button></div>
         <p className={styles.amount}>{currency.format(goal.savedAmount)}</p><span className={styles.detail}>of {currency.format(goal.targetAmount)} · {currency.format(remaining)} to go</span>
         <div className={styles.footer}><span>{currency.format(goal.monthlyContribution)}/mo</span><button onClick={() => setPendingDelete(goal)}><IconTrash size={15}/>Delete</button></div>
       </article>;

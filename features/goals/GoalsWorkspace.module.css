@@ -117,7 +117,7 @@
   height: 52px;
   place-items: center;
   border-radius: 50%;
-  background: conic-gradient(var(--ring) calc(var(--progress) * 1%), var(--app-border) 0);
+  background: conic-gradient(var(--ring) var(--progress), var(--app-border) 0);
   position: relative;
 }
 .ring:after {

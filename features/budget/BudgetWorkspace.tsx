@@ -196,7 +196,7 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
       </section>
       <section className={styles.mobileBudgetSummary} aria-label={`${initialBudget.month} budget summary`}>
         <div><strong>{currency.format(spending)}</strong><span>spent in {initialBudget.month.split(" ")[0]}</span></div>
-        <div className={styles.mobileBudgetRing} style={{"--used":`${planned?Math.min(spending/planned*100,100):0}%`} as React.CSSProperties}/>
+        <div className={styles.mobileBudgetRing} data-animate-ring-percent style={{"--used":`${planned?Math.min(spending/planned*100,100):0}%`} as React.CSSProperties}/>
         <div><strong>{currency.format(planned)}</strong><span>total budget</span></div>
       </section>
 
@@ -228,7 +228,7 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
               <span className={styles.desktopValue}>{currency.format(category.plannedAmount)}</span>
               <span className={styles.desktopValue}>{currency.format(actual)}</span>
               <span className={`${styles.desktopValue} ${variance < 0 ? styles.over : ""}`}>{variance < 0 ? "−" : ""}{currency.format(Math.abs(variance))}</span>
-              <span className={styles.mobileProgress}><span><strong>{currency.format(actual)}</strong><em>{compactCurrency.format(category.plannedAmount)}</em></span><small className={variance < 0 ? styles.over : ""}>{variance < 0 ? `${currency.format(Math.abs(variance))} over` : `${currency.format(variance)} remaining`}</small><i role="progressbar" aria-label={`${category.name} budget used`} aria-valuemin={0} aria-valuemax={category.plannedAmount} aria-valuenow={actual}><b style={{ width: `${percent}%` }} /></i></span>
+              <span className={styles.mobileProgress}><span><strong>{currency.format(actual)}</strong><em>{compactCurrency.format(category.plannedAmount)}</em></span><small className={variance < 0 ? styles.over : ""}>{variance < 0 ? `${currency.format(Math.abs(variance))} over` : `${currency.format(variance)} remaining`}</small><i role="progressbar" aria-label={`${category.name} budget used`} aria-valuemin={0} aria-valuemax={category.plannedAmount} aria-valuenow={actual}><b data-animate-progress style={{ width: `${percent}%` }} /></i></span>
               <IconChevronRight className={styles.rowChevron} size={17} aria-hidden="true" />
               </button>
             </SwipeActionRow>;
@@ -237,7 +237,7 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
       </section>
 
       <aside className={styles.budgetAside}>
-        <section className={`${styles.allocationPanel} card chart-summary`}><h3>Where it goes</h3><div className={styles.allocationRing} style={{ "--used": `${planned ? Math.min(spending / planned * 100, 100) : 0}%` } as React.CSSProperties}><div><strong>{currency.format(spending)}</strong><span>spent</span></div></div><div className={styles.allocationLegend}>{categories.slice(0, 4).map((category) => <div key={category.id}><i /><span>{category.name}</span><strong>{currency.format(categoryActual(category))}</strong></div>)}</div></section>
+        <section className={`${styles.allocationPanel} card chart-summary`}><h3>Where it goes</h3><div className={styles.allocationRing} data-animate-ring-percent style={{ "--used": `${planned ? Math.min(spending / planned * 100, 100) : 0}%` } as React.CSSProperties}><div><strong>{currency.format(spending)}</strong><span>spent</span></div></div><div className={styles.allocationLegend}>{categories.slice(0, 4).map((category) => <div key={category.id}><i /><span>{category.name}</span><strong>{currency.format(categoryActual(category))}</strong></div>)}</div></section>
         <section className={`${styles.remainingPanel} card`}><span>Left to spend</span><strong>{currency.format(remaining)}</strong><p>{remaining >= 0 ? "Your plan is on pace for this month." : "Review categories currently over budget."}</p></section>
       </aside>
       </div>

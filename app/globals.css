@@ -1,5 +1,95 @@
 @import "tailwindcss";
 
+@property --ring-progress {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --used {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+@property --progress {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+/* Shared financial motion: geometry paints immediately, then resolves to its final value. */
+.finance-chart-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: finance-line-draw 800ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+.finance-chart-area {
+  animation: finance-area-reveal 800ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+.finance-chart-point {
+  opacity: 0;
+  animation: finance-point-reveal 180ms cubic-bezier(0.23, 1, 0.32, 1) 620ms forwards;
+}
+
+[data-animate-progress] {
+  transform-origin: left center;
+  animation: finance-progress-grow 800ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  transition: width 800ms cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+[data-animate-ring-angle] {
+  animation: finance-ring-angle 800ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+[data-animate-ring-percent] {
+  animation: finance-ring-percent 800ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+[data-animate-ring-progress] {
+  animation: finance-ring-progress 800ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes finance-line-draw { to { stroke-dashoffset: 0; } }
+@keyframes finance-area-reveal { from { opacity: 0; } to { opacity: 1; } }
+@keyframes finance-point-reveal { to { opacity: 1; } }
+@keyframes finance-progress-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes finance-ring-angle { from { --ring-progress: 0deg; } }
+@keyframes finance-ring-percent { from { --used: 0%; } }
+@keyframes finance-ring-progress { from { --progress: 0%; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .finance-chart-line,
+  .finance-chart-area,
+  .finance-chart-point,
+  [data-animate-progress],
+  [data-animate-ring-angle],
+  [data-animate-ring-percent],
+  [data-animate-ring-progress] {
+    animation: none;
+    transition: none;
+  }
+
+  .finance-chart-line { stroke-dashoffset: 0; }
+  .finance-chart-point { opacity: 1; }
+}
+
+:root[data-motion="reduced"] .finance-chart-line,
+:root[data-motion="reduced"] .finance-chart-area,
+:root[data-motion="reduced"] .finance-chart-point,
+:root[data-motion="reduced"] [data-animate-progress],
+:root[data-motion="reduced"] [data-animate-ring-angle],
+:root[data-motion="reduced"] [data-animate-ring-percent],
+:root[data-motion="reduced"] [data-animate-ring-progress] {
+  animation: none;
+  transition: none;
+}
+
+:root[data-motion="reduced"] .finance-chart-line { stroke-dashoffset: 0; }
+:root[data-motion="reduced"] .finance-chart-point { opacity: 1; }
+
 :root {
   color-scheme: light;
   --brand-navy: #062650;

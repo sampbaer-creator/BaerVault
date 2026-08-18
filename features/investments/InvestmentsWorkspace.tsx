@@ -2,6 +2,7 @@
 
 import { Drawer } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
+import { useReducedMotion } from "motion/react";
 import {
   IconArrowDown,
   IconArrowUp,
@@ -68,6 +69,7 @@ export function InvestmentsWorkspace({
   demo?: boolean;
 }) {
   const router = useRouter();
+  const reduceMotion = useReducedMotion();
   const mobile = useMediaQuery("(max-width: 47.999rem)");
   const [accounts, setAccounts] = useState(initialAccounts);
   const [accountId, setAccountId] = useState(initialAccounts[0]?.id ?? "");
@@ -762,7 +764,7 @@ export function InvestmentsWorkspace({
               </div>
             </div>
             <div className={styles.portfolioChart}>
-              {mobileHistoryPoints && <svg className={styles.mobilePortfolioLine} viewBox="0 0 320 84" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="mobile-investment-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#00b51a" stopOpacity=".16"/><stop offset="1" stopColor="#00b51a" stopOpacity="0"/></linearGradient></defs><polygon points={`0,84 ${mobileHistoryPoints} 320,84`} fill="url(#mobile-investment-fill)"/><polyline points={mobileHistoryPoints} fill="none" stroke="#00b51a" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+              {mobileHistoryPoints && <svg className={styles.mobilePortfolioLine} viewBox="0 0 320 84" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="mobile-investment-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#00b51a" stopOpacity=".16"/><stop offset="1" stopColor="#00b51a" stopOpacity="0"/></linearGradient></defs><polygon className="finance-chart-area" points={`0,84 ${mobileHistoryPoints} 320,84`} fill="url(#mobile-investment-fill)"/><polyline className="finance-chart-line" pathLength="1" points={mobileHistoryPoints} fill="none" stroke="#00b51a" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/></svg>}
               {accountHistory.length ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={accountHistory}>
@@ -783,8 +785,9 @@ export function InvestmentsWorkspace({
                       strokeWidth={2.25}
                       dot={false}
                       activeDot={{ r: 4, strokeWidth: 2 }}
-                      isAnimationActive
-                      animationDuration={520}
+                      isAnimationActive={!reduceMotion}
+                      animationDuration={800}
+                      animationEasing="ease-out"
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -830,7 +833,7 @@ export function InvestmentsWorkspace({
                       )}
                     </span>
                     <svg viewBox="0 0 72 26" aria-hidden="true">
-                      <path
+                      <path className="finance-chart-line" pathLength="1"
                         d={
                           item.change >= 0
                             ? "M1 22 L12 18 L22 20 L34 11 L45 14 L56 6 L71 3"
@@ -882,7 +885,7 @@ export function InvestmentsWorkspace({
                     <small><IconArrowUp size={10} aria-hidden="true" /> +{change.toFixed(2)}% today</small>
                   </div>
                   <svg viewBox="0 0 120 28" preserveAspectRatio="none" aria-hidden="true">
-                    <path d="M1 24 L18 20 L34 22 L51 12 L68 15 L86 7 L103 10 L119 3" />
+                    <path className="finance-chart-line" pathLength="1" d="M1 24 L18 20 L34 22 L51 12 L68 15 L86 7 L103 10 L119 3" />
                   </svg>
                 </button>
               );
@@ -931,7 +934,7 @@ export function InvestmentsWorkspace({
                   {topMovers.slice(0, 5).map((item) => (
                     <div key={item.id}>
                       <span><strong>{item.symbol}</strong><small>{item.name}</small></span>
-                      <svg viewBox="0 0 46 18" aria-hidden="true"><path d={item.change >= 0 ? "M1 15 L9 11 L17 13 L26 6 L35 9 L45 2" : "M1 3 L9 7 L17 5 L26 12 L35 9 L45 16"} /></svg>
+                      <svg viewBox="0 0 46 18" aria-hidden="true"><path className="finance-chart-line" pathLength="1" d={item.change >= 0 ? "M1 15 L9 11 L17 13 L26 6 L35 9 L45 2" : "M1 3 L9 7 L17 5 L26 12 L35 9 L45 16"} /></svg>
                       <span className={item.change >= 0 ? styles.positive : styles.negative}><strong>{currency.format(item.price)}</strong><small>{item.change >= 0 ? "+" : ""}{item.change.toFixed(2)}%</small></span>
                     </div>
                   ))}
@@ -1024,7 +1027,7 @@ export function InvestmentsWorkspace({
                       <b>{item.symbol}</b>
                       <span>{item.name}</span>
                     </span>
-                    <svg className={styles.holdingSpark} viewBox="0 0 72 26" aria-hidden="true"><path d="M1 22 L10 18 L18 20 L27 13 L36 15 L45 8 L55 10 L63 4 L71 6" /></svg>
+                    <svg className={styles.holdingSpark} viewBox="0 0 72 26" aria-hidden="true"><path className="finance-chart-line" pathLength="1" d="M1 22 L10 18 L18 20 L27 13 L36 15 L45 8 L55 10 L63 4 L71 6" /></svg>
                     <span>{shares.toFixed(4)}</span>
                     <span>{currency.format(shares ? cost / shares : 0)}</span>
                     <span>{currency.format(cost)}</span>
@@ -1070,7 +1073,7 @@ export function InvestmentsWorkspace({
           <label>Monthly<input type="number" min="0" step="50" value={monthlyContribution} onChange={(event) => setMonthlyContribution(Math.max(0, Number(event.target.value) || 0))}/></label>
         </div>
         <div className={styles.outcomes}><div><span>Projected value</span><strong>{currency.format(projection.endingBalance)}</strong></div><div><span>Total contributed</span><strong>{currency.format(projection.contributed)}</strong></div><div><span>Estimated growth</span><strong>{currency.format(projection.endingBalance - projection.contributed)}</strong></div></div>
-        <div className={styles.projectionChart}><ResponsiveContainer width="100%" height="100%"><AreaChart data={projection.points} margin={{ top: 8, right: 4, left: 4, bottom: 0 }}><defs><linearGradient id="projectionFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="var(--chart-primary)" stopOpacity={0.28}/><stop offset="100%" stopColor="var(--chart-primary)" stopOpacity={0}/></linearGradient></defs><CartesianGrid vertical={false} stroke="var(--app-border)"/><XAxis dataKey="year" axisLine={false} tickLine={false} tick={{fontSize:9,fill:"var(--app-text-muted)"}}/><YAxis hide/><Tooltip formatter={(value) => currency.format(Number(value))}/><Area type="monotone" dataKey="balance" name="Projected value" stroke="var(--chart-primary)" strokeWidth={2} fill="url(#projectionFill)"/><Line type="monotone" dataKey="contributions" name="Contributions" stroke="var(--chart-secondary)" strokeDasharray="4 4" dot={false}/></AreaChart></ResponsiveContainer></div>
+        <div className={styles.projectionChart}><ResponsiveContainer width="100%" height="100%"><AreaChart data={projection.points} margin={{ top: 8, right: 4, left: 4, bottom: 0 }}><defs><linearGradient id="projectionFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="var(--chart-primary)" stopOpacity={0.28}/><stop offset="100%" stopColor="var(--chart-primary)" stopOpacity={0}/></linearGradient></defs><CartesianGrid vertical={false} stroke="var(--app-border)"/><XAxis dataKey="year" axisLine={false} tickLine={false} tick={{fontSize:9,fill:"var(--app-text-muted)"}}/><YAxis hide/><Tooltip formatter={(value) => currency.format(Number(value))}/><Area type="monotone" dataKey="balance" name="Projected value" stroke="var(--chart-primary)" strokeWidth={2} fill="url(#projectionFill)" isAnimationActive={!reduceMotion} animationDuration={800} animationEasing="ease-out"/><Line type="monotone" dataKey="contributions" name="Contributions" stroke="var(--chart-secondary)" strokeDasharray="4 4" dot={false} isAnimationActive={!reduceMotion} animationDuration={800} animationEasing="ease-out"/></AreaChart></ResponsiveContainer></div>
         <small>Illustrative estimate only. Returns are not guaranteed and inflation, fees, and taxes are not included.</small>
       </section>
 
@@ -1359,7 +1362,9 @@ export function InvestmentsWorkspace({
                       dataKey="close"
                       stroke="var(--chart-primary)"
                       fill="var(--app-accent-soft)"
-                      isAnimationActive={false}
+                      isAnimationActive={!reduceMotion}
+                      animationDuration={800}
+                      animationEasing="ease-out"
                     />
                   </AreaChart>
                 </ResponsiveContainer>

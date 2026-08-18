@@ -66,7 +66,7 @@ export function DemoTransactions({ budget }: { budget: BudgetMonth }) {
             <div className={styles.accountBarRow} key={item.account}>
               <span>{item.account}</span>
               <div className={styles.accountTrack} aria-hidden="true">
-                <i style={{ width: `${largestAccountSpend ? (item.amount / largestAccountSpend) * 100 : 0}%` }} />
+                <i data-animate-progress style={{ width: `${largestAccountSpend ? (item.amount / largestAccountSpend) * 100 : 0}%` }} />
               </div>
               <strong>{money.format(item.amount)}</strong>
             </div>
