@@ -1,6 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest } from "next/server";
 
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+
 const ranges = {
   "1M": { interval: "1day", outputsize: 22 },
   "3M": { interval: "1day", outputsize: 66 },
@@ -36,6 +38,20 @@ type MarketResult =
   | { ok: false; error: string; status: number };
 
 const tickerPattern = /^[A-Z0-9./-]{1,15}$/;
+
+async function consumeMarketDataQuota(cost: number) {
+  const result = await createServerSupabaseClient().rpc("consume_market_data_quota", {
+    request_cost: cost,
+  });
+  return !result.error && result.data === true;
+}
+
+function quotaResponse() {
+  return Response.json(
+    { error: "Market-data request limit reached. Try again shortly." },
+    { status: 429, headers: { "Retry-After": "900" } },
+  );
+}
 
 async function fetchMarketSeries(
   symbol: string,
@@ -124,12 +140,13 @@ export async function GET(request: NextRequest) {
         .map((symbol) => symbol.trim().toUpperCase())
         .filter(Boolean),
     )];
-    if (!symbols.length || symbols.length > 25 || symbols.some((symbol) => !tickerPattern.test(symbol))) {
+    if (!symbols.length || symbols.length > 10 || symbols.some((symbol) => !tickerPattern.test(symbol))) {
       return Response.json(
-        { error: "Request between 1 and 25 valid ticker symbols." },
+        { error: "Request between 1 and 10 valid ticker symbols." },
         { status: 400 },
       );
     }
+    if (!(await consumeMarketDataQuota(symbols.length))) return quotaResponse();
 
     const results = await Promise.all(
       symbols.map((symbol) => fetchMarketSeries(symbol, range, apiKey)),
@@ -154,6 +171,7 @@ export async function GET(request: NextRequest) {
       { status: 400 },
     );
   }
+  if (!(await consumeMarketDataQuota(1))) return quotaResponse();
   const result = await fetchMarketSeries(symbol, range, apiKey);
   return result.ok
     ? Response.json(result.data)

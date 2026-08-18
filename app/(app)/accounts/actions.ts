@@ -12,7 +12,7 @@ import {
   deleteFinancialAccount,
   updateFinancialAccount,
 } from "@/lib/data/accounts";
-import { errorMessage } from "@/lib/data/errors";
+import { DataAccessError, errorMessage } from "@/lib/data/errors";
 
 const owners = ["user", "spouse", "joint", "other"];
 
@@ -31,7 +31,7 @@ function validate(input: FinancialAccountDraft): FinancialAccountDraft {
       input.creditLimit !== null &&
       (!Number.isFinite(input.creditLimit) || input.creditLimit <= 0))
   ) {
-    throw new Error("Enter valid account details and a balance of zero or more.");
+    throw new DataAccessError("Enter valid account details and a balance of zero or more.");
   }
   return {
     ...input,
@@ -58,7 +58,7 @@ export async function addFinancialAccountAction(input: FinancialAccountDraft) {
 
 export async function updateFinancialAccountAction(input: FinancialAccount) {
   try {
-    if (!input.id) throw new Error("That account no longer exists.");
+    if (!input.id) throw new DataAccessError("That account no longer exists.");
     const data = await updateFinancialAccount({ ...input, ...validate(input) });
     refreshAccounts();
     return { ok: true as const, data };
@@ -69,7 +69,7 @@ export async function updateFinancialAccountAction(input: FinancialAccount) {
 
 export async function deleteFinancialAccountAction(id: string) {
   try {
-    if (!id) throw new Error("That account no longer exists.");
+    if (!id) throw new DataAccessError("That account no longer exists.");
     await deleteFinancialAccount(id);
     refreshAccounts();
     return { ok: true as const };

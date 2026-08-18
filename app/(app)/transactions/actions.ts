@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { errorMessage } from "@/lib/data/errors";
+import { DataAccessError, errorMessage } from "@/lib/data/errors";
 import {
   createIncomeEntry,
   deleteIncomeEntry,
@@ -29,7 +29,7 @@ function validateIncome(input: IncomeInput) {
     !/^\d{4}-\d{2}-\d{2}$/.test(input.date) ||
     (ownerLabel?.length ?? 0) > 80
   ) {
-    throw new Error("Enter a valid income source, amount, and date.");
+    throw new DataAccessError("Enter a valid income source, amount, and date.");
   }
 
   return { description, ownerLabel };

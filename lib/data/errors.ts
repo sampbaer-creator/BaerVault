@@ -18,7 +18,7 @@ export function throwDataError(error: PostgrestError | null, fallback: string): 
 }
 
 export function errorMessage(error: unknown) {
-  return error instanceof DataAccessError || error instanceof Error
+  return error instanceof DataAccessError
     ? error.message
     : "Something went wrong. Please try again.";
 }
