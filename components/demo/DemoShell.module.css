@@ -346,10 +346,10 @@
   .content main { padding: clamp(32px, 4vw, 54px) clamp(22px, 3.2vw, 46px) 64px; }
 }
 @media (max-width: 47.999rem) {
-  .demoModeBar{position:fixed;inset:0 0 auto;z-index:40;display:flex;height:52px;align-items:center;justify-content:center;color:#fff;background:#000;font-size:15px}.demoModeBar a{position:absolute;right:18px;display:grid;width:34px;height:34px;place-items:center;color:#fff}
+  .demoModeBar{position:fixed;inset:0 0 auto;z-index:40;display:flex;height:calc(52px + env(safe-area-inset-top));align-items:center;justify-content:center;padding-top:env(safe-area-inset-top);color:#fff;background:#000;font-size:15px}.demoModeBar a{position:absolute;right:max(18px,env(safe-area-inset-right));bottom:9px;display:grid;width:34px;height:34px;place-items:center;color:#fff}
   .content > header {
-    position: fixed; inset: 52px 0 auto; height: 132px; margin: 0;
-    padding: 14px 22px 54px;
+    position: fixed; inset: calc(52px + env(safe-area-inset-top)) 0 auto; height: 132px; margin: 0;
+    padding: 14px max(22px,env(safe-area-inset-right)) 54px max(22px,env(safe-area-inset-left));
     border: 0; border-radius: 32px 32px 0 0;
     background:
       radial-gradient(circle at 50% -30%, rgb(145 224 255 / 42%), transparent 58%),
@@ -372,10 +372,10 @@
   .createAccount{display:none!important}
   .mobileHousehold{display:grid!important;width:40px!important;height:40px!important;place-items:center;color:rgb(255 255 255 / 62%)!important;background:transparent!important;border:0!important;box-shadow:none!important}
   .mobileHousehold::after{display:none!important}
-  .content main { position:relative;width:100%; max-width:none; box-sizing:border-box; padding:184px 14px calc(34px + env(safe-area-inset-bottom)); overflow-x:clip;touch-action:pan-y pinch-zoom; }
+  .content main { position:relative;width:100%; min-height:100dvh;max-width:none;box-sizing:border-box;padding:calc(184px + env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) calc(34px + env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));overflow-x:clip;background:var(--app-background);touch-action:pan-y pinch-zoom; }
   .mobileNav {
-    inset: 108px 0 auto; z-index: 41; display: flex; gap: 6px;
-    padding: 9px 14px 13px; overflow-x: auto; border: 0;
+    inset: calc(108px + env(safe-area-inset-top)) 0 auto; z-index: 41; display: flex; gap: 6px;
+    padding: 9px max(14px,env(safe-area-inset-right)) 13px max(14px,env(safe-area-inset-left)); overflow-x: auto; border: 0;
     border-radius: 0 0 30px 30px; background: transparent; box-shadow: none;
     backdrop-filter: none; scrollbar-width: none;
   }

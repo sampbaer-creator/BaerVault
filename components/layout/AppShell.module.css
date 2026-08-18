@@ -632,9 +632,9 @@
   .mobileHeader {
     position: fixed;
     inset: 0 0 auto;
-    min-height: 138px;
+    min-height: calc(138px + env(safe-area-inset-top));
     margin: 0;
-    padding: max(12px, env(safe-area-inset-top)) 22px 48px;
+    padding: max(12px, env(safe-area-inset-top)) max(22px, env(safe-area-inset-right)) 48px max(22px, env(safe-area-inset-left));
     border: 0;
     border-radius: 0;
     color: white;
@@ -660,15 +660,15 @@
   .mobileScrolled .mobileHeader::after { opacity: 1; }
   .mobileMark { border: 0; color:rgb(255 255 255 / 62%); background:transparent; box-shadow:none; text-decoration:none; }
   .mobileTitle { color: white; font-size: 21px; line-height: 1.1; font-weight: 760; }
-  .main { position: relative; padding: 138px 14px calc(34px + env(safe-area-inset-bottom)); touch-action: pan-y pinch-zoom; }
+  .main { position: relative; min-height: 100dvh; padding: calc(138px + env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) calc(34px + env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left)); background: var(--app-background); touch-action: pan-y pinch-zoom; }
   .main { width:100%; max-width:none; box-sizing:border-box; overflow-x: clip; }
   .main > * { width:100%; max-width:100%; min-width:0; box-sizing:border-box; }
   .mobileNav {
-    inset: 64px 0 auto;
+    inset: calc(64px + env(safe-area-inset-top)) 0 auto;
     z-index: 31;
     display: flex;
     gap: 6px;
-    padding: 9px 14px 13px;
+    padding: 9px max(14px, env(safe-area-inset-right)) 13px max(14px, env(safe-area-inset-left));
     overflow-x: auto;
     border: 0;
     border-radius: 0 0 30px 30px;

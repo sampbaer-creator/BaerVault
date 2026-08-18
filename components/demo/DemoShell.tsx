@@ -11,7 +11,6 @@ import {
   IconTargetArrow,
   IconUsers,
   IconChevronDown,
-  IconChartHistogram,
   IconMessage,
   IconX,
 } from "@tabler/icons-react";
@@ -23,6 +22,7 @@ import { useEffect, useRef, useState } from "react";
 import styles from "./DemoShell.module.css";
 import { LiquidGLRuntime } from "@/components/shared/LiquidGLRuntime";
 import { useMobilePageSwipe } from "@/components/layout/useMobilePageSwipe";
+import { mobileSectionNavigation } from "@/components/layout/navigation";
 
 const links = [
   ["/demo", "Dashboard", IconLayoutDashboard],
@@ -35,15 +35,10 @@ const links = [
   ["/demo/settings", "Settings", IconSettings],
 ] as const;
 
-const mobileLinks = [
-  ["/demo/cash-flow", "Cash flow", IconChartHistogram],
-  ["/demo/accounts", "Accounts", IconBuildingBank],
-  ["/demo/investments", "Investments", IconChartPie],
-  ["/demo/transactions", "Transactions", IconArrowsExchange],
-  ["/demo", "Dashboard", IconLayoutDashboard],
-  ["/demo/budget", "Categories", IconPigMoney],
-  ["/demo/goals", "Goals", IconTargetArrow],
-] as const;
+const mobileLinks = mobileSectionNavigation.map((item) => ({
+  ...item,
+  href: item.href === "/dashboard" ? "/demo" : `/demo${item.href}`,
+}));
 
 const accountGroups = [
   { label: "Credit cards", accounts: [["BearVault Card", "$552"], ["Everyday Visa", "$0"]] },
@@ -151,7 +146,7 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
         </main>
       </div>
       <nav ref={mobileNavRef} className={styles.mobileNav} aria-label="Demo mobile navigation">
-        {mobileLinks.map(([href, label, Icon]) => (
+        {mobileLinks.map(({ href, label, icon: Icon }) => (
           <Link
             key={href}
             href={href}

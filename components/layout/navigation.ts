@@ -36,6 +36,8 @@ export const mobileSectionNavigation: NavigationItem[] = [
   { href: "/goals", label: "Goals", icon: IconTargetArrow },
 ];
 
+export const mobileRouteOrder = mobileSectionNavigation.map(({ href }) => href);
+
 export const householdNavigation: NavigationItem[] = [
   { href: "/household", label: "Household", icon: IconBuildingCommunity },
 ];

@@ -3,16 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
 
-const routeOrder = [
-  "/cash-flow",
-  "/accounts",
-  "/investments",
-  "/transactions",
-  "/dashboard",
-  "/budget",
-  "/goals",
-  "/household",
-];
+import { mobileRouteOrder } from "./navigation";
 
 const AXIS_LOCK_DISTANCE = 10;
 const EDGE_GESTURE_WIDTH = 24;
@@ -32,12 +23,13 @@ export function useMobilePageSwipe(pathname: string, demo = false) {
   const start = useRef<Point | null>(null);
   const last = useRef<Point | null>(null);
   const axis = useRef<"horizontal" | "vertical" | null>(null);
+  const pointerId = useRef<number | null>(null);
   const normalized = demo ? (pathname === "/demo" ? "/dashboard" : pathname.slice(5)) : pathname;
 
   function routeForDelta(dx: number) {
-    const currentIndex = routeOrder.indexOf(normalized);
+    const currentIndex = mobileRouteOrder.indexOf(normalized);
     if (currentIndex < 0 || dx === 0) return null;
-    const route = routeOrder[dx < 0 ? currentIndex + 1 : currentIndex - 1];
+    const route = mobileRouteOrder[dx < 0 ? currentIndex + 1 : currentIndex - 1];
     if (!route) return null;
     return demo ? (route === "/dashboard" ? "/demo" : `/demo${route}`) : route;
   }
@@ -46,6 +38,7 @@ export function useMobilePageSwipe(pathname: string, demo = false) {
     start.current = null;
     last.current = null;
     axis.current = null;
+    pointerId.current = null;
   }
 
   function onPointerDown(event: React.PointerEvent<HTMLElement>) {
@@ -54,6 +47,7 @@ export function useMobilePageSwipe(pathname: string, demo = false) {
       !window.matchMedia("(max-width: 47.999rem)").matches ||
       event.clientX <= EDGE_GESTURE_WIDTH ||
       event.clientX >= window.innerWidth - EDGE_GESTURE_WIDTH ||
+      pointerId.current !== null ||
       isGestureControl(event.target)
     ) return;
 
@@ -61,17 +55,21 @@ export function useMobilePageSwipe(pathname: string, demo = false) {
     start.current = point;
     last.current = point;
     axis.current = null;
+    pointerId.current = event.pointerId;
   }
 
   function onPointerMove(event: React.PointerEvent<HTMLElement>) {
     const origin = start.current;
-    if (!origin) return;
+    if (!origin || pointerId.current !== event.pointerId) return;
     const dx = event.clientX - origin.x;
     const dy = event.clientY - origin.y;
     if (!axis.current && Math.max(Math.abs(dx), Math.abs(dy)) >= AXIS_LOCK_DISTANCE) {
       axis.current = Math.abs(dx) > Math.abs(dy) * 1.2 ? "horizontal" : "vertical";
     }
     if (axis.current === "horizontal") {
+      if (!event.currentTarget.hasPointerCapture(event.pointerId)) {
+        event.currentTarget.setPointerCapture(event.pointerId);
+      }
       last.current = { x: event.clientX, y: event.clientY, time: performance.now() };
     }
   }
@@ -79,7 +77,7 @@ export function useMobilePageSwipe(pathname: string, demo = false) {
   function onPointerUp(event: React.PointerEvent<HTMLElement>) {
     const origin = start.current;
     const sample = last.current ?? origin;
-    if (!origin || !sample || axis.current !== "horizontal") {
+    if (!origin || !sample || pointerId.current !== event.pointerId || axis.current !== "horizontal") {
       reset();
       return;
     }
