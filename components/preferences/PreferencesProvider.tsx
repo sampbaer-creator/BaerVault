@@ -2,13 +2,13 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-export type ThemeMode = "light" | "dark";
+export type ThemeMode = "system" | "light" | "dark";
 type Preferences = {
   theme: ThemeMode;
   currency: string;
 };
 const defaults: Preferences = {
-  theme: "light",
+  theme: "system",
   currency: "USD",
 };
 type ContextValue = {
@@ -31,7 +31,9 @@ export function PreferencesProvider({
         const saved = localStorage.getItem("bearvault-preferences");
         if (saved) {
           const parsed = JSON.parse(saved) as Partial<Preferences>;
-          const theme = parsed.theme === "dark" ? "dark" : "light";
+          const theme = ["system", "light", "dark"].includes(parsed.theme ?? "")
+            ? (parsed.theme as ThemeMode)
+            : defaults.theme;
           setPreferences({ ...defaults, currency: parsed.currency ?? defaults.currency, theme });
         }
       } catch {}
@@ -42,11 +44,25 @@ export function PreferencesProvider({
   useEffect(() => {
     if (!storageReady) return;
     const root = document.documentElement;
-    root.dataset.theme = preferences.theme;
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const applyTheme = () => {
+      const resolvedTheme = preferences.theme === "system"
+        ? (media.matches ? "dark" : "light")
+        : preferences.theme;
+      root.dataset.theme = resolvedTheme;
+      root.style.colorScheme = resolvedTheme;
+      document.querySelector('meta[name="theme-color"]')?.setAttribute(
+        "content",
+        resolvedTheme === "dark" ? "#03031c" : "#f7f8fa",
+      );
+    };
+    applyTheme();
+    media.addEventListener("change", applyTheme);
     delete root.dataset.palette;
     delete root.dataset.density;
     delete root.dataset.motion;
     localStorage.setItem("bearvault-preferences", JSON.stringify(preferences));
+    return () => media.removeEventListener("change", applyTheme);
   }, [preferences, storageReady]);
   const value = useMemo(
     () => ({

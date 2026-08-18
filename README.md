@@ -1,165 +1,58 @@
 # BearVault
 
-BearVault is a household finance application for managing transactions, budgets, accounts, and investments in one shared workspace. Clerk Organizations represent households, while Supabase stores financial records with PostgreSQL row-level security.
+BearVault is a shared household-finance app for seeing the full financial picture in one calm workspace. It brings accounts, transactions, monthly budgets, cash flow, investments, savings goals, and household access together without turning personal finance into an accounting tool.
 
-## Start here if you are new
+## What it includes
 
-Start with the repository documentation:
+- A responsive dashboard for current net worth, spending, and recent activity
+- Transaction, account, budget, cash-flow, investment, and goal workspaces
+- Shared households through Clerk Organizations
+- Supabase persistence with row-level security
+- Live and historical market data through Twelve Data
+- Light, dark, and system themes
+- Mobile navigation and installable PWA support
+- A public demo with clearly synthetic data
 
-- [`docs/PROJECT_MAP.md`](docs/PROJECT_MAP.md) explains where routes, features, shared components, data repositories, and configuration live.
-- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) explains the frontend, backend, database, authentication, and major data flows.
+## Built with
 
-Together they explain:
+Next.js App Router, React, TypeScript, Clerk, Supabase PostgreSQL, Mantine, Recharts, Tabler Icons, and Vercel.
 
-- what every source folder is for;
-- which file controls each page;
-- where every page gets its data;
-- how the public demo differs from the signed-in application;
-- how the desktop and mobile layouts are assembled; and
-- which file to change for common design or feature updates.
-
-The shortest mental model is:
-
-```text
-app/ route -> features/ workspace -> lib/ repository -> Supabase or mock data
-```
-
-## What BearVault does
-
-- Creates a shared financial workspace for a household
-- Tracks monthly budgets, planned amounts, and individual spending entries
-- Records household income alongside spending in one transaction ledger
-- Manages investment accounts, holdings, and purchase lots
-- Uses live and historical Twelve Data market information for portfolio calculations
-- Keeps demo data separate from authenticated household data
-- Gives members of the same Clerk Organization access to the same household records
-
-## Application flow
-
-```text
-Public landing page
-        ↓
-Create account or sign in with Clerk
-        ↓
-Google authentication and MFA
-        ↓
-Create or join a household organization
-        ↓
-Household dashboard
-```
-
-## Public demo
-
-Visitors can open `/demo` from the landing page without creating an account. The demo covers dashboard, transactions, accounts, budgets, investments, goals, household, and settings with interactive mock records stored only in the browser tab. It does not authenticate, call Supabase repositories, or write to production household tables.
-
-Authenticated users without an active organization are sent to `/onboarding`. Protected application routes include `/dashboard`, `/transactions`, `/accounts`, `/budget`, `/investments`, `/goals`, `/household`, and `/settings`.
-
-## Architecture
-
-| Service | Responsibility |
-| --- | --- |
-| Next.js | App Router application, Server Components, Server Actions, and API routes |
-| Clerk | Authentication, Google login, MFA, users, and household organizations |
-| Supabase | PostgreSQL persistence and household-isolated row-level security |
-| Twelve Data | Current and historical stock and ETF market data |
-| Vercel | Production hosting and Git-based deployments |
-
-BearVault uses Clerk as its only authentication provider. Supabase clients receive the active Clerk session token through the supported `accessToken` callback; the application does not add a second Supabase Auth login.
-
-## Data and security
-
-The database migration creates:
-
-- `households`
-- `budget_months`
-- `budget_categories`
-- `budget_entries`
-- `income_entries`
-- `investment_accounts`
-- `holdings`
-- `purchase_lots`
-- `portfolio_snapshots`
-
-Every exposed financial table has row-level security enabled. Policies resolve the active Clerk organization from verified JWT claims and restrict records to the matching internal household. Client-provided household IDs are not used as authorization.
-
-Market prices are intentionally not stored as the ownership source of truth. Supabase stores what the household owns; Twelve Data supplies what the market is doing.
-
-## Local development
-
-Requirements:
-
-- Node.js and npm
-- Clerk development instance
-- Supabase project
-- Twelve Data API key
-
-Install and run:
+## Run locally
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000). The public landing page and demo work without an account. Protected household features require the environment variables for Clerk, Supabase, and Twelve Data.
 
-Create a local `.env` or `.env.local` file containing these variable names:
+Use `.env.local` for local secrets. Never commit credentials.
 
-```text
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-CLERK_SECRET_KEY
-NEXT_PUBLIC_CLERK_SIGN_IN_URL
-NEXT_PUBLIC_CLERK_SIGN_UP_URL
-NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL
-NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL
-NEXT_PUBLIC_SUPABASE_URL
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
-TWELVE_DATA_API_KEY
-```
-
-Never commit environment files or secret values.
-
-## Supabase setup
-
-1. Activate Clerk's current Supabase integration in Clerk.
-2. Add Clerk under Supabase third-party authentication.
-3. Apply [`supabase/migrations/20260811000100_create_household_finance_schema.sql`](supabase/migrations/20260811000100_create_household_finance_schema.sql) using the Supabase CLI or SQL Editor.
-4. Add the Supabase publishable variables to the local and Vercel environments.
-5. Test two users in one organization and a user in a different organization to verify sharing and isolation.
-
-Do not configure Clerk's deprecated JWT-template integration and do not use a Supabase service-role key for normal household CRUD.
-
-## Verification
+## Useful commands
 
 ```bash
-npm run typecheck
+npm run dev
 npm run lint
 npm run build
 ```
 
-Production testing should cover new-household empty states, persistence after refresh and sign-in, shared spouse access, cross-household isolation, and Twelve Data price/history retrieval.
-
-## Technology
-
-- Next.js 16, React 19, and TypeScript
-- Clerk Organizations and production authentication
-- Supabase Postgres and row-level security
-- Mantine and Tabler Icons
-- Recharts
-- CSS Modules
-- Twelve Data API
-- Vercel
-
-## Repository structure
+## Project structure
 
 ```text
-app/         routes, layouts, API endpoints, and server actions
-features/    product-area UI and feature-specific view models
-components/  shared UI, app shells, providers, and demo infrastructure
-lib/         domain logic, repositories, and external-service clients
-supabase/    database migrations and row-level-security policies
-docs/        project map and architecture documentation
+app/          Routes, layouts, API handlers, and global styles
+components/   Shared UI, navigation, branding, and preferences
+features/     Finance workspace components and scoped styles
+lib/          Data access, domain helpers, and mock demo data
+supabase/     Database migrations
+docs/         Architecture and project maps
 ```
 
-## Production deployment
+More detail is available in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/PROJECT_MAP.md](docs/PROJECT_MAP.md).
 
-The production application is designed for `baervault.company`. A Clerk production instance requires a custom domain with verified DNS and deployed Clerk certificates; a `*.vercel.app` domain is suitable for previews but not the final Clerk production configuration.
+## Status
+
+BearVault is under active development. The product currently supports its core household-finance workflows; direct bank connections, payments, email, and analytics are not yet integrated.
+
+## Author
+
+Built by [Samuel Baer](https://github.com/sampbaer-creator).

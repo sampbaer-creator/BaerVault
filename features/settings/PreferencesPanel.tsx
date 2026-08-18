@@ -19,16 +19,16 @@ export function PreferencesPanel() {
           </span>
           <div>
             <h3 id="theme-title">Theme</h3>
-            <p>Choose the standard light or dark BearVault experience.</p>
+            <p>Match your device or choose a fixed appearance.</p>
           </div>
         </div>
         <Field
           label="Display mode"
-          description="Use BearVault in light or dark mode."
+          description="Use your device setting, light mode, or dark mode."
         >
           <Segment
             value={preferences.theme}
-            options={["light", "dark"]}
+            options={["system", "light", "dark"]}
             onChange={(theme) =>
               update({ theme: theme as typeof preferences.theme })
             }
