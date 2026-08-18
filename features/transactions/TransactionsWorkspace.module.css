@@ -440,7 +440,7 @@
 
 @media(max-width:47.999rem){
  .mobileSearch{display:none!important}
- .mobileActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:-18px 20px 14px;padding:5px;border-radius:15px;background:var(--app-surface);box-shadow:0 10px 26px rgb(30 93 149 / 10%)}
+ .mobileActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 20px 14px;padding:5px;border-radius:15px;background:var(--app-surface);box-shadow:0 10px 26px rgb(30 93 149 / 10%)}
  .mobileActions button,.mobileActions a{display:flex;min-height:44px;align-items:center;justify-content:center;gap:7px;border:0;border-radius:11px;color:var(--app-text-strong);background:transparent;font:inherit;font-size:12px;font-weight:750;text-decoration:none}
  .mobileActions button{color:#fff;background:var(--app-accent)}
  .tabs{display:flex!important;position:static!important;margin:0 20px 12px!important;box-shadow:none!important}
