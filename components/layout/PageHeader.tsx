@@ -8,7 +8,7 @@ import {
   IconPlus,
   IconSearch,
   IconSettings,
-  IconUsers,
+  IconMessage,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
@@ -105,7 +105,7 @@ export function PageHeader({
       <header className={`${styles.mobileHeader} glass-panel`}>
         <Link className={styles.mobileMark} href="/settings" aria-label="Open settings"><IconSettings size={24} /></Link>
         <strong className={styles.mobileTitle}>BearVault</strong>
-        <span className={styles.mobileProfile}><Link className={styles.mobileHousehold} href="/household" aria-label="Open household"><IconUsers size={23}/></Link><UserButton /></span>
+        <span className={styles.mobileProfile}><Link className={styles.mobileHousehold} href="/household" aria-label="Open household"><IconMessage size={24}/></Link><UserButton /></span>
       </header>
     </>
   );

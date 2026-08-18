@@ -11,7 +11,9 @@ const goals = [
 
 export function DemoGoals() {
   return <div className={styles.page}>
+    <div className={styles.mobileSummary}><div><strong>$205,500</strong><span>saved toward goals</span></div><i><b>33%</b></i><div><strong>$409,500</strong><span>left to save</span></div></div>
     <div className={styles.metrics}><Metric label="Total saved" value="$205,500" /><Metric label="Combined target" value="$615,000" /><Metric label="On track" value="6 of 6" positive /></div>
+    <h2 className={styles.mobileHeading}>Active</h2>
     <section className={styles.goalsGrid} aria-label="Savings goals">{goals.map((goal) => <article className={styles.goal} key={goal.name}>
       <div className={styles.goalHead}><div className={styles.ring} style={{ "--progress": goal.progress, "--ring": goal.color } as React.CSSProperties}><strong>{goal.progress}%</strong></div><div><h3>{goal.name}</h3><span className={styles.goalMeta}>Target {goal.target}</span></div></div>
       <p className={styles.goalValue}><strong>{goal.saved}</strong></p><span className={styles.goalMeta}>{goal.detail}</span>

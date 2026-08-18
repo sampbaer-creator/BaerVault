@@ -215,6 +215,7 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
         <div className={styles.sheetHeading}><div><h3 id="categories-title">Spending plan</h3><p>Actuals are calculated from the purchases inside each category.</p></div><button type="button" onClick={() => setAddingCategory(true)}><IconPlus size={16} />Add category</button></div>
         <div className={styles.tableHeader} aria-hidden="true"><span>Category</span><span>Budget / projected</span><span>Actual</span><span>Remaining / variance</span><span /></div>
         <div className={styles.rows}>
+          <div className={styles.mobileTableHeader}><span>Category</span><span>Spent</span><span>Budget</span></div>
           {!categories.length && <div className={styles.emptyState}>No budget categories yet. Add your first category to start planning this month.</div>}
           {categories.map((category) => {
             const actual = categoryActual(category);
@@ -225,7 +226,7 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
               <span className={styles.desktopValue}>{currency.format(category.plannedAmount)}</span>
               <span className={styles.desktopValue}>{currency.format(actual)}</span>
               <span className={`${styles.desktopValue} ${variance < 0 ? styles.over : ""}`}>{variance < 0 ? "−" : ""}{currency.format(Math.abs(variance))}</span>
-              <span className={styles.mobileProgress}><span><strong>{currency.format(actual)}</strong> of {compactCurrency.format(category.plannedAmount)}</span><small className={variance < 0 ? styles.over : ""}>{variance < 0 ? `${currency.format(Math.abs(variance))} over` : `${currency.format(variance)} remaining`}</small><i role="progressbar" aria-label={`${category.name} budget used`} aria-valuemin={0} aria-valuemax={category.plannedAmount} aria-valuenow={actual}><b style={{ width: `${percent}%` }} /></i></span>
+              <span className={styles.mobileProgress}><span><strong>{currency.format(actual)}</strong><em>{compactCurrency.format(category.plannedAmount)}</em></span><small className={variance < 0 ? styles.over : ""}>{variance < 0 ? `${currency.format(Math.abs(variance))} over` : `${currency.format(variance)} remaining`}</small><i role="progressbar" aria-label={`${category.name} budget used`} aria-valuemin={0} aria-valuemax={category.plannedAmount} aria-valuenow={actual}><b style={{ width: `${percent}%` }} /></i></span>
               <IconChevronRight className={styles.rowChevron} size={17} aria-hidden="true" />
             </button>;
           })}

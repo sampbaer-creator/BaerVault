@@ -1,5 +1,6 @@
 "use client";
 
+import { IconList, IconSearch } from "@tabler/icons-react";
 import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
 import { totalIncome, totalSpending, type BudgetMonth } from "@/lib/finance";
 import styles from "./DemoTransactions.module.css";
@@ -46,6 +47,7 @@ export function DemoTransactions({ budget }: { budget: BudgetMonth }) {
 
   return (
     <div className={styles.page}>
+      <div className={styles.mobileSearch}><IconSearch size={22}/><span>Search</span><IconList size={22}/></div>
       <div className={styles.summary}>
         <Summary label="Money in" value={`+${money.format(income)}`} tone="positive" />
         <Summary label="Money out" value={`−${money.format(spent)}`} tone="negative" />

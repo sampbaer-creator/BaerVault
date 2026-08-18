@@ -1,4 +1,5 @@
 .page { max-width: 1240px; margin: 0 auto; }
+.mobileSummary,.mobileHeading{display:none}
 .metrics { border: 1px solid var(--glass-border); border-radius: 16px; background: var(--glass-surface); box-shadow: var(--shadow-glass); backdrop-filter: blur(30px) saturate(155%); }
 .metric { border: 0 !important; background: transparent !important; }
 .card, .goal { border-color: color-mix(in srgb, var(--app-border) 84%, transparent) !important; border-radius: 16px !important; background: color-mix(in srgb, var(--app-surface) 96%, transparent) !important; box-shadow: var(--shadow-surface) !important; }
@@ -34,6 +35,7 @@
 .status { padding: 5px 8px; border-radius: 7px; color: #267056; background: #e8f1ed; font-weight: 700; }
 @media (max-width: 70rem) { .goalsGrid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 48rem) {
+  .metrics{display:none!important}.mobileSummary{display:grid;min-height:132px;grid-template-columns:minmax(0,1fr) 82px minmax(0,1fr);align-items:center;gap:8px;margin:-18px 0 28px;padding:20px 12px;border-radius:22px;background:#fff;box-shadow:0 18px 38px rgb(43 119 183 / 10%);text-align:center}.mobileSummary>div{display:grid;min-width:0;gap:4px}.mobileSummary strong{overflow:hidden;color:#102653;font-size:17px;text-overflow:ellipsis}.mobileSummary span{color:var(--app-text-muted);font-size:10px}.mobileSummary>i{display:grid;width:76px;height:76px;place-items:center;border-radius:50%;background:radial-gradient(circle,#fff 56%,transparent 58%),conic-gradient(#1687f5 33%,#e5e9ee 0);font-style:normal}.mobileSummary b{font-size:12px}.mobileHeading{display:block;margin:0 0 12px;color:#102653;font-size:18px}
   .metrics {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1px;
@@ -60,7 +62,7 @@
   }
   .accountGrid,
   .goalsGrid { grid-template-columns: 1fr; }
-  .goalsGrid { gap: 10px; }
-  .goal { padding: 18px; border-radius: 18px; box-shadow: 0 10px 30px rgb(19 38 63 / 5%); }
+  .goalsGrid { display:block; }
+  .goal { display:grid;min-height:86px;grid-template-columns:minmax(0,1fr) auto;align-items:center;padding:12px 2px;border:0!important;border-bottom:1px solid var(--app-border)!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}.goalHead{display:block;grid-column:1}.ring{display:none}.goal h3{font-size:16px}.goalValue{grid-column:2;grid-row:1;margin:0;font-size:16px;text-align:right}.goal>span.goalMeta{grid-column:1;grid-row:2}.goalFooter{grid-column:1/-1;grid-row:3;margin-top:8px;padding-top:0;border:0}.status{display:none}
   .card { min-height: 142px; }
 }

@@ -1,4 +1,5 @@
 .page { max-width: 1240px; margin: 0 auto; color: var(--app-text-strong); }
+.mobileSearch{display:none}
 .summary { border: 1px solid var(--glass-border) !important; border-radius: 16px !important; background: var(--glass-surface) !important; box-shadow: var(--shadow-glass) !important; backdrop-filter: blur(30px) saturate(155%); }
 .summary > div { border: 0 !important; background: transparent !important; }
 .panel { border-color: color-mix(in srgb, var(--app-border) 84%, transparent) !important; border-radius: 16px !important; background: color-mix(in srgb, var(--app-surface) 96%, transparent) !important; box-shadow: var(--shadow-surface) !important; }
@@ -91,3 +92,4 @@
   .merchantIcon { width: 34px; height: 34px; border-radius: 11px; }
   .categoryChip { padding: 3px 0; background: transparent; font-size: 10px; }
 }
+@media(max-width:48rem){.page{width:100%;overflow:hidden}.summary,.accountChart,.tabs{display:none!important}.mobileSearch{display:grid;grid-template-columns:30px 1fr 30px;align-items:center;gap:8px;height:54px;margin:-18px 0 30px;padding:0 18px;border:1px solid var(--app-border);border-radius:22px;color:var(--app-text-muted);background:var(--app-surface);text-align:center}.transactionsPanel{width:100%!important}.table tbody{display:block!important}.table tr{display:grid!important;min-height:56px!important;width:100%;grid-template-columns:minmax(0,1fr) auto!important;gap:2px 10px!important;padding:8px 2px!important;border:0!important;border-bottom:1px solid var(--app-border)!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}.merchantIcon{display:none!important}.table td:nth-child(1){grid-column:1!important;grid-row:1!important}.table td:nth-child(2){grid-column:1!important;grid-row:2!important;padding:0!important}.table td:nth-child(5){grid-column:2!important;grid-row:1/span 2!important}.categoryChip{padding:3px 8px!important;border-radius:999px!important;background:var(--app-accent-soft)!important;font-size:9px!important}.merchant strong{font-size:15px}}

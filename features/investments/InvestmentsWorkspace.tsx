@@ -146,7 +146,7 @@ export function InvestmentsWorkspace({
   }, [demo, holding, range]);
 
   useEffect(() => {
-    if (demo || !account?.holdings.length) return;
+    if (!account?.holdings.length) return;
     const controller = new AbortController();
     Promise.all(
       account.holdings.map(async (item) => {
@@ -162,7 +162,7 @@ export function InvestmentsWorkspace({
       .then((entries) => setAccountMarkets(Object.fromEntries(entries)))
       .catch(() => undefined);
     return () => controller.abort();
-  }, [account, demo, portfolioRange]);
+  }, [account, portfolioRange]);
 
   const portfolioCost = accounts.reduce(
     (sum, item) =>
@@ -294,6 +294,14 @@ export function InvestmentsWorkspace({
       ),
     }));
   }, [account, accountMarkets, demo]);
+  const mobileHistoryPoints = useMemo(() => {
+    if (!accountHistory.length) return "";
+    const values = accountHistory.map((point) => point.value);
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const spread = Math.max(max - min, 1);
+    return accountHistory.map((point, index) => `${(index / Math.max(accountHistory.length - 1, 1)) * 320},${76 - ((point.value - min) / spread) * 62}`).join(" ");
+  }, [accountHistory]);
 
   function showPortfolioSection(section: PortfolioSection, targetId: string) {
     setPortfolioSection(section);
@@ -768,6 +776,7 @@ export function InvestmentsWorkspace({
               </div>
             </div>
             <div className={styles.portfolioChart}>
+              {mobileHistoryPoints && <svg className={styles.mobilePortfolioLine} viewBox="0 0 320 84" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="mobile-investment-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#00b51a" stopOpacity=".16"/><stop offset="1" stopColor="#00b51a" stopOpacity="0"/></linearGradient></defs><polygon points={`0,84 ${mobileHistoryPoints} 320,84`} fill="url(#mobile-investment-fill)"/><polyline points={mobileHistoryPoints} fill="none" stroke="#00b51a" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/></svg>}
               {accountHistory.length ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={accountHistory}>

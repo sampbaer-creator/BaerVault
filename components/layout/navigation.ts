@@ -7,7 +7,6 @@ import {
   IconLayoutDashboard,
   IconPigMoney,
   IconSettings,
-  IconCalendarRepeat,
   IconChartHistogram,
   type Icon,
 } from "@tabler/icons-react";
@@ -33,8 +32,7 @@ export const mobileSectionNavigation: NavigationItem[] = [
   { href: "/investments", label: "Investments", icon: IconChartPie },
   { href: "/transactions", label: "Transactions", icon: IconArrowsExchange },
   { href: "/dashboard", label: "Dashboard", icon: IconLayoutDashboard },
-  { href: "/budget", label: "Budgets", icon: IconPigMoney },
-  { href: "/recurring", label: "Recurring", icon: IconCalendarRepeat },
+  { href: "/budget", label: "Categories", icon: IconPigMoney },
   { href: "/goals", label: "Goals", icon: IconTargetArrow },
 ];
 

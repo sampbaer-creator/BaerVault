@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 
-const routeOrder = ["/cash-flow", "/accounts", "/investments", "/transactions", "/dashboard", "/budget", "/recurring", "/goals"];
+const routeOrder = ["/cash-flow", "/accounts", "/investments", "/transactions", "/dashboard", "/budget", "/goals"];
 
 export function useMobilePageSwipe(pathname: string, demo = false) {
   const router = useRouter();
@@ -28,11 +28,15 @@ export function useMobilePageSwipe(pathname: string, demo = false) {
     const nextIndex = dx < 0 ? index + 1 : index - 1;
     const next = routeOrder[nextIndex];
     if (!next) return;
-    setDirection(dx < 0 ? "left" : "right");
-    window.setTimeout(() => {
-      router.push(demo && next === "/dashboard" ? "/demo" : `${prefix}${next}`);
-      setDirection(null);
-    }, 110);
+    const nextDirection = dx < 0 ? "left" : "right";
+    document.documentElement.dataset.swipeDirection = nextDirection;
+    const navigate = () => router.push(demo && next === "/dashboard" ? "/demo" : `${prefix}${next}`);
+    setDirection(nextDirection);
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reduceMotion && "startViewTransition" in document) {
+      (document as Document & { startViewTransition: (callback: () => void) => void }).startViewTransition(navigate);
+    } else navigate();
+    window.setTimeout(() => { setDirection(null); delete document.documentElement.dataset.swipeDirection; }, 280);
   }
 
   return { onTouchStart, onTouchEnd, direction };

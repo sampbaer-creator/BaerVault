@@ -80,6 +80,44 @@
   --window-edge: rgb(255 255 255 / 72%);
   --window-shadow: 0 24px 70px rgb(17 20 57 / 12%);
 }
+
+/* Mobile reference world: dark material and page-specific financial color roles. */
+@media (max-width: 47.999rem) {
+  :root[data-theme="dark"] { --app-background:#000b14;--app-surface:#00172c;--app-surface-raised:#001d39;--app-border:#063260;--app-text-strong:#d6e1ef;--app-text-muted:#5f8dc6;--app-hover:#06213d;--app-accent:#55a3ff;--app-accent-soft:#09284a;--money-positive:#08c616;--money-negative:#ff3448; }
+  :root[data-theme="dark"] body { color:#d6e1ef;background:#000b14; }
+  :root[data-theme="dark"] [class*="content"] main,
+  :root[data-theme="dark"] [class*="main"] { background:#000b14; }
+  :root[data-theme="dark"] [class*="mobileHeader"],
+  :root[data-theme="dark"] [class*="content"] > header { border-bottom:1px solid #063260 !important;background:linear-gradient(180deg,#00172c 0%,#001225 100%) !important;box-shadow:0 18px 42px rgb(0 0 0 / 46%) !important; }
+  :root[data-theme="dark"] :is([class*="mobileTrajectory"],[class*="mobileReviewCard"],[class*="mobileNetCard"],[class*="mobilePlan"] > div:last-child,[class*="mobileBudgetSummary"],[class*="mobileGoalSummary"],[class*="mobileSummary"],[class*="portfolioChartPanel"],[class*="workspace"] [class*="hero"],[class*="summary"],article[class*="goal"],[class*="panel"],[class*="sheet"],[class*="netCard"],[class*="breakdown"],[class*="incomeCard"]) { border-color:#063260 !important;color:#d6e1ef !important;background:#00172c !important;box-shadow:0 18px 42px rgb(0 0 0 / 30%) !important; }
+  :root[data-theme="dark"] :is([class*="mobileTrajectory"],[class*="mobileReviewCard"],[class*="mobileBudgetSummary"],[class*="mobileGoalSummary"],[class*="mobileSummary"],[class*="portfolioChartPanel"],article[class*="goal"],[class*="categoryRow"]) :is(strong,h2,h3,b,em) { color:#d6e1ef !important; }
+  :root[data-theme="dark"] :is([class*="mobileTrajectory"],[class*="mobileReviewCard"],[class*="mobileBudgetSummary"],[class*="mobileGoalSummary"],[class*="mobileSummary"],[class*="portfolioChartPanel"],article[class*="goal"],[class*="categoryRow"]) :is(span,small,p) { color:#5f8dc6; }
+  :root[data-theme="dark"] [class*="categoryRow"],
+  :root[data-theme="dark"] article[class*="goal"] { border-bottom-color:#063260 !important;background:transparent !important;box-shadow:none !important; }
+  :root[data-theme="dark"] [class*="mobileHeading"] { color:#d6e1ef !important; }
+  :root[data-theme="dark"] [class*="mobileRing"],
+  :root[data-theme="dark"] [class*="mobileBudgetRing"],
+  :root[data-theme="dark"] [class*="mobileGoalSummary"] > i,
+  :root[data-theme="dark"] [class*="mobileSummary"] > i { --ring-hole:#111d2c; }
+  :root[data-theme="dark"] [class*="mobileRing"] { background:radial-gradient(circle,#00172c 57%,transparent 59%),conic-gradient(var(--ring-color) var(--ring-progress),#07325d 0) !important; }
+  :root[data-theme="dark"] [class*="mobileBudgetRing"] { background:radial-gradient(circle,#00172c 56%,transparent 58%),conic-gradient(var(--app-accent) var(--used),#07325d 0) !important; }
+  :root[data-theme="dark"] [class*="mobileGoalSummary"] > i { background:radial-gradient(circle,#00172c 56%,transparent 58%),conic-gradient(#63a8f8 var(--progress),#07325d 0) !important; }
+  :root[data-theme="dark"] [class*="mobileSummary"] > i { background:radial-gradient(circle,#00172c 56%,transparent 58%),conic-gradient(#63a8f8 33%,#07325d 0) !important; }
+  :root[data-theme="dark"] :is([class*="mobileLinkActive"],[class*="mobileNav"] [class*="active"]) { color:#55a3ff !important;background:linear-gradient(180deg,rgb(21 35 55 / 82%),rgb(3 15 29 / 88%)) !important;box-shadow:inset 0 1px 0 rgb(174 207 240 / 38%),inset 0 0 0 1px rgb(88 121 158 / 45%),0 8px 24px rgb(0 0 0 / 34%) !important; }
+  :root[data-theme="dark"] [class*="mobileSearch"] { border:1px solid #063260 !important;color:#5f8dc6 !important;background:#00172c !important;box-shadow:none !important; }
+  :root[data-theme="dark"] [class*="chip"] { border:0 !important;color:#ff6427 !important;background:#482015 !important; }
+  :root[data-theme="dark"] [class*="progressTrack"],:root[data-theme="dark"] [class*="mobileProgress"] > i { background:#07325d !important; }
+  :root[data-theme="dark"] [class*="portfolioChart"] { position:relative !important; }
+  html:root[data-theme="dark"] body [class*="workspace"] [class*="hero"] strong { color:#d6e1ef !important; }
+  :root[data-theme="dark"] [class*="mover"] { border-color:#063260 !important;color:#d6e1ef !important;background:#00172c !important; }
+  :root[data-theme="dark"] [class*="moversPanel"] { background:transparent !important; }
+  :root[data-theme="dark"] [class*="portfolioRanges"] { border-color:#31506f !important;background:#142343 !important; }
+  :root[data-theme="dark"] [class*="portfolioRanges"] button[aria-pressed="true"] { color:#d6e1ef !important;background:#7898ba !important; }
+  [class*="categoryRow"]:nth-of-type(4n+1) [class*="mobileProgress"] i b { background:#078af0 !important; }
+  [class*="categoryRow"]:nth-of-type(4n+2) [class*="mobileProgress"] i b { background:#ff8500 !important; }
+  [class*="categoryRow"]:nth-of-type(4n+3) [class*="mobileProgress"] i b { background:#00b51a !important; }
+  [class*="categoryRow"]:nth-of-type(4n) [class*="mobileProgress"] i b { background:#d800df !important; }
+}
 :root[data-theme="dark"] {
   color-scheme: dark;
   --brand-navy: #f4f3ff;
