@@ -17,7 +17,7 @@ const manrope = Manrope({
   subsets: ["latin"],
 });
 
-const preferenceBootstrap = `(function(){try{var root=document.documentElement;var saved=JSON.parse(localStorage.getItem("bearvault-preferences")||"{}");root.dataset.theme=saved.theme==="dark"?"dark":"light";delete root.dataset.palette;delete root.dataset.density;delete root.dataset.motion;}catch(e){document.documentElement.dataset.theme="light";}})();`;
+const preferenceBootstrap = `(function(){try{var root=document.documentElement;var saved=JSON.parse(localStorage.getItem("bearvault-preferences")||"{}");var choice=["light","dark","system"].includes(saved.theme)?saved.theme:"system";var theme=choice==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":choice==="dark"?"dark":"light";root.dataset.theme=theme;root.style.colorScheme=theme;delete root.dataset.palette;delete root.dataset.density;delete root.dataset.motion;}catch(e){var dark=window.matchMedia("(prefers-color-scheme: dark)").matches;document.documentElement.dataset.theme=dark?"dark":"light";document.documentElement.style.colorScheme=dark?"dark":"light";}})();`;
 
 export const metadata: Metadata = {
   title: { default: "BearVault", template: "%s | BearVault" },
