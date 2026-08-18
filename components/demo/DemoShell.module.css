@@ -380,10 +380,12 @@
     backdrop-filter: none; scrollbar-width: none;
   }
   .mobileNav::-webkit-scrollbar { display: none; }
-  .mobileNav a, .mobileNav button { min-width: max-content; min-height: 42px; flex-direction: row; gap: 7px; padding: 0 14px; color: rgb(255 255 255 / 64%); border-radius: 21px; font-size: 13px; }
+  .mobileNav a, .mobileNav button { position:relative;isolation:isolate;min-width: max-content; min-height: 42px; flex-direction: row; gap: 7px; padding: 0 14px; color: rgb(255 255 255 / 64%); border-radius: 21px; font-size: 13px; }
   .mobileNav svg { display: none; }
   .mobileNav small { font-size: 13px; }
-  .mobileNav .active { color:white;background:linear-gradient(180deg,rgb(106 211 255 / 68%),rgb(34 147 233 / 64%));border-radius:21px;box-shadow:inset 0 1px 0 rgb(255 255 255 / 72%),inset 0 0 0 1px rgb(117 224 255 / 72%),0 8px 22px rgb(1 70 140 / 25%);backdrop-filter:blur(18px) saturate(170%);-webkit-backdrop-filter:blur(18px) saturate(170%); }
+  .mobileNav a > svg, .mobileNav a > small { position:relative;z-index:1; }
+  .mobileNav .active { color:white;background:transparent;box-shadow:none; }
+  .mobileActiveIndicator { position:absolute;inset:0;z-index:0;border-radius:21px;background:linear-gradient(180deg,rgb(106 211 255 / 68%),rgb(34 147 233 / 64%));box-shadow:inset 0 1px 0 rgb(255 255 255 / 72%),inset 0 0 0 1px rgb(117 224 255 / 72%),0 8px 22px rgb(1 70 140 / 25%);backdrop-filter:blur(18px) saturate(170%);-webkit-backdrop-filter:blur(18px) saturate(170%);pointer-events:none; }
 }
 .demoModeBar{display:none}
 @media(max-width:47.999rem){.demoModeBar{display:flex}.headerCopy small{display:none!important}.content>header strong{color:#fff!important;font-size:21px!important}.mobileMark{border:0!important;color:rgb(255 255 255 / 52%)!important;background:transparent!important;box-shadow:none!important}.mobileNav a{font-size:15px!important}.mobileNav small{font-size:15px!important}}

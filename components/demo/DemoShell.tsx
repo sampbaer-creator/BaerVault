@@ -16,6 +16,7 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import Link from "next/link";
+import { motion, useReducedMotion } from "motion/react";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -52,6 +53,7 @@ const accountGroups = [
 
 export function DemoShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const reduceMotion = useReducedMotion();
   const mainRef = useRef<HTMLElement>(null);
   const mobileNavRef = useRef<HTMLElement>(null);
   const previousPathname = useRef(pathname);
@@ -157,6 +159,14 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
             className={pathname === href ? styles.active : undefined}
             aria-current={pathname === href ? "page" : undefined}
           >
+            {pathname === href && (
+              <motion.span
+                aria-hidden="true"
+                className={styles.mobileActiveIndicator}
+                layoutId="demo-mobile-active-tab"
+                transition={reduceMotion ? { duration: 0 } : { type: "spring", duration: 0.5, bounce: 0.2 }}
+              />
+            )}
             <Icon size={19} aria-hidden="true" />
             <small>{label}</small>
           </Link>
