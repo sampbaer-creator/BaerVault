@@ -684,6 +684,22 @@
     padding-bottom: max(28px, env(safe-area-inset-bottom));
   }
 }
+@media(max-width:47.999rem){.workspace{width:100%;max-width:100%;overflow:hidden}.intro,.sectionTabs{display:none!important}.workspace .hero,:global(:root[data-theme="dark"]) .workspace .hero{display:grid!important;min-height:0!important;margin:-18px 0 18px!important;padding:20px 18px!important;border-radius:22px!important;color:var(--app-text-strong)!important;background:#fff!important}.hero>div:first-child{text-align:center!important}.workspace .hero strong,:global(:root[data-theme="dark"]) .workspace .hero strong{display:block!important;color:var(--app-text-strong)!important;font-size:34px!important}.workspace .hero span,:global(:root[data-theme="dark"]) .workspace .hero span{color:var(--app-text-muted)!important}.workspace .hero p,:global(:root[data-theme="dark"]) .workspace .hero p{color:var(--money-positive)!important}.heroRail{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;margin-top:16px!important;padding-top:14px!important}.heroRail strong{font-size:15px!important}.portfolioChartPanel{margin:0!important;padding:16px!important;border:0!important;border-radius:22px!important;background:#fff!important;box-shadow:0 18px 38px rgb(43 119 183 / 10%)!important}.portfolioChartHeading h3{font-size:13px!important}.portfolioChartHeading p{display:none!important}.portfolioRanges{width:100%!important;margin-top:12px!important}.portfolioChart{height:180px!important}.moversPanel{margin-top:24px!important}.moversHeading p{display:none!important}.moversStrip{grid-template-columns:repeat(6,150px)!important;overflow-x:auto!important;padding-bottom:8px!important}.mover{min-width:150px!important}.sheet{background:transparent!important}.holdingRow{width:100%!important;box-sizing:border-box!important}}
+
+@media(max-width:47.999rem){.intro{display:none!important}.workspace .hero,:global(:root[data-theme="dark"]) .workspace .hero{min-height:250px!important;padding:24px!important;border:0!important;border-radius:22px!important;color:var(--app-text-strong)!important;background:#fff!important;box-shadow:0 18px 38px rgb(43 119 183 / 12%)!important}.workspace .hero strong,:global(:root[data-theme="dark"]) .workspace .hero strong{color:var(--app-text-strong)!important}.workspace .hero span,:global(:root[data-theme="dark"]) .workspace .hero span{color:var(--app-text-muted)!important}.workspace .hero p{color:var(--money-positive)!important}.heroRail{border-top:1px solid var(--app-border)!important}.portfolioChartPanel{margin-top:18px!important;border:0!important;background:#fff!important}.sectionTabs{display:none!important}.moversPanel{margin-top:24px!important}.sheet{border:0!important;background:transparent!important}.holdingRow{border:1px solid var(--app-border)!important;border-radius:15px!important;background:#fff!important;margin-bottom:8px!important}}
+
+@media (max-width: 47.999rem) {
+  .intro { display: none; }
+  .workspace .hero, :global(:root[data-theme="dark"]) .workspace .hero { border: 0; border-radius: 22px; color: var(--app-text-strong); background: #fff; box-shadow: 0 18px 38px rgb(43 119 183 / 12%); }
+  .workspace .hero span, :global(:root[data-theme="dark"]) .workspace .hero span { color: var(--app-text-muted); }
+  .workspace .hero strong, :global(:root[data-theme="dark"]) .workspace .hero strong { color: var(--app-text-strong); }
+  .workspace .hero p, :global(:root[data-theme="dark"]) .workspace .hero p { color: var(--money-positive); }
+  .heroRail { border-top-color: #edf0f4; }
+  .sectionTabs { position: static; margin: 16px 0; border: 0; border-radius: 22px; background: #fff; box-shadow: 0 10px 26px rgb(30 93 149 / 10%); }
+  .portfolioChartPanel, .watchlistPanel, .activityPanel { border-radius: 22px; }
+  .sheet { border: 0; border-radius: 0; box-shadow: none; }
+  .holdingRow { min-height: 66px; border-bottom: 1px solid #edf0f4; background: transparent; }
+}
 :global(:root[data-theme="dark"]) .workspace :is(.hero, .sheet, .portfolioChartPanel, .allocationPanel, .holdingRow, .holdingForm, .holdingSummary, .lotRow, input, select),
 :global(:root[data-theme="dark"]) .drawer {
   border-color: var(--app-border);

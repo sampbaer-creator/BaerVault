@@ -346,8 +346,32 @@
   .content main { padding: clamp(32px, 4vw, 54px) clamp(22px, 3.2vw, 46px) 64px; }
 }
 @media (max-width: 47.999rem) {
-  .content > header { margin: 8px 8px 0; border: 1px solid var(--glass-border); border-radius: 16px; background: var(--glass-strong); }
-  .content main { padding-top: 26px; }
-  .mobileNav { gap: 3px; padding: 5px; border-radius: 18px; background: var(--glass-strong); box-shadow: 0 18px 54px rgb(17 30 62 / 20%), inset 0 1px 0 var(--glass-highlight); }
-  .mobileNav a, .mobileNav button, .mobileNav .active { border-radius: 13px; }
+  .content > header {
+    position: fixed; inset: 0 0 auto; height: 112px; margin: 0;
+    padding: max(18px, env(safe-area-inset-top)) 22px 42px;
+    border: 0; border-radius: 0 0 32px 32px;
+    background: linear-gradient(180deg, #0879dd 0%, #2d8ee0 100%);
+    box-shadow: 0 16px 36px rgb(24 108 184 / 24%);
+  }
+  .mobileHousehold { display:none; }
+  .content > header strong { font-size: 24px; }
+  .createAccount { width: 40px; min-width: 40px; overflow: hidden; padding: 0; color: transparent; border-radius: 50%; }
+  .createAccount::after { content: "+"; display: grid; width: 100%; height: 100%; place-items: center; color: #0b3763; font-size: 24px; }
+  .createAccount{display:none!important}
+  .mobileHousehold{display:grid!important;width:40px!important;height:40px!important;place-items:center;color:rgb(255 255 255 / 62%)!important;background:transparent!important;border:0!important;box-shadow:none!important}
+  .mobileHousehold::after{display:none!important}
+  .content main { width:100%; max-width:none; box-sizing:border-box; padding:164px 14px calc(34px + env(safe-area-inset-bottom)); overflow-x:clip; }
+  .swipeLeft { transform:translateX(-18px); opacity:.72; transition:transform 110ms cubic-bezier(.2,.8,.2,1),opacity 110ms ease; }
+  .swipeRight { transform:translateX(18px); opacity:.72; transition:transform 110ms cubic-bezier(.2,.8,.2,1),opacity 110ms ease; }
+  .mobileNav {
+    inset: 68px 0 auto; z-index: 31; display: flex; gap: 8px;
+    padding: 10px 18px 14px; overflow-x: auto; border: 0;
+    border-radius: 0 0 30px 30px; background: transparent; box-shadow: none;
+    backdrop-filter: none; scrollbar-width: none;
+  }
+  .mobileNav::-webkit-scrollbar { display: none; }
+  .mobileNav a, .mobileNav button { min-width: max-content; min-height: 42px; flex-direction: row; gap: 7px; padding: 0 15px; color: rgb(255 255 255 / 58%); border-radius: 21px; font-size: 13px; }
+  .mobileNav svg { display: none; }
+  .mobileNav small { font-size: 13px; }
+  .mobileNav .active { color: white; background: rgb(51 179 248 / 64%); border-radius: 21px; box-shadow: inset 0 0 0 1px rgb(132 232 255 / 80%), 0 6px 16px rgb(1 70 140 / 22%); }
 }

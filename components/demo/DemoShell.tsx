@@ -6,21 +6,22 @@ import {
   IconChartPie,
   IconHome,
   IconLayoutDashboard,
-  IconDots,
   IconPigMoney,
   IconSettings,
   IconTargetArrow,
   IconUsers,
   IconChevronDown,
+  IconCalendarRepeat,
+  IconChartHistogram,
+  IconUsersGroup,
 } from "@tabler/icons-react";
-import { Drawer } from "@mantine/core";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
-import { BearVaultLogo } from "@/components/brand/BearVaultLogo";
 import styles from "./DemoShell.module.css";
 import { LiquidGLRuntime } from "@/components/shared/LiquidGLRuntime";
+import { useMobilePageSwipe } from "@/components/layout/useMobilePageSwipe";
 
 const links = [
   ["/demo", "Dashboard", IconLayoutDashboard],
@@ -33,14 +34,16 @@ const links = [
   ["/demo/settings", "Settings", IconSettings],
 ] as const;
 
-const mobileHrefs = new Set([
-  "/demo",
-  "/demo/transactions",
-  "/demo/budget",
-  "/demo/investments",
-]);
-const mobileLinks = links.filter(([href]) => mobileHrefs.has(href));
-const moreLinks = links.filter(([href]) => !mobileHrefs.has(href));
+const mobileLinks = [
+  ["/demo/cash-flow", "Cash flow", IconChartHistogram],
+  ["/demo/accounts", "Accounts", IconBuildingBank],
+  ["/demo/investments", "Investments", IconChartPie],
+  ["/demo/transactions", "Transactions", IconArrowsExchange],
+  ["/demo", "Dashboard", IconLayoutDashboard],
+  ["/demo/budget", "Budgets", IconPigMoney],
+  ["/demo/recurring", "Recurring", IconCalendarRepeat],
+  ["/demo/goals", "Goals", IconTargetArrow],
+] as const;
 
 const accountGroups = [
   { label: "Credit cards", accounts: [["BearVault Card", "$552"], ["Everyday Visa", "$0"]] },
@@ -50,16 +53,20 @@ const accountGroups = [
 
 export function DemoShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [moreOpened, setMoreOpened] = useState(false);
-  const moreIsActive = moreLinks.some(([href]) => href === pathname);
   const mainRef = useRef<HTMLElement>(null);
+  const mobileNavRef = useRef<HTMLElement>(null);
   const previousPathname = useRef(pathname);
+  const swipe = useMobilePageSwipe(pathname, true);
 
   useEffect(() => {
     if (previousPathname.current !== pathname) {
       mainRef.current?.focus();
       previousPathname.current = pathname;
     }
+  }, [pathname]);
+
+  useEffect(() => {
+    mobileNavRef.current?.querySelector<HTMLElement>("[aria-current='page']")?.scrollIntoView({ inline: "center", block: "nearest" });
   }, [pathname]);
 
   return (
@@ -114,22 +121,19 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
       </aside>
       <div className={styles.content}>
         <header>
-          <span className={styles.mobileMark} role="img" aria-label="BearVault">
-            <BearVaultLogo compact />
-          </span>
+          <Link className={styles.mobileMark} href="/demo/settings" aria-label="Open settings"><IconSettings size={24}/></Link>
           <div className={styles.headerCopy}>
-            <strong>
-              {links.find(([href]) => href === pathname)?.[1] ?? "Demo"}
-            </strong>
+            <strong>BearVault</strong>
             <small>Explore BearVault without signing in</small>
           </div>
-          <Link href="/sign-up">Create account</Link>
+          <Link className={styles.createAccount} href="/sign-up">Create account</Link>
+          <Link className={styles.mobileHousehold} href="/demo/household" aria-label="Open household"><IconUsersGroup size={22}/></Link>
         </header>
-        <main id="demo-main-content" ref={mainRef} tabIndex={-1}>
+        <main className={swipe.direction ? styles[`swipe${swipe.direction === "left" ? "Left" : "Right"}`] : undefined} id="demo-main-content" ref={mainRef} tabIndex={-1} onTouchStart={swipe.onTouchStart} onTouchEnd={swipe.onTouchEnd}>
           {children}
         </main>
       </div>
-      <nav className={styles.mobileNav} aria-label="Demo mobile navigation">
+      <nav ref={mobileNavRef} className={styles.mobileNav} aria-label="Demo mobile navigation">
         {mobileLinks.map(([href, label, Icon]) => (
           <Link
             key={href}
@@ -141,41 +145,7 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
             <small>{label}</small>
           </Link>
         ))}
-        <button
-          type="button"
-          className={moreIsActive ? styles.active : undefined}
-          onClick={() => setMoreOpened(true)}
-          aria-haspopup="dialog"
-          aria-expanded={moreOpened}
-          aria-label="Open more demo navigation options"
-        >
-          <IconDots size={20} aria-hidden="true" />
-          <small>More</small>
-        </button>
       </nav>
-      <Drawer
-        opened={moreOpened}
-        onClose={() => setMoreOpened(false)}
-        position="bottom"
-        size="auto"
-        radius="lg"
-        title="More"
-      >
-        <nav className={styles.drawerNav} aria-label="Additional demo navigation">
-          {moreLinks.map(([href, label, Icon]) => (
-            <Link
-              key={href}
-              href={href}
-              className={pathname === href ? styles.active : undefined}
-              aria-current={pathname === href ? "page" : undefined}
-              onClick={() => setMoreOpened(false)}
-            >
-              <Icon size={22} aria-hidden="true" />
-              {label}
-            </Link>
-          ))}
-        </nav>
-      </Drawer>
     </div>
   );
 }

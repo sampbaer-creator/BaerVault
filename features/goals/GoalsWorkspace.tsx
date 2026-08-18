@@ -48,6 +48,11 @@ export function GoalsWorkspace({ initialGoals }: { initialGoals: SavingsGoal[] }
 
   return <div className={styles.page}>
     <div className={styles.top}><div><span className={styles.eyebrow}>Household plan</span><h2>Goals that move with your life.</h2><p>Build, fund, and revise every savings target in one place.</p></div><button className={styles.add} onClick={() => launch()}><IconPlus size={17}/>Add goal</button></div>
+    <div className={styles.mobileGoalSummary}>
+      <div><strong>{currency.format(totalSaved)}</strong><span>saved toward goals</span></div>
+      <i style={{ "--progress": totalTarget ? `${Math.min(100, totalSaved / totalTarget * 100)}%` : "0%" } as React.CSSProperties}><b>{totalTarget ? `${Math.round(totalSaved / totalTarget * 100)}%` : "—"}</b></i>
+      <div><strong>{currency.format(Math.max(0, totalTarget - totalSaved))}</strong><span>left to save</span></div>
+    </div>
     <div className={styles.metrics}><Metric label="Total saved" value={currency.format(totalSaved)} /><Metric label="Combined target" value={currency.format(totalTarget)} /><Metric label="Overall progress" value={totalTarget ? `${Math.round(totalSaved / totalTarget * 100)}%` : "—"} /></div>
     {goals.length ? <section className={styles.grid} aria-label="Savings goals">{goals.map((goal, index) => {
       const progress = Math.min(100, Math.round(goal.savedAmount / goal.targetAmount * 100));

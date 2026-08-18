@@ -9,6 +9,7 @@ import { PageHeader } from "./PageHeader";
 import { Sidebar } from "./Sidebar";
 import styles from "./AppShell.module.css";
 import { LiquidGLRuntime } from "@/components/shared/LiquidGLRuntime";
+import { useMobilePageSwipe } from "./useMobilePageSwipe";
 
 type AppShellProps = {
   children: React.ReactNode;
@@ -20,6 +21,7 @@ export function AppShell({ children }: AppShellProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const mainRef = useRef<HTMLElement>(null);
   const previousPathname = useRef(pathname);
+  const swipe = useMobilePageSwipe(pathname);
 
   useEffect(() => {
     if (previousPathname.current !== pathname) {
@@ -42,10 +44,12 @@ export function AppShell({ children }: AppShellProps) {
           onToggleSidebar={() => setSidebarCollapsed((current) => !current)}
         />
         <main
-          className={styles.main}
+          className={`${styles.main} ${swipe.direction ? styles[`swipe${swipe.direction === "left" ? "Left" : "Right"}`] : ""}`}
           id="main-content"
           ref={mainRef}
           tabIndex={-1}
+          onTouchStart={swipe.onTouchStart}
+          onTouchEnd={swipe.onTouchEnd}
         >
           {children}
         </main>

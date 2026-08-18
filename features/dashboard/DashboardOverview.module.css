@@ -1,4 +1,5 @@
 .dashboard { --category-1: #4f8ff7; --category-2: #d69b32; --category-3: #7c69c8; --category-4: #279678; width: 100%; color: var(--app-text-strong); }
+.mobileReference{display:none}
 .dashboardGrid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(320px, .75fr); grid-template-areas: "worth spending" "transactions side"; gap: 18px; }
 .netWorthPanel, .spendingPanel, .transactionsPanel, .categoriesPanel, .upcomingPanel { min-width: 0; overflow: hidden; border-radius: 16px; }
 .netWorthPanel { grid-area: worth; min-height: 340px; padding: 28px; border: 1px solid var(--glass-border); background: var(--glass-surface); box-shadow: var(--shadow-glass); backdrop-filter: blur(30px) saturate(155%); }
@@ -45,3 +46,27 @@
 @media (max-width: 47.999rem) { .dashboardGrid { gap: 12px; }.netWorthPanel { min-height: 320px; padding: 21px 18px; }.spendingPanel, .transactionsPanel, .categoriesPanel, .upcomingPanel { padding: 20px 18px; }.netWorthLead { margin-top: 42px; }.netWorthLead > strong { font-size: clamp(36px, 12vw, 50px); }.compositionTrack { margin-top: 36px; }.spendingRail { gap: 8px; }.transactionRow { grid-template-columns: 34px minmax(0, 1fr) auto; }.netWorthPanel, .spendingPanel, .transactionsPanel, .sideStack { animation: dashboard-enter var(--motion-spatial-default) var(--ease-out) both; }.spendingPanel { animation-delay: 45ms; }.transactionsPanel { animation-delay: 90ms; } }
 @keyframes dashboard-enter { from { opacity: .72; transform: translateY(10px); filter: blur(3px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
 @media (prefers-reduced-motion: reduce) { .netWorthPanel, .spendingPanel, .transactionsPanel, .sideStack { animation: none; } }
+
+@media (max-width: 47.999rem) {
+  .dashboardGrid{display:none}
+  .mobileReference{display:grid;gap:26px;margin-top:-18px}
+  .mobileSectionHead{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px}.mobileSectionHead h2{margin:0;color:var(--app-text-muted);font-size:12px;font-weight:750;text-transform:uppercase}.mobileSectionHead a{display:flex;align-items:center;color:var(--app-text-muted);font-size:11px;font-weight:650;text-decoration:none}
+  .mobileBudgetRail,.mobileUpcomingRail{display:flex;gap:16px;margin-inline:-14px;padding-inline:14px;overflow-x:auto;scrollbar-width:none}.mobileBudgetRail::-webkit-scrollbar,.mobileUpcomingRail::-webkit-scrollbar{display:none}
+  .mobileBudgetItem{display:grid;min-width:72px;justify-items:center;color:var(--app-text-strong);text-decoration:none}.mobileRing{display:grid;width:66px;height:66px;place-items:center;border-radius:50%;background:radial-gradient(circle,#fff 57%,transparent 59%),conic-gradient(var(--ring-color) var(--ring-progress),#e5e8ed 0);color:var(--app-text-strong)}.mobileBudgetItem strong{margin-top:8px;font-size:13px}.mobileBudgetItem small{color:var(--app-text-muted);font-size:11px}
+  .mobileUpcomingRail>div{display:grid;min-width:154px;grid-template-columns:24px 1fr auto;align-items:center;gap:7px;padding:12px 13px;border:1px solid var(--app-border);border-radius:15px;background:#fff}.mobileUpcomingRail span{overflow:hidden;font-size:12px;text-overflow:ellipsis;white-space:nowrap}.mobileUpcomingRail strong{font-size:12px}
+  .mobileNetCard,.mobilePlan>div:last-child{padding:18px;border:1px solid var(--app-border);border-radius:16px;background:#fff}.mobileNetCard>strong{font-size:24px}.mobileSplit{display:flex;gap:4px;margin-top:18px}.mobileSplit i{height:7px;border-radius:999px;background:#67a8f0}.mobileSplit i+ i{flex:1;background:#bdd8fa}.mobileNetLegend{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:15px}.mobileNetLegend span{display:grid;gap:5px;color:var(--app-text-muted);font-size:11px}.mobileNetLegend b{color:var(--app-text-strong);font-size:13px}.mobilePlan>div:last-child>strong{font-size:20px}.mobilePlan>div:last-child>span{color:var(--app-text-muted);font-size:12px}.mobilePlan>div:last-child>i{display:block;height:7px;margin-top:18px;overflow:hidden;border-radius:999px;background:#e5e8ed}.mobilePlan>div:last-child>i>b{display:block;height:100%;border-radius:inherit;background:var(--money-positive)}
+  .dashboardGrid { gap: 18px; }
+  .dashboard, .dashboardGrid, .sideStack { min-width: 0; max-width: 100%; }
+  .netWorthPanel, .spendingPanel, .transactionsPanel, .categoriesPanel, .upcomingPanel { border-radius: 22px; }
+  .netWorthPanel { min-height: 245px; padding: 22px; border: 0; background: #fff; box-shadow: 0 18px 38px rgb(43 119 183 / 12%); backdrop-filter: none; }
+  .netWorthLead { margin-top: 24px; text-align: center; }
+  .netWorthLead > strong { font-size: 40px; }
+  .compositionTrack { height: 7px; margin-top: 28px; }
+  .netWorthSummary { margin-top: 16px; }
+  .spendingPanel, .transactionsPanel, .categoriesPanel, .upcomingPanel { padding: 20px 18px; border-color: #e7e9ee; background: #fff; box-shadow: none; }
+  .spendingSummary { margin-top: 22px; }
+  .spendingSummary strong { font-size: 28px; }
+  .panelHeading a { display: none; }
+  .spendingRail strong { font-size: 11px; }
+  .sideStack { gap: 18px; }
+}

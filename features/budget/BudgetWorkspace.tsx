@@ -193,6 +193,11 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
         <strong>{initialBudget.month}</strong>
         <button type="button" aria-label="Next month" onClick={() => openMonth(1)}><IconArrowRight size={18} /></button>
       </section>
+      <section className={styles.mobileBudgetSummary} aria-label={`${initialBudget.month} budget summary`}>
+        <div><strong>{currency.format(spending)}</strong><span>spent in {initialBudget.month.split(" ")[0]}</span></div>
+        <div className={styles.mobileBudgetRing} style={{"--used":`${planned?Math.min(spending/planned*100,100):0}%`} as React.CSSProperties}/>
+        <div><strong>{currency.format(planned)}</strong><span>total budget</span></div>
+      </section>
 
       {error && <p className={styles.formError} role="alert">{error}</p>}
 

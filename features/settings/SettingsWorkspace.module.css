@@ -391,3 +391,24 @@
 @media (prefers-reduced-motion: reduce) {
   .paletteChevron { transition: none; }
 }
+
+@media (max-width: 47.999rem) {
+  .page { margin: -26px -14px 0; padding: 24px 18px max(30px, env(safe-area-inset-bottom)); border-radius: 28px 28px 0 0; background: #fff; }
+  .page, .layout, .sections, .sections section, .field, .field > * { min-width: 0; max-width: 100%; }
+  .page::before { display: block; width: 44px; height: 5px; margin: -10px auto 24px; border-radius: 999px; background: #cfd5df; content: ""; }
+  .page > header { display: none; }
+  .layout { display: block; border: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; backdrop-filter: none; }
+  .layout > nav { display: none; }
+  .sections { gap: 28px; }
+  .sections section { padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+  .sectionHeading { min-height: 54px; }
+  .sectionHeading > span, .sectionHeading p { display: none; }
+  .sectionHeading h3 { color: #65728b; font-size: 22px; }
+  .field, .toggle { min-height: 66px; border-top-color: #e4e8ee; }
+  .field { grid-template-columns: 1fr; gap: 10px; padding: 14px 0; }
+  .fieldCopy strong, .toggle strong { font-size: 15px; }
+  .fieldCopy small, .toggle small { font-size: 11px; }
+  .segment { border-radius: 14px; }
+  .reset { min-height: 46px; }
+  .clerk { max-height: 760px; overflow: auto; }
+}

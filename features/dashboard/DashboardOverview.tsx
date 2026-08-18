@@ -1,6 +1,6 @@
 "use client";
 
-import { IconArrowRight, IconReceipt, IconWallet } from "@tabler/icons-react";
+import { IconArrowRight, IconCalendarEvent, IconReceipt, IconWallet } from "@tabler/icons-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
@@ -61,6 +61,30 @@ export function DashboardOverview({ model, basePath = "" }: DashboardProps) {
 
   return (
     <div className={styles.dashboard}>
+      <div className={styles.mobileReference}>
+        <section className={styles.mobileBudgetSection}>
+          <div className={styles.mobileSectionHead}><h2>Budgets</h2><Link href={`${basePath}/budget`}>Categories <IconArrowRight size={14}/></Link></div>
+          <div className={styles.mobileBudgetRail}>{model.categories.slice(0,5).map((category,index)=>{
+            const remaining=category.planned-category.value; const used=category.planned?Math.min(category.value/category.planned*100,100):0;
+            return <Link href={`${basePath}/budget`} key={category.name} className={styles.mobileBudgetItem}>
+              <span className={styles.mobileRing} style={{"--ring-progress":`${used*3.6}deg`,"--ring-color":`var(--category-${(index%4)+1})`} as React.CSSProperties}><IconReceipt size={20}/></span>
+              <strong>{money.format(Math.abs(remaining))}</strong><small>{remaining>=0?"left":"over"}</small>
+            </Link>;
+          })}</div>
+        </section>
+        <section className={styles.mobileUpcoming}>
+          <div className={styles.mobileSectionHead}><h2>Upcoming</h2><Link href={`${basePath}/recurring`}>Recurring <IconArrowRight size={14}/></Link></div>
+          <div className={styles.mobileUpcomingRail}>{model.activity.filter(item=>!item.incoming).slice(0,3).map(item=><div key={item.id}><IconCalendarEvent size={18}/><span>{item.name}</span><strong>{money.format(item.amount)}</strong></div>)}</div>
+        </section>
+        <section className={styles.mobileNet}>
+          <div className={styles.mobileSectionHead}><h2>Net this month</h2><Link href={`${basePath}/cash-flow`}>Cash flow <IconArrowRight size={14}/></Link></div>
+          <div className={styles.mobileNetCard}><strong>{money.format(model.cashAvailable)}</strong><div className={styles.mobileSplit}><i style={{width:`${model.income?Math.min(model.income/(model.income+model.spending)*100,100):50}%`}}/><i/></div><div className={styles.mobileNetLegend}><span>Income <b>{money.format(model.income)}</b></span><span>Spend <b>{money.format(model.spending)}</b></span></div></div>
+        </section>
+        <section className={styles.mobilePlan}>
+          <div className={styles.mobileSectionHead}><h2>Monthly plan</h2><Link href={`${basePath}/goals`}>Goals <IconArrowRight size={14}/></Link></div>
+          <div><strong>{money.format(Math.max(model.planned-model.spending,0))}</strong><span> remaining in {model.month}</span><i><b style={{width:`${model.planned?Math.min(model.spending/model.planned*100,100):0}%`}}/></i></div>
+        </section>
+      </div>
       <div className={styles.dashboardGrid}>
         <section className={styles.netWorthPanel}>
           <PanelHeading title="Current position" href={`${basePath}/accounts`} action="View accounts" />

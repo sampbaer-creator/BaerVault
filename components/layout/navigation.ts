@@ -7,6 +7,8 @@ import {
   IconLayoutDashboard,
   IconPigMoney,
   IconSettings,
+  IconCalendarRepeat,
+  IconChartHistogram,
   type Icon,
 } from "@tabler/icons-react";
 
@@ -22,6 +24,17 @@ export const mainNavigation: NavigationItem[] = [
   { href: "/accounts", label: "Accounts", icon: IconBuildingBank },
   { href: "/budget", label: "Budgets", icon: IconPigMoney },
   { href: "/investments", label: "Investments", icon: IconChartPie },
+  { href: "/goals", label: "Goals", icon: IconTargetArrow },
+];
+
+export const mobileSectionNavigation: NavigationItem[] = [
+  { href: "/cash-flow", label: "Cash flow", icon: IconChartHistogram },
+  { href: "/accounts", label: "Accounts", icon: IconBuildingBank },
+  { href: "/investments", label: "Investments", icon: IconChartPie },
+  { href: "/transactions", label: "Transactions", icon: IconArrowsExchange },
+  { href: "/dashboard", label: "Dashboard", icon: IconLayoutDashboard },
+  { href: "/budget", label: "Budgets", icon: IconPigMoney },
+  { href: "/recurring", label: "Recurring", icon: IconCalendarRepeat },
   { href: "/goals", label: "Goals", icon: IconTargetArrow },
 ];
 
@@ -59,4 +72,6 @@ export const pageTitles: Record<string, string> = {
   "/goals": "Goals",
   "/household": "Household",
   "/settings": "Settings",
+  "/cash-flow": "Cash flow",
+  "/recurring": "Recurring",
 };

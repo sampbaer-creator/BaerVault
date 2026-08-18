@@ -7,11 +7,12 @@ import {
   IconLayoutSidebarLeftExpand,
   IconPlus,
   IconSearch,
+  IconSettings,
+  IconUsers,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
-import { BearVaultLogo } from "@/components/brand/BearVaultLogo";
 import {
   householdNavigation,
   mainNavigation,
@@ -102,11 +103,9 @@ export function PageHeader({
       </header>
 
       <header className={`${styles.mobileHeader} glass-panel`}>
-        <span className={styles.mobileMark} aria-label="BearVault">
-          <BearVaultLogo compact />
-        </span>
-        <strong className={styles.mobileTitle}>{title}</strong>
-        <span className={styles.mobileProfile}><UserButton /></span>
+        <Link className={styles.mobileMark} href="/settings" aria-label="Open settings"><IconSettings size={24} /></Link>
+        <strong className={styles.mobileTitle}>BearVault</strong>
+        <span className={styles.mobileProfile}><Link className={styles.mobileHousehold} href="/household" aria-label="Open household"><IconUsers size={23}/></Link><UserButton /></span>
       </header>
     </>
   );
