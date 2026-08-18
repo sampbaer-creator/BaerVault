@@ -64,17 +64,21 @@ const emptyPurchase: PurchaseDraft = {
   accountId: "",
 };
 
-const budgetGroups = [
-  { name: "Housing", color: "#168cf4", terms: ["housing", "rent", "mortgage", "utilities", "electric", "internet", "home maintenance"] },
-  { name: "Food", color: "#ff650f", terms: ["food", "groceries", "grocery", "restaurants", "dining", "coffee"] },
-  { name: "Transportation", color: "#c5aa12", terms: ["transport", "gas", "car payment", "auto insurance", "parking", "car maintenance"] },
-  { name: "Personal", color: "#bd0ee5", terms: ["personal", "clothing", "haircut", "shopping", "self care"] },
-  { name: "Entertainment", color: "#d20d18", terms: ["entertainment", "streaming", "movie", "concert", "games", "subscription"] },
+const popularCategoryGroups = [
+  { label: "Housing", color: "#168cf4", categories: ["Rent / Mortgage", "Utilities", "Internet", "Home Maintenance"] },
+  { label: "Food", color: "#ff650f", categories: ["Groceries", "Restaurants", "Coffee"] },
+  { label: "Transportation", color: "#c5aa12", categories: ["Gas", "Car Payment", "Insurance", "Maintenance", "Parking"] },
+  { label: "Personal", color: "#bd0ee5", categories: ["Clothing", "Haircuts", "Shopping", "Personal Care"] },
+  { label: "Entertainment", color: "#d20d18", categories: ["Movies", "Games", "Streaming", "Activities"] },
+  { label: "Health", color: "#08a85a", categories: ["Medical", "Dental", "Pharmacy", "Gym"] },
+  { label: "Financial", color: "#3678f5", categories: ["Savings", "Investing", "Debt Payments"] },
+  { label: "Travel", color: "#06a7b5", categories: ["Flights", "Hotels", "Vacation Spending"] },
+  { label: "Other", color: "#7d20ef", categories: ["Gifts", "Donations", "Pets", "Education", "Childcare", "Miscellaneous", "Uncategorized"] },
 ] as const;
 
-function budgetGroupFor(name: string) {
-  const normalized = name.toLowerCase();
-  return budgetGroups.find((group) => group.terms.some((term) => normalized.includes(term))) ?? { name: "Other", color: "#7d20ef", terms: [] };
+function selectedCategoryGroup(name: string) {
+  const normalized = name.trim().toLowerCase();
+  return popularCategoryGroups.find((group) => group.categories.some((category) => category.toLowerCase() === normalized)) ?? popularCategoryGroups.at(-1)!;
 }
 
 function categoryEmoji(name: string) {
@@ -90,6 +94,15 @@ function categoryEmoji(name: string) {
   if (normalized.includes("entertain")) return "🎟️";
   if (normalized.includes("subscription") || normalized.includes("stream")) return "📺";
   if (normalized.includes("personal") || normalized.includes("care")) return "✨";
+  if (normalized.includes("medical") || normalized.includes("pharmacy")) return "💊";
+  if (normalized.includes("dental")) return "🦷";
+  if (normalized.includes("gym")) return "🏋️";
+  if (normalized.includes("saving")) return "🐷";
+  if (normalized.includes("invest")) return "📈";
+  if (normalized.includes("debt")) return "💳";
+  if (normalized.includes("flight")) return "✈️";
+  if (normalized.includes("hotel")) return "🏨";
+  if (normalized.includes("vacation")) return "🏖️";
   return "💳";
 }
 
@@ -121,11 +134,9 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
   const spending = totalSpending(month);
   const remaining = planned - spending;
   const savings = netSavings(month);
-  const groupedCategories = useMemo(() => {
-    const groups = [...budgetGroups.map((group) => ({ ...group, categories: [] as BudgetCategory[] })), { name: "Other", color: "#7d20ef", terms: [] as readonly string[], categories: [] as BudgetCategory[] }];
-    categories.forEach((category) => groups.find((group) => group.name === budgetGroupFor(category.name).name)?.categories.push(category));
-    return groups.filter((group) => group.categories.length > 0);
-  }, [categories]);
+  const groupedCategories = useMemo(() => popularCategoryGroups
+    .map((group) => ({ ...group, categories: categories.filter((category) => selectedCategoryGroup(category.name).label === group.label) }))
+    .filter((group) => group.categories.length > 0), [categories]);
 
   function openMonth(offset: number) {
     const target = new Date(Date.UTC(initialBudget.year, initialBudget.monthNumber - 1 + offset, 1));
@@ -273,8 +284,8 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
             const groupSpent = group.categories.reduce((sum, category) => sum + categoryActual(category), 0);
             const groupBudget = group.categories.reduce((sum, category) => sum + category.plannedAmount, 0);
             const groupPercent = groupBudget ? Math.min(groupSpent / groupBudget * 100, 100) : 0;
-            return <section className={styles.mobileBudgetGroup} style={{ "--group-color": group.color } as React.CSSProperties} key={group.name}>
-              <header><span><i aria-hidden="true" />{group.name}</span><strong>{currency.format(groupSpent)}</strong><b data-animate-progress style={{ width: `${groupPercent}%` }} /><em>{currency.format(groupBudget)}</em></header>
+            return <section className={styles.mobileBudgetGroup} style={{ "--group-color": group.color } as React.CSSProperties} key={group.label}>
+              <header><span><i aria-hidden="true" />{group.label}</span><strong>{currency.format(groupSpent)}</strong><b data-animate-progress style={{ width: `${groupPercent}%` }} /><em>{currency.format(groupBudget)}</em></header>
               {group.categories.map(renderCategory)}
             </section>;
           })}</div>
@@ -313,7 +324,7 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
       </Drawer>
 
       <Drawer opened={addingCategory} onClose={() => setAddingCategory(false)} position={isMobile ? "bottom" : "right"} size={isMobile ? "auto" : 400} radius={isMobile ? "18px 18px 0 0" : 0} title="Add category" classNames={{ content: styles.drawer, header: styles.drawerHeader, body: styles.drawerBody, title: styles.drawerTitle }}>
-        <form className={styles.categoryForm} onSubmit={addCategory}><label>Category name<input placeholder="Childcare" value={categoryDraft.name} onChange={(e) => setCategoryDraft({ ...categoryDraft, name: e.target.value })} autoFocus /></label><label>Planned amount<div className={styles.simpleAmount}><span>$</span><input inputMode="decimal" placeholder="0.00" value={categoryDraft.plannedAmount} onChange={(e) => setCategoryDraft({ ...categoryDraft, plannedAmount: e.target.value })} /></div></label><button className={styles.primaryButton} type="submit" disabled={saving}>{saving ? "Saving…" : "Add category"}</button></form>
+        <form className={styles.categoryForm} onSubmit={addCategory}><label>Category<select required value={categoryDraft.name} onChange={(e) => setCategoryDraft({ ...categoryDraft, name: e.target.value })} autoFocus><option value="" disabled>Choose a popular category</option>{popularCategoryGroups.map((group)=><optgroup label={group.label} key={group.label}>{group.categories.map((category)=><option value={category} key={category}>{categoryEmoji(category)} {category}</option>)}</optgroup>)}</select></label><label>Planned amount<div className={styles.simpleAmount}><span>$</span><input inputMode="decimal" placeholder="0.00" value={categoryDraft.plannedAmount} onChange={(e) => setCategoryDraft({ ...categoryDraft, plannedAmount: e.target.value })} /></div></label><button className={styles.primaryButton} type="submit" disabled={saving}>{saving ? "Saving…" : "Add category"}</button></form>
       </Drawer>
       <ConfirmDialog opened={Boolean(pendingDelete)} title={`Delete ${pendingDelete?.label ?? "record"}?`} description={pendingDelete?.kind==="category"?"This permanently deletes the category and every spending entry inside it.":"This permanently deletes this spending entry."} confirmLabel={pendingDelete?.kind==="category"?"Delete category":"Delete entry"} busy={saving} onCancel={()=>setPendingDelete(null)} onConfirm={confirmDelete}/>
     </div>
