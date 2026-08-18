@@ -16,9 +16,10 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import Link from "next/link";
+import { motion } from "motion/react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import styles from "./DemoShell.module.css";
 import { LiquidGLRuntime } from "@/components/shared/LiquidGLRuntime";
@@ -57,6 +58,7 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
   const mainRef = useRef<HTMLElement>(null);
   const mobileNavRef = useRef<HTMLElement>(null);
   const previousPathname = useRef(pathname);
+  const [mobileScrolled, setMobileScrolled] = useState(false);
   const swipe = useMobilePageSwipe(pathname, true);
 
   useEffect(() => {
@@ -65,6 +67,13 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
       previousPathname.current = pathname;
     }
   }, [pathname]);
+
+  useEffect(() => {
+    const update = () => setMobileScrolled(window.scrollY > 10);
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, []);
 
   useEffect(() => {
     const nav = mobileNavRef.current;
@@ -78,7 +87,7 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
   }, [pathname]);
 
   return (
-    <div className={styles.shell}>
+    <div className={`${styles.shell} ${mobileScrolled ? styles.mobileScrolled : ""}`}>
       <a className={styles.skipLink} href="#demo-main-content">
         Skip to main content
       </a>
@@ -138,15 +147,16 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
           <Link className={styles.createAccount} href="/sign-up">Create account</Link>
           <Link className={styles.mobileHousehold} href="/demo/household" aria-label="Open household"><IconMessage size={25}/></Link>
         </header>
-        <main className={swipe.direction ? styles[`swipe${swipe.direction === "left" ? "Left" : "Right"}`] : undefined} id="demo-main-content" ref={mainRef} tabIndex={-1} onTouchStart={swipe.onTouchStart} onTouchEnd={swipe.onTouchEnd}>
+        <motion.main className={swipe.direction ? styles[`swipe${swipe.direction === "left" ? "Left" : "Right"}`] : undefined} id="demo-main-content" ref={mainRef} tabIndex={-1} style={swipe.motionStyle} onPointerDown={swipe.onPointerDown} onPointerMove={swipe.onPointerMove} onPointerUp={swipe.onPointerUp} onPointerCancel={swipe.onPointerCancel}>
           {children}
-        </main>
+        </motion.main>
       </div>
       <nav ref={mobileNavRef} className={styles.mobileNav} aria-label="Demo mobile navigation">
         {mobileLinks.map(([href, label, Icon]) => (
           <Link
             key={href}
             href={href}
+            prefetch={false}
             className={pathname === href ? styles.active : undefined}
             aria-current={pathname === href ? "page" : undefined}
             onClick={(event) => {

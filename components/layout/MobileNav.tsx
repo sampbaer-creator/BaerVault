@@ -27,6 +27,14 @@ export function MobileNav({ pathname }: MobileNavProps) {
     }
   }, [pathname]);
 
+  useEffect(() => {
+    if (!window.matchMedia("(max-width: 47.999rem)").matches) return;
+    const currentIndex = links.findIndex((item) => item.href === pathname);
+    [links[currentIndex - 1], links[currentIndex + 1]].forEach((item) => {
+      if (item) router.prefetch(item.href);
+    });
+  }, [links, pathname, router]);
+
   return (
       <nav ref={navRef} className={`${styles.mobileNav} mobile-nav-enhanced`} aria-label="Mobile sections">
         {links.map(({ href, label, icon: Icon }) => {
@@ -36,8 +44,10 @@ export function MobileNav({ pathname }: MobileNavProps) {
             <Link
               className={`${styles.mobileLink} ${isActive ? styles.mobileLinkActive : ""}`}
               href={href}
+              prefetch={false}
               aria-current={isActive ? "page" : undefined}
               key={href}
+              onPointerDown={() => router.prefetch(href)}
               onClick={(event) => {
                 if (!window.matchMedia("(max-width: 47.999rem)").matches || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
                 event.preventDefault();

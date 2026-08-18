@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 import { MobileNav } from "./MobileNav";
@@ -19,6 +20,7 @@ export function AppShell({ children }: AppShellProps) {
   const pathname = usePathname();
   const title = pageTitles[pathname] ?? "BearVault";
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileScrolled, setMobileScrolled] = useState(false);
   const mainRef = useRef<HTMLElement>(null);
   const previousPathname = useRef(pathname);
   const swipe = useMobilePageSwipe(pathname);
@@ -30,8 +32,15 @@ export function AppShell({ children }: AppShellProps) {
     }
   }, [pathname]);
 
+  useEffect(() => {
+    const update = () => setMobileScrolled(window.scrollY > 10);
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, []);
+
   return (
-    <div className={`${styles.shell} ${sidebarCollapsed ? styles.shellCompact : ""}`}>
+    <div className={`${styles.shell} ${sidebarCollapsed ? styles.shellCompact : ""} ${mobileScrolled ? styles.mobileScrolled : ""}`}>
       <a className={styles.skipLink} href="#main-content">
         Skip to main content
       </a>
@@ -43,16 +52,19 @@ export function AppShell({ children }: AppShellProps) {
           sidebarCollapsed={sidebarCollapsed}
           onToggleSidebar={() => setSidebarCollapsed((current) => !current)}
         />
-        <main
+        <motion.main
           className={`${styles.main} ${swipe.direction ? styles[`swipe${swipe.direction === "left" ? "Left" : "Right"}`] : ""}`}
           id="main-content"
           ref={mainRef}
           tabIndex={-1}
-          onTouchStart={swipe.onTouchStart}
-          onTouchEnd={swipe.onTouchEnd}
+          style={swipe.motionStyle}
+          onPointerDown={swipe.onPointerDown}
+          onPointerMove={swipe.onPointerMove}
+          onPointerUp={swipe.onPointerUp}
+          onPointerCancel={swipe.onPointerCancel}
         >
           {children}
-        </main>
+        </motion.main>
       </div>
       <MobileNav pathname={pathname} />
     </div>

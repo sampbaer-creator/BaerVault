@@ -506,6 +506,28 @@
 @media(max-width:47.999rem) and (pointer:coarse){.accountRows>div{width:100%}.accountRow{width:100%}}
 
 @media (max-width: 47.999rem) {
+  .netWorthCard { margin-top: -18px; min-height: 286px !important; border-radius: 28px !important; }
+  .totalsGrid { padding: 2px 8px 0; }
+  .totalsGrid > div { border-right: 0; }
+  .totalsGrid span { color: #102653; font-size: 12px; font-weight: 650; }
+  .totalsGrid strong { margin-top: 8px; color: #102653; font-size: 17px; }
+  .netWorthLine { bottom: 52px !important; height: 112px !important; }
+  .groups { margin-top: 34px !important; }
+  .accountGroup { margin-top: 30px !important; }
+  .groupHeader { min-height: 48px; padding: 0 2px 8px !important; border-bottom: 0; }
+  .groupHeader h3 { color: #102653; font-size: 18px; }
+  .groupHeader span { color: #929db4; background: transparent; }
+  .accountRow { min-height: 82px !important; grid-template-columns: 48px minmax(0, 1fr) auto !important; gap: 12px; padding: 10px 0 !important; border-top: 0 !important; border-bottom: 0 !important; }
+  .accountIcon { width: 48px; height: 48px; color: #174d8f; background: #d9e6f4; }
+  .accountCopy strong { color: #102653; font-size: 15px; }
+  .accountCopy small { color: #929db4; font-size: 11px; }
+  .accountMeta { grid-column: 3; display: grid; justify-items: end; text-align: right; }
+  .accountMeta strong { color: #102653; font-size: 15px; }
+  .accountMeta small { max-width: none; color: #00a51a; }
+  .rowChevron { display: none; }
+}
+
+@media (max-width: 47.999rem) {
   .pageHeader > div, .demoNotice { display: none; }
   .pageHeader { position: fixed; right: 14px; bottom: max(18px, env(safe-area-inset-bottom)); z-index: 25; width: auto; margin: 0; }
   .addButton { width: 58px; height: 58px; overflow: hidden; padding: 0; border-radius: 50%; font-size: 0; box-shadow: 0 12px 26px rgb(22 92 151 / 22%) !important; }

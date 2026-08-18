@@ -95,6 +95,7 @@ export function SwipeActionRow({
   return (
     <div
       ref={rootRef}
+      data-page-swipe-ignore
       className={`${styles.root} ${open ? styles.open : ""} ${className}`}
       onPointerDown={startPointer}
       onPointerMove={movePointer}

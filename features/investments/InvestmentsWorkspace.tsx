@@ -1024,6 +1024,7 @@ export function InvestmentsWorkspace({
                       <b>{item.symbol}</b>
                       <span>{item.name}</span>
                     </span>
+                    <svg className={styles.holdingSpark} viewBox="0 0 72 26" aria-hidden="true"><path d="M1 22 L10 18 L18 20 L27 13 L36 15 L45 8 L55 10 L63 4 L71 6" /></svg>
                     <span>{shares.toFixed(4)}</span>
                     <span>{currency.format(shares ? cost / shares : 0)}</span>
                     <span>{currency.format(cost)}</span>
