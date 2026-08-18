@@ -711,6 +711,29 @@ export function InvestmentsWorkspace({
           </div>
         </div>
       </section>
+      <div className={styles.mobileCreateActions} aria-label="Investment actions">
+        <button
+          type="button"
+          onClick={() => {
+            setError("");
+            setAccountOpen(true);
+          }}
+        >
+          <IconBuildingBank size={17} aria-hidden="true" />
+          Add account
+        </button>
+        <button
+          type="button"
+          disabled={!account}
+          onClick={() => {
+            setError("");
+            setHoldingOpen(true);
+          }}
+        >
+          <IconPlus size={18} aria-hidden="true" />
+          Add holding
+        </button>
+      </div>
       {accounts.length > 0 && (
         <nav className={styles.sectionTabs} aria-label="Investment page sections">
           {(

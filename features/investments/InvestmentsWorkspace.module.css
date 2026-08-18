@@ -1544,7 +1544,47 @@
 :global(:root[data-theme="dark"]) .positive { color: #72d39f !important; }
 :global(:root[data-theme="dark"]) .negative { color: #ff8b7f !important; }
 
+.mobileCreateActions { display: none; }
+
 @media (max-width: 47.999rem) {
+  .mobileCreateActions {
+    position: sticky;
+    top: 112px;
+    z-index: 12;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+    margin: 14px 0 24px;
+    padding: 5px;
+    border: 1px solid rgb(255 255 255 / 82%);
+    border-radius: 18px;
+    background: rgb(255 255 255 / 88%);
+    box-shadow: 0 12px 30px rgb(30 93 149 / 12%);
+    backdrop-filter: blur(22px) saturate(145%);
+    -webkit-backdrop-filter: blur(22px) saturate(145%);
+  }
+  .mobileCreateActions button {
+    display: flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border: 0 !important;
+    border-radius: 14px;
+    color: #102653 !important;
+    background: transparent !important;
+    box-shadow: none;
+    font-size: 12px;
+    font-weight: 750;
+  }
+  .mobileCreateActions button:last-child {
+    color: #fff !important;
+    background: #1674d1 !important;
+  }
+  .mobileCreateActions button:disabled {
+    color: #8d99b0 !important;
+    background: #edf1f5 !important;
+  }
   .intro {
     gap: 12px;
   }
