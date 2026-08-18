@@ -632,9 +632,9 @@
   .mobileHeader {
     position: fixed;
     inset: 0 0 auto;
-    min-height: 174px;
+    min-height: 138px;
     margin: 0;
-    padding: max(16px, env(safe-area-inset-top)) 22px 54px;
+    padding: max(12px, env(safe-area-inset-top)) 22px 48px;
     border: 0;
     border-radius: 0;
     color: white;
@@ -649,8 +649,8 @@
   }
   .mobileHeader::after {
     position: absolute;
-    inset: auto 0 -92px;
-    height: 102px;
+    inset: auto 0 -72px;
+    height: 82px;
     background: linear-gradient(180deg, rgb(45 142 224 / 62%) 0%, rgb(73 151 221 / 30%) 44%, transparent 100%);
     opacity: 0;
     pointer-events: none;
@@ -659,13 +659,13 @@
   }
   .mobileScrolled .mobileHeader::after { opacity: 1; }
   .mobileMark { border: 0; color:rgb(255 255 255 / 62%); background:transparent; box-shadow:none; text-decoration:none; }
-  .mobileTitle { color: white; font-size: 24px; font-weight: 760; }
-  .main { position: relative; padding: 174px 14px calc(34px + env(safe-area-inset-bottom)); touch-action: pan-y pinch-zoom; view-transition-name:mobile-page; will-change: transform; }
+  .mobileTitle { color: white; font-size: 21px; line-height: 1.1; font-weight: 760; }
+  .main { position: relative; padding: 138px 14px calc(34px + env(safe-area-inset-bottom)); touch-action: pan-y pinch-zoom; view-transition-name:mobile-page; will-change: transform; }
   .main { width:100%; max-width:none; box-sizing:border-box; overflow-x: clip; }
   .main > * { width:100%; max-width:100%; min-width:0; box-sizing:border-box; }
   .swipeLeft, .swipeRight { opacity: 1; }
   .mobileNav {
-    inset: 82px 0 auto;
+    inset: 64px 0 auto;
     z-index: 31;
     display: flex;
     gap: 6px;
