@@ -840,30 +840,12 @@
 @media (max-width: 70rem) { .referenceGrid { grid-template-columns: 1fr; } .budgetAside { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 48rem) { .referenceGrid, .budgetAside { grid-template-columns: 1fr; } .categoryRow { grid-template-columns: minmax(0, 1fr) 18px; } .mobileProgress { grid-column: 1; } }
 
-.desktopCategoryRows { display: contents; }
-.mobileBudgetGroups { display: none; }
-
 @media (max-width: 47.999rem) {
-  .desktopCategoryRows, .mobileTableHeader { display: none !important; }
-  .mobileBudgetGroups { display: block; padding-bottom: 92px; }
-  .mobileBudgetGroup + .mobileBudgetGroup { margin-top: 10px; }
-  .mobileBudgetGroup > header { display: grid; min-height: 48px; grid-template-columns: minmax(112px, 1fr) 54px minmax(64px, .9fr) 58px; align-items: center; gap: 7px; padding: 8px 16px 5px 14px; color: var(--app-text-strong); }
-  .mobileBudgetGroup > header > span { display: flex; min-width: 0; align-items: center; gap: 9px; font-size: 15px; }
-  .mobileBudgetGroup > header > span > i { width: 0; height: 0; border-top: 7px solid transparent; border-bottom: 7px solid transparent; border-left: 10px solid var(--group-color); transform: rotate(90deg); }
-  .mobileBudgetGroup > header > strong, .mobileBudgetGroup > header > em { font-size: 12px; font-style: normal; font-weight: 650; text-align: right; }
-  .mobileBudgetGroup > header > b { display: block; height: 7px; overflow: hidden; border-radius: 999px; background: var(--group-color); }
-  .mobileBudgetGroup .categoryRow { grid-template-columns: minmax(112px, 1fr) minmax(180px, 1.35fr) !important; min-height: 48px !important; gap: 8px !important; padding: 7px 16px 7px 42px !important; }
-  .mobileBudgetGroup .categoryRow::before { left: 19px; top: 20px; width: 7px; height: 7px; background: var(--group-color) !important; }
-  .mobileBudgetGroup .categoryName { display: grid; grid-template-columns: 25px minmax(0, 1fr); align-items: center; gap: 7px; }
-  .mobileBudgetGroup .categoryName > i { display: block; font-style: normal; font-size: 19px; line-height: 1; }
-  .mobileBudgetGroup .categoryName > strong { overflow: hidden; font-size: 14px; font-weight: 520; text-overflow: ellipsis; white-space: nowrap; }
-  .mobileBudgetGroup .categoryName > small { display: none !important; }
-  .mobileBudgetGroup .mobileProgress { display: grid !important; grid-column: 2 !important; grid-template-columns: 54px minmax(54px, 1fr) 54px !important; align-items: center !important; gap: 7px !important; }
-  .mobileBudgetGroup .mobileProgress > span { display: contents !important; }
-  .mobileBudgetGroup .mobileProgress > span strong { grid-column: 1; font-size: 12px !important; font-weight: 560; text-align: right; }
-  .mobileBudgetGroup .mobileProgress > span em { grid-column: 3; grid-row: 1; font-size: 12px; font-style: normal; font-weight: 560; text-align: right; }
-  .mobileBudgetGroup .mobileProgress > i { grid-column: 2; grid-row: 1; height: 7px !important; }
-  .mobileBudgetGroup .mobileProgress > i > b { background: var(--group-color) !important; }
+  .rows { padding-bottom: 92px; }
+  .categoryName { display: grid; grid-template-columns: 27px minmax(0, 1fr); align-items: center; gap: 8px; }
+  .categoryName > i { display: block; font-style: normal; font-size: 20px; line-height: 1; }
+  .categoryName > strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .categoryName > small { display: none !important; }
   .categoryForm label > select { width: 100%; min-height: 46px; padding: 10px 12px; border: 1px solid var(--app-border); border-radius: 12px; color: var(--app-text-strong); background: var(--app-surface); font: inherit; }
 }
 

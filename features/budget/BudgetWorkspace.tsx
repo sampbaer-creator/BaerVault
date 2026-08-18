@@ -76,33 +76,20 @@ const popularCategoryGroups = [
   { label: "Other", color: "#7d20ef", categories: ["Gifts", "Donations", "Pets", "Education", "Childcare", "Miscellaneous", "Uncategorized"] },
 ] as const;
 
-function selectedCategoryGroup(name: string) {
-  const normalized = name.trim().toLowerCase();
-  return popularCategoryGroups.find((group) => group.categories.some((category) => category.toLowerCase() === normalized)) ?? popularCategoryGroups.at(-1)!;
-}
-
 function categoryEmoji(name: string) {
   const normalized = name.toLowerCase();
-  if (normalized.includes("rent") || normalized.includes("mortgage") || normalized === "housing") return "🏡";
-  if (normalized.includes("util") || normalized.includes("electric")) return "💡";
-  if (normalized.includes("internet")) return "📶";
-  if (normalized.includes("grocer")) return "🥑";
-  if (normalized.includes("restaurant") || normalized.includes("dining")) return "🍔";
-  if (normalized.includes("coffee")) return "☕";
-  if (normalized.includes("gas") || normalized.includes("transport")) return "⛽";
-  if (normalized.includes("clothing") || normalized.includes("shopping")) return "🛍️";
-  if (normalized.includes("entertain")) return "🎟️";
-  if (normalized.includes("subscription") || normalized.includes("stream")) return "📺";
-  if (normalized.includes("personal") || normalized.includes("care")) return "✨";
-  if (normalized.includes("medical") || normalized.includes("pharmacy")) return "💊";
-  if (normalized.includes("dental")) return "🦷";
-  if (normalized.includes("gym")) return "🏋️";
-  if (normalized.includes("saving")) return "🐷";
-  if (normalized.includes("invest")) return "📈";
-  if (normalized.includes("debt")) return "💳";
-  if (normalized.includes("flight")) return "✈️";
-  if (normalized.includes("hotel")) return "🏨";
-  if (normalized.includes("vacation")) return "🏖️";
+  const icons: Record<string, string> = {
+    "rent / mortgage": "🏡", housing: "🏠", utilities: "💡", internet: "📶", "home maintenance": "🛠️",
+    groceries: "🥑", restaurants: "🍔", dining: "🍽️", coffee: "☕",
+    gas: "⛽", "gas & transport": "🚙", "car payment": "🚗", insurance: "🛡️", maintenance: "🔧", parking: "🅿️",
+    clothing: "👕", haircuts: "💇", shopping: "🛍️", "personal care": "🧴", "personal & home": "✨",
+    movies: "🎬", games: "🎮", streaming: "📺", subscriptions: "🎵", activities: "🎳", entertainment: "🎟️",
+    medical: "🩺", dental: "🦷", pharmacy: "💊", gym: "🏋️",
+    savings: "🐷", investing: "📈", "debt payments": "💳",
+    flights: "✈️", hotels: "🏨", "vacation spending": "🏖️",
+    gifts: "🎁", donations: "🤝", pets: "🐾", education: "🎓", childcare: "🧸", miscellaneous: "🧩", uncategorized: "❓",
+  };
+  if (icons[normalized]) return icons[normalized];
   return "💳";
 }
 
@@ -134,9 +121,6 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
   const spending = totalSpending(month);
   const remaining = planned - spending;
   const savings = netSavings(month);
-  const groupedCategories = useMemo(() => popularCategoryGroups
-    .map((group) => ({ ...group, categories: categories.filter((category) => selectedCategoryGroup(category.name).label === group.label) }))
-    .filter((group) => group.categories.length > 0), [categories]);
 
   function openMonth(offset: number) {
     const target = new Date(Date.UTC(initialBudget.year, initialBudget.monthNumber - 1 + offset, 1));
@@ -279,16 +263,7 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
         <div className={styles.rows}>
           <div className={styles.mobileTableHeader}><span>Category</span><span>Spent</span><span>Budget</span></div>
           {!categories.length && <div className={styles.emptyState}>No budget categories yet. Add your first category to start planning this month.</div>}
-          <div className={styles.desktopCategoryRows}>{categories.map(renderCategory)}</div>
-          <div className={styles.mobileBudgetGroups}>{groupedCategories.map((group) => {
-            const groupSpent = group.categories.reduce((sum, category) => sum + categoryActual(category), 0);
-            const groupBudget = group.categories.reduce((sum, category) => sum + category.plannedAmount, 0);
-            const groupPercent = groupBudget ? Math.min(groupSpent / groupBudget * 100, 100) : 0;
-            return <section className={styles.mobileBudgetGroup} style={{ "--group-color": group.color } as React.CSSProperties} key={group.label}>
-              <header><span><i aria-hidden="true" />{group.label}</span><strong>{currency.format(groupSpent)}</strong><b data-animate-progress style={{ width: `${groupPercent}%` }} /><em>{currency.format(groupBudget)}</em></header>
-              {group.categories.map(renderCategory)}
-            </section>;
-          })}</div>
+          {categories.map(renderCategory)}
         </div>
       </section>
 
