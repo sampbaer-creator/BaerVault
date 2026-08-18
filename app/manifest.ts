@@ -17,8 +17,8 @@ export default function manifest(): MetadataRoute.Manifest {
     categories: ["finance", "productivity"],
     prefer_related_applications: false,
     icons: [
-      { src: "/icon", sizes: "512x512", type: "image/png", purpose: "maskable" },
-      { src: "/apple-icon", sizes: "180x180", type: "image/png", purpose: "any" },
+      { src: "/icon.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+      { src: "/apple-icon.png", sizes: "180x180", type: "image/png", purpose: "any" },
     ],
   };
 }
