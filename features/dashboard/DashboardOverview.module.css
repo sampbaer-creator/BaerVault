@@ -71,3 +71,14 @@
   .sideStack { gap: 18px; }
 }
 @media(max-width:47.999rem){.mobileReference{gap:28px!important}.mobileTrajectory{position:relative;display:grid;justify-items:center;padding:18px 18px 12px;border-radius:22px;background:#fff;box-shadow:0 18px 38px rgb(43 119 183 / 10%)}.mobileTrajectory>button{position:absolute;top:14px;right:14px;width:28px;height:28px;border:2px solid #dce2e9;border-radius:50%;color:#a8b1c3;background:transparent;font-weight:800}.mobileTrajectory>strong{font-size:24px}.mobileTrajectory>span{color:var(--app-text-muted);font-size:15px;font-weight:650}.mobileTrajectory svg{width:100%;margin-top:10px}.mobileTrajectory path:first-of-type{fill:none;stroke:#e2e6eb;stroke-width:2;stroke-dasharray:4 5}.mobileTrajectory path:nth-of-type(2){fill:none;stroke:#ffae37;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}.mobileTrajectory circle{fill:#fff;stroke:#ffae37;stroke-width:5}.mobileReviewCard{padding:16px;border:1px solid var(--app-border);border-radius:22px;background:#fff}.mobileReviewCard>span{display:block;margin-bottom:12px;color:var(--app-text-muted);text-align:center}.mobileReviewCard>div{display:flex;min-height:34px;align-items:center;justify-content:space-between}.mobileReviewCard>div strong{font-size:15px}.mobileReviewCard>div b{font-size:14px}.mobileReviewCard>a{display:grid;min-height:46px;margin-top:12px;place-items:center;border-radius:23px;color:#3277ef;background:#f1f5fc;font-size:13px;font-weight:750;text-decoration:none;text-transform:uppercase}.mobileBudgetRail{margin-inline:-14px!important;padding-inline:14px!important}.mobileSectionHead h2{text-transform:uppercase;letter-spacing:.01em;color:#8995ad!important;font-size:13px!important}.mobileSectionHead a{color:#a8b1c3!important;font-size:13px!important}}
+
+@media (min-width: 70rem) {
+  .dashboardGrid { grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-areas: "worth worth worth worth worth worth worth spending spending spending spending spending" "transactions transactions transactions transactions transactions transactions transactions side side side side side"; gap: 20px; }
+  .netWorthPanel { min-height: 360px; padding: 32px; }
+  .spendingPanel { padding: 30px; }
+  .transactionsPanel { padding: 28px 30px; }
+  .categoriesPanel, .upcomingPanel { padding: 24px; }
+  .netWorthLead { margin-top: 58px; }
+  .compositionTrack { margin-top: 48px; }
+  .transactionRow { min-height: 66px; grid-template-columns: 38px minmax(0, 1fr) auto; }
+}

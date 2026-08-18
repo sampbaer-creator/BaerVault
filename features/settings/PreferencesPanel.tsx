@@ -1,85 +1,39 @@
 "use client";
 
 import {
-  IconAdjustmentsHorizontal,
   IconCurrencyDollar,
   IconMoonStars,
-  IconPalette,
-  IconRefresh,
 } from "@tabler/icons-react";
 
 import { usePreferences } from "@/components/preferences/PreferencesProvider";
-import ToggleSwitch from "@/components/ui/toggle-switch-glass";
-import { PaletteDropdown } from "./PaletteDropdown";
 import styles from "./SettingsWorkspace.module.css";
 
 export function PreferencesPanel() {
-  const { preferences, update, reset } = usePreferences();
+  const { preferences, update } = usePreferences();
   return (
     <>
-      <section id="appearance" aria-labelledby="appearance-title">
+      <section id="theme" aria-labelledby="theme-title">
         <div className={styles.sectionHeading}>
           <span>
-            <IconPalette size={18} aria-hidden="true" />
+            <IconMoonStars size={18} aria-hidden="true" />
           </span>
           <div>
-            <h3 id="appearance-title">Appearance</h3>
-            <p>Make BearVault feel at home on this device.</p>
+            <h3 id="theme-title">Theme</h3>
+            <p>Choose the standard light or dark BearVault experience.</p>
           </div>
         </div>
         <Field
-          label="Color palette"
-          description="Changes accents and supporting surfaces across the app."
-        >
-          <PaletteDropdown
-            value={preferences.palette}
-            onChange={(palette) => update({ palette })}
-          />
-        </Field>
-        <Field
-          label="Appearance"
-          description="Follow your device or choose a fixed theme."
-          icon={<IconMoonStars size={17} />}
+          label="Display mode"
+          description="Use BearVault in light or dark mode."
         >
           <Segment
             value={preferences.theme}
-            options={["light", "dark", "system"]}
+            options={["light", "dark"]}
             onChange={(theme) =>
               update({ theme: theme as typeof preferences.theme })
             }
           />
         </Field>
-        <Field
-          label="Content density"
-          description="Adjust how much information fits on screen."
-          icon={<IconAdjustmentsHorizontal size={17} />}
-        >
-          <Segment
-            value={preferences.density}
-            options={["comfortable", "compact"]}
-            onChange={(density) =>
-              update({ density: density as typeof preferences.density })
-            }
-          />
-        </Field>
-        <div className={styles.toggle}>
-          <span>
-            <strong>Reduce motion</strong>
-            <small>Minimize non-essential transitions.</small>
-          </span>
-          <ToggleSwitch
-            isActive={preferences.reducedMotion}
-            onChange={(reducedMotion) => update({ reducedMotion })}
-            size="sm"
-            colorTheme="success"
-            label="Reduce motion"
-            reduceMotion={preferences.reducedMotion}
-          />
-        </div>
-        <button className={styles.reset} type="button" onClick={reset}>
-          <IconRefresh size={16} aria-hidden="true" />
-          Reset appearance
-        </button>
       </section>
       <section id="formatting" aria-labelledby="formatting-title">
         <div className={styles.sectionHeading}>

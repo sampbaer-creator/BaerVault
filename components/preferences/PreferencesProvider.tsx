@@ -2,26 +2,13 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-import {
-  isFinancePaletteId,
-  paletteVariables,
-  type FinancePaletteId,
-} from "@/lib/themePalettes";
-
-export type ThemeMode = "light" | "dark" | "system";
-export type Density = "comfortable" | "compact";
+export type ThemeMode = "light" | "dark";
 type Preferences = {
   theme: ThemeMode;
-  palette: FinancePaletteId;
-  density: Density;
-  reducedMotion: boolean;
   currency: string;
 };
 const defaults: Preferences = {
-  theme: "system",
-  palette: "ledger-navy",
-  density: "comfortable",
-  reducedMotion: false,
+  theme: "light",
   currency: "USD",
 };
 type ContextValue = {
@@ -44,10 +31,8 @@ export function PreferencesProvider({
         const saved = localStorage.getItem("bearvault-preferences");
         if (saved) {
           const parsed = JSON.parse(saved) as Partial<Preferences>;
-          const palette = isFinancePaletteId(parsed.palette)
-            ? parsed.palette
-            : defaults.palette;
-          setPreferences({ ...defaults, ...parsed, palette });
+          const theme = parsed.theme === "dark" ? "dark" : "light";
+          setPreferences({ ...defaults, currency: parsed.currency ?? defaults.currency, theme });
         }
       } catch {}
       setStorageReady(true);
@@ -57,30 +42,11 @@ export function PreferencesProvider({
   useEffect(() => {
     if (!storageReady) return;
     const root = document.documentElement;
-    const colorScheme = matchMedia("(prefers-color-scheme: dark)");
-
-    function applyPreferences() {
-      const resolvedTheme =
-        preferences.theme === "system"
-          ? colorScheme.matches
-            ? "dark"
-            : "light"
-          : preferences.theme;
-      root.dataset.theme = resolvedTheme;
-      root.dataset.palette = preferences.palette;
-      root.dataset.density = preferences.density;
-      root.dataset.motion = preferences.reducedMotion ? "reduced" : "full";
-      for (const [property, value] of Object.entries(
-        paletteVariables(preferences.palette, resolvedTheme === "dark"),
-      )) {
-        root.style.setProperty(property, value);
-      }
-    }
-
-    applyPreferences();
-    colorScheme.addEventListener("change", applyPreferences);
+    root.dataset.theme = preferences.theme;
+    delete root.dataset.palette;
+    delete root.dataset.density;
+    delete root.dataset.motion;
     localStorage.setItem("bearvault-preferences", JSON.stringify(preferences));
-    return () => colorScheme.removeEventListener("change", applyPreferences);
   }, [preferences, storageReady]);
   const value = useMemo(
     () => ({

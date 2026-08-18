@@ -380,3 +380,19 @@
 @keyframes mobile-page-old-left{to{transform:translateX(-100%)}}@keyframes mobile-page-new-left{from{transform:translateX(100%)}}::view-transition-old(mobile-page){animation:240ms cubic-bezier(.22,.8,.2,1) both mobile-page-old-left}::view-transition-new(mobile-page){animation:240ms cubic-bezier(.22,.8,.2,1) both mobile-page-new-left}
 @keyframes mobile-page-old-right{to{transform:translateX(100%)}}@keyframes mobile-page-new-right{from{transform:translateX(-100%)}}:root[data-swipe-direction="right"]::view-transition-old(mobile-page){animation-name:mobile-page-old-right}:root[data-swipe-direction="right"]::view-transition-new(mobile-page){animation-name:mobile-page-new-right}::view-transition-group(active-mobile-tab){animation-duration:250ms;animation-timing-function:cubic-bezier(.77,0,.175,1)}::view-transition-old(active-mobile-tab),::view-transition-new(active-mobile-tab){mix-blend-mode:normal}
 @media(prefers-reduced-motion:reduce){::view-transition-old(mobile-page),::view-transition-new(mobile-page),::view-transition-group(active-mobile-tab){animation:none!important}.swipeLeft,.swipeRight{filter:none;opacity:1;transition:none}}
+
+@media (min-width: 48rem) {
+  .shell { padding: 12px; }
+  .sidebar, .sidebarGlass { inset: 12px auto 12px 12px; width: 240px; border: 1px solid var(--glass-border); border-radius: 18px; }
+  .sidebarGlass { background: var(--glass-surface); box-shadow: var(--shadow-glass); backdrop-filter: blur(30px) saturate(155%); }
+  .sidebar { padding: 0 10px 14px; background: transparent; }
+  .brand { height: 58px; padding-inline: 10px; }
+  .sidebar nav { gap: 4px; }
+  .sidebar nav a { min-height: 38px; padding: 7px 11px; border-radius: 11px; }
+  .accountRail { margin-top: 14px; padding-top: 14px; }
+  .accountRail a { min-height: 32px !important; }
+  .content { margin-left: 252px; border-radius: 18px; }
+  .content > header { position: sticky; top: 12px; z-index: 10; height: 64px; padding: 0 clamp(20px, 2.2vw, 34px); border: 1px solid var(--glass-border); border-radius: 18px; background: var(--glass-surface); box-shadow: var(--shadow-glass); backdrop-filter: blur(30px) saturate(155%); }
+  .content > header small { display: block; }
+  .content main { max-width: 1540px; padding: clamp(22px, 2.5vw, 40px) clamp(22px, 3vw, 48px) 64px; }
+}

@@ -944,3 +944,15 @@
     border-radius: 12px;
   }
 }
+
+@media (min-width: 48rem) {
+  .budget { max-width: 1400px; }
+  .summary { display: grid; }
+  .referenceGrid { grid-template-columns: minmax(0, 1.9fr) minmax(280px, .62fr); gap: 20px; }
+  .tableHeader { display: grid; }
+  .categoryRow { grid-template-columns: minmax(190px, 1.5fr) repeat(3, minmax(120px, 1fr)) 24px; min-height: 62px; gap: 14px; }
+  .desktopValue { display: block; }
+  .mobileProgress, .mobileTableHeader { display: none; }
+  .budgetAside { position: sticky; top: 96px; }
+  .allocationPanel, .remainingPanel { border-radius: 16px; }
+}

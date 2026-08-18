@@ -548,3 +548,11 @@
   .accountRow { min-height: 62px; }
   .detailPanel { top: 66px; min-height: 620px; border-radius: 14px; box-shadow: none; }
 }
+
+@media (min-width: 70rem) {
+  .workspace { max-width: 1400px !important; }
+  .accountLayout { grid-template-columns: minmax(0, 1.65fr) minmax(330px, .72fr); gap: 22px; }
+  .netWorthCard { min-height: 280px; padding: 30px 32px 22px; }
+  .accountRow { min-height: 64px; grid-template-columns: 42px minmax(0, 1.4fr) minmax(150px, .65fr) 18px; padding-inline: 22px; }
+  .detailPanel { top: 96px; min-height: 560px; }
+}

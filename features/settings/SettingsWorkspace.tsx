@@ -10,11 +10,11 @@ export function SettingsWorkspace() {
     <div className={styles.page}>
       <header>
         <h2>Settings</h2>
-        <p>Personalize BearVault and manage your account and security.</p>
+        <p>Manage display preferences, formatting, and account security.</p>
       </header>
       <div className={styles.layout}>
         <nav aria-label="Settings sections">
-          <a href="#appearance">Appearance</a>
+          <a href="#theme">Theme</a>
           <a href="#formatting">Formatting</a>
           <a href="#account">Account</a>
         </nav>
