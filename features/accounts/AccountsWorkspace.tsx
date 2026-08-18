@@ -36,6 +36,7 @@ import {
 } from "@/lib/accounts";
 
 import styles from "./AccountsWorkspace.module.css";
+import { invalidateMobileShell } from "@/lib/mobileShell";
 
 type AccountsWorkspaceProps = {
   initialAccounts: FinancialAccount[];
@@ -209,6 +210,7 @@ export function AccountsWorkspace({
     );
     setSelectedId(result.data.id);
     setFormOpen(false);
+    invalidateMobileShell();
   }
 
   async function removeAccount(account: FinancialAccount) {
@@ -227,6 +229,7 @@ export function AccountsWorkspace({
         ? accounts.find((item) => item.id !== account.id)?.id ?? ""
         : current,
     );
+    if (!demo) invalidateMobileShell();
   }
 
   function selectAccount(

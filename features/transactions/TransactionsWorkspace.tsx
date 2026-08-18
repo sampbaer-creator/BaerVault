@@ -14,6 +14,7 @@ import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { SwipeActionRow } from "@/components/shared/SwipeActionRow";
 import { type BudgetMonth } from "@/lib/finance";
 import styles from "./TransactionsWorkspace.module.css";
+import { invalidateMobileShell } from "@/lib/mobileShell";
 
 type Filter = "all" | "income" | "expenses";
 const freshDraft = () => ({ source: "", amount: "", date: new Date().toISOString().slice(0, 10), owner: "Household" });
@@ -74,6 +75,7 @@ export function TransactionsWorkspace({ initialMonth }: { initialMonth: BudgetMo
     if (!result.ok) { setError(result.error); return; }
     setIncomeEntries((current) => editingId ? current.map((entry) => entry.id === editingId ? result.data : entry) : [result.data, ...current]);
     setOpen(false);
+    invalidateMobileShell();
   }
   function editExpense(id: string) {
     const entry = expenseEntries.find((item) => item.id === id);
@@ -91,6 +93,7 @@ export function TransactionsWorkspace({ initialMonth }: { initialMonth: BudgetMo
     }
     setExpenseEntries((current) => current.map((entry) => entry.id === expenseDraft.id ? {...entry,description:expenseDraft.description.trim(),amount,date:expenseDraft.date} : entry));
     setSaving(false); setExpenseOpen(false);
+    if (!pathname.startsWith("/demo")) invalidateMobileShell();
   }
   async function remove() {
     if (!pendingDelete) return;
@@ -101,6 +104,7 @@ export function TransactionsWorkspace({ initialMonth }: { initialMonth: BudgetMo
     if (pendingDelete.incoming) setIncomeEntries((current) => current.filter((entry) => entry.id !== pendingDelete.id));
     else setExpenseEntries((current) => current.filter((entry) => entry.id !== pendingDelete.id));
     setPendingDelete(null);
+    if (!pathname.startsWith("/demo")) invalidateMobileShell();
   }
 
   return <div className={styles.page}>

@@ -3,6 +3,7 @@
 import { UserProfile } from "@clerk/nextjs";
 import { IconShieldLock } from "@tabler/icons-react";
 import { PreferencesPanel } from "./PreferencesPanel";
+import { InstallPwaCard } from "@/components/shared/InstallPwaCard";
 import styles from "./SettingsWorkspace.module.css";
 
 export function SettingsWorkspace() {
@@ -20,6 +21,7 @@ export function SettingsWorkspace() {
         </nav>
         <div className={styles.sections}>
           <PreferencesPanel />
+          <InstallPwaCard />
           <section id="account" aria-labelledby="account-title">
             <div className={styles.sectionHeading}>
               <span>

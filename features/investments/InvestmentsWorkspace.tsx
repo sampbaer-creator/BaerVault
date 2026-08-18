@@ -49,6 +49,7 @@ import {
   type InvestmentLot,
 } from "@/lib/investmentData";
 import styles from "./InvestmentsWorkspace.module.css";
+import { invalidateMobileShell } from "@/lib/mobileShell";
 
 type Range = "1M" | "3M" | "1Y" | "5Y";
 type PortfolioSection = "overview" | "holdings" | "performance";
@@ -343,7 +344,7 @@ export function InvestmentsWorkspace({
     setAccountId(result.data.id);
     setAccountOpen(false);
     setAccountDraft({ name: "", type: "Joint brokerage", ownership: "joint" });
-    router.refresh();
+    router.refresh(); invalidateMobileShell();
   }
 
   async function addHolding(event: FormEvent) {
@@ -420,7 +421,7 @@ export function InvestmentsWorkspace({
         date: today,
       });
       setHoldingOpen(false);
-      router.refresh();
+      router.refresh(); invalidateMobileShell();
     } catch (caught) {
       setError(
         caught instanceof Error
@@ -513,7 +514,7 @@ export function InvestmentsWorkspace({
     setLotDraft({ shares: "", price: "", date: today });
     setEditingLotId(null);
     setLotOpen(false);
-    router.refresh();
+    router.refresh(); invalidateMobileShell();
   }
 
   async function saveHolding(event: FormEvent) {
@@ -566,7 +567,7 @@ export function InvestmentsWorkspace({
       })),
     );
     setHoldingEdit(false);
-    router.refresh();
+    router.refresh(); invalidateMobileShell();
   }
 
   async function confirmDelete() {
@@ -638,7 +639,7 @@ export function InvestmentsWorkspace({
       );
     }
     setPendingDelete(null);
-    router.refresh();
+    router.refresh(); invalidateMobileShell();
   }
 
   const displayMarket: MarketData | null =

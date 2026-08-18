@@ -10,6 +10,7 @@ import "./globals.css";
 import "./redesign.css";
 import { PreferencesProvider } from "@/components/preferences/PreferencesProvider";
 import { MobileViewportRuntime } from "@/components/shared/MobileViewportRuntime";
+import { PwaRuntime } from "@/components/shared/PwaRuntime";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -49,6 +50,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           {preferenceBootstrap}
         </Script>
         <MobileViewportRuntime />
+        <PwaRuntime />
         <ClerkProvider>
           <MantineProvider defaultColorScheme="auto"><PreferencesProvider>{children}</PreferencesProvider></MantineProvider>
         </ClerkProvider>

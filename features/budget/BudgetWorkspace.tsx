@@ -37,6 +37,7 @@ import {
 } from "@/lib/finance";
 
 import styles from "./BudgetWorkspace.module.css";
+import { invalidateMobileShell } from "@/lib/mobileShell";
 
 type BudgetAccountOption = {
   id: string;
@@ -167,7 +168,7 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
     setPurchaseDraft(emptyPurchase);
     setEditingPurchaseId(null);
     setShowPurchaseForm(false);
-    router.refresh();
+    router.refresh(); invalidateMobileShell();
   }
 
   function editPurchase(purchase: Purchase) {
@@ -181,7 +182,7 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
     if (value >= 0 && selected) {
       const previous = categories; updateSelected((category) => ({ ...category, plannedAmount: value }));
       const result = await actions.updateBudgetCategoryAction(selected.id, categoryNameDraft, value);
-      if (!result.ok) { setCategories(previous); setError(result.error); } else router.refresh();
+      if (!result.ok) { setCategories(previous); setError(result.error); } else { router.refresh(); invalidateMobileShell(); }
     }
     setEditingPlanned(false);
   }
@@ -194,7 +195,7 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
     if (!result.ok) { setError(result.error); return; }
     if (pendingDelete.kind === "entry") setCategories((current) => current.map((category) => ({ ...category, purchases: category.purchases.filter((purchase) => purchase.id !== pendingDelete.id) })));
     else { setCategories((current) => current.filter((category) => category.id !== pendingDelete.id)); setSelectedId(null); }
-    setPendingDelete(null); router.refresh();
+    setPendingDelete(null); router.refresh(); invalidateMobileShell();
   }
 
   async function addCategory(event: FormEvent) {
@@ -208,7 +209,7 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
     setCategories((current) => [...current, result.data]);
     setCategoryDraft({ name: "", plannedAmount: "" });
     setAddingCategory(false);
-    router.refresh();
+    router.refresh(); invalidateMobileShell();
   }
 
   function renderCategory(category: BudgetCategory) {

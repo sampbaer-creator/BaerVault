@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "BearVault",
     short_name: "BearVault",
     description: "A calm, shared home for your household finances.",
-    start_url: "/",
+    start_url: "/dashboard",
     scope: "/",
     display: "standalone",
     orientation: "portrait-primary",
@@ -17,7 +17,7 @@ export default function manifest(): MetadataRoute.Manifest {
     categories: ["finance", "productivity"],
     prefer_related_applications: false,
     icons: [
-      { src: "/icon.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+      { src: "/icon.png", sizes: "512x512", type: "image/png", purpose: "any" },
       { src: "/apple-icon.png", sizes: "180x180", type: "image/png", purpose: "any" },
     ],
   };

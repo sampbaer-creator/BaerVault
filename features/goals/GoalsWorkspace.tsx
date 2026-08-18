@@ -9,6 +9,7 @@ import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { currency } from "@/lib/finance";
 import type { SavingsGoal } from "@/lib/goals";
 import styles from "./GoalsWorkspace.module.css";
+import { invalidateMobileShell } from "@/lib/mobileShell";
 
 const emptyDraft = { name: "", targetAmount: "", savedAmount: "0", targetDate: "", monthlyContribution: "0" };
 const colors = ["#4f8389", "#d4af37", "#000080", "#5e191a", "#cfac87", "#e8b00f"];
@@ -38,12 +39,14 @@ export function GoalsWorkspace({ initialGoals }: { initialGoals: SavingsGoal[] }
     if (!result.ok) { setError(result.error); return; }
     setGoals((current) => editing ? current.map((goal) => goal.id === editing.id ? result.data : goal) : [...current, result.data]);
     setOpen(false);
+    invalidateMobileShell();
   }
   async function remove() {
     if (!pendingDelete) return;
     const result = await deleteGoalAction(pendingDelete.id);
     if (!result.ok) { setError(result.error); setPendingDelete(null); return; }
     setGoals((current) => current.filter((goal) => goal.id !== pendingDelete.id)); setPendingDelete(null);
+    invalidateMobileShell();
   }
 
   return <div className={styles.page}>
