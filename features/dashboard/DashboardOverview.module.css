@@ -83,3 +83,27 @@
   .compositionTrack { margin-top: 48px; }
   .transactionRow { min-height: 66px; grid-template-columns: 38px minmax(0, 1fr) auto; }
 }
+
+@media (max-width: 47.999rem) {
+  .mobileReference {
+    gap: 48px !important;
+    margin-top: 16px !important;
+    padding-bottom: 84px;
+  }
+  .mobileTrajectory {
+    min-height: 240px;
+    gap: 12px;
+    padding: 34px 24px 26px;
+    border-radius: 26px;
+  }
+  .mobileTrajectory > strong { font-size: 27px; }
+  .mobileTrajectory > span { font-size: 16px; }
+  .mobileTrajectory svg { min-height: 124px; margin-top: 14px; }
+  .mobileSectionHead { margin-bottom: 20px; }
+  .mobileBudgetRail { gap: 20px; padding-block: 4px 8px; }
+  .mobileNetCard,
+  .mobilePlan > div:last-child { padding: 24px 20px; border-radius: 20px; }
+  .mobileNetCard > strong { font-size: 27px; }
+  .mobileSplit { margin-top: 22px; }
+  .mobileNetLegend { margin-top: 18px; }
+}
