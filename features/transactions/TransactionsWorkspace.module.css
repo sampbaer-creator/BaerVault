@@ -489,7 +489,11 @@
   }
   .mobileSearch input { min-width: 0; border: 0; outline: 0; color: var(--app-text-strong); background: transparent; font: inherit; font-size: 18px; text-align: center; }
   .mobileSearch input::placeholder { color: #9ca7ba; opacity: 1; }
-  .mobileSearch button { display: grid; width: 34px; height: 34px; padding: 0; place-items: center; border: 0; color: #8d9ab2; background: transparent; }
+  .mobileSearch > button { display: grid; width: 34px; height: 34px; padding: 0; place-items: center; border: 0; color: #8d9ab2; background: transparent; }
+  .mobileSearch > button img { width: 23px; height: 23px; opacity: .56; object-fit: contain; }
+  .mobileFilterMenu { position: absolute; top: calc(100% + 10px); right: 0; z-index: 20; display: grid; width: 190px; overflow: hidden; padding: 6px; border: 1px solid rgb(255 255 255 / 84%); border-radius: 18px; background: rgb(255 255 255 / 96%); box-shadow: 0 18px 44px rgb(21 55 94 / 18%); backdrop-filter: blur(24px) saturate(145%); }
+  .mobileFilterMenu button { display: flex; width: 100%; min-height: 44px; align-items: center; justify-content: space-between; gap: 12px; padding: 0 12px; border: 0; border-radius: 12px; color: var(--app-text-strong); background: transparent; font: inherit; font-size: 13px; font-weight: 650; text-align: left; }
+  .mobileFilterMenu button[aria-checked="true"] { color: var(--app-accent); background: var(--app-accent-soft); }
   .tabs { display: none !important; }
   .mobileLedger { padding: 0 22px 96px; }
   .mobileDateGroup + .mobileDateGroup { margin-top: 24px; }

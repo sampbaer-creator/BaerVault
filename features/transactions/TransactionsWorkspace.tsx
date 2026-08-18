@@ -2,9 +2,10 @@
 
 import { Drawer } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { IconArrowDown, IconArrowUp, IconEdit, IconList, IconPlus, IconSearch, IconTrash } from "@tabler/icons-react";
+import { IconArrowDown, IconArrowUp, IconCheck, IconEdit, IconPlus, IconSearch, IconTrash } from "@tabler/icons-react";
 import { FormEvent, useMemo, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { deleteIncomeAction, saveIncomeAction } from "@/app/(app)/transactions/actions";
 import { deleteBudgetEntryAction, saveBudgetEntryAction } from "@/app/(app)/budget/actions";
@@ -26,6 +27,7 @@ export function TransactionsWorkspace({ initialMonth }: { initialMonth: BudgetMo
   const [expenseEntries, setExpenseEntries] = useState(() => initialMonth.categories.flatMap((category) => category.purchases.map((purchase) => ({ ...purchase, categoryId: category.id, category: category.name }))));
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
+  const [filterOpen, setFilterOpen] = useState(false);
   const [open, setOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draft, setDraft] = useState(freshDraft);
@@ -102,7 +104,7 @@ export function TransactionsWorkspace({ initialMonth }: { initialMonth: BudgetMo
   }
 
   return <div className={styles.page}>
-    <label className={styles.mobileSearch}><IconSearch size={23} aria-hidden="true"/><input value={query} onChange={(event)=>setQuery(event.target.value)} placeholder="Search" aria-label="Search transactions"/><button type="button" aria-label={`Filter transactions: ${filter}`} onClick={()=>setFilter((current)=>current==="all"?"income":current==="income"?"expenses":"all")}><IconList size={22} aria-hidden="true"/></button></label>
+    <div className={styles.mobileSearch}><IconSearch size={23} aria-hidden="true"/><input value={query} onChange={(event)=>setQuery(event.target.value)} placeholder="Search" aria-label="Search transactions"/><button type="button" aria-label={`Filter transactions: ${filter}`} aria-expanded={filterOpen} aria-controls="transaction-filter-menu" onClick={()=>setFilterOpen((open)=>!open)}><Image src="/transaction-filter.png" alt="" width={22} height={22}/></button>{filterOpen&&<div className={styles.mobileFilterMenu} id="transaction-filter-menu" role="menu">{(["all","income","expenses"] as Filter[]).map((value)=><button type="button" role="menuitemradio" aria-checked={filter===value} key={value} onClick={()=>{setFilter(value);setFilterOpen(false)}}><span>{value==="all"?"All transactions":value==="income"?"Income":"Expenses"}</span>{filter===value&&<IconCheck size={17} aria-hidden="true"/>}</button>)}</div>}</div>
     <header className={styles.intro}><div><span>Household activity</span><h2>Every dollar, in one ledger.</h2><p>Income entered here also updates your Budget and Dashboard totals.</p></div><button className="btn btn-primary" onClick={() => launch()}><IconPlus size={16}/>Add income</button></header>
     <div className={styles.summary}><Summary label="Money in" value={`+${money.format(income)}`} positive/><Summary label="Money out" value={`−${money.format(spending)}`} negative/><Summary label="Net" value={money.format(income-spending)}/></div>
     <section className={`${styles.accountChart} chart-summary card`} aria-labelledby="account-spending-title">

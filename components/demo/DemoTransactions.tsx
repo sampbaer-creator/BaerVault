@@ -1,11 +1,15 @@
 "use client";
 
-import { IconList, IconSearch } from "@tabler/icons-react";
+import { IconCheck, IconSearch } from "@tabler/icons-react";
+import Image from "next/image";
+import { useState } from "react";
 import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
 import { totalIncome, totalSpending, type BudgetMonth } from "@/lib/finance";
 import styles from "./DemoTransactions.module.css";
 
 export function DemoTransactions({ budget }: { budget: BudgetMonth }) {
+  const [filter, setFilter] = useState<"all"|"income"|"expenses">("all");
+  const [filterOpen, setFilterOpen] = useState(false);
   const money = useCurrencyFormatter();
   const income = totalIncome(budget);
   const spent = totalSpending(budget);
@@ -44,12 +48,13 @@ export function DemoTransactions({ budget }: { budget: BudgetMonth }) {
       })),
     ),
   ].sort((a, b) => b.date.localeCompare(a.date));
-  const dateGroups = new Map<string, typeof items>();
-  items.forEach((item) => dateGroups.set(item.date, [...(dateGroups.get(item.date) ?? []), item]));
+  const filteredItems = items.filter((item)=>filter==="all"||(filter==="income"?item.incoming:!item.incoming));
+  const dateGroups = new Map<string, typeof filteredItems>();
+  filteredItems.forEach((item) => dateGroups.set(item.date, [...(dateGroups.get(item.date) ?? []), item]));
 
   return (
     <div className={styles.page}>
-      <div className={styles.mobileSearch}><IconSearch size={22}/><span>Search</span><IconList size={22}/></div>
+      <div className={styles.mobileSearch}><IconSearch size={22}/><span>Search</span><button type="button" aria-label={`Filter transactions: ${filter}`} aria-expanded={filterOpen} onClick={()=>setFilterOpen((open)=>!open)}><Image src="/transaction-filter.png" alt="" width={22} height={22}/></button>{filterOpen&&<div className={styles.mobileFilterMenu}>{(["all","income","expenses"] as const).map((value)=><button type="button" aria-pressed={filter===value} key={value} onClick={()=>{setFilter(value);setFilterOpen(false)}}><span>{value==="all"?"All transactions":value==="income"?"Income":"Expenses"}</span>{filter===value&&<IconCheck size={17}/>}</button>)}</div>}</div>
       <div className={styles.summary}>
         <Summary label="Money in" value={`+${money.format(income)}`} tone="positive" />
         <Summary label="Money out" value={`−${money.format(spent)}`} tone="negative" />
@@ -80,12 +85,12 @@ export function DemoTransactions({ budget }: { budget: BudgetMonth }) {
           <button className={styles.tab}>All</button>
           <button className={styles.tab}>Income</button>
           <button className={styles.tab}>Expenses</button>
-          <span className={styles.count}>{items.length} transactions</span>
+          <span className={styles.count}>{filteredItems.length} transactions</span>
         </div>
         <table className={styles.table}>
           <thead><tr><th>Merchant</th><th>Category</th><th>Account</th><th>Date</th><th>Amount</th></tr></thead>
           <tbody>
-            {items.map((item) => (
+            {filteredItems.map((item) => (
               <tr key={item.id}>
                 <td><div className={styles.merchant}><span className={styles.merchantIcon}>{item.name.slice(0, 1)}</span><strong>{item.name}</strong></div></td>
                 <td><span className={styles.categoryChip}><i className={styles.dot} style={{ background: item.incoming ? "var(--money-positive)" : "var(--chart-secondary)" }} />{item.category}</span></td>
