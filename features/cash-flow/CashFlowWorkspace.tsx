@@ -2,7 +2,6 @@
 
 import { IconArrowDownRight, IconArrowUpRight } from "@tabler/icons-react";
 import { useReducedMotion } from "motion/react";
-import { useMediaQuery } from "@mantine/hooks";
 import {
   Bar,
   CartesianGrid,
@@ -29,7 +28,6 @@ const compactMoney = new Intl.NumberFormat("en-US", {
 
 export function CashFlowWorkspace({ month }: { month: BudgetMonth }) {
   const reduceMotion = useReducedMotion();
-  const mobile = useMediaQuery("(max-width: 47.999rem)");
   const income = totalIncome(month);
   const spending = totalSpending(month);
   const net = income - spending;
@@ -51,8 +49,8 @@ export function CashFlowWorkspace({ month }: { month: BudgetMonth }) {
     return { ...item, balance: runningBalance };
   });
   const chartMotion = {
-    isAnimationActive: !reduceMotion && !mobile,
-    animationDuration: 360,
+    isAnimationActive: !reduceMotion,
+    animationDuration: 800,
     animationEasing: "ease-out" as const,
   };
 
