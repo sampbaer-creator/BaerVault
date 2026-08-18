@@ -550,7 +550,7 @@
 }
 
 /* Refracted Vault shell */
-.shell { background: transparent; }
+.shell { background: var(--app-background); }
 
 .sidebar {
   width: 264px;
@@ -706,3 +706,4 @@
 @keyframes mobile-page-old-right{to{transform:translateX(100%)}}@keyframes mobile-page-new-right{from{transform:translateX(-100%)}}:root[data-swipe-direction="right"]::view-transition-old(mobile-page){animation-name:mobile-page-old-right}:root[data-swipe-direction="right"]::view-transition-new(mobile-page){animation-name:mobile-page-new-right}::view-transition-group(active-mobile-tab){animation-duration:250ms;animation-timing-function:cubic-bezier(.77,0,.175,1)}::view-transition-old(active-mobile-tab),::view-transition-new(active-mobile-tab){mix-blend-mode:normal}
 @media(prefers-reduced-motion:reduce){::view-transition-old(mobile-page),::view-transition-new(mobile-page),::view-transition-group(active-mobile-tab){animation:none!important}.swipeLeft,.swipeRight{filter:none;opacity:1;transition:none}}
 ::view-transition { pointer-events: none; }
+::view-transition-group(root),::view-transition-group(mobile-page){background:var(--app-background)}

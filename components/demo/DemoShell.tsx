@@ -24,6 +24,7 @@ import { useEffect, useRef, useState } from "react";
 import styles from "./DemoShell.module.css";
 import { LiquidGLRuntime } from "@/components/shared/LiquidGLRuntime";
 import { useMobilePageSwipe } from "@/components/layout/useMobilePageSwipe";
+import { navigateMobileRoute } from "@/components/layout/mobileRouteTransition";
 
 const links = [
   ["/demo", "Dashboard", IconLayoutDashboard],
@@ -156,7 +157,7 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
           <Link
             key={href}
             href={href}
-            prefetch={false}
+            prefetch={pathname === href ? false : null}
             className={pathname === href ? styles.active : undefined}
             aria-current={pathname === href ? "page" : undefined}
             onClick={(event) => {
@@ -164,11 +165,8 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
               event.preventDefault();
               const currentIndex = mobileLinks.findIndex(([route]) => route === pathname);
               const nextIndex = mobileLinks.findIndex(([route]) => route === href);
-              document.documentElement.dataset.swipeDirection = nextIndex < currentIndex ? "right" : "left";
-              const navigate = () => router.push(href);
               const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-              if (!reduceMotion && "startViewTransition" in document) (document as Document & { startViewTransition: (callback: () => void) => void }).startViewTransition(navigate); else navigate();
-              window.setTimeout(() => delete document.documentElement.dataset.swipeDirection, 280);
+              navigateMobileRoute(router, href, nextIndex < currentIndex ? "right" : "left", reduceMotion);
             }}
           >
             <Icon size={19} aria-hidden="true" />

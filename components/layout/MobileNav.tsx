@@ -6,6 +6,7 @@ import { useEffect, useRef } from "react";
 
 import { mobileSectionNavigation } from "./navigation";
 import styles from "./AppShell.module.css";
+import { navigateMobileRoute } from "./mobileRouteTransition";
 
 type MobileNavProps = {
   pathname: string;
@@ -44,7 +45,7 @@ export function MobileNav({ pathname }: MobileNavProps) {
             <Link
               className={`${styles.mobileLink} ${isActive ? styles.mobileLinkActive : ""}`}
               href={href}
-              prefetch={false}
+              prefetch={isActive ? false : null}
               aria-current={isActive ? "page" : undefined}
               key={href}
               onPointerDown={() => router.prefetch(href)}
@@ -53,11 +54,8 @@ export function MobileNav({ pathname }: MobileNavProps) {
                 event.preventDefault();
                 const currentIndex = links.findIndex((item) => item.href === pathname);
                 const nextIndex = links.findIndex((item) => item.href === href);
-                document.documentElement.dataset.swipeDirection = nextIndex < currentIndex ? "right" : "left";
-                const navigate = () => router.push(href);
                 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-                if (!reduceMotion && "startViewTransition" in document) (document as Document & { startViewTransition: (callback: () => void) => void }).startViewTransition(navigate); else navigate();
-                window.setTimeout(() => delete document.documentElement.dataset.swipeDirection, 280);
+                navigateMobileRoute(router, href, nextIndex < currentIndex ? "right" : "left", reduceMotion);
               }}
             >
               <Icon size={18} stroke={1.9} aria-hidden="true" />

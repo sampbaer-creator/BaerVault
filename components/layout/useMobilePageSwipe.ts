@@ -4,6 +4,8 @@ import { animate, useMotionTemplate, useMotionValue, useReducedMotion } from "mo
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { navigateMobileRoute } from "./mobileRouteTransition";
+
 const routeOrder = [
   "/cash-flow",
   "/accounts",
@@ -92,19 +94,12 @@ export function useMobilePageSwipe(pathname: string, demo = false) {
     router.prefetch(next);
     finishGesture();
     dragX.set(0);
-    document.documentElement.dataset.swipeDirection = nextDirection;
     setDirection(nextDirection);
 
-    const push = () => router.push(next);
-    if (!reduceMotion && "startViewTransition" in document) {
-      (document as Document & { startViewTransition: (callback: () => void) => void }).startViewTransition(push);
-    } else {
-      push();
-    }
+    navigateMobileRoute(router, next, nextDirection, Boolean(reduceMotion));
 
     window.setTimeout(() => {
       setDirection(null);
-      delete document.documentElement.dataset.swipeDirection;
     }, 220);
   }
 
