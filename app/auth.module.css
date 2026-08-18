@@ -20,6 +20,9 @@
     ),
     #f8f8f9;
 }
+.page { color: var(--app-text-strong); background: radial-gradient(circle at 50% 8%, color-mix(in srgb, var(--app-accent) 16%, transparent), transparent 28rem), var(--app-background); }
+.brand { color: var(--app-text-strong); }
+.authCard { border: 1px solid var(--glass-border) !important; border-radius: 18px !important; background: var(--glass-strong) !important; box-shadow: var(--shadow-glass) !important; backdrop-filter: blur(30px) saturate(155%); }
 .brand {
   position: absolute;
   top: 28px;

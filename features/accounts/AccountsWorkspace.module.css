@@ -11,6 +11,16 @@
   color: var(--app-text-strong);
 }
 
+/* Refracted Vault presentation */
+.workspace { max-width: 1320px !important; margin-inline: auto; }
+.pageHeader { margin-bottom: 26px !important; }
+.netWorthCard { border: 1px solid var(--glass-border) !important; border-radius: 16px !important; background: var(--glass-surface) !important; box-shadow: var(--shadow-glass) !important; backdrop-filter: blur(30px) saturate(155%); }
+.netWorthLine { display: none !important; }
+.summaryCaption { margin-top: 30px; }
+.accountGroup, .detailPanel, .emptyState { border-radius: 16px !important; border-color: color-mix(in srgb, var(--app-border) 84%, transparent) !important; background: color-mix(in srgb, var(--app-surface) 96%, transparent) !important; box-shadow: var(--shadow-surface) !important; }
+.accountRow { min-height: 68px; }
+@media (max-width: 47.999rem) { .pageHeader { margin-bottom: 20px; }.netWorthCard { padding: 22px 18px; }.accountGroup { border-radius: 15px; }.accountRow { min-height: 64px; } }
+
 .pageHeader {
   display: flex;
   align-items: flex-end;

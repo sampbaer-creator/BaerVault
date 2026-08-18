@@ -3,6 +3,13 @@
   margin: 0 auto;
 }
 
+/* Refracted Vault presentation */
+.page { max-width: 1180px; margin-inline: auto; }
+.layout { border: 1px solid var(--glass-border) !important; border-radius: 16px !important; background: var(--glass-surface) !important; box-shadow: var(--shadow-glass) !important; backdrop-filter: blur(30px) saturate(155%); }
+.sections { background: color-mix(in srgb, var(--app-surface) 88%, transparent); }
+.paletteTrigger, .paletteMenu, .segment { border-radius: 12px; }
+@media (max-width: 47.999rem) { .layout { border-radius: 15px; }.sections { background: transparent; } }
+
 .page > header {
   max-width: 680px;
   margin-bottom: 28px;

@@ -3,6 +3,12 @@
   margin: auto;
 }
 
+/* Refracted Vault presentation */
+.page { max-width: 1120px; margin-inline: auto; }
+.management { border: 1px solid var(--glass-border) !important; border-radius: 16px !important; background: var(--glass-surface) !important; box-shadow: var(--shadow-glass) !important; backdrop-filter: blur(30px) saturate(155%); }
+.clerk { border-radius: 14px; background: color-mix(in srgb, var(--app-surface) 90%, transparent); }
+@media (max-width: 47.999rem) { .management { border-radius: 15px; padding: 20px 16px; } }
+
 .page > header {
   max-width: 720px;
   margin-bottom: 34px;

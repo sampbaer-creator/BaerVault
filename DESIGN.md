@@ -1,41 +1,25 @@
 ---
 name: BearVault
-description: A calm, protected household-finance cockpit built for immediate legibility.
+description: A calm, protected household-finance cockpit built from selective glass and precise solid records.
 colors:
-  protected-navy: "#000080"
-  royal-blue: "#000080"
-  classic-gold: "#d4af37"
-  bright-gold: "#e8b00f"
-  light-gold: "#f2e7c9"
-  palm-vermilion: "#e62e0a"
-  palm-olive: "#899260"
-  palm-canvas: "#e4e8d1"
-  coffee-cream: "#cfac87"
-  coffee-espresso: "#302016"
-  coffee-teal: "#4f8389"
-  powder-canvas: "#e0e4e8"
-  powder-blue: "#9abfd8"
-  powder-burgundy: "#5e191a"
-  water-depth: "#1f2e37"
-  water-slate: "#5c727b"
-  water-amber: "#f2b968"
-  growth-green: "#267056"
-  soft-green: "#e8f1ed"
-  warm-bronze: "#d4af37"
-  accent-blue: "#000080"
-  accent-bronze: "#d4af37"
-  destructive: "#a34444"
-  graphite: "#161b22"
-  muted-ink: "#66736d"
-  canvas: "#f8f7f2"
+  protected-navy: "#062650"
+  accent-blue: "#3578f6"
+  accent-soft: "#edf3ff"
+  growth-green: "#16834f"
+  destructive: "#b84352"
+  debt-coral: "#df785d"
+  chart-blue: "#4f8ff7"
+  chart-green: "#09b85a"
+  canvas: "#f7f8fa"
   surface: "#ffffff"
-  border: "#dfe5e1"
-  hover: "#f1f3f5"
+  surface-raised: "#f0f3f7"
+  border: "#e0e4ea"
+  muted-ink: "#7d89a2"
 typography:
   display:
     fontFamily: "var(--font-manrope), system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
-    fontSize: "clamp(40px, 5vw, 62px)"
-    fontWeight: 660
+    fontSize: "clamp(38px, 5vw, 62px)"
+    fontWeight: 680
     lineHeight: 1
     letterSpacing: "-0.04em"
   headline:
@@ -46,9 +30,9 @@ typography:
     letterSpacing: "-0.035em"
   title:
     fontFamily: "var(--font-manrope), system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
-    fontSize: "15px"
-    fontWeight: 680
-    letterSpacing: "-0.01em"
+    fontSize: "14px"
+    fontWeight: 720
+    letterSpacing: "-0.015em"
   body:
     fontFamily: "var(--font-manrope), system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
     fontSize: "15px"
@@ -56,45 +40,44 @@ typography:
     lineHeight: 1.5
   label:
     fontFamily: "var(--font-manrope), system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
-    fontSize: "12px"
+    fontSize: "11px"
     fontWeight: 650
 rounded:
-  control: "10px"
-  note: "12px"
-  panel: "14px"
-  hero: "16px"
+  control: "11px"
+  panel: "16px"
+  mobile-panel: "15px"
+  shell: "18px"
   pill: "999px"
 spacing:
   xs: "8px"
   sm: "12px"
   md: "18px"
   lg: "24px"
-  xl: "40px"
+  xl: "48px"
 components:
-  timeframe-active:
-    backgroundColor: "{colors.protected-navy}"
+  button-primary:
+    backgroundColor: "{colors.accent-blue}"
     textColor: "{colors.surface}"
     typography: "{typography.label}"
-    rounded: "{rounded.pill}"
-    padding: "7px 12px"
-    height: "36px"
-  panel:
+    rounded: "{rounded.control}"
+    height: "42px"
+  panel-solid:
     backgroundColor: "{colors.surface}"
     textColor: "{colors.protected-navy}"
     rounded: "{rounded.panel}"
     padding: "24px"
-  positive-chip:
-    backgroundColor: "{colors.soft-green}"
-    textColor: "{colors.growth-green}"
-    typography: "{typography.label}"
-    rounded: "{rounded.pill}"
-    padding: "6px 9px"
-  nav-active:
-    backgroundColor: "{colors.soft-green}"
-    textColor: "{colors.vault-green}"
+  input:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.protected-navy}"
+    typography: "{typography.body}"
     rounded: "{rounded.control}"
-    padding: "10px 12px"
-    height: "44px"
+    height: "42px"
+  nav-active:
+    backgroundColor: "{colors.accent-soft}"
+    textColor: "{colors.accent-blue}"
+    rounded: "{rounded.control}"
+    padding: "9px 11px"
+    height: "42px"
 ---
 
 # Design System: BearVault
@@ -103,154 +86,166 @@ components:
 
 **Creative North Star: "The Refracted Vault"**
 
-BearVault is a premium, calm, and financially serious household operating system. Deep navy provides architectural authority, lilac-white keeps the workspace clear, and restrained vault green identifies progress and healthy financial movement. Selective Liquid Glass gives navigation and high-value controls a polished, tactile material while financial records remain opaque and immediately legible.
+BearVault is a premium, calm household-finance workspace whose material hierarchy separates orientation from record keeping. The shell floats as selective glass: desktop sidebar, desktop header, responsive mobile header, five-item mobile navigation, dialogs, and high-level summary planes may refract the palette beneath them. Tables, activity lists, category rows, holdings, forms, and other detailed financial surfaces remain solid so numbers and actions never compete with the material effect.
 
-The system combines the stability of deep navy and graphite with muted green reassurance and rare warm bronze categorization. Opaque precision panels carry detailed information; selective translucent glass belongs only on the dominant net-worth plane and compact controls. The result is modern and polished without drifting into generic admin, crypto, trading, or AI-SaaS styling.
+The page field is not a flat neutral. Soft radial color from the active palette sits behind the shell and summary planes, making glass feel native to every light, dark, and user-selected palette. The default ledger palette is protected navy and blue, but the system's real invariant is semantic contrast: strong ink, quiet metadata, one measured accent, meaningful positive/negative color, and opaque reading surfaces.
 
 **Key Characteristics:**
 
-- One dominant financial surface instead of an equal-weight metric-card grid.
-- Precise, tabular financial figures with restrained supporting copy.
-- Deep navy structure, muted green state language, and rare warm bronze accents.
-- Selective glass for hierarchy; opaque white panels for detailed reading.
-- Calm density and deliberate mobile recomposition rather than desktop shrinkage.
+- Floating selective glass for shell chrome and high-level summary planes.
+- Solid, calm record and form surfaces for financial precision.
+- Palette-aware ambient backgrounds rather than fixed decorative gradients.
+- Gently vault-like geometry: 16px panels and 11px controls.
+- Current recorded data leads; projections are never invented to fill a dashboard.
+- Deliberate mobile recomposition with a compact header and five-item bottom navigation.
 
 ## Colors
 
-The palette feels protected and grounded: navy carries authority, green communicates household progress, bronze supplies warmth sparingly, and cool neutrals keep dense financial data quiet.
+The palette is role-driven. The default ledger theme uses protected navy, clear blue, and cool neutrals; selectable finance palettes remap the same semantic roles across light and dark modes while retaining financial meaning and contrast.
 
 ### Primary
 
-- **Protected Navy:** The dominant value, active timeframe, headings, and highest-authority structure.
-- **Vault Green:** Navigation emphasis, links, progress, and the brand's measured financial accent.
+- **Protected Navy:** Strong text, brand authority, and the default palette's deepest structural color.
+- **Accent Blue:** Active navigation, primary actions, focus, links, and primary chart marks.
 
 ### Secondary
 
-- **Growth Green:** Positive movement and incoming-value states; use it for meaning, not decoration.
-- **Soft Green:** Low-emphasis active states, positive chips, icons, and supportive notes.
-
-### Tertiary
-
-- **Warm Bronze:** A rare category marker and restrained counterweight to the cool palette.
+- **Growth Green:** Confirmed positive money movement and healthy progress only.
+- **Debt Coral:** Debt composition and other bounded negative comparisons that need more distinction than neutral text.
+- **Destructive Red:** Errors and destructive actions; it is not a general chart color.
 
 ### Neutral
 
-- **Graphite:** Strong application-shell text.
-- **Muted Ink:** Secondary explanations, labels, dates, and metadata.
-- **Canvas:** The cool page field behind all dashboard surfaces.
-- **Surface:** Opaque detail panels and high-contrast text on dark controls.
-- **Border:** Quiet shell and panel separation.
-- **Hover:** Low-contrast navigation feedback.
+- **Canvas:** Base page field beneath ambient palette color.
+- **Surface:** Solid record panels, tables, rows, and forms.
+- **Surface Raised:** Quiet controls, tracks, and tonal separation inside solid surfaces.
+- **Border:** Low-contrast separation for detailed data regions.
+- **Muted Ink:** Dates, labels, explanations, and supporting metadata.
 
 ### Named Rules
 
-**The Protected Horizon Rule.** Navy and green establish one dominant financial story; do not distribute equal chromatic authority across every metric.
+**The Semantic Palette Rule.** Palette selection may change hues, but it must preserve the roles of strong text, accent, focus, positive money, negative money, surface, and border.
 
-**The Bronze Rarity Rule.** Warm bronze is a small categorical cue, never a competing primary accent.
+**The Ambient Field Rule.** Background color appears as low-chroma radial atmosphere derived from the active palette; it supports glass and never becomes ornamental page art.
+
+**The Meaningful Color Rule.** Green, coral, and destructive red must describe financial or interaction state, not decorate otherwise neutral records.
 
 ## Typography
 
 **Display Font:** Manrope (self-hosted by Next.js, with system sans-serif fallbacks)
+
 **Body Font:** Manrope (self-hosted by Next.js, with system sans-serif fallbacks)
 
-The operating interface uses a fixed Swiss-derived scale: 12px metadata, 13px controls, 15px body, 18px section headings, 24px shell titles, 30–36px page headings, and large financial figures only where one total genuinely leads the page.
-
-**Character:** The single sans-serif family is clean and approachable, while tightly tracked, moderately heavy headings provide financial authority. Monetary values use tabular lining numerals so comparisons remain stable and precise.
+**Character:** Manrope keeps the application modern and approachable while compact, moderately heavy headings create financial authority. The hierarchy is intentionally restrained: large type is reserved for a singular total, while everyday panels rely on small, clear headings and labels.
 
 ### Hierarchy
 
-- **Display** (660, fluid 40–62px, 1 line-height): Dominant net-worth and other singular financial totals.
-- **Headline** (690, fluid 28–38px, 1.1 line-height): Greeting and major page-level statements.
-- **Title** (680, 15px): Panel and financial-surface headings.
-- **Body** (400, 15px, 1.5 line-height): Calm explanations and status context.
-- **Label** (650, 12px): Controls, links, compact values, and metadata; shell section labels may become smaller, heavier, and tracked uppercase.
+- **Display** (680, fluid 38–62px, 1 line-height): Singular current totals such as net worth.
+- **Headline** (690, fluid 28–38px, 1.1 line-height): Page-level statements when the shell title alone is not enough.
+- **Title** (720, 14px): Panel and data-section headings.
+- **Body** (400, 15px, 1.5 line-height): Explanations, guidance, and longer form content.
+- **Label** (650, 10–12px): Controls, metadata, table support, compact values, and links.
 
 ### Named Rules
 
-**The Stable Number Rule.** Financial amounts use tabular lining numerals, compact tracking, and enough weight to scan before their labels.
+**The Stable Number Rule.** Financial amounts use tabular lining numerals, compact tracking, and alignment that keeps comparisons stable.
+
+**The Direct Title Rule.** Do not place eyebrow kickers above page headings. Start with the title or the financial fact; use ordinary metadata labels only inside the surface they describe.
 
 ## Layout
 
-The application shell uses a fixed 248px desktop sidebar, an 88px sticky header, and a centered content column capped at 1440px. Dashboard content narrows further to 1220px. The first viewport places the greeting above a dominant net-worth/chart surface whose four-part summary rail is integrated into the same plane.
+The desktop shell floats over the ambient page field. Its 264px allocation contains a 240px glass sidebar inset by 12px. The content column begins after that allocation, and its 64px glass header floats 12px from the viewport edges. Main content is centered at a maximum width of 1540px with fluid 22–48px horizontal space and generous top breathing room below the header.
 
-Detail content follows in a two-column grid biased slightly toward budget, with investments beside it and recent activity spanning the full width. At 68rem the summary rail becomes two columns and detail panels stack. Below 48rem the sidebar and desktop header yield to a 64px mobile header and fixed five-item bottom navigation; the hero surface becomes edge-to-edge, the chart shortens, and supporting data becomes a two-by-two rail. Spacing concentrates around an 8/12/18/24/40px rhythm, with comfortable touch targets of at least 44px where navigation or actions require them.
+Dashboard composition follows current recorded data. A wider current-position plane leads beside this-month budget progress; recent activity, top spending categories, and an evidence-bound planning-ahead state follow. The current-position plane shows present net worth, assets, and debts rather than a fabricated historical chart. The budget plane shows remaining or over-plan status, a real progress bar based on spending versus planned amount, and the recorded spent, planned, and income totals. Empty and unavailable states say what is missing instead of substituting projections.
 
-**The Hierarchy Before Grid Rule.** Preserve the net-worth plane as the clear visual anchor; supporting modules may align, but must not become a wall of interchangeable cards.
+At 70rem the dashboard becomes a single column. Below 48rem, desktop chrome yields to a 66px mobile header and a fixed glass bottom navigation with five equal destinations: Dashboard, Transactions, Budgets, Investments, and More. The More destination opens Accounts, Goals, Household, and Settings. Mobile content uses safe-area insets, 14–16px page edges, at least 44px interactive targets, solid stacked records, and shorter summary layouts rather than compressed desktop grids.
+
+**The Current Evidence Rule.** Dashboard modules may summarize current accounts, holdings, budget entries, income, purchases, and goals; they must not imply forecasts, bill schedules, or historical performance that the household has not recorded.
+
+**The Mobile Recomposition Rule.** Reorder and stack information around the next mobile task; do not shrink a desktop grid into a narrow viewport.
 
 ## Elevation & Depth
 
-BearVault uses a hybrid depth model. Opaque detail panels are defined primarily by cool borders and tonal contrast. The dominant net-worth plane uses a soft directional wash, a thin white edge, inset highlight, restrained ambient shadow, and backdrop blur; compact glass controls echo it without spreading glass across the page.
+BearVault uses depth selectively. Floating shell chrome and summary planes combine translucent palette-aware gradients, a bright edge, 28–30px backdrop blur, a subtle inset highlight, and a broad ambient shadow. Solid record and form panels use tonal contrast, a quiet border, and a much smaller shadow. The distinction must remain obvious: glass orients and summarizes; opaque surfaces support reading, editing, and comparison.
 
 ### Shadow Vocabulary
 
-- **Shell Ambient** (`0 8px 28px rgb(24 32 46 / 4%)`): Barely lifted general surfaces.
-- **Protected Plane** (`0 18px 52px rgb(26 45 39 / 9%), inset 0 1px 0 rgb(255 255 255 / 92%)`): The dominant net-worth surface only.
-- **Compact Glass** (`inset 0 1px 0 rgb(255 255 255 / 86%), 0 8px 24px rgb(31 54 45 / 6%)`): Small translucent status controls.
-- **Active Control** (`0 4px 12px rgb(21 36 58 / 16%)`): Selected pill inside a compact control group.
+- **Solid Surface** (`0 10px 30px rgb(18 35 68 / 7%)`): Quiet lift for record panels without making every row feel like a card.
+- **Glass Plane** (`0 20px 55px rgb(17 30 62 / 12%), inset 0 1px 0 rgb(255 255 255 / 94%)`): Floating shell chrome and summary planes in the light theme.
+- **Dark Glass Plane** (`0 24px 64px rgb(0 0 0 / 36%), inset 0 1px 0 rgb(255 255 255 / 14%)`): The same material role in dark mode.
+- **Mobile Navigation** (`0 18px 54px rgb(17 30 62 / 20%), inset 0 1px 0 var(--glass-highlight)`): Separation above content and the safe-area edge.
 
-**The Selective Glass Rule.** Glass is hierarchy, not wallpaper: reserve blur and translucency for the protected financial plane, sticky chrome, tooltips, and compact controls.
+### Named Rules
 
-### Theme and customization
+**The Selective Glass Rule.** Glass belongs to floating chrome, dialogs, high-level summaries, and hero-like overview planes—not tables, transaction rows, holdings, category records, or form bodies.
 
-- Light, dark, and system modes share the same hierarchy and semantic contrast.
-- Green is the default accent; blue and bronze are approved restrained alternatives.
-- Comfortable and compact density alter spacing and control height without shrinking touch targets below accessibility requirements.
-- Reduced motion removes decorative transitions while preserving immediate state feedback.
-- Detailed financial tables, lists, and record panels remain opaque in both themes.
+**The Accessibility Fallback Rule.** Reduced transparency replaces glass with an opaque application surface, and increased contrast strengthens borders and muted text without changing hierarchy.
 
 ## Shapes
 
-The form language is gently vault-like: stable rectangular planes with softened 14–16px corners, compact controls at 10–12px, and fully rounded pills for segmented choices and status. Thin borders are cool and low contrast. Circular geometry appears as a faint oversized motif on the net-worth surface and as tiny category dots, never as literal bear or vault decoration.
+The form language is stable and gently vault-like. Standard panels and summary planes use 16px corners; the narrow-screen panel adjustment is 15px. Buttons, navigation items, inputs, and compact controls use 11px corners. Floating sidebar and bottom-navigation shells use 18px corners. Pills are reserved for progress/status or segmented choices, while record rows stay rectangular within their parent surface rather than becoming nested capsules.
+
+**The 16/11 Rule.** Use 16px for application planes and 11px for controls. Deviate only for the established 18px floating shell, 15px mobile panel adjustment, circular icons, or true pills.
 
 ## Components
 
-### Timeframe Controls
+### Summary Planes
 
-- **Shape:** A translucent pill group containing 36px-high pill buttons; mobile buttons increase to 38px.
-- **Active:** Protected navy with white text and a compact shadow.
-- **Hover / Focus:** Hover strengthens text toward navy; focus uses a visible 2px green outline with 2px offset; press scales to 0.97 unless reduced motion is requested.
+- **Material:** Palette-aware selective glass with a bright edge, backdrop blur, inset highlight, and broad ambient shadow.
+- **Purpose:** High-level financial orientation such as current position, monthly budget summary, account/goal metrics, investment overview, or household status.
+- **Content:** One clear lead value or statement with a compact supporting rail; avoid filling the plane with nested cards.
 
-### Status Chips
+### Cards / Record Containers
 
-- **Style:** Fully rounded soft-green containers with growth-green text, small iconography, and tabular numerals.
-- **State:** Communicate positive progress or context; they are not general-purpose decorative badges.
+- **Shape:** Solid 16px panels, adjusted to 15px on mobile.
+- **Background:** Nearly opaque application surface with a quiet semantic border.
+- **Depth:** Small solid-surface shadow; rows are grouped by whitespace and hairlines.
+- **Use:** Transactions, accounts, holdings, budget categories, goals, settings, tables, and other detailed records.
 
-### Cards / Containers
+### Inputs / Forms
 
-- **Corner Style:** Opaque detail panels use softly stable 14px corners; the dominant glass plane uses 16px.
-- **Background:** White for detailed financial reading; a translucent white-to-green wash for the net-worth surface.
-- **Shadow Strategy:** Detail panels stay effectively flat; only the protected plane receives meaningful ambient lift.
-- **Border:** Thin cool-gray borders on detail panels and translucent white edges on glass.
-- **Internal Padding:** 24px on desktop, 18–20px on mobile; the hero expands fluidly from 24px to 40px.
+- **Shape:** 11px controls at 42px default height; mobile controls keep at least 44px and use 16px input text to avoid iOS zoom.
+- **Background:** Solid or nearly opaque surface, even when the containing dialog uses glass chrome.
+- **Focus:** Visible 2px semantic focus outline with 2px offset.
+- **State:** Disabled controls remain legible; errors use destructive color and text, not color alone.
+
+### Buttons
+
+- **Shape:** 11px corners, compact but touch-safe sizing, and no ornamental shadow at rest.
+- **Primary:** Semantic accent fill with white text.
+- **Secondary:** Tonal solid surface with semantic border and strong text.
+- **Hover / Focus:** Hover shifts border or tonal fill; press scales subtly unless reduced motion is active; focus remains a visible 2px outline.
 
 ### Navigation
 
-- **Desktop:** Quiet gray labels and icons on white; the active route uses vault-green over soft green with a 10px radius.
-- **Mobile:** A translucent fixed bottom bar with five evenly distributed destinations and 54px minimum targets; the active destination repeats the soft-green treatment.
-- **Focus:** A clear 2px green outline with 2px offset remains visible across desktop and mobile.
+- **Desktop:** The glass sidebar is visually detached from the viewport. Quiet 42px routes use 11px corners; the active route receives accent-soft fill, accent emphasis, and a faint inset edge.
+- **Header:** Desktop and mobile headers are separate responsive compositions, not one layout merely compressed. Both float as selective glass.
+- **Mobile:** A fixed five-item glass bar uses four direct destinations plus More, 54px minimum targets, icons over labels, and a solid accent-soft active state.
 
-### Financial Summary Rail
+### Dashboard Current Position
 
-The rail belongs inside the net-worth plane. Four evenly weighted figures use muted labels, compact tabular values, and hairline separators; it becomes a two-by-two matrix on smaller screens rather than four detached cards.
+The widest dashboard plane leads with recorded current net worth, then an assets-versus-debts composition track and two-value summary. Live investment pricing may update the total; unavailable prices produce an explicit status rather than a misleading estimate.
 
-### Activity Rows
+### Budget Progress
 
-Rows use soft-green icon tiles, strong merchant names, muted metadata, and right-aligned tabular amounts. Positive income is green; outgoing values use a subdued warm neutral. Hairline separators and whitespace—not nested cards—carry grouping.
+The monthly budget plane leads with remaining or over-plan money, then a progress bar whose accessible range is actual spending against planned spending. Spent, planned, and income form a compact supporting rail. Category progress elsewhere follows the same calculation and caps visual fill at 100% while retaining the true over-budget amount in text.
 
 ## Do's and Don'ts
 
 ### Do:
 
-- **Do** make the household's current position the first and strongest financial read.
-- **Do** use tabular numerals and right alignment where financial comparisons depend on stable columns.
-- **Do** keep detailed budget, investment, and activity surfaces opaque and precise.
-- **Do** recompose dense desktop structures for mobile and preserve touch-friendly controls.
-- **Do** use subtle bear, vault, and circular security cues only as structural undertones.
+- **Do** let glass float over ambient color only where it communicates shell, summary, or dialog hierarchy.
+- **Do** keep records, tables, financial rows, and form fields solid and immediately legible.
+- **Do** use the 16px panel and 11px control geometry consistently.
+- **Do** derive ambient background color from the active palette in both light and dark themes.
+- **Do** make current recorded position, real monthly budget progress, and recent activity the dashboard's strongest reads.
+- **Do** preserve the mobile header, safe-area spacing, and five-item bottom navigation.
 
 ### Don't:
 
-- **Don't** turn every metric into an equal-weight card.
-- **Don't** spread Liquid Glass across all panels or sacrifice legibility to translucency.
+- **Don't** add eyebrow kickers above page titles.
+- **Don't** spread blur and translucency through detailed record or form surfaces.
+- **Don't** invent historic charts, projected bills, future cash flow, or market narratives from data the household has not recorded.
+- **Don't** turn every metric or row into a detached card.
+- **Don't** hard-code decorative atmosphere that ignores the selected palette or dark mode.
 - **Don't** adopt crypto-terminal, trading-dashboard, generic admin, or AI-SaaS visual patterns.
-- **Don't** use green or bronze as decoration when they do not carry financial meaning.
-- **Don't** replace calm hierarchy with dense widgets, ornamental gradients, or speculative market cues.

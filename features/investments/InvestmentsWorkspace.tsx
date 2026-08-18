@@ -737,7 +737,7 @@ export function InvestmentsWorkspace({
         </nav>
       )}
       {!accounts.length ? (
-        <section className={styles.sheet}>
+        <section className={`${styles.sheet} card`}>
           <div className={styles.loading}>
             No investment accounts yet. Add your first account to start tracking
             holdings.
@@ -944,7 +944,7 @@ export function InvestmentsWorkspace({
               </section>
             )}
           </div>
-          <section className={styles.sheet} id="portfolio-holdings">
+          <section className={`${styles.sheet} card`} id="portfolio-holdings">
             <div className={styles.sheetHeading}>
               <div>
                 <h3>{account?.name}</h3>

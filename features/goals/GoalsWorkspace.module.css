@@ -3,6 +3,13 @@
   gap: 22px;
   color: var(--app-text-strong);
 }
+
+/* Refracted Vault presentation */
+.page { max-width: 1240px; margin-inline: auto; }
+.metrics { border: 1px solid var(--glass-border) !important; border-radius: 16px !important; background: var(--glass-surface) !important; box-shadow: var(--shadow-glass) !important; backdrop-filter: blur(30px) saturate(155%); }
+.metric { background: transparent; box-shadow: none; }
+.goal { border-radius: 16px !important; border-color: color-mix(in srgb, var(--app-border) 84%, transparent) !important; background: color-mix(in srgb, var(--app-surface) 96%, transparent) !important; box-shadow: var(--shadow-surface) !important; }
+@media (max-width: 47.999rem) { .metrics, .goal { border-radius: 15px; } }
 .top {
   display: flex;
   align-items: flex-end;

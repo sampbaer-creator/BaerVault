@@ -4,6 +4,12 @@
   background: var(--app-background);
 }
 
+/* Refracted Vault public surface */
+.siteHeader { top: 10px; width: min(1240px, calc(100% - 20px)); margin-inline: auto; border: 1px solid var(--glass-border) !important; border-radius: 16px; background: var(--glass-strong) !important; box-shadow: var(--shadow-glass); backdrop-filter: blur(30px) saturate(155%); }
+.previewWindow { border-color: var(--glass-border) !important; border-radius: 18px !important; background: var(--glass-surface) !important; box-shadow: var(--shadow-glass) !important; backdrop-filter: blur(30px) saturate(155%); }
+.spendingCard, .worthCard, .activityCard, .categoriesCard, .accountPreview { border-color: color-mix(in srgb, var(--app-border) 84%, transparent) !important; border-radius: 16px !important; background: color-mix(in srgb, var(--app-surface) 96%, transparent) !important; box-shadow: var(--shadow-surface) !important; }
+@media (max-width: 47.999rem) { .siteHeader { top: 6px; width: calc(100% - 12px); border-radius: 14px; }.previewWindow { border-radius: 16px !important; } }
+
 .siteHeader {
   position: sticky;
   top: 0;

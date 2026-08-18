@@ -1,125 +1,137 @@
-/* BearVault redesign overrides — liquid glass aesthetic, shared components and tokens */
+/* BearVault's Refracted Vault: shared presentation layer for every workspace. */
 :root {
-  /* refine radii, spacing, and shadows for premium feel */
-  --window-radius: 20px;
+  --radius-control: 11px;
   --radius-panel: 16px;
-  --radius-control: 10px;
-  --space-page: clamp(20px, 3.6vw, 48px);
-  --control-height: 48px;
-  /* subtle lift and deeper glass shadow */
-  --shadow-surface: 0 20px 50px rgb(17 20 57 / 9%);
-  --shadow-glass: 0 20px 60px rgb(17 20 57 / 14%), inset 0 1px 0 var(--glass-edge);
-  --shadow-dialog: 0 36px 110px rgb(10 12 38 / 30%), inset 0 1px 0 var(--glass-edge);
-  /* glass blur intensities (desktop/mobile) */
-  --glass-blur: 28px;
-  --glass-sheen: 0.9;
+  --window-radius: 22px;
+  --control-height: 42px;
+  --space-page: clamp(22px, 3.6vw, 48px);
+  --glass-blur: 30px;
+  --glass-surface: linear-gradient(145deg, rgb(255 255 255 / 76%), color-mix(in srgb, var(--app-accent-soft) 35%, transparent));
+  --glass-strong: linear-gradient(145deg, rgb(255 255 255 / 88%), color-mix(in srgb, var(--app-accent-soft) 48%, transparent));
+  --glass-border: rgb(255 255 255 / 86%);
+  --shadow-surface: 0 10px 30px rgb(18 35 68 / 7%);
+  --shadow-glass: 0 20px 55px rgb(17 30 62 / 12%), inset 0 1px 0 rgb(255 255 255 / 94%);
+  --chart-grid: color-mix(in srgb, var(--app-border) 76%, transparent);
+  --chart-axis: var(--app-text-muted);
+  --chart-tooltip: color-mix(in srgb, var(--app-surface) 88%, transparent);
 }
 
-/* High level glass panel used for nav, headers and feature panels */
+:root[data-theme="dark"] {
+  --glass-surface: linear-gradient(145deg, rgb(38 45 83 / 76%), rgb(8 11 35 / 66%));
+  --glass-strong: linear-gradient(145deg, rgb(46 53 96 / 82%), rgb(10 12 42 / 76%));
+  --glass-border: rgb(255 255 255 / 13%);
+  --shadow-surface: 0 12px 34px rgb(0 0 0 / 22%);
+  --shadow-glass: 0 24px 64px rgb(0 0 0 / 36%), inset 0 1px 0 rgb(255 255 255 / 14%);
+}
+
+body {
+  background:
+    radial-gradient(circle at 83% -8%, color-mix(in srgb, var(--app-accent) 13%, transparent) 0, transparent 35rem),
+    radial-gradient(circle at 6% 94%, color-mix(in srgb, var(--chart-secondary) 8%, transparent) 0, transparent 32rem),
+    var(--app-background);
+}
+
 .glass-panel {
-  background: var(--glass-surface) !important;
   border: 1px solid var(--glass-border) !important;
-  box-shadow: var(--shadow-glass) !important;
-  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
   border-radius: var(--radius-panel);
+  background: var(--glass-surface) !important;
+  box-shadow: var(--shadow-glass) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(155%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(155%);
 }
 
-/* Controls */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 0 16px;
-  min-height: var(--control-height);
-  border-radius: var(--radius-control);
-  border: 1px solid var(--glass-button-border);
-  background: var(--glass-button-surface);
-  color: var(--glass-button-text);
-  box-shadow: 0 6px 20px rgb(17 20 57 / 8%), inset 0 1px 0 var(--glass-edge);
-  font-weight: 700;
+.card,
+.chart-summary,
+[class*="_sheet_"],
+[class*="_summaryPanel_"],
+[class*="_allocationPanel_"],
+[class*="_detailPanel_"],
+[class*="_activityPanel_"],
+[class*="_portfolioChartPanel_"],
+[class*="_moversPanel_"],
+[class*="_watchlistPanel_"],
+[class*="_projection_"] {
+  border-color: color-mix(in srgb, var(--app-border) 82%, transparent) !important;
+  border-radius: var(--radius-panel) !important;
+  background: color-mix(in srgb, var(--app-surface) 96%, transparent) !important;
+  box-shadow: var(--shadow-surface) !important;
 }
 
-.btn-primary {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--app-accent) 78%, black), var(--app-accent));
-  color: white;
-  border-color: transparent;
-  box-shadow: 0 12px 36px color-mix(in srgb, var(--app-accent) 20%, black / 10%);
+[class*="_intro_"] h1,
+[class*="_intro_"] h2,
+[class*="_pageHeader_"] h1,
+[class*="_pageHeader_"] h2 {
+  max-width: 18ch;
+  letter-spacing: -0.035em !important;
 }
 
-.btn-ghost {
-  background: transparent;
-  border-color: color-mix(in srgb, var(--app-accent) 18%, var(--app-border));
-  color: var(--app-text-strong);
+[class*="__eyebrow"] {
+  display: none !important;
 }
 
-/* Form inputs */
-.input {
-  min-height: var(--control-height);
-  padding: 10px 12px;
-  border-radius: var(--radius-control);
-  border: 1px solid var(--app-border);
-  background: color-mix(in srgb, var(--app-surface) 86%, transparent);
-  color: var(--app-text-strong);
-  box-shadow: inset 0 1px 0 color-mix(in srgb, white 86%, transparent);
+input,
+select,
+textarea {
+  border-color: color-mix(in srgb, var(--app-border) 88%, transparent) !important;
+  border-radius: var(--radius-control) !important;
+  background: color-mix(in srgb, var(--app-surface) 90%, transparent) !important;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 60%);
 }
 
-.input:focus {
-  outline: none;
-  border-color: var(--app-focus);
-  box-shadow: 0 6px 24px color-mix(in srgb, var(--app-focus) 10%, transparent);
+table,
+[class*="_table_"] {
+  font-variant-numeric: tabular-nums;
 }
 
-/* Card */
-.card {
-  border-radius: 14px;
-  border: 1px solid var(--app-border);
-  background: linear-gradient(180deg, color-mix(in srgb, var(--app-surface) 94%, transparent), var(--app-surface));
-  box-shadow: var(--shadow-surface);
-  padding: 16px;
+tbody tr,
+[class*="_accountRow_"],
+[class*="_holdingRow_"],
+[class*="_transactionRow_"],
+[class*="_purchase_"] {
+  transition: background-color var(--motion-effect-fast) ease;
 }
 
-.card-compact { padding: 10px; }
-
-/* Table wrapper — keep tables readable by reducing transparency */
-.table-wrapper {
-  background: color-mix(in srgb, var(--app-surface) 100%, transparent);
-  border: 1px solid var(--app-border);
-  border-radius: 12px;
-  overflow: auto;
-  box-shadow: 0 8px 26px rgb(17 20 57 / 6%);
+@media (hover: hover) and (pointer: fine) {
+  tbody tr:hover,
+  [class*="_accountRow_"]:hover,
+  [class*="_holdingRow_"]:hover,
+  [class*="_transactionRow_"]:hover,
+  [class*="_purchase_"]:hover {
+    background: color-mix(in srgb, var(--app-accent-soft) 36%, transparent);
+  }
 }
-
-.table thead th { color: var(--app-text-muted); font-weight: 700; font-size: 12px; }
-.table tbody td { font-variant-numeric: tabular-nums; }
-
-/* Chart wrapper with subtle glass backdrop for summary panels */
-.chart-summary {
-  padding: 14px;
-  border-radius: 12px;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--app-surface) 96%, transparent), var(--app-surface));
-  box-shadow: 0 18px 48px rgb(17 20 57 / 7%);
-}
-
-/* Mobile bottom nav enhancement */
-.mobile-nav-enhanced {
-  border-radius: 22px !important;
-  padding: 6px !important;
-  box-shadow: 0 18px 44px rgb(17 20 57 / 16%);
-  backdrop-filter: blur(26px) saturate(150%);
-}
-
-/* Utility spacing */
-.u-gap-sm { gap: 8px; }
-.u-gap { gap: 16px; }
-.u-gap-lg { gap: 24px; }
-
-/* Accessibility helpers */
-.focus-ring:focus { outline: 3px solid color-mix(in srgb, var(--app-focus) 30%, white); outline-offset: 2px; }
 
 @media (max-width: 47.999rem) {
-  :root { --glass-blur: 18px; --control-height: 56px; --radius-panel: 12px; }
-  .glass-panel { border-radius: 12px; }
-  .btn { min-height: 56px; }
+  :root {
+    --space-page: 16px;
+    --radius-panel: 15px;
+    --glass-blur: 22px;
+  }
+
+  body {
+    background:
+      radial-gradient(circle at 88% 0, color-mix(in srgb, var(--app-accent) 10%, transparent), transparent 22rem),
+      var(--app-background);
+  }
+
+  .card,
+  [class*="_sheet_"],
+  [class*="_summaryPanel_"],
+  [class*="_allocationPanel_"],
+  [class*="_detailPanel_"],
+  [class*="_activityPanel_"],
+  [class*="_portfolioChartPanel_"],
+  [class*="_moversPanel_"],
+  [class*="_watchlistPanel_"],
+  [class*="_projection_"] {
+    box-shadow: 0 7px 22px rgb(18 35 68 / 6%) !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass-panel {
+    background: var(--app-surface) !important;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 }

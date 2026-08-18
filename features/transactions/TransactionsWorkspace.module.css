@@ -3,6 +3,13 @@
   margin: 0 auto;
   color: var(--app-text-strong);
 }
+
+/* Refracted Vault presentation */
+.page { max-width: 1320px; margin-inline: auto; }
+.summary { border: 1px solid var(--glass-border) !important; border-radius: 16px !important; background: var(--glass-surface) !important; box-shadow: var(--shadow-glass) !important; backdrop-filter: blur(30px) saturate(155%); }
+.accountChart, .panel { border-radius: 16px !important; border-color: color-mix(in srgb, var(--app-border) 84%, transparent) !important; background: color-mix(in srgb, var(--app-surface) 96%, transparent) !important; box-shadow: var(--shadow-surface) !important; }
+.accountTrack { height: 9px; }
+@media (max-width: 47.999rem) { .summary, .accountChart, .panel { border-radius: 15px; }.summary { gap: 10px; } }
 .intro {
   display: flex;
   align-items: flex-end;

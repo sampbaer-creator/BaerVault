@@ -8,6 +8,8 @@
     radial-gradient(circle at 8% 92%, rgb(49 95 80 / 10%), transparent 22rem),
     #f8f8f9;
 }
+.page { color: var(--app-text-strong); background: radial-gradient(circle at 50% 4%, color-mix(in srgb, var(--app-accent) 16%, transparent), transparent 30rem), var(--app-background); }
+.card { border: 1px solid var(--glass-border) !important; border-radius: 18px !important; background: var(--glass-strong) !important; box-shadow: var(--shadow-glass) !important; backdrop-filter: blur(30px) saturate(155%); }
 .card {
   width: min(100%, 590px);
   padding: clamp(28px, 6vw, 52px);

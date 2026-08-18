@@ -9,6 +9,13 @@
   margin: 0 auto;
   color: var(--navy);
 }
+
+/* Refracted Vault presentation */
+.workspace { max-width: 1400px; margin-inline: auto; }
+.hero { border: 1px solid var(--glass-border) !important; border-radius: 16px !important; background: var(--glass-surface) !important; box-shadow: var(--shadow-glass) !important; backdrop-filter: blur(30px) saturate(155%); }
+.portfolioChartPanel, .moversPanel, .allocationStrip, .watchlistPanel, .sheet, .activityPanel, .projection { border-radius: 16px !important; border-color: color-mix(in srgb, var(--app-border) 84%, transparent) !important; background: color-mix(in srgb, var(--app-surface) 96%, transparent) !important; box-shadow: var(--shadow-surface) !important; }
+.sectionTabs, .accountTabs { border-radius: 13px; background: var(--control-glass); box-shadow: inset 0 1px 0 var(--glass-highlight); }
+@media (max-width: 47.999rem) { .hero, .portfolioChartPanel, .moversPanel, .allocationStrip, .watchlistPanel, .sheet, .activityPanel, .projection { border-radius: 15px; } }
 :global(:root[data-theme="dark"]) .workspace :is(.hero, .sheet, .portfolioChartPanel, .allocationPanel, .holdingForm, .holdingSummary, input, select) {
   border-color: var(--app-border);
   color: var(--app-text-strong);

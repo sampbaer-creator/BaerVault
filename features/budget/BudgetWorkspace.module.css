@@ -6,6 +6,14 @@
   margin: 0 auto;
   color: var(--navy);
 }
+
+/* Refracted Vault presentation */
+.budget { max-width: 1360px; margin-inline: auto; }
+.summary { border: 1px solid var(--glass-border) !important; border-radius: 16px !important; background: var(--glass-surface) !important; box-shadow: var(--shadow-glass) !important; backdrop-filter: blur(30px) saturate(155%); }
+.monthBar { border-radius: 13px; border-color: var(--glass-border); background: var(--control-glass); box-shadow: inset 0 1px 0 var(--glass-highlight); }
+.sheet, .allocationPanel { border-radius: 16px !important; background: color-mix(in srgb, var(--app-surface) 96%, transparent) !important; box-shadow: var(--shadow-surface) !important; }
+.categoryRow { min-height: 66px; }
+@media (max-width: 47.999rem) { .summary { padding: 22px 18px; }.sheet, .allocationPanel { border-radius: 15px; }.categoryRow { min-height: 74px; } }
 :global(:root[data-theme="dark"]) .budget :is(.summary, .sheet, .detailCard, .purchaseForm, .categoryForm, input, select) {
   border-color: var(--app-border);
   color: var(--app-text-strong);

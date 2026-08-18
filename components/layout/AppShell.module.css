@@ -34,7 +34,7 @@
   border-radius: 0;
   flex-direction: column;
   background: var(--app-surface);
-  transition: width var(--motion-spatial-default) var(--ease-out);
+  transition: none;
 }
 
 .sidebarGlass {
@@ -47,7 +47,7 @@
   background: var(--app-surface);
   box-shadow: none;
   pointer-events: none;
-  transition: width var(--motion-spatial-default) var(--ease-out);
+  transition: none;
 }
 
 :global(:root[data-theme="dark"]) .sidebarGlass {
@@ -204,7 +204,7 @@
   border-radius: 0;
   background: var(--app-background);
   box-shadow: none;
-  transition: margin-left var(--motion-spatial-default) var(--ease-out);
+  transition: none;
 }
 
 .shellCompact .contentColumn { margin-left: 72px; }
@@ -544,4 +544,104 @@
 @media (max-width: 23rem) {
   .main { padding-inline: max(10px, env(safe-area-inset-left)); }
   .mobileNav { border-radius: 18px; }
+}
+
+/* Refracted Vault shell */
+.shell { background: transparent; }
+
+.sidebar {
+  width: 264px;
+  padding: 12px;
+  border: 0;
+  background: transparent;
+}
+
+.sidebarGlass {
+  inset: 12px auto 12px 12px;
+  width: 240px;
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  background: var(--glass-strong);
+  box-shadow: var(--shadow-glass);
+  backdrop-filter: blur(30px) saturate(155%);
+  -webkit-backdrop-filter: blur(30px) saturate(155%);
+}
+
+.brand {
+  height: 64px;
+  padding: 0 14px;
+  border-bottom-color: color-mix(in srgb, var(--app-border) 62%, transparent);
+}
+
+.sidebarNav { padding: 18px 8px; }
+.navSection + .navSection { margin-top: 24px; }
+.navLabel { margin-bottom: 8px; font-size: 9px; letter-spacing: 0.13em; }
+
+.navLink {
+  min-height: 42px;
+  gap: 11px;
+  margin-bottom: 4px;
+  padding: 9px 11px;
+  border-radius: 11px;
+  font-size: 12px;
+}
+
+.navLinkActive {
+  border-color: color-mix(in srgb, var(--app-accent) 20%, transparent);
+  background: color-mix(in srgb, var(--app-accent-soft) 72%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, white 72%, transparent);
+}
+
+.sidebarFooter { margin: 0 5px 5px; border-top-color: color-mix(in srgb, var(--app-border) 62%, transparent); }
+.contentColumn { margin-left: 264px; background: transparent; }
+.shellCompact .contentColumn { margin-left: 88px; }
+.shellCompact .sidebarGlass { width: 64px; }
+.sidebarCompact { width: 88px; padding-inline: 12px; }
+.sidebarCompact .sidebarGlass { width: 64px; }
+
+.desktopHeader {
+  top: 12px;
+  width: calc(100% - 24px);
+  min-height: 64px;
+  margin: 12px 12px 0;
+  padding: 10px 16px;
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  background: var(--glass-surface);
+  box-shadow: 0 12px 34px rgb(18 35 68 / 8%), inset 0 1px 0 var(--glass-highlight);
+  backdrop-filter: blur(28px) saturate(155%);
+  -webkit-backdrop-filter: blur(28px) saturate(155%);
+}
+
+.headerTitle { font-size: 16px; }
+.headerSubtitle { margin-top: 3px; font-size: 9px; }
+.searchControl { min-height: 38px; border-radius: 10px; background: color-mix(in srgb, var(--app-surface) 64%, transparent); }
+.periodControl, .iconControl, .sidebarToggle { min-height: 38px; border-radius: 10px; background: color-mix(in srgb, var(--app-surface) 66%, transparent) !important; }
+.sidebarToggle, .iconControl { width: 38px; height: 38px; }
+
+.main {
+  max-width: 1540px;
+  padding: clamp(32px, 4vw, 54px) clamp(22px, 3.2vw, 46px) 64px;
+}
+
+@media (max-width: 47.999rem) {
+  .contentColumn { margin-left: 0; }
+  .mobileHeader {
+    min-height: 66px;
+    margin: 8px 8px 0;
+    padding-inline: max(14px, env(safe-area-inset-left));
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    background: var(--glass-strong);
+  }
+  .main { padding: 26px 14px calc(106px + env(safe-area-inset-bottom)); }
+  .mobileNav {
+    gap: 3px;
+    padding: 5px;
+    border-radius: 18px;
+    background: var(--glass-strong);
+    box-shadow: 0 18px 54px rgb(17 30 62 / 20%), inset 0 1px 0 var(--glass-highlight);
+  }
+  .mobileLink, .moreButton { min-height: 54px; border-radius: 13px; }
+  .mobileLinkActive { background: color-mix(in srgb, var(--app-accent-soft) 76%, transparent); }
 }

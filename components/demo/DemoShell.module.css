@@ -335,3 +335,19 @@
 @media (prefers-reduced-motion: reduce) {
   .skipLink { transition: none; }
 }
+
+/* Refracted Vault demo shell mirrors the authenticated workspace. */
+@media (min-width: 48rem) {
+  .sidebar { width: 264px; padding: 12px; border: 0; background: transparent; }
+  .sidebarGlass { inset: 12px auto 12px 12px; width: 240px; border: 1px solid var(--glass-border); border-radius: 18px; background: var(--glass-strong); box-shadow: var(--shadow-glass); backdrop-filter: blur(30px) saturate(155%); }
+  .brand { height: 64px; padding-inline: 14px; }
+  .content { margin-left: 264px; background: transparent; }
+  .content > header { top: 12px; width: calc(100% - 24px); min-height: 64px; margin: 12px 12px 0; padding-inline: 18px; border: 1px solid var(--glass-border); border-radius: 16px; background: var(--glass-surface); box-shadow: 0 12px 34px rgb(18 35 68 / 8%), inset 0 1px 0 var(--glass-highlight); backdrop-filter: blur(28px) saturate(155%); }
+  .content main { padding: clamp(32px, 4vw, 54px) clamp(22px, 3.2vw, 46px) 64px; }
+}
+@media (max-width: 47.999rem) {
+  .content > header { margin: 8px 8px 0; border: 1px solid var(--glass-border); border-radius: 16px; background: var(--glass-strong); }
+  .content main { padding-top: 26px; }
+  .mobileNav { gap: 3px; padding: 5px; border-radius: 18px; background: var(--glass-strong); box-shadow: 0 18px 54px rgb(17 30 62 / 20%), inset 0 1px 0 var(--glass-highlight); }
+  .mobileNav a, .mobileNav button, .mobileNav .active { border-radius: 13px; }
+}
