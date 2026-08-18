@@ -1,7 +1,6 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 import { MobileNav } from "./MobileNav";
@@ -52,19 +51,18 @@ export function AppShell({ children }: AppShellProps) {
           sidebarCollapsed={sidebarCollapsed}
           onToggleSidebar={() => setSidebarCollapsed((current) => !current)}
         />
-        <motion.main
-          className={`${styles.main} ${swipe.direction ? styles[`swipe${swipe.direction === "left" ? "Left" : "Right"}`] : ""}`}
+        <main
+          className={styles.main}
           id="main-content"
           ref={mainRef}
           tabIndex={-1}
-          style={swipe.motionStyle}
           onPointerDown={swipe.onPointerDown}
           onPointerMove={swipe.onPointerMove}
           onPointerUp={swipe.onPointerUp}
           onPointerCancel={swipe.onPointerCancel}
         >
           {children}
-        </motion.main>
+        </main>
       </div>
       <MobileNav pathname={pathname} />
     </div>

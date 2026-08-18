@@ -44,23 +44,6 @@ export const systemNavigation: NavigationItem[] = [
   { href: "/settings", label: "Settings", icon: IconSettings },
 ];
 
-const mobileHrefs = new Set([
-  "/dashboard",
-  "/transactions",
-  "/budget",
-  "/investments",
-]);
-
-export const mobileNavigation: NavigationItem[] = mainNavigation.filter(({ href }) =>
-  mobileHrefs.has(href),
-);
-
-export const moreNavigation: NavigationItem[] = [
-  ...mainNavigation.filter(({ href }) => !mobileHrefs.has(href)),
-  ...householdNavigation,
-  ...systemNavigation,
-];
-
 export const pageTitles: Record<string, string> = {
   "/dashboard": "Dashboard",
   "/transactions": "Transactions",

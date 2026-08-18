@@ -1,6 +1,7 @@
 import "server-only";
 
 import { auth, clerkClient } from "@clerk/nextjs/server";
+import { cache } from "react";
 
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -8,7 +9,7 @@ import { DataAccessError, throwDataError } from "./errors";
 
 export type CurrentHousehold = { id: string; clerkOrgId: string; name: string };
 
-export async function getCurrentHousehold(): Promise<CurrentHousehold> {
+export const getCurrentHousehold = cache(async (): Promise<CurrentHousehold> => {
   const { userId, orgId } = await auth.protect();
   if (!userId) throw new DataAccessError("You must sign in to access household data.");
   if (!orgId) throw new DataAccessError("Select or create a Clerk household before using BearVault.", "MISSING_ORGANIZATION");
@@ -38,4 +39,4 @@ export async function getCurrentHousehold(): Promise<CurrentHousehold> {
   }
   if (inserted.error) throwDataError(inserted.error, "Could not create your BearVault household.");
   return { id: inserted.data.id, clerkOrgId: inserted.data.clerk_org_id, name: inserted.data.name };
-}
+});

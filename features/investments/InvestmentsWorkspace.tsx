@@ -808,8 +808,8 @@ export function InvestmentsWorkspace({
                       strokeWidth={2.25}
                       dot={false}
                       activeDot={{ r: 4, strokeWidth: 2 }}
-                      isAnimationActive={!reduceMotion}
-                      animationDuration={800}
+                      isAnimationActive={!reduceMotion && !mobile}
+                      animationDuration={360}
                       animationEasing="ease-out"
                     />
                   </LineChart>
@@ -1096,7 +1096,7 @@ export function InvestmentsWorkspace({
           <label>Monthly<input type="number" min="0" step="50" value={monthlyContribution} onChange={(event) => setMonthlyContribution(Math.max(0, Number(event.target.value) || 0))}/></label>
         </div>
         <div className={styles.outcomes}><div><span>Projected value</span><strong>{currency.format(projection.endingBalance)}</strong></div><div><span>Total contributed</span><strong>{currency.format(projection.contributed)}</strong></div><div><span>Estimated growth</span><strong>{currency.format(projection.endingBalance - projection.contributed)}</strong></div></div>
-        <div className={styles.projectionChart}><ResponsiveContainer width="100%" height="100%"><AreaChart data={projection.points} margin={{ top: 8, right: 4, left: 4, bottom: 0 }}><defs><linearGradient id="projectionFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="var(--chart-primary)" stopOpacity={0.28}/><stop offset="100%" stopColor="var(--chart-primary)" stopOpacity={0}/></linearGradient></defs><CartesianGrid vertical={false} stroke="var(--app-border)"/><XAxis dataKey="year" axisLine={false} tickLine={false} tick={{fontSize:9,fill:"var(--app-text-muted)"}}/><YAxis hide/><Tooltip formatter={(value) => currency.format(Number(value))}/><Area type="monotone" dataKey="balance" name="Projected value" stroke="var(--chart-primary)" strokeWidth={2} fill="url(#projectionFill)" isAnimationActive={!reduceMotion} animationDuration={800} animationEasing="ease-out"/><Line type="monotone" dataKey="contributions" name="Contributions" stroke="var(--chart-secondary)" strokeDasharray="4 4" dot={false} isAnimationActive={!reduceMotion} animationDuration={800} animationEasing="ease-out"/></AreaChart></ResponsiveContainer></div>
+        <div className={styles.projectionChart}><ResponsiveContainer width="100%" height="100%"><AreaChart data={projection.points} margin={{ top: 8, right: 4, left: 4, bottom: 0 }}><defs><linearGradient id="projectionFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="var(--chart-primary)" stopOpacity={0.28}/><stop offset="100%" stopColor="var(--chart-primary)" stopOpacity={0}/></linearGradient></defs><CartesianGrid vertical={false} stroke="var(--app-border)"/><XAxis dataKey="year" axisLine={false} tickLine={false} tick={{fontSize:9,fill:"var(--app-text-muted)"}}/><YAxis hide/><Tooltip formatter={(value) => currency.format(Number(value))}/><Area type="monotone" dataKey="balance" name="Projected value" stroke="var(--chart-primary)" strokeWidth={2} fill="url(#projectionFill)" isAnimationActive={!reduceMotion && !mobile} animationDuration={360} animationEasing="ease-out"/><Line type="monotone" dataKey="contributions" name="Contributions" stroke="var(--chart-secondary)" strokeDasharray="4 4" dot={false} isAnimationActive={!reduceMotion && !mobile} animationDuration={360} animationEasing="ease-out"/></AreaChart></ResponsiveContainer></div>
         <small>Illustrative estimate only. Returns are not guaranteed and inflation, fees, and taxes are not included.</small>
       </section>
 
@@ -1385,8 +1385,8 @@ export function InvestmentsWorkspace({
                       dataKey="close"
                       stroke="var(--chart-primary)"
                       fill="var(--app-accent-soft)"
-                      isAnimationActive={!reduceMotion}
-                      animationDuration={800}
+                      isAnimationActive={!reduceMotion && !mobile}
+                      animationDuration={360}
                       animationEasing="ease-out"
                     />
                   </AreaChart>

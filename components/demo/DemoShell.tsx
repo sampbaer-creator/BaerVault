@@ -16,15 +16,12 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import Link from "next/link";
-import { motion } from "motion/react";
 import { usePathname } from "next/navigation";
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import styles from "./DemoShell.module.css";
 import { LiquidGLRuntime } from "@/components/shared/LiquidGLRuntime";
 import { useMobilePageSwipe } from "@/components/layout/useMobilePageSwipe";
-import { navigateMobileRoute } from "@/components/layout/mobileRouteTransition";
 
 const links = [
   ["/demo", "Dashboard", IconLayoutDashboard],
@@ -55,7 +52,6 @@ const accountGroups = [
 
 export function DemoShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const router = useRouter();
   const mainRef = useRef<HTMLElement>(null);
   const mobileNavRef = useRef<HTMLElement>(null);
   const previousPathname = useRef(pathname);
@@ -148,26 +144,18 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
           <Link className={styles.createAccount} href="/sign-up">Create account</Link>
           <Link className={styles.mobileHousehold} href="/demo/household" aria-label="Open household"><IconMessage size={25}/></Link>
         </header>
-        <motion.main className={swipe.direction ? styles[`swipe${swipe.direction === "left" ? "Left" : "Right"}`] : undefined} id="demo-main-content" ref={mainRef} tabIndex={-1} style={swipe.motionStyle} onPointerDown={swipe.onPointerDown} onPointerMove={swipe.onPointerMove} onPointerUp={swipe.onPointerUp} onPointerCancel={swipe.onPointerCancel}>
+        <main id="demo-main-content" ref={mainRef} tabIndex={-1} onPointerDown={swipe.onPointerDown} onPointerMove={swipe.onPointerMove} onPointerUp={swipe.onPointerUp} onPointerCancel={swipe.onPointerCancel}>
           {children}
-        </motion.main>
+        </main>
       </div>
       <nav ref={mobileNavRef} className={styles.mobileNav} aria-label="Demo mobile navigation">
         {mobileLinks.map(([href, label, Icon]) => (
           <Link
             key={href}
             href={href}
-            prefetch={pathname === href ? false : null}
+            prefetch={pathname === href ? false : undefined}
             className={pathname === href ? styles.active : undefined}
             aria-current={pathname === href ? "page" : undefined}
-            onClick={(event) => {
-              if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-              event.preventDefault();
-              const currentIndex = mobileLinks.findIndex(([route]) => route === pathname);
-              const nextIndex = mobileLinks.findIndex(([route]) => route === href);
-              const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-              navigateMobileRoute(router, href, nextIndex < currentIndex ? "right" : "left", reduceMotion);
-            }}
           >
             <Icon size={19} aria-hidden="true" />
             <small>{label}</small>

@@ -22,34 +22,34 @@
 .finance-chart-line {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: finance-line-draw 800ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  animation: finance-line-draw 480ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 .finance-chart-area {
-  animation: finance-area-reveal 800ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  animation: finance-area-reveal 480ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 .finance-chart-point {
   opacity: 0;
-  animation: finance-point-reveal 180ms cubic-bezier(0.23, 1, 0.32, 1) 620ms forwards;
+  animation: finance-point-reveal 140ms cubic-bezier(0.23, 1, 0.32, 1) 340ms forwards;
 }
 
 [data-animate-progress] {
   transform-origin: left center;
-  animation: finance-progress-grow 800ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
-  transition: width 800ms cubic-bezier(0.77, 0, 0.175, 1);
+  animation: finance-progress-grow 480ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  transition: width 240ms cubic-bezier(0.77, 0, 0.175, 1);
 }
 
 [data-animate-ring-angle] {
-  animation: finance-ring-angle 800ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  animation: finance-ring-angle 480ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 [data-animate-ring-percent] {
-  animation: finance-ring-percent 800ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  animation: finance-ring-percent 480ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 [data-animate-ring-progress] {
-  animation: finance-ring-progress 800ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  animation: finance-ring-progress 480ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 @keyframes finance-line-draw { to { stroke-dashoffset: 0; } }
@@ -173,6 +173,17 @@
 
 /* Mobile reference world: dark material and page-specific financial color roles. */
 @media (max-width: 47.999rem) {
+  .finance-chart-line,
+  .finance-chart-area,
+  .finance-chart-point,
+  [data-animate-progress],
+  [data-animate-ring-angle],
+  [data-animate-ring-percent],
+  [data-animate-ring-progress] {
+    animation-duration: 240ms;
+    animation-delay: 0ms;
+  }
+  .finance-chart-point { opacity: 1; }
   :root[data-theme="dark"] { --app-background:#000b14;--app-surface:#00172c;--app-surface-raised:#001d39;--app-border:#063260;--app-text-strong:#d6e1ef;--app-text-muted:#5f8dc6;--app-hover:#06213d;--app-accent:#55a3ff;--app-accent-soft:#09284a;--money-positive:#08c616;--money-negative:#ff3448; }
   :root[data-theme="dark"] body { color:#d6e1ef;background:#000b14; }
   :root[data-theme="dark"] [class*="content"] main,
