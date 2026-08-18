@@ -845,6 +845,17 @@
 @media(max-width:47.999rem){.monthBar{display:none!important}.mobileBudgetSummary{margin-top:-18px!important;min-height:132px!important}.sheetHeading{justify-content:flex-end!important}.sheetHeading>div{display:none!important}.sheetHeading button{position:fixed;right:22px;bottom:max(22px,env(safe-area-inset-bottom));z-index:15;width:58px;height:58px;overflow:hidden;padding:0!important;border-radius:50%!important;color:transparent!important;background:#fff!important;box-shadow:0 8px 24px rgb(22 43 76 / 15%)!important}.sheetHeading button svg{position:absolute;color:#102653!important}.categoryRow{position:relative;padding-left:30px!important}.categoryRow::before{content:"";position:absolute;left:10px;top:20px;width:8px;height:8px;border-radius:50%;background:var(--app-accent)}.categoryRow:nth-child(3n+2)::before{background:#ff8500}.categoryRow:nth-child(3n)::before{background:#00a81a}.categoryName small{display:none!important}.mobileProgress>span>strong{font-size:14px!important}.mobileProgress small{font-size:11px!important}}
 @media(max-width:47.999rem){.mobileTableHeader{display:grid;grid-template-columns:minmax(102px,1fr) minmax(140px,1.3fr) 54px;gap:8px;padding:8px 12px 5px 30px;color:#8e99ad;font-size:10px;font-weight:750;text-transform:uppercase}.mobileTableHeader span:nth-child(2),.mobileTableHeader span:nth-child(3){text-align:right}.categoryRow{grid-template-columns:minmax(102px,1fr) minmax(140px,1.3fr) 0!important;align-items:center!important;gap:8px!important;min-height:56px!important}.categoryName{grid-column:1!important}.mobileProgress{display:grid!important;grid-column:2!important;grid-template-columns:54px minmax(52px,1fr) 50px!important;align-items:center!important;gap:6px!important}.mobileProgress>span{display:contents!important}.mobileProgress>span strong{grid-column:1;text-align:right}.mobileProgress>span em{grid-column:3;grid-row:1;color:var(--app-text-strong);font-style:normal;text-align:right}.mobileProgress>small{display:none!important}.mobileProgress>i{grid-column:2;grid-row:1;height:6px!important}.rowChevron{display:none!important}}
 
+@media(max-width:47.999rem){
+  .monthBar{display:flex!important;width:calc(100% - 40px)!important;margin:-18px 20px 16px!important;border:0!important;border-radius:15px!important;background:var(--app-surface)!important;box-shadow:0 10px 26px rgb(30 93 149 / 10%)!important}
+  .monthBar strong{font-size:14px!important}
+  .monthBar button{width:44px!important;height:44px!important;border-radius:11px!important}
+  .mobileBudgetSummary{margin-top:0!important}
+  .sheetHeading button{right:18px!important;bottom:max(82px,calc(env(safe-area-inset-bottom) + 72px))!important;width:54px!important;height:54px!important;background:var(--app-accent)!important;box-shadow:0 12px 28px color-mix(in srgb,var(--app-accent) 28%,transparent)!important}
+  .sheetHeading button svg{color:#fff!important}
+  .sheet,.rows{box-shadow:none!important}
+  .categoryRow{border-bottom:1px solid var(--app-border)!important;background:transparent!important;box-shadow:none!important}
+}
+
 @media (max-width: 47.999rem) {
   .intro {
     gap: 12px;

@@ -20,8 +20,8 @@ export function CashFlowWorkspace({ month }: { month: BudgetMonth }) {
         <span>{month.month}</span>
         <strong className={net >= 0 ? styles.positive : styles.negative}>{currency.format(net)}</strong>
         <div className={styles.netBars} aria-label={`Income ${currency.format(income)}, spending ${currency.format(spending)}`}>
-          <i style={{ width: `${(income / max) * 100}%` }} />
-          <i style={{ width: `${(spending / max) * 100}%` }} />
+          <span><i style={{ height: `${(income / max) * 100}%` }} /></span>
+          <span><i style={{ height: `${(spending / max) * 100}%` }} /></span>
         </div>
         <div className={styles.netLegend}>
           <span><IconArrowUpRight size={17} />Income <b>{currency.format(income)}</b></span>
@@ -36,14 +36,14 @@ export function CashFlowWorkspace({ month }: { month: BudgetMonth }) {
         </div>
         <div className={styles.categories}>
           {categories.map((category, index) => (
-            <div key={category.name}><span><i style={{ background: `var(--cash-${(index % 5) + 1})` }} />{category.name}</span><strong>{currency.format(category.amount)}</strong></div>
+            <div key={category.name}><span><i style={{ background: `var(--cash-${(index % 5) + 1})` }} />{category.name}</span><b aria-hidden="true"><i style={{ width: `${spending ? (category.amount / spending) * 100 : 0}%`, background: `var(--cash-${(index % 5) + 1})` }} /></b><strong>{currency.format(category.amount)}</strong></div>
           ))}
         </div>
       </section>
 
       <section className={styles.incomeCard}>
         <h2>Income</h2><span>{month.month}</span><strong>{currency.format(income)}</strong>
-        <div className={styles.incomeBars}>{month.incomeEntries.map((entry) => <i key={entry.id} style={{ height: `${Math.max(18, (entry.amount / Math.max(...month.incomeEntries.map((item) => item.amount), 1)) * 100)}%` }} />)}</div>
+        <div className={styles.incomeSources}>{month.incomeEntries.map((entry) => <div key={entry.id}><span>{entry.source}</span><i><b style={{width:`${(entry.amount / Math.max(income, 1)) * 100}%`}}/></i><strong>{currency.format(entry.amount)}</strong></div>)}</div>
       </section>
     </div>
   );

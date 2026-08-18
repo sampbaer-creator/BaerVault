@@ -2,8 +2,10 @@
 
 import { Drawer } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { IconEdit, IconFilter, IconPlus, IconSearch, IconTrash } from "@tabler/icons-react";
+import { IconArrowDown, IconArrowUp, IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import { FormEvent, useMemo, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { deleteIncomeAction, saveIncomeAction } from "@/app/(app)/transactions/actions";
 import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
@@ -16,9 +18,10 @@ const freshDraft = () => ({ source: "", amount: "", date: new Date().toISOString
 export function TransactionsWorkspace({ initialMonth }: { initialMonth: BudgetMonth }) {
   const money = useCurrencyFormatter();
   const mobile = useMediaQuery("(max-width: 47.999rem)");
+  const pathname = usePathname();
+  const budgetPath = pathname.startsWith("/demo") ? "/demo/budget" : "/budget";
   const [incomeEntries, setIncomeEntries] = useState(initialMonth.incomeEntries);
   const [filter, setFilter] = useState<Filter>("all");
-  const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draft, setDraft] = useState(freshDraft);
@@ -41,7 +44,7 @@ export function TransactionsWorkspace({ initialMonth }: { initialMonth: BudgetMo
       .slice(0, 5);
   }, [initialMonth.categories]);
   const largestAccountSpend = accountSpending[0]?.amount ?? 0;
-  const items = useMemo(() => [...incomeEntries.map((entry) => ({ id: entry.id, name: entry.source, category: "Income", account: entry.owner, date: entry.date, amount: entry.amount, incoming: true })), ...initialMonth.categories.flatMap((category) => category.purchases.map((purchase) => ({ id: purchase.id, name: purchase.description, category: category.name, account: purchase.accountName ?? "Account not assigned", date: purchase.date, amount: purchase.amount, incoming: false })))].filter((item) => filter === "all" || (filter === "income" ? item.incoming : !item.incoming)).filter((item)=>!query.trim()||`${item.name} ${item.category} ${item.account}`.toLowerCase().includes(query.trim().toLowerCase())).sort((a, b) => b.date.localeCompare(a.date)), [filter, incomeEntries, initialMonth.categories, query]);
+  const items = useMemo(() => [...incomeEntries.map((entry) => ({ id: entry.id, name: entry.source, category: "Income", account: entry.owner, date: entry.date, amount: entry.amount, incoming: true })), ...initialMonth.categories.flatMap((category) => category.purchases.map((purchase) => ({ id: purchase.id, name: purchase.description, category: category.name, account: purchase.accountName ?? "Account not assigned", date: purchase.date, amount: purchase.amount, incoming: false })))].filter((item) => filter === "all" || (filter === "income" ? item.incoming : !item.incoming)).sort((a, b) => b.date.localeCompare(a.date)), [filter, incomeEntries, initialMonth.categories]);
 
   function launch(id?: string) {
     const entry = incomeEntries.find((item) => item.id === id);
@@ -80,7 +83,7 @@ export function TransactionsWorkspace({ initialMonth }: { initialMonth: BudgetMo
         </div>)}
       </div> : <p className={styles.emptyChart}>Add a budget purchase to see account spending here.</p>}
     </section>
-    <label className={styles.mobileSearch}><IconSearch size={22}/><input type="search" value={query} onChange={(event)=>setQuery(event.target.value)} placeholder="Search"/><IconFilter size={20}/></label>
+    <div className={styles.mobileActions} aria-label="Add transaction"><button type="button" onClick={() => launch()}><IconArrowDown size={17}/>Add income</button><Link href={budgetPath}><IconArrowUp size={17}/>Add expense</Link></div>
     <section className={`${styles.panel} table-wrapper card`}><div className={styles.tabs}>{(["all","income","expenses"] as Filter[]).map((value) => <button className={filter === value ? styles.active : ""} key={value} onClick={() => setFilter(value)}>{value[0].toUpperCase()+value.slice(1)}</button>)}<span>{items.length} transactions</span></div><table><thead><tr><th>Merchant</th><th>Category</th><th>Account</th><th>Date</th><th>Amount</th><th/></tr></thead><tbody>{items.map((item) => <tr key={item.id}><td><div className={styles.merchant}><i>{item.name.slice(0,1)}</i><strong>{item.name}</strong></div></td><td><span className={styles.chip}><i style={{background:item.incoming?"var(--money-positive)":"var(--chart-secondary)"}}/>{item.category}</span></td><td className={styles.muted}>{item.account}</td><td className={styles.muted}>{item.date}</td><td className={item.incoming?styles.positive:styles.negative}><strong>{item.incoming?"+":"−"}{money.format(item.amount)}</strong></td><td>{item.incoming&&<div className={styles.actions}><button aria-label={`Edit ${item.name}`} onClick={() => launch(item.id)}><IconEdit size={15}/></button><button aria-label={`Delete ${item.name}`} onClick={() => setPendingDelete(item.id)}><IconTrash size={15}/></button></div>}</td></tr>)}</tbody></table></section>
     <Drawer opened={open} onClose={() => setOpen(false)} position={mobile?"bottom":"right"} size={mobile?"auto":430} title={editingId?"Edit income":"Add income"} classNames={{content:styles.drawer,header:styles.drawerHeader,body:styles.drawerBody,title:styles.drawerTitle}}><form className={styles.form} onSubmit={save}>{error&&<p className={styles.error}>{error}</p>}<label>Amount<div className={styles.moneyInput}><span>$</span><input type="number" min="0.01" step="0.01" required autoFocus value={draft.amount} onChange={(event) => setDraft({...draft,amount:event.target.value})} placeholder="0.00"/></div></label><label>Income source<input required maxLength={160} value={draft.source} onChange={(event) => setDraft({...draft,source:event.target.value})} placeholder="Payroll"/></label><div className={styles.formRow}><label>Date<input type="date" required value={draft.date} onChange={(event) => setDraft({...draft,date:event.target.value})}/></label><label>Owner<select value={draft.owner} onChange={(event) => setDraft({...draft,owner:event.target.value})}><option>Household</option><option>User</option><option>Spouse</option><option>Joint</option></select></label></div><button className={`${styles.submit} btn btn-primary`} disabled={saving}>{saving?"Saving…":editingId?"Save changes":"Add income"}</button></form></Drawer>
     <ConfirmDialog opened={Boolean(pendingDelete)} title="Delete this income entry?" description="This updates income totals everywhere in BearVault." confirmLabel="Delete income" onCancel={() => setPendingDelete(null)} onConfirm={() => { void remove(); }}/>

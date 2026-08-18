@@ -1,6 +1,6 @@
 "use client";
 
-import { IconArrowRight, IconCalendarEvent, IconReceipt, IconWallet } from "@tabler/icons-react";
+import { IconArrowRight, IconReceipt, IconWallet } from "@tabler/icons-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
@@ -63,14 +63,9 @@ export function DashboardOverview({ model, basePath = "" }: DashboardProps) {
     <div className={styles.dashboard}>
       <div className={styles.mobileReference}>
         <section className={styles.mobileTrajectory}>
-          <button type="button" aria-label="Budget help">?</button>
           <strong>{money.format(Math.max(budgetLeft, 0))} left</strong>
           <span>out of {money.format(model.planned)} budgeted</span>
           <svg viewBox="0 0 320 92" role="img" aria-label={`${model.month} budget progress`}><path d="M10 79 L42 68 L72 65 L101 53 L129 50 L157 35 L186 32 L214 25 L245 15 L310 4"/><path d="M10 79 L40 70 L68 67 L96 56 L124 52 L151 39 L178 37 L207 30 L236 19 L267 13"/><circle cx="267" cy="13" r="5"/></svg>
-        </section>
-        <section className={styles.mobileReview}>
-          <div className={styles.mobileSectionHead}><h2>To review</h2><Link href={`${basePath}/transactions`}>View all <IconArrowRight size={14}/></Link></div>
-          <div className={styles.mobileReviewCard}><span>So far today</span>{model.activity.slice(0,2).map(item=><div key={item.id}><strong>{item.name}</strong><b className={item.incoming?styles.positive:undefined}>{item.incoming?"+":""}{money.format(item.amount)}</b></div>)}<Link href={`${basePath}/transactions`}>Mark as reviewed</Link></div>
         </section>
         <section className={styles.mobileBudgetSection}>
           <div className={styles.mobileSectionHead}><h2>Budgets</h2><Link href={`${basePath}/budget`}>Categories <IconArrowRight size={14}/></Link></div>
@@ -81,10 +76,6 @@ export function DashboardOverview({ model, basePath = "" }: DashboardProps) {
               <strong>{money.format(Math.abs(remaining))}</strong><small>{remaining>=0?"left":"over"}</small>
             </Link>;
           })}</div>
-        </section>
-        <section className={styles.mobileUpcoming}>
-          <div className={styles.mobileSectionHead}><h2>Upcoming</h2></div>
-          <div className={styles.mobileUpcomingRail}>{model.activity.filter(item=>!item.incoming).slice(0,3).map(item=><div key={item.id}><IconCalendarEvent size={18}/><span>{item.name}</span><strong>{money.format(item.amount)}</strong></div>)}</div>
         </section>
         <section className={styles.mobileNet}>
           <div className={styles.mobileSectionHead}><h2>Net this month</h2><Link href={`${basePath}/cash-flow`}>Cash flow <IconArrowRight size={14}/></Link></div>

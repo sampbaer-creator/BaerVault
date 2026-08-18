@@ -5,7 +5,6 @@ import { useMediaQuery } from "@mantine/hooks";
 import {
   IconArrowDown,
   IconArrowUp,
-  IconActivity,
   IconBuildingBank,
   IconChevronRight,
   IconEdit,
@@ -50,7 +49,7 @@ import {
 import styles from "./InvestmentsWorkspace.module.css";
 
 type Range = "1M" | "3M" | "1Y" | "5Y";
-type PortfolioSection = "overview" | "holdings" | "activity" | "performance";
+type PortfolioSection = "overview" | "holdings" | "performance";
 type HoldingSort = "symbol" | "value" | "gain" | "weight";
 type MarketData = {
   price: number;
@@ -229,19 +228,6 @@ export function InvestmentsWorkspace({
       return { id: item.id, name: item.name, value };
     })
     .filter((item) => item.value > 0);
-  const recentActivity = accounts
-    .flatMap((investmentAccount) =>
-      investmentAccount.holdings.flatMap((item) =>
-        item.lots.map((lot) => ({
-          ...lot,
-          accountName: investmentAccount.name,
-          symbol: item.symbol,
-          holdingName: item.name,
-        })),
-      ),
-    )
-    .toSorted((a, b) => b.date.localeCompare(a.date))
-    .slice(0, 6);
   const sortedHoldings = (account?.holdings ?? []).toSorted((a, b) => {
     const priceA = accountMarkets[a.symbol]?.price ?? a.fallbackPrice;
     const priceB = accountMarkets[b.symbol]?.price ?? b.fallbackPrice;
@@ -728,7 +714,6 @@ export function InvestmentsWorkspace({
             [
               ["overview", "Overview", "portfolio-overview"],
               ["holdings", "Holdings", "portfolio-holdings"],
-              ["activity", "Activity", "portfolio-activity"],
               ["performance", "Performance", "portfolio-performance"],
             ] as const
           ).map(([section, label, target]) => (
@@ -1056,38 +1041,6 @@ export function InvestmentsWorkspace({
               <div className={styles.loading}>
                 No holdings in this account yet.
               </div>
-            )}
-          </section>
-          <section className={styles.activityPanel} id="portfolio-activity" aria-labelledby="activity-title">
-            <div className={styles.activityHeading}>
-              <div>
-                <IconActivity size={18} aria-hidden="true" />
-                <div>
-                  <h3 id="activity-title">Recent activity</h3>
-                  <p>Latest purchase lots across your investment accounts</p>
-                </div>
-              </div>
-              <span>{recentActivity.length} entries</span>
-            </div>
-            {recentActivity.length ? (
-              <div className={styles.activityRows}>
-                {recentActivity.map((item) => (
-                  <div className={styles.activityRow} key={`${item.symbol}-${item.id}`}>
-                    <span className={styles.activitySymbol}>{item.symbol.slice(0, 2)}</span>
-                    <span>
-                      <strong>Bought {item.symbol}</strong>
-                      <small>{item.holdingName} · {item.accountName}</small>
-                    </span>
-                    <span>
-                      <strong>{item.shares.toFixed(4)} shares</strong>
-                      <small>{new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(new Date(`${item.date}T00:00:00`))}</small>
-                    </span>
-                    <strong>{currency.format(item.shares * item.price)}</strong>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className={styles.loading}>No investment activity yet.</div>
             )}
           </section>
         </>

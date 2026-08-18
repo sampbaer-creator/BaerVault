@@ -686,6 +686,21 @@
 }
 @media(max-width:47.999rem){.workspace{--app-accent:#00b51a}.intro,.sectionTabs{display:none!important}.workspace .hero,:global(:root[data-theme="dark"]) .workspace .hero{min-height:0!important;margin:-18px 0 0!important;padding:18px 18px 0!important;border:0!important;border-radius:22px 22px 0 0!important;color:var(--app-text-strong)!important;background:#fff!important;box-shadow:0 18px 38px rgb(43 119 183 / 10%)!important}.hero>div:first-child{text-align:center!important}.workspace .hero span,:global(:root[data-theme="dark"]) .workspace .hero span{color:var(--app-text-muted)!important}.workspace .hero strong,:global(:root[data-theme="dark"]) .workspace .hero strong{display:block!important;color:#102653!important;font-size:30px!important}.workspace .hero p,:global(:root[data-theme="dark"]) .workspace .hero p{justify-content:center!important;color:#00a51a!important;font-size:16px!important}.heroRail{display:none!important}.portfolioChartPanel{display:flex!important;flex-direction:column!important;margin:0 0 28px!important;padding:0 18px 18px!important;border:0!important;border-radius:0 0 22px 22px!important;background:#fff!important;box-shadow:0 18px 38px rgb(43 119 183 / 10%)!important}.portfolioChartHeading{display:contents!important}.portfolioChartHeading>div:first-child{display:none!important}.portfolioChart{order:1!important;height:168px!important}.portfolioRanges{order:2!important;width:100%!important;margin-top:6px!important}.portfolioRanges button{border:0!important;background:transparent!important;color:#929db4!important}.portfolioRanges button[aria-pressed="true"]{border-radius:999px!important;color:#102653!important;background:#f3f4f6!important}.moversPanel{margin-top:0!important}.moversHeading h3{font-size:18px!important}.moversHeading p{display:none!important}.moversStrip{display:grid!important;grid-template-columns:repeat(6,150px)!important;gap:10px!important;overflow-x:auto!important}.mover{min-width:150px!important;min-height:176px!important;border:1px solid #e1e4e8!important;border-radius:16px!important;background:#fff!important}.mover>span:last-child{border-radius:999px!important;color:#00a51a!important;background:#e4f6e7!important}}
 
+@media(max-width:47.999rem){
+ .projection{grid-template-columns:1fr!important;gap:14px!important;padding:16px!important;border-radius:15px!important;box-shadow:none!important}
+ .projection>div:first-child p{display:none!important}
+ .projection>div:first-child{display:flex!important;align-items:center!important;gap:8px!important}
+ .projection>div:first-child h3{margin:0!important;font-size:15px!important}
+ .assumptions{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important}
+ .assumptions label{font-size:9px!important}
+ .assumptions input{min-width:0!important;height:38px!important;padding:8px!important}
+ .outcomes{grid-template-columns:1fr 1fr!important;gap:8px!important}
+ .outcomes div{padding:10px!important;border:0!important;background:var(--app-surface-raised)!important}
+ .outcomes div:last-child{display:none!important}
+ .outcomes strong{font-size:14px!important}
+ .projectionChart{height:120px!important;padding-top:0!important}
+}
+
 @media (max-width: 47.999rem) {
   :global(:root[data-theme="dark"]) .workspace .hero,
   :global(:root[data-theme="dark"]) .workspace .portfolioChartPanel,

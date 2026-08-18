@@ -421,6 +421,7 @@
 }
 
 .mobileSearch{display:none}
+.mobileActions{display:none}
 @media(max-width:47.999rem){
  .intro,.summary,.accountChart,.tabs{display:none!important}.mobileSearch{display:grid;grid-template-columns:30px 1fr 30px;align-items:center;gap:8px;height:54px;margin:-18px 0 26px;padding:0 18px;border-radius:22px;color:var(--app-text-muted);background:#fff;box-shadow:0 14px 32px rgb(43 119 183 / 10%)}.mobileSearch input{min-width:0;border:0;outline:0;color:var(--app-text-strong);background:transparent;font:inherit;font-size:16px;text-align:center}.panel tbody{gap:0!important}.panel tr{min-height:58px!important;padding:8px 2px!important;border:0!important;border-bottom:1px solid var(--app-border)!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}.merchant>i{display:none}.panel td:nth-child(2){padding-left:0!important}.chip{padding:2px 8px!important;border-radius:999px!important;background:var(--app-accent-soft)!important}.panel td:nth-child(5) strong{font-size:13px}.panel{background:transparent!important}
 }
@@ -436,3 +437,11 @@
   .chip { font-weight: 700; }
 }
 @media(max-width:47.999rem){.page{width:100%;max-width:100%;overflow:hidden}.intro,.summary,.accountChart,.tabs{display:none!important}.mobileSearch{display:grid!important;margin:-18px 20px 34px!important;height:54px!important}.panel{width:100%!important;overflow:visible!important;border:0!important;background:transparent!important;box-shadow:none!important}.panel thead{display:none!important}.panel tbody{display:block!important}.panel tr{display:grid!important;width:100%!important;grid-template-columns:minmax(0,1fr) auto!important;gap:3px 12px!important;padding:10px 22px!important;box-sizing:border-box!important}.panel td:nth-child(1){grid-column:1!important;grid-row:1!important}.panel td:nth-child(2){grid-column:1!important;grid-row:2!important;padding:0!important}.panel td:nth-child(5){grid-column:2!important;grid-row:1!important}.panel td:nth-child(6){grid-column:2!important;grid-row:2!important}.merchant>i{display:none!important}.merchant span{font-size:15px!important}.chip{padding:2px 7px!important;font-size:9px!important}.actions button{width:26px!important;height:26px!important;background:transparent!important}}
+
+@media(max-width:47.999rem){
+ .mobileSearch{display:none!important}
+ .mobileActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:-18px 20px 14px;padding:5px;border-radius:15px;background:var(--app-surface);box-shadow:0 10px 26px rgb(30 93 149 / 10%)}
+ .mobileActions button,.mobileActions a{display:flex;min-height:44px;align-items:center;justify-content:center;gap:7px;border:0;border-radius:11px;color:var(--app-text-strong);background:transparent;font:inherit;font-size:12px;font-weight:750;text-decoration:none}
+ .mobileActions button{color:#fff;background:var(--app-accent)}
+ .tabs{display:flex!important;position:static!important;margin:0 20px 12px!important;box-shadow:none!important}
+}
