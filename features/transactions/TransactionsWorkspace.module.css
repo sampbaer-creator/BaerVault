@@ -422,6 +422,7 @@
 
 .mobileSearch{display:none}
 .mobileActions{display:none}
+.mobileLedger{display:none}
 @media(max-width:47.999rem){
  .intro,.summary,.accountChart,.tabs{display:none!important}.mobileSearch{display:grid;grid-template-columns:30px 1fr 30px;align-items:center;gap:8px;height:54px;margin:-18px 0 26px;padding:0 18px;border-radius:22px;color:var(--app-text-muted);background:#fff;box-shadow:0 14px 32px rgb(43 119 183 / 10%)}.mobileSearch input{min-width:0;border:0;outline:0;color:var(--app-text-strong);background:transparent;font:inherit;font-size:16px;text-align:center}.panel tbody{gap:0!important}.panel tr{min-height:58px!important;padding:8px 2px!important;border:0!important;border-bottom:1px solid var(--app-border)!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}.merchant>i{display:none}.panel td:nth-child(2){padding-left:0!important}.chip{padding:2px 8px!important;border-radius:999px!important;background:var(--app-accent-soft)!important}.panel td:nth-child(5) strong{font-size:13px}.panel{background:transparent!important}
 }
@@ -444,4 +445,11 @@
  .mobileActions button,.mobileActions a{display:flex;min-height:44px;align-items:center;justify-content:center;gap:7px;border:0;border-radius:11px;color:var(--app-text-strong);background:transparent;font:inherit;font-size:12px;font-weight:750;text-decoration:none}
  .mobileActions button{color:#fff;background:var(--app-accent)}
  .tabs{display:flex!important;position:static!important;margin:0 20px 12px!important;box-shadow:none!important}
+ .panel table{display:none!important}
+ .mobileLedger{display:block}
+ .mobileTransaction{display:flex;width:100%;min-height:64px;align-items:center;justify-content:space-between;gap:16px;padding:10px 22px;border:0;border-bottom:1px solid var(--app-border);color:var(--app-text-strong);background:var(--app-surface);font:inherit;text-align:left}
+ .mobileTransaction>span{display:grid;min-width:0;gap:4px}
+ .mobileTransaction strong{overflow:hidden;font-size:14px;text-overflow:ellipsis;white-space:nowrap}
+ .mobileTransaction small{color:var(--app-text-muted);font-size:10px}
+ .mobileTransaction>b{flex:0 0 auto;font-size:13px;font-variant-numeric:tabular-nums}
 }

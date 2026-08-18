@@ -7,9 +7,11 @@ import { FormEvent, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { deleteIncomeAction, saveIncomeAction } from "@/app/(app)/transactions/actions";
+import { deleteBudgetEntryAction, saveBudgetEntryAction } from "@/app/(app)/budget/actions";
 import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
-import { totalSpending, type BudgetMonth } from "@/lib/finance";
+import { SwipeActionRow } from "@/components/shared/SwipeActionRow";
+import { type BudgetMonth } from "@/lib/finance";
 import styles from "./TransactionsWorkspace.module.css";
 
 type Filter = "all" | "income" | "expenses";
@@ -21,30 +23,31 @@ export function TransactionsWorkspace({ initialMonth }: { initialMonth: BudgetMo
   const pathname = usePathname();
   const budgetPath = pathname.startsWith("/demo") ? "/demo/budget" : "/budget";
   const [incomeEntries, setIncomeEntries] = useState(initialMonth.incomeEntries);
+  const [expenseEntries, setExpenseEntries] = useState(() => initialMonth.categories.flatMap((category) => category.purchases.map((purchase) => ({ ...purchase, categoryId: category.id, category: category.name }))));
   const [filter, setFilter] = useState<Filter>("all");
   const [open, setOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draft, setDraft] = useState(freshDraft);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-  const [pendingDelete, setPendingDelete] = useState<string | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<{id:string;name:string;incoming:boolean} | null>(null);
+  const [expenseOpen, setExpenseOpen] = useState(false);
+  const [expenseDraft, setExpenseDraft] = useState({ id:"", categoryId:"", description:"", amount:"", date:"", accountId:null as string | null });
   const income = incomeEntries.reduce((sum, entry) => sum + entry.amount, 0);
-  const spending = totalSpending(initialMonth);
+  const spending = expenseEntries.reduce((sum, entry) => sum + entry.amount, 0);
   const accountSpending = useMemo(() => {
     const totals = new Map<string, number>();
-    for (const category of initialMonth.categories) {
-      for (const purchase of category.purchases) {
-        const account = purchase.accountName ?? "Account not assigned";
-        totals.set(account, (totals.get(account) ?? 0) + purchase.amount);
-      }
+    for (const purchase of expenseEntries) {
+      const account = purchase.accountName ?? "Account not assigned";
+      totals.set(account, (totals.get(account) ?? 0) + purchase.amount);
     }
     return [...totals.entries()]
       .map(([account, amount]) => ({ account, amount }))
       .sort((a, b) => b.amount - a.amount)
       .slice(0, 5);
-  }, [initialMonth.categories]);
+  }, [expenseEntries]);
   const largestAccountSpend = accountSpending[0]?.amount ?? 0;
-  const items = useMemo(() => [...incomeEntries.map((entry) => ({ id: entry.id, name: entry.source, category: "Income", account: entry.owner, date: entry.date, amount: entry.amount, incoming: true })), ...initialMonth.categories.flatMap((category) => category.purchases.map((purchase) => ({ id: purchase.id, name: purchase.description, category: category.name, account: purchase.accountName ?? "Account not assigned", date: purchase.date, amount: purchase.amount, incoming: false })))].filter((item) => filter === "all" || (filter === "income" ? item.incoming : !item.incoming)).sort((a, b) => b.date.localeCompare(a.date)), [filter, incomeEntries, initialMonth.categories]);
+  const items = useMemo(() => [...incomeEntries.map((entry) => ({ id: entry.id, name: entry.source, category: "Income", account: entry.owner, date: entry.date, amount: entry.amount, incoming: true as const })), ...expenseEntries.map((purchase) => ({ ...purchase, name: purchase.description, account: purchase.accountName ?? "Account not assigned", incoming: false as const }))].filter((item) => filter === "all" || (filter === "income" ? item.incoming : !item.incoming)).sort((a, b) => b.date.localeCompare(a.date)), [filter, incomeEntries, expenseEntries]);
 
   function launch(id?: string) {
     const entry = incomeEntries.find((item) => item.id === id);
@@ -60,11 +63,32 @@ export function TransactionsWorkspace({ initialMonth }: { initialMonth: BudgetMo
     setIncomeEntries((current) => editingId ? current.map((entry) => entry.id === editingId ? result.data : entry) : [result.data, ...current]);
     setOpen(false);
   }
+  function editExpense(id: string) {
+    const entry = expenseEntries.find((item) => item.id === id);
+    if (!entry) return;
+    setExpenseDraft({ id:entry.id, categoryId:entry.categoryId, description:entry.description, amount:String(entry.amount), date:entry.date, accountId:entry.accountId ?? null });
+    setError(""); setExpenseOpen(true);
+  }
+  async function saveExpense(event: FormEvent) {
+    event.preventDefault();
+    const amount = Number(expenseDraft.amount);
+    setSaving(true); setError("");
+    if (!pathname.startsWith("/demo")) {
+      const result = await saveBudgetEntryAction({ id:expenseDraft.id, categoryId:expenseDraft.categoryId, description:expenseDraft.description, amount, date:expenseDraft.date, accountId:expenseDraft.accountId });
+      if (!result.ok) { setSaving(false); setError(result.error); return; }
+    }
+    setExpenseEntries((current) => current.map((entry) => entry.id === expenseDraft.id ? {...entry,description:expenseDraft.description.trim(),amount,date:expenseDraft.date} : entry));
+    setSaving(false); setExpenseOpen(false);
+  }
   async function remove() {
     if (!pendingDelete) return;
-    const result = await deleteIncomeAction(pendingDelete);
-    if (!result.ok) { setError(result.error); setPendingDelete(null); return; }
-    setIncomeEntries((current) => current.filter((entry) => entry.id !== pendingDelete)); setPendingDelete(null);
+    if (!pathname.startsWith("/demo")) {
+      const result = pendingDelete.incoming ? await deleteIncomeAction(pendingDelete.id) : await deleteBudgetEntryAction(pendingDelete.id);
+      if (!result.ok) { setError(result.error); setPendingDelete(null); return; }
+    }
+    if (pendingDelete.incoming) setIncomeEntries((current) => current.filter((entry) => entry.id !== pendingDelete.id));
+    else setExpenseEntries((current) => current.filter((entry) => entry.id !== pendingDelete.id));
+    setPendingDelete(null);
   }
 
   return <div className={styles.page}>
@@ -84,9 +108,12 @@ export function TransactionsWorkspace({ initialMonth }: { initialMonth: BudgetMo
       </div> : <p className={styles.emptyChart}>Add a budget purchase to see account spending here.</p>}
     </section>
     <div className={styles.mobileActions} aria-label="Add transaction"><button type="button" onClick={() => launch()}><IconArrowDown size={17}/>Add income</button><Link href={budgetPath}><IconArrowUp size={17}/>Add expense</Link></div>
-    <section className={`${styles.panel} table-wrapper card`}><div className={styles.tabs}>{(["all","income","expenses"] as Filter[]).map((value) => <button className={filter === value ? styles.active : ""} key={value} onClick={() => setFilter(value)}>{value[0].toUpperCase()+value.slice(1)}</button>)}<span>{items.length} transactions</span></div><table><thead><tr><th>Merchant</th><th>Category</th><th>Account</th><th>Date</th><th>Amount</th><th/></tr></thead><tbody>{items.map((item) => <tr key={item.id}><td><div className={styles.merchant}><i>{item.name.slice(0,1)}</i><strong>{item.name}</strong></div></td><td><span className={styles.chip}><i style={{background:item.incoming?"var(--money-positive)":"var(--chart-secondary)"}}/>{item.category}</span></td><td className={styles.muted}>{item.account}</td><td className={styles.muted}>{item.date}</td><td className={item.incoming?styles.positive:styles.negative}><strong>{item.incoming?"+":"−"}{money.format(item.amount)}</strong></td><td>{item.incoming&&<div className={styles.actions}><button aria-label={`Edit ${item.name}`} onClick={() => launch(item.id)}><IconEdit size={15}/></button><button aria-label={`Delete ${item.name}`} onClick={() => setPendingDelete(item.id)}><IconTrash size={15}/></button></div>}</td></tr>)}</tbody></table></section>
+    <section className={`${styles.panel} table-wrapper card`}><div className={styles.tabs}>{(["all","income","expenses"] as Filter[]).map((value) => <button className={filter === value ? styles.active : ""} key={value} onClick={() => setFilter(value)}>{value[0].toUpperCase()+value.slice(1)}</button>)}<span>{items.length} transactions</span></div><table><thead><tr><th>Merchant</th><th>Category</th><th>Account</th><th>Date</th><th>Amount</th><th/></tr></thead><tbody>{items.map((item) => <tr key={item.id}><td><div className={styles.merchant}><i>{item.name.slice(0,1)}</i><strong>{item.name}</strong></div></td><td><span className={styles.chip}><i style={{background:item.incoming?"var(--money-positive)":"var(--chart-secondary)"}}/>{item.category}</span></td><td className={styles.muted}>{item.account}</td><td className={styles.muted}>{item.date}</td><td className={item.incoming?styles.positive:styles.negative}><strong>{item.incoming?"+":"−"}{money.format(item.amount)}</strong></td><td>{item.incoming&&<div className={styles.actions}><button aria-label={`Edit ${item.name}`} onClick={() => launch(item.id)}><IconEdit size={15}/></button><button aria-label={`Delete ${item.name}`} onClick={() => setPendingDelete({id:item.id,name:item.name,incoming:true})}><IconTrash size={15}/></button></div>}</td></tr>)}</tbody></table>
+      <div className={styles.mobileLedger}>{items.map((item)=><SwipeActionRow key={item.id} onEdit={()=>item.incoming?launch(item.id):editExpense(item.id)} onDelete={()=>setPendingDelete({id:item.id,name:item.name,incoming:item.incoming})}><button type="button" className={styles.mobileTransaction} onClick={()=>item.incoming?launch(item.id):editExpense(item.id)}><span><strong>{item.name}</strong><small>{item.category} · {item.date}</small></span><b className={item.incoming?styles.positive:styles.negative}>{item.incoming?"+":"−"}{money.format(item.amount)}</b></button></SwipeActionRow>)}</div>
+    </section>
     <Drawer opened={open} onClose={() => setOpen(false)} position={mobile?"bottom":"right"} size={mobile?"auto":430} title={editingId?"Edit income":"Add income"} classNames={{content:styles.drawer,header:styles.drawerHeader,body:styles.drawerBody,title:styles.drawerTitle}}><form className={styles.form} onSubmit={save}>{error&&<p className={styles.error}>{error}</p>}<label>Amount<div className={styles.moneyInput}><span>$</span><input type="number" min="0.01" step="0.01" required autoFocus value={draft.amount} onChange={(event) => setDraft({...draft,amount:event.target.value})} placeholder="0.00"/></div></label><label>Income source<input required maxLength={160} value={draft.source} onChange={(event) => setDraft({...draft,source:event.target.value})} placeholder="Payroll"/></label><div className={styles.formRow}><label>Date<input type="date" required value={draft.date} onChange={(event) => setDraft({...draft,date:event.target.value})}/></label><label>Owner<select value={draft.owner} onChange={(event) => setDraft({...draft,owner:event.target.value})}><option>Household</option><option>User</option><option>Spouse</option><option>Joint</option></select></label></div><button className={`${styles.submit} btn btn-primary`} disabled={saving}>{saving?"Saving…":editingId?"Save changes":"Add income"}</button></form></Drawer>
-    <ConfirmDialog opened={Boolean(pendingDelete)} title="Delete this income entry?" description="This updates income totals everywhere in BearVault." confirmLabel="Delete income" onCancel={() => setPendingDelete(null)} onConfirm={() => { void remove(); }}/>
+    <Drawer opened={expenseOpen} onClose={()=>setExpenseOpen(false)} position={mobile?"bottom":"right"} size={mobile?"auto":430} title="Edit expense" classNames={{content:styles.drawer,header:styles.drawerHeader,body:styles.drawerBody,title:styles.drawerTitle}}><form className={styles.form} onSubmit={saveExpense}>{error&&<p className={styles.error}>{error}</p>}<label>Amount<div className={styles.moneyInput}><span>$</span><input type="number" min="0.01" step="0.01" required autoFocus value={expenseDraft.amount} onChange={(event)=>setExpenseDraft({...expenseDraft,amount:event.target.value})}/></div></label><label>Description<input required maxLength={160} value={expenseDraft.description} onChange={(event)=>setExpenseDraft({...expenseDraft,description:event.target.value})}/></label><label>Date<input type="date" required value={expenseDraft.date} onChange={(event)=>setExpenseDraft({...expenseDraft,date:event.target.value})}/></label><button className={`${styles.submit} btn btn-primary`} disabled={saving}>{saving?"Saving…":"Save expense"}</button></form></Drawer>
+    <ConfirmDialog opened={Boolean(pendingDelete)} title={`Delete ${pendingDelete?.name ?? "this transaction"}?`} description={pendingDelete?.incoming?"This updates income totals everywhere in BearVault.":"This permanently removes the expense from its budget category."} confirmLabel={pendingDelete?.incoming?"Delete income":"Delete expense"} onCancel={() => setPendingDelete(null)} onConfirm={() => { void remove(); }}/>
   </div>;
 }
 function Summary({label,value,positive,negative}:{label:string;value:string;positive?:boolean;negative?:boolean}) { return <div><span>{label}</span><strong className={positive?styles.positive:negative?styles.negative:""}>{value}</strong></div>; }

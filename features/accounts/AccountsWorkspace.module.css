@@ -503,6 +503,7 @@
 }
 
 @media(max-width:47.999rem){.summaryHeader{display:none!important}.netWorthCard{min-height:220px!important;padding:22px!important}.totalsGrid{margin-top:0!important}.netWorthLine{display:block!important;bottom:48px!important;height:90px!important}.summaryCaption{display:none!important}.groups{border:0!important;background:transparent!important}.accountGroup{margin-top:24px!important}.groupHeader{border:0!important;background:transparent!important}.accountRow{min-height:70px!important;padding-inline:0!important}.accountIcon{border-radius:50%!important}.pageHeader{display:block!important}.pageHeader>div{display:none!important}}
+@media(max-width:47.999rem) and (pointer:coarse){.accountRows>div{width:100%}.accountRow{width:100%}}
 
 @media (max-width: 47.999rem) {
   .pageHeader > div, .demoNotice { display: none; }

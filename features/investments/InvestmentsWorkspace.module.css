@@ -699,6 +699,7 @@
  .outcomes div:last-child{display:none!important}
  .outcomes strong{font-size:14px!important}
  .projectionChart{height:120px!important;padding-top:0!important}
+ .sheet>div:has(>.holdingRow){width:100%}
 }
 
 @media (max-width: 47.999rem) {

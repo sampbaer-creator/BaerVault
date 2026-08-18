@@ -37,6 +37,7 @@ import {
   updatePurchaseLotAction,
 } from "@/app/(app)/investments/actions";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
+import { SwipeActionRow } from "@/components/shared/SwipeActionRow";
 import { currency } from "@/lib/finance";
 import {
   costFor,
@@ -997,20 +998,27 @@ export function InvestmentsWorkspace({
                   accountMarkets[item.symbol]?.price ?? item.fallbackPrice;
                 const value = valueFor(item, live);
                 const gain = value - cost;
+                const openHolding = (editing = false) => {
+                  setHolding(item);
+                  setHoldingEditDraft({ symbol: item.symbol, name: item.name });
+                  setHoldingEdit(editing);
+                  setError("");
+                };
                 return (
+                  <SwipeActionRow
+                    key={item.id}
+                    onEdit={() => openHolding(true)}
+                    onDelete={() => {
+                      openHolding(false);
+                      setPendingDelete({ kind: "holding", id: item.id, label: item.symbol });
+                    }}
+                  >
                   <button
                     className={styles.holdingRow}
                     type="button"
                     onClick={() => {
-                      setHolding(item);
-                      setHoldingEditDraft({
-                        symbol: item.symbol,
-                        name: item.name,
-                      });
-                      setHoldingEdit(false);
-                      setError("");
+                      openHolding(false);
                     }}
-                    key={item.id}
                   >
                     <span className={styles.identity}>
                       <b>{item.symbol}</b>
@@ -1035,6 +1043,7 @@ export function InvestmentsWorkspace({
                     </span>
                     <IconChevronRight size={16} />
                   </button>
+                  </SwipeActionRow>
                 );
               })
             ) : (

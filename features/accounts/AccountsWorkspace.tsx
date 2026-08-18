@@ -25,6 +25,7 @@ import {
   updateFinancialAccountAction,
 } from "@/app/(app)/accounts/actions";
 import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
+import { SwipeActionRow } from "@/components/shared/SwipeActionRow";
 import {
   financialAccountTypeLabels,
   financialAccountTypes,
@@ -333,12 +334,12 @@ export function AccountsWorkspace({
                             ? (account.balance / account.creditLimit) * 100
                             : null;
                         return (
+                          <SwipeActionRow key={account.id} onEdit={() => openEdit(account)} onDelete={() => { void removeAccount(account); }}>
                           <button
                             className={`${styles.accountRow} ${selectedId === account.id ? styles.selectedRow : ""}`}
                             type="button"
                             aria-pressed={selectedId === account.id}
                             onClick={(event) => selectAccount(account.id, event.currentTarget)}
-                            key={account.id}
                           >
                             <span className={styles.accountIcon}><AccountIcon size={20} aria-hidden="true" /></span>
                             <span className={styles.accountCopy}>
@@ -351,6 +352,7 @@ export function AccountsWorkspace({
                             </span>
                             <IconChevronRight className={styles.rowChevron} size={18} aria-hidden="true" />
                           </button>
+                          </SwipeActionRow>
                         );
                       })}
                     </div>

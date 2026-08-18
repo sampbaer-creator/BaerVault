@@ -1,0 +1,46 @@
+.root { display: contents; }
+.actions { display: none; }
+.content { display: contents; }
+
+@media (max-width: 47.999rem) and (pointer: coarse) {
+  .root {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    isolation: isolate;
+    touch-action: pan-y;
+  }
+  .actions {
+    position: absolute;
+    inset: 0 0 0 auto;
+    display: grid;
+    width: 144px;
+    grid-template-columns: 1fr 1fr;
+    background: var(--app-surface-raised);
+  }
+  .actions button {
+    display: grid;
+    min-width: 0;
+    place-content: center;
+    gap: 5px;
+    border: 0;
+    color: #fff;
+    background: var(--app-accent);
+    font: inherit;
+    font-size: 10px;
+    font-weight: 720;
+  }
+  .actions button:last-child { background: var(--money-negative); }
+  .content {
+    position: relative;
+    z-index: 1;
+    display: block;
+    min-width: 0;
+    background: var(--app-surface);
+    will-change: transform;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content { will-change: auto; }
+}

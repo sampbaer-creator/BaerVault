@@ -854,6 +854,7 @@
   .sheetHeading button svg{color:#fff!important}
   .sheet,.rows{box-shadow:none!important}
   .categoryRow{border-bottom:1px solid var(--app-border)!important;background:transparent!important;box-shadow:none!important}
+  .rows>div{width:100%}
 }
 
 @media (max-width: 47.999rem) {
