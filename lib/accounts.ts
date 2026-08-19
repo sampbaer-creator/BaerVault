@@ -22,6 +22,22 @@ export type FinancialAccount = {
 
 export type FinancialAccountDraft = Omit<FinancialAccount, "id" | "updatedAt">;
 
+export type AccountTransferDraft = {
+  fromAccountId: string;
+  toAccountId: string;
+  amount: number;
+  date: string;
+  note: string;
+};
+
+export type AccountTransferResult = AccountTransferDraft & {
+  id: string;
+  fromBalance: number;
+  toBalance: number;
+  fromUpdatedAt: string;
+  toUpdatedAt: string;
+};
+
 export const financialAccountTypeLabels: Record<FinancialAccountType, string> = {
   checking: "Checking",
   savings: "Savings",

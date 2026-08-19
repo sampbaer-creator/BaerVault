@@ -1,9 +1,14 @@
 import "server-only";
 
-import type { FinancialAccount, FinancialAccountDraft } from "@/lib/accounts";
+import type {
+  AccountTransferDraft,
+  AccountTransferResult,
+  FinancialAccount,
+  FinancialAccountDraft,
+} from "@/lib/accounts";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-import { throwDataError } from "./errors";
+import { DataAccessError, throwDataError } from "./errors";
 import { getCurrentHousehold } from "./households";
 
 type AccountRow = {
@@ -87,4 +92,55 @@ export async function deleteFinancialAccount(id: string) {
     .eq("id", id)
     .eq("household_id", household.id);
   if (result.error) throwDataError(result.error, "Could not delete the account.");
+}
+
+type TransferRpcResult = {
+  id: string;
+  fromAccountId: string;
+  toAccountId: string;
+  amount: number | string;
+  date: string;
+  fromBalance: number | string;
+  toBalance: number | string;
+  fromUpdatedAt: string;
+  toUpdatedAt: string;
+};
+
+export async function transferBetweenFinancialAccounts(
+  input: AccountTransferDraft,
+): Promise<AccountTransferResult> {
+  const result = await createServerSupabaseClient().rpc(
+    "transfer_between_financial_accounts",
+    {
+      p_from_account_id: input.fromAccountId,
+      p_to_account_id: input.toAccountId,
+      p_amount: input.amount,
+      p_transfer_date: input.date,
+      p_note: input.note,
+    },
+  );
+
+  if (result.error) {
+    if (result.error.message.includes("insufficient funds")) {
+      throw new DataAccessError("The source account does not have enough money for that transfer.");
+    }
+    if (result.error.message.includes("Debt payments")) {
+      throw new DataAccessError("Choose two cash accounts. Card and loan payments are not transfers yet.");
+    }
+    throwDataError(result.error, "Could not complete the transfer. Your account balances were not changed.");
+  }
+
+  const data = result.data as TransferRpcResult;
+  return {
+    id: data.id,
+    fromAccountId: data.fromAccountId,
+    toAccountId: data.toAccountId,
+    amount: Number(data.amount),
+    date: data.date,
+    note: input.note,
+    fromBalance: Number(data.fromBalance),
+    toBalance: Number(data.toBalance),
+    fromUpdatedAt: data.fromUpdatedAt,
+    toUpdatedAt: data.toUpdatedAt,
+  };
 }

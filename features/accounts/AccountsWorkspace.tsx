@@ -3,6 +3,7 @@
 import { Drawer } from "@mantine/core";
 import {
   IconBuildingBank,
+  IconArrowsExchange,
   IconCash,
   IconChartLine,
   IconChevronRight,
@@ -22,6 +23,7 @@ import { type FormEvent, useRef, useState } from "react";
 import {
   addFinancialAccountAction,
   deleteFinancialAccountAction,
+  transferFundsAction,
   updateFinancialAccountAction,
 } from "@/app/(app)/accounts/actions";
 import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
@@ -52,6 +54,14 @@ type FormState = {
   creditLimit: string;
 };
 
+type TransferFormState = {
+  fromAccountId: string;
+  toAccountId: string;
+  amount: string;
+  date: string;
+  note: string;
+};
+
 const blankForm: FormState = {
   name: "",
   institution: "",
@@ -60,6 +70,16 @@ const blankForm: FormState = {
   balance: "",
   creditLimit: "",
 };
+
+function blankTransferForm(): TransferFormState {
+  return {
+    fromAccountId: "",
+    toAccountId: "",
+    amount: "",
+    date: new Date().toISOString().slice(0, 10),
+    note: "",
+  };
+}
 
 const groupOrder: FinancialAccountType[] = [
   "checking",
@@ -138,20 +158,30 @@ export function AccountsWorkspace({
   const [accounts, setAccounts] = useState(initialAccounts);
   const [selectedId, setSelectedId] = useState("");
   const [formOpen, setFormOpen] = useState(false);
+  const [transferOpen, setTransferOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(blankForm);
+  const [transferForm, setTransferForm] = useState<TransferFormState>(blankTransferForm);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [messageTone, setMessageTone] = useState<"error" | "success">("error");
   const detailCloseRef = useRef<HTMLButtonElement>(null);
   const accountTriggerRef = useRef<HTMLButtonElement>(null);
 
   const selected = accounts.find((account) => account.id === selectedId) ?? null;
   const totals = totalsFor(accounts);
+  const transferableAccounts = accounts.filter((account) => !isDebtAccount(account.type));
+
+  function showError(error: string) {
+    setMessageTone("error");
+    setMessage(error);
+  }
 
   function openAdd(type: FinancialAccountType = "checking") {
     setEditingId(null);
     setForm({ ...blankForm, type });
     setMessage("");
+    setMessageTone("error");
     setFormOpen(true);
   }
 
@@ -159,7 +189,25 @@ export function AccountsWorkspace({
     setEditingId(account.id);
     setForm(toForm(account));
     setMessage("");
+    setMessageTone("error");
     setFormOpen(true);
+  }
+
+  function openTransfer(preferredSourceId?: string) {
+    if (transferableAccounts.length < 2) {
+      showError("Add at least two checking, savings, cash, or other accounts before making a transfer.");
+      return;
+    }
+    const source = transferableAccounts.find((account) => account.id === preferredSourceId) ?? transferableAccounts[0];
+    const destination = transferableAccounts.find((account) => account.id !== source.id);
+    setTransferForm({
+      ...blankTransferForm(),
+      fromAccountId: source.id,
+      toAccountId: destination?.id ?? "",
+    });
+    setMessage("");
+    setMessageTone("error");
+    setTransferOpen(true);
   }
 
   async function saveAccount(event: FormEvent<HTMLFormElement>) {
@@ -198,7 +246,7 @@ export function AccountsWorkspace({
       : await addFinancialAccountAction(draft);
     setSaving(false);
     if (!result.ok) {
-      setMessage(result.error);
+      showError(result.error);
       return;
     }
     setAccounts((current) =>
@@ -213,13 +261,73 @@ export function AccountsWorkspace({
     invalidateMobileShell();
   }
 
+  async function saveTransfer(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const amount = Number(transferForm.amount);
+    const source = accounts.find((account) => account.id === transferForm.fromAccountId);
+    const destination = accounts.find((account) => account.id === transferForm.toAccountId);
+
+    if (!source || !destination || source.id === destination.id || !Number.isFinite(amount) || amount <= 0) {
+      showError("Choose two different accounts and enter a valid amount.");
+      return;
+    }
+    if (source.balance < amount) {
+      showError(`${source.name} does not have enough money for that transfer.`);
+      return;
+    }
+
+    setSaving(true);
+    setMessage("");
+    const transferredAt = new Date().toISOString();
+
+    if (demo) {
+      setAccounts((current) => current.map((account) => {
+        if (account.id === source.id) {
+          return { ...account, balance: Math.round((account.balance - amount) * 100) / 100, updatedAt: transferredAt };
+        }
+        if (account.id === destination.id) {
+          return { ...account, balance: Math.round((account.balance + amount) * 100) / 100, updatedAt: transferredAt };
+        }
+        return account;
+      }));
+    } else {
+      const result = await transferFundsAction({
+        fromAccountId: source.id,
+        toAccountId: destination.id,
+        amount,
+        date: transferForm.date,
+        note: transferForm.note,
+      });
+      if (!result.ok) {
+        setSaving(false);
+        showError(result.error);
+        return;
+      }
+      setAccounts((current) => current.map((account) => {
+        if (account.id === result.data.fromAccountId) {
+          return { ...account, balance: result.data.fromBalance, updatedAt: result.data.fromUpdatedAt };
+        }
+        if (account.id === result.data.toAccountId) {
+          return { ...account, balance: result.data.toBalance, updatedAt: result.data.toUpdatedAt };
+        }
+        return account;
+      }));
+      invalidateMobileShell();
+    }
+
+    setSaving(false);
+    setTransferOpen(false);
+    setMessageTone("success");
+    setMessage(`Transferred ${money.format(amount)} from ${source.name} to ${destination.name}. Income and spending totals were unchanged.`);
+  }
+
   async function removeAccount(account: FinancialAccount) {
     if (!window.confirm(`Delete ${account.name}? This cannot be undone.`)) return;
     setMessage("");
     if (!demo) {
       const result = await deleteFinancialAccountAction(account.id);
       if (!result.ok) {
-        setMessage(result.error);
+        showError(result.error);
         return;
       }
     }
@@ -254,10 +362,16 @@ export function AccountsWorkspace({
           <h2>Every balance, in one calm view.</h2>
           <p>Add checking, savings, cash, cards, and loans to see your complete net worth.</p>
         </div>
-        <button className={`${styles.addButton} btn btn-primary`} type="button" onClick={() => openAdd()}>
-          <IconPlus size={18} aria-hidden="true" />
-          Add account
-        </button>
+        <span className={styles.headerActions}>
+          <button className={styles.transferButton} type="button" onClick={() => openTransfer()} disabled={transferableAccounts.length < 2}>
+            <IconArrowsExchange size={18} aria-hidden="true" />
+            Transfer
+          </button>
+          <button className={`${styles.addButton} btn btn-primary`} type="button" onClick={() => openAdd()}>
+            <IconPlus size={18} aria-hidden="true" />
+            Add account
+          </button>
+        </span>
       </header>
 
       {demo ? (
@@ -265,7 +379,7 @@ export function AccountsWorkspace({
           Demo changes stay in this browser tab and never connect to a financial institution.
         </p>
       ) : null}
-      <p className={styles.status} aria-live="polite">{message}</p>
+      <p className={`${styles.status} ${messageTone === "success" ? styles.statusSuccess : ""}`} aria-live="polite">{message}</p>
 
       <div className={`${styles.accountLayout} ${selected ? styles.hasSelection : ""}`}>
         <div className={styles.accountMain}>
@@ -402,6 +516,7 @@ export function AccountsWorkspace({
                 </div>
               ) : null}
               <div className={styles.detailActions}>
+                {!isDebtAccount(selected.type) ? <button type="button" onClick={() => openTransfer(selected.id)} disabled={transferableAccounts.length < 2}><IconArrowsExchange size={17} aria-hidden="true" />Transfer</button> : null}
                 <button type="button" onClick={() => openEdit(selected)}><IconPencil size={17} aria-hidden="true" />Edit account</button>
                 <button className={`${styles.deleteButton} btn btn-ghost`} type="button" onClick={() => removeAccount(selected)}><IconTrash size={17} aria-hidden="true" />Delete</button>
               </div>
@@ -461,6 +576,60 @@ export function AccountsWorkspace({
           <p className={styles.formError} role="alert">{message}</p>
           <button className={`${styles.submitButton} btn btn-primary`} type="submit" disabled={saving}>
             {saving ? "Saving…" : editingId ? "Save changes" : "Add account"}
+          </button>
+        </form>
+      </Drawer>
+
+      <Drawer
+        opened={transferOpen}
+        onClose={() => setTransferOpen(false)}
+        position="right"
+        size="md"
+        title="Transfer between accounts"
+      >
+        <form className={styles.accountForm} onSubmit={saveTransfer}>
+          <p>Move money between your cash accounts. Transfers update both balances but are excluded from income and spending totals.</p>
+          <label>
+            From
+            <select
+              value={transferForm.fromAccountId}
+              onChange={(event) => {
+                const fromAccountId = event.target.value;
+                setTransferForm((current) => ({
+                  ...current,
+                  fromAccountId,
+                  toAccountId: current.toAccountId === fromAccountId
+                    ? transferableAccounts.find((account) => account.id !== fromAccountId)?.id ?? ""
+                    : current.toAccountId,
+                }));
+              }}
+            >
+              {transferableAccounts.map((account) => <option value={account.id} key={account.id}>{account.name} — {money.format(account.balance)}</option>)}
+            </select>
+          </label>
+          <label>
+            To
+            <select value={transferForm.toAccountId} onChange={(event) => setTransferForm((current) => ({ ...current, toAccountId: event.target.value }))}>
+              {transferableAccounts.filter((account) => account.id !== transferForm.fromAccountId).map((account) => <option value={account.id} key={account.id}>{account.name} — {money.format(account.balance)}</option>)}
+            </select>
+          </label>
+          <div className={styles.formGrid}>
+            <label>
+              Amount
+              <input value={transferForm.amount} onChange={(event) => setTransferForm((current) => ({ ...current, amount: event.target.value }))} required min="0.01" max={accounts.find((account) => account.id === transferForm.fromAccountId)?.balance} step="0.01" inputMode="decimal" type="number" placeholder="0.00" autoFocus />
+            </label>
+            <label>
+              Date
+              <input value={transferForm.date} onChange={(event) => setTransferForm((current) => ({ ...current, date: event.target.value }))} required type="date" />
+            </label>
+          </div>
+          <label>
+            Note
+            <input value={transferForm.note} onChange={(event) => setTransferForm((current) => ({ ...current, note: event.target.value }))} maxLength={160} autoComplete="off" placeholder="Optional" />
+          </label>
+          <p className={styles.formError} role="alert">{messageTone === "error" ? message : ""}</p>
+          <button className={`${styles.submitButton} btn btn-primary`} type="submit" disabled={saving}>
+            {saving ? "Transferring…" : "Transfer money"}
           </button>
         </form>
       </Drawer>
