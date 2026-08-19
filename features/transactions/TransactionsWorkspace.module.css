@@ -521,23 +521,5 @@
 }
 
 @media (max-width: 47.999rem) {
-  .mobileActions {
-    right: 18px;
-    bottom: calc(84px + env(safe-area-inset-bottom));
-    z-index: 35;
-  }
-  .mobileActions button {
-    width: auto;
-    height: 52px;
-    min-height: 52px;
-    padding: 0 17px;
-    border: 0;
-    border-radius: 16px;
-    color: #fff;
-    background: var(--app-accent);
-    box-shadow: 0 12px 28px color-mix(in srgb, var(--app-accent) 28%, transparent);
-    font-size: 12px;
-    font-weight: 800;
-  }
-  .mobileActions button svg { position: static; color: currentColor; transform: none; }
+  .mobileActions { display: none !important; }
 }

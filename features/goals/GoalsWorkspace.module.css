@@ -312,16 +312,6 @@
 }
 
 @media (max-width: 47.999rem) {
-  .top { right: 18px !important; bottom: calc(84px + env(safe-area-inset-bottom)) !important; z-index: 35 !important; }
-  .add {
-    width: auto !important;
-    height: 52px !important;
-    min-height: 52px !important;
-    padding: 0 17px !important;
-    border-radius: 16px !important;
-    color: #fff !important;
-    font-size: 12px !important;
-    font-weight: 800 !important;
-  }
-  .add svg { position: static !important; color: currentColor !important; }
+  .top > .add,
+  .empty > .add { display: none !important; }
 }

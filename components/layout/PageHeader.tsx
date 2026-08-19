@@ -127,6 +127,15 @@ export function PageHeader({
         <strong className={styles.mobileTitle}>BearVault</strong>
         <span className={styles.mobileProfile}><Link className={styles.mobileHousehold} href="/household" aria-label="Open household"><IconMessage size={24}/></Link><UserButton /></span>
       </header>
+      {quickAdd && (
+        <button
+          className={styles.mobileQuickAdd}
+          type="button"
+          onClick={() => requestShellQuickAdd(quickAdd.action)}
+        >
+          <IconPlus size={17} aria-hidden="true" /> {quickAdd.label}
+        </button>
+      )}
     </>
   );
 }
