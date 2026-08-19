@@ -3,7 +3,7 @@
 import { Drawer } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { IconArrowDown, IconArrowUp, IconCheck, IconEdit, IconPlus, IconSearch, IconTrash } from "@tabler/icons-react";
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -15,6 +15,7 @@ import { SwipeActionRow } from "@/components/shared/SwipeActionRow";
 import { type BudgetMonth } from "@/lib/finance";
 import styles from "./TransactionsWorkspace.module.css";
 import { invalidateMobileShell } from "@/lib/mobileShell";
+import { SHELL_QUICK_ADD_EVENT, type ShellQuickAddAction } from "@/lib/shellQuickAdd";
 
 type Filter = "all" | "income" | "expenses";
 const freshDraft = () => ({ source: "", amount: "", date: new Date().toISOString().slice(0, 10), owner: "Household" });
@@ -83,6 +84,17 @@ export function TransactionsWorkspace({ initialMonth }: { initialMonth: BudgetMo
     setExpenseDraft({ id:entry.id, categoryId:entry.categoryId, description:entry.description, amount:String(entry.amount), date:entry.date, accountId:entry.accountId ?? null });
     setError(""); setExpenseOpen(true);
   }
+  useEffect(() => {
+    const openIncome = (event: Event) => {
+      if ((event as CustomEvent<ShellQuickAddAction>).detail !== "income") return;
+      setEditingId(null);
+      setDraft(freshDraft());
+      setError("");
+      setOpen(true);
+    };
+    window.addEventListener(SHELL_QUICK_ADD_EVENT, openIncome);
+    return () => window.removeEventListener(SHELL_QUICK_ADD_EVENT, openIncome);
+  }, []);
   async function saveExpense(event: FormEvent) {
     event.preventDefault();
     const amount = Number(expenseDraft.amount);

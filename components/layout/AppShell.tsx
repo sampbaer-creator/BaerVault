@@ -53,6 +53,7 @@ export function AppShell({ children }: AppShellProps) {
       <div className={styles.contentColumn}>
         <PageHeader
           title={title}
+          pathname={pathname}
           sidebarCollapsed={sidebarCollapsed}
           onToggleSidebar={() => setSidebarCollapsed((current) => !current)}
         />

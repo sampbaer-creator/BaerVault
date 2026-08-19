@@ -14,7 +14,7 @@ import {
   IconTrash,
   IconX,
 } from "@tabler/icons-react";
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -38,6 +38,7 @@ import {
 
 import styles from "./BudgetWorkspace.module.css";
 import { invalidateMobileShell } from "@/lib/mobileShell";
+import { SHELL_QUICK_ADD_EVENT, type ShellQuickAddAction } from "@/lib/shellQuickAdd";
 
 type BudgetAccountOption = {
   id: string;
@@ -114,6 +115,16 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
   const [categoryDraft, setCategoryDraft] = useState({ name: "", plannedAmount: "" });
   const [categoryNameDraft, setCategoryNameDraft] = useState("");
   const [pendingDelete, setPendingDelete] = useState<{ kind: "entry" | "category"; id: string; label: string } | null>(null);
+
+  useEffect(() => {
+    const openCategory = (event: Event) => {
+      if ((event as CustomEvent<ShellQuickAddAction>).detail === "category") {
+        setAddingCategory(true);
+      }
+    };
+    window.addEventListener(SHELL_QUICK_ADD_EVENT, openCategory);
+    return () => window.removeEventListener(SHELL_QUICK_ADD_EVENT, openCategory);
+  }, []);
 
   const month = useMemo(() => ({ ...initialBudget, categories }), [categories, initialBudget]);
   const selected = categories.find((category) => category.id === selectedId) ?? null;

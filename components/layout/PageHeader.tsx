@@ -13,6 +13,8 @@ import {
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
+import { requestShellQuickAdd, type ShellQuickAddAction } from "@/lib/shellQuickAdd";
+
 import {
   householdNavigation,
   mainNavigation,
@@ -22,6 +24,7 @@ import styles from "./AppShell.module.css";
 
 type PageHeaderProps = {
   title: string;
+  pathname: string;
   sidebarCollapsed: boolean;
   onToggleSidebar: () => void;
 };
@@ -34,6 +37,7 @@ const searchablePages = [
 
 export function PageHeader({
   title,
+  pathname,
   sidebarCollapsed,
   onToggleSidebar,
 }: PageHeaderProps) {
@@ -45,6 +49,14 @@ export function PageHeader({
       label.toLowerCase().includes(normalized),
     );
   }, [query]);
+  const quickAdd = useMemo(() => {
+    const actions: Record<string, { action: ShellQuickAddAction; label: string }> = {
+      "/budget": { action: "category", label: "Add category" },
+      "/goals": { action: "goal", label: "Add goal" },
+      "/transactions": { action: "income", label: "Add income" },
+    };
+    return actions[pathname.replace(/^\/demo/, "")];
+  }, [pathname]);
 
   return (
     <>
@@ -96,7 +108,15 @@ export function PageHeader({
               </nav>
             )}
           </div>
-          <button className={styles.periodControl} type="button" disabled title="Quick add is coming soon"><IconPlus size={15} aria-hidden="true" /> Add</button>
+          {quickAdd && (
+            <button
+              className={`${styles.periodControl} ${styles.quickAddControl}`}
+              type="button"
+              onClick={() => requestShellQuickAdd(quickAdd.action)}
+            >
+              <IconPlus size={15} aria-hidden="true" /> {quickAdd.label}
+            </button>
+          )}
           <button className={styles.iconControl} type="button" disabled aria-label="Notifications (coming soon)" title="Notifications are coming soon"><IconBell size={18} aria-hidden="true" /></button>
           <UserButton />
         </div>

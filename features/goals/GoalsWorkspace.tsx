@@ -3,13 +3,14 @@
 import { Drawer } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { IconEdit, IconPlus, IconTargetArrow, IconTrash } from "@tabler/icons-react";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { addGoalAction, deleteGoalAction, updateGoalAction } from "@/app/(app)/goals/actions";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { currency } from "@/lib/finance";
 import type { SavingsGoal } from "@/lib/goals";
 import styles from "./GoalsWorkspace.module.css";
 import { invalidateMobileShell } from "@/lib/mobileShell";
+import { SHELL_QUICK_ADD_EVENT, type ShellQuickAddAction } from "@/lib/shellQuickAdd";
 
 const emptyDraft = { name: "", targetAmount: "", savedAmount: "0", targetDate: "", monthlyContribution: "0" };
 const colors = ["#4f8389", "#d4af37", "#000080", "#5e191a", "#cfac87", "#e8b00f"];
@@ -31,6 +32,17 @@ export function GoalsWorkspace({ initialGoals }: { initialGoals: SavingsGoal[] }
     setDraft(goal ? { name: goal.name, targetAmount: String(goal.targetAmount), savedAmount: String(goal.savedAmount), targetDate: goal.targetDate ?? "", monthlyContribution: String(goal.monthlyContribution) } : emptyDraft);
     setError(""); setOpen(true);
   }
+  useEffect(() => {
+    const openGoal = (event: Event) => {
+      if ((event as CustomEvent<ShellQuickAddAction>).detail !== "goal") return;
+      setEditing(null);
+      setDraft(emptyDraft);
+      setError("");
+      setOpen(true);
+    };
+    window.addEventListener(SHELL_QUICK_ADD_EVENT, openGoal);
+    return () => window.removeEventListener(SHELL_QUICK_ADD_EVENT, openGoal);
+  }, []);
   async function save(event: FormEvent) {
     event.preventDefault(); setSaving(true); setError("");
     const input = { name: draft.name, targetAmount: Number(draft.targetAmount), savedAmount: Number(draft.savedAmount), targetDate: draft.targetDate || null, monthlyContribution: Number(draft.monthlyContribution) };
