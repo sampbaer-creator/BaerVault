@@ -83,6 +83,8 @@
   background: var(--app-surface);
 }
 
+.mobileSignInAction { display: none; }
+
 .hero {
   display: grid;
   width: min(1240px, calc(100% - 40px));
@@ -402,17 +404,36 @@
 }
 
 @media (max-width: 47.999rem) {
-  .nav { width: min(100% - 28px, 1240px); min-height: 62px; grid-template-columns: 1fr auto; }
+  .nav {
+    width: min(100% - 20px, 1240px);
+    min-height: 64px;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: 0;
+  }
   .navLinks,
   .navCta { display: none; }
-  .signIn { min-height: 44px; padding-inline: 14px; color: var(--app-text-strong); }
+  .brand { grid-column: 2; justify-self: center; }
+  .navActions { display: none; }
   .hero { width: min(100% - 28px, 780px); gap: 42px; padding: 54px 0; }
   .heroCopy { text-align: center; }
   .hero h1 { max-width: 12ch; margin-inline: auto; font-size: clamp(38px, 11vw, 50px); }
   .lede { margin-inline: auto; font-size: 15px; }
   .heroActions { display: grid; }
   .primaryAction,
-  .secondaryAction { min-height: 50px; font-size: 14px; }
+  .secondaryAction,
+  .mobileSignInAction { min-height: 50px; font-size: 14px; }
+  .mobileSignInAction {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 9px 13px;
+    border: 1px solid var(--app-border);
+    border-radius: 9px;
+    color: var(--app-text-strong);
+    background: var(--app-surface);
+    font-weight: 680;
+    text-decoration: none;
+  }
   .securityNote { justify-content: center; }
   .previewWindow { grid-template-columns: 1fr; }
   .previewSidebar { display: none; }
@@ -448,9 +469,35 @@
   .footer { min-height: 110px; flex-direction: column; justify-content: center; text-align: center; }
 }
 
-@media (max-width: 24rem) {
+@media (max-width: 25rem) {
+  .siteHeader { width: calc(100% - 8px); }
+  .nav { width: calc(100% - 16px); }
+  .hero,
+  .benefitStrip,
+  .factStrip,
+  .productSection,
+  .featuresSection,
+  .howSection,
+  .securitySection,
+  .finalCta,
+  .footer { width: calc(100% - 20px); }
+  .hero { gap: 34px; padding-block: 46px; }
+  .hero h1 { font-size: clamp(35px, 10.25vw, 40px); }
+  .lede { margin-block: 18px 22px; line-height: 1.55; }
+  .previewContent { gap: 8px; padding: 8px; }
+  .spendingCard,
+  .worthCard,
+  .activityCard,
+  .categoriesCard { padding-inline: 12px; }
+  .securitySection { padding-inline: 16px; }
   .worthValues { gap: 16px; }
   .accountTotal strong { font-size: 23px; }
+}
+
+@media (max-width: 22rem) {
+  .factStrip { grid-template-columns: 1fr; }
+  .factStrip > div:nth-child(even) { border-left: 0; }
+  .factStrip > div + div { border-top: 1px solid var(--app-border); }
 }
 
 @media (prefers-reduced-motion: reduce) {

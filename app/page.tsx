@@ -171,6 +171,7 @@ export default function Home() {
               Create your free account <IconArrowRight size={17} aria-hidden="true" />
             </Link>
             <Link className={styles.secondaryAction} href="/demo">Explore the demo</Link>
+            <Link className={styles.mobileSignInAction} href="/sign-in">Sign in</Link>
           </div>
           <p className={styles.securityNote}>
             <IconLock size={14} aria-hidden="true" /> Secure sign-in with Google and MFA
