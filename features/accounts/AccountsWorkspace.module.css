@@ -6,8 +6,10 @@
   --accounts-orange: var(--money-negative);
   --accounts-orange-soft: color-mix(in srgb, var(--money-negative) 10%, var(--app-surface));
   width: 100%;
+  min-width: 0;
   max-width: 1500px;
   margin: 0 auto;
+  overflow-x: clip;
   color: var(--app-text-strong);
 }
 
@@ -103,8 +105,7 @@
 .submitButton::before,
 .accountRow::before,
 .detailHeader button::before,
-.detailActions button::before,
-.emptyState button::before {
+.detailActions button::before {
   display: none;
 }
 
@@ -134,6 +135,8 @@
   gap: 18px;
   align-items: start;
 }
+
+.accountLayout:not(.hasSelection) .detailPanel { display: none; }
 
 .accountMain { min-width: 0; }
 
@@ -378,8 +381,7 @@
   border-top: 1px solid var(--app-border);
 }
 
-.detailActions button,
-.emptyState button {
+.detailActions button {
   display: inline-flex;
   min-height: 42px;
   align-items: center;
@@ -409,9 +411,9 @@
 }
 
 .detailEmpty p { max-width: 220px; margin: 12px 0 0; font-size: 13px; }
-.emptyState { min-height: 270px; margin-top: 16px; border: 1px dashed var(--app-border); border-radius: 18px; background: var(--app-surface); }
+.emptyState { min-height: 210px; margin-top: 16px; border: 1px dashed var(--app-border); border-radius: 18px; background: var(--app-surface); }
 .emptyState h3 { margin: 14px 0 0; color: var(--app-text-strong); font-size: 18px; }
-.emptyState p { max-width: 430px; margin: 6px 0 18px; font-size: 13px; }
+.emptyState p { max-width: 430px; margin: 6px 0 0; font-size: 13px; }
 
 .accountForm { display: grid; gap: 17px; padding-bottom: 18px; }
 .accountForm > p:first-child { margin: 0; color: var(--app-text-muted); font-size: 13px; line-height: 1.55; }
@@ -471,6 +473,7 @@
 }
 
 @media (max-width: 47.999rem) {
+  .workspace { padding-bottom: calc(136px + env(safe-area-inset-bottom)); }
   .pageHeader { align-items: stretch; flex-direction: column; gap: 16px; margin-bottom: 16px; }
   .pageHeader h2 { font-size: 27px; }
   .pageHeader p { font-size: 14px; }
@@ -564,7 +567,7 @@
   .addButton { box-shadow: 0 12px 26px rgb(22 92 151 / 22%) !important; }
   .transferButton { border-color: var(--app-border); background: var(--app-surface); box-shadow: var(--shadow-surface); }
   .addButton svg, .transferButton svg { width: 24px; height: 24px; }
-  .netWorthCard { min-height: 250px; padding: 22px 18px; border: 0; border-radius: 22px; color: var(--app-text-strong); background: #fff; box-shadow: 0 18px 38px rgb(43 119 183 / 12%); }
+  .netWorthCard { min-height: 226px !important; padding: 22px 18px; border: 0; border-radius: 22px; color: var(--app-text-strong); background: #fff; box-shadow: 0 18px 38px rgb(43 119 183 / 12%); }
   .summaryHeader { align-items: center; text-align: center; }
   .summaryHeader > div > span, .totalsGrid span, .summaryCaption { color: var(--app-text-muted); }
   .summaryHeader > div > strong, .totalsGrid strong { color: var(--app-text-strong); }
@@ -573,7 +576,9 @@
   .lineStroke { stroke: #59a5ef; }
   .linePoint { fill: white; stroke: #59a5ef; }
   .groups { margin-top: 18px; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
-  .accountGroup { border: 0; background: transparent; box-shadow: none; }
+  .emptyState { min-height: 180px; padding: 24px 20px; }
+  .accountGroup { margin-top: 20px !important; border: 0; background: transparent; box-shadow: none; }
+  .accountGroup:first-child { margin-top: 0 !important; }
   .groupHeader { padding-inline: 2px; }
   .accountRow { border-bottom: 1px solid #edf0f4; background: transparent; }
 }
@@ -589,24 +594,39 @@
   .pageHeader > div { display: none; }
   .addButton, .transferButton { min-height: 36px; padding-inline: 12px; border-radius: 8px; box-shadow: none !important; font-size: 11px; }
   .demoNotice { margin-bottom: 12px; padding-block: 8px; border-radius: 8px; font-size: 10px; }
-  .accountLayout { grid-template-columns: minmax(0, 1.55fr) minmax(330px, .85fr); gap: 14px; }
-  .netWorthCard { min-height: 290px; padding: 22px; border-radius: 16px; box-shadow: none; }
-  .summaryHeader { justify-content: center; text-align: center; }
-  .summaryHeader > div > span { display: none; }
+  .accountLayout { gap: 16px; }
+  .netWorthCard {
+    display: grid;
+    min-height: 164px;
+    grid-template-columns: minmax(260px, .9fr) minmax(260px, 1.1fr);
+    align-items: center;
+    gap: 28px;
+    padding: 22px 24px 24px;
+    border-radius: 16px;
+    box-shadow: none;
+  }
+  .summaryHeader { align-items: center; justify-content: flex-start; text-align: left; }
+  .summaryHeader > div > span { display: block; }
   .summaryHeader > div > strong { font-size: 28px; }
-  .privateBadge { position: absolute; top: 0; right: 0; }
-  .totalsGrid { margin: 16px auto 0; text-align: left; }
+  .privateBadge { margin-left: auto; }
+  .totalsGrid { width: 100%; margin: 0; text-align: left; }
   .netWorthLine { bottom: 32px; height: 110px; }
   .groups { margin-top: 14px; border-radius: 14px; box-shadow: none; }
   .groupHeader { min-height: 42px; padding: 8px 14px; }
   .accountRow { min-height: 62px; }
-  .detailPanel { top: 66px; min-height: 620px; border-radius: 14px; box-shadow: none; }
+  .detailPanel { top: 66px; min-height: 460px; border-radius: 14px; box-shadow: none; }
+}
+
+@media (min-width: 62.001rem) {
+  .accountLayout { grid-template-columns: minmax(0, 1fr); }
+  .accountLayout.hasSelection { grid-template-columns: minmax(0, 1fr) minmax(320px, 380px); }
 }
 
 @media (min-width: 70rem) {
   .workspace { max-width: 1400px !important; }
-  .accountLayout { grid-template-columns: minmax(0, 1.65fr) minmax(330px, .72fr); gap: 22px; }
-  .netWorthCard { min-height: 280px; padding: 30px 32px 22px; }
+  .accountLayout { gap: 20px; }
+  .accountLayout.hasSelection { grid-template-columns: minmax(0, 1fr) minmax(340px, 390px); }
+  .netWorthCard { min-height: 168px; padding: 24px 28px 26px; }
   .accountRow { min-height: 64px; grid-template-columns: 42px minmax(0, 1.4fr) minmax(150px, .65fr) 18px; padding-inline: 22px; }
-  .detailPanel { top: 96px; min-height: 560px; }
+  .detailPanel { top: 96px; min-height: 460px; }
 }

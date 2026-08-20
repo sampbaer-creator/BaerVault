@@ -438,7 +438,6 @@ export function AccountsWorkspace({
               <IconBuildingBank size={28} aria-hidden="true" />
               <h3>Build your household balance sheet</h3>
               <p>Start with the checking or savings account you use most often.</p>
-              <button type="button" onClick={() => openAdd()}>Add your first account</button>
             </section>
           ) : (
             <div className={styles.groups}>
