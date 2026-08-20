@@ -2,6 +2,7 @@ export const SHELL_QUICK_ADD_EVENT = "bearvault:shell-quick-add";
 
 export type ShellQuickAddAction =
   | "account"
+  | "account-connect"
   | "account-transfer"
   | "category"
   | "goal"

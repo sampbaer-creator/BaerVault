@@ -3,6 +3,7 @@
 import { UserButton } from "@clerk/nextjs";
 import {
   IconArrowsExchange,
+  IconBuildingBank,
   IconBell,
   IconLayoutSidebarLeftCollapse,
   IconLayoutSidebarLeftExpand,
@@ -61,6 +62,7 @@ export function PageHeader({
   const mobileQuickActions = useMemo(() => {
     const actions: Record<string, Array<{ action: ShellQuickAddAction; label: string; secondary?: boolean }>> = {
       "/accounts": [
+        { action: "account-connect", label: "Connect bank" },
         { action: "account-transfer", label: "Transfer", secondary: true },
         { action: "account", label: "Add account" },
       ],
@@ -147,7 +149,7 @@ export function PageHeader({
               onClick={() => requestShellQuickAdd(action.action)}
               key={action.action}
             >
-              {action.action === "account-transfer" ? <IconArrowsExchange size={17} aria-hidden="true" /> : <IconPlus size={17} aria-hidden="true" />}
+              {action.action === "account-transfer" ? <IconArrowsExchange size={17} aria-hidden="true" /> : action.action === "account-connect" ? <IconBuildingBank size={17} aria-hidden="true" /> : <IconPlus size={17} aria-hidden="true" />}
               {action.label}
             </button>
           ))}

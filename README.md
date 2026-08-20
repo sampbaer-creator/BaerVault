@@ -68,10 +68,22 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). The landing page and public demo work without an account. Protected household features require Clerk, Supabase, and Twelve Data credentials in `.env.local`.
+Open [http://localhost:3000](http://localhost:3000). The landing page and public demo work without an account. Protected household features require Clerk and Supabase credentials in `.env.local`; optional market data and live bank connections use Twelve Data and Teller. Copy `.env.example` for the full variable list.
 
 > [!IMPORTANT]
 > Keep credentials in `.env.local` and never commit secret values.
+
+### Teller bank connections
+
+The Accounts workspace supports selected bank accounts through Teller Connect. Enrollment tokens are signature-verified, encrypted with AES-256-GCM, and stored once per institution enrollment. Development and production API traffic uses Teller's required mTLS certificate and private key from server-only environment variables.
+
+Apply the latest Supabase migration, configure the Teller variables in `.env.example`, and register the following URL in Teller's dashboard:
+
+```text
+https://YOUR_APP_HOST/api/teller/webhook
+```
+
+BearVault requests only Teller's `balance` and `transactions` products. Imported bank activity remains separate from budget entries so transfers, refunds, payments, and duplicates can be reconciled before affecting budgets.
 
 ### Development commands
 

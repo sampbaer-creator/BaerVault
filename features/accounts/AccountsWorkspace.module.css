@@ -77,6 +77,57 @@
   cursor: pointer;
 }
 
+.connectButton {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 17px;
+  border: 1px solid color-mix(in srgb, var(--accounts-blue) 35%, var(--app-border));
+  border-radius: 10px;
+  color: var(--accounts-blue);
+  background: var(--accounts-blue-soft);
+  font: inherit;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.connectButton:disabled { opacity: .6; cursor: wait; }
+
+.connectionStrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 14px;
+}
+
+.connectionStrip span {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px;
+  border: 1px solid var(--app-border);
+  border-radius: 999px;
+  color: var(--app-text-muted);
+  background: var(--app-surface);
+  font-size: 11px;
+}
+
+.connectionStrip strong { color: var(--app-text-strong); }
+.reconnectButton { border: 0; padding: 0; color: var(--accounts-blue); background: transparent; font: inherit; font-weight: 750; cursor: pointer; }
+.reconnectButton svg { display: none; }
+.connectionAction { border: 0; padding: 0; color: var(--accounts-blue); background: transparent; font: inherit; font-weight: 750; cursor: pointer; }
+.connectionStrip span[data-status="connected"] svg { color: var(--money-positive); }
+.connectionStrip span:not([data-status="connected"]) svg { color: var(--money-negative); }
+
+@media (max-width: 47.999rem) {
+  .pageHeader .headerActions { display: none; }
+  .connectionStrip { margin-top: -4px; }
+}
+
 .transferButton:disabled,
 .detailActions button:disabled {
   opacity: .45;

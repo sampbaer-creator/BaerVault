@@ -15,6 +15,8 @@ import {
   updateFinancialAccount,
 } from "@/lib/data/accounts";
 import { DataAccessError, errorMessage } from "@/lib/data/errors";
+import { completeTellerEnrollment, createConnectionNonce, disconnectBankConnection, refreshBankConnection } from "@/lib/data/bankConnections";
+import type { TellerEnrollmentResult } from "@/lib/banking/teller/signatures";
 
 const owners = ["user", "spouse", "joint", "other"];
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -108,4 +110,45 @@ export async function transferFundsAction(input: AccountTransferDraft) {
   } catch (error) {
     return { ok: false as const, error: errorMessage(error) };
   }
+}
+
+export async function startBankConnectionAction() {
+  try {
+    const data = await createConnectionNonce();
+    if (!data.applicationId) throw new DataAccessError("Teller is not configured yet.");
+    return { ok: true as const, data };
+  } catch (error) {
+    return { ok: false as const, error: errorMessage(error) };
+  }
+}
+
+export async function completeBankConnectionAction(input: { nonce: string; enrollment: TellerEnrollmentResult }) {
+  try {
+    await completeTellerEnrollment(input.nonce, input.enrollment);
+    refreshAccounts();
+    revalidatePath("/transactions");
+    return { ok: true as const };
+  } catch (error) {
+    return { ok: false as const, error: errorMessage(error) };
+  }
+}
+
+export async function refreshBankConnectionAction(connectionId: string) {
+  try {
+    if (!uuidPattern.test(connectionId)) throw new DataAccessError("That bank connection is invalid.");
+    await refreshBankConnection(connectionId);
+    refreshAccounts();
+    revalidatePath("/transactions");
+    return { ok: true as const };
+  } catch (error) { return { ok: false as const, error: errorMessage(error) }; }
+}
+
+export async function disconnectBankConnectionAction(connectionId: string) {
+  try {
+    if (!uuidPattern.test(connectionId)) throw new DataAccessError("That bank connection is invalid.");
+    await disconnectBankConnection(connectionId);
+    refreshAccounts();
+    revalidatePath("/transactions");
+    return { ok: true as const };
+  } catch (error) { return { ok: false as const, error: errorMessage(error) }; }
 }

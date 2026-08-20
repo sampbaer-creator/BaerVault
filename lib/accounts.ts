@@ -18,9 +18,11 @@ export type FinancialAccount = {
   balance: number;
   creditLimit: number | null;
   updatedAt: string;
+  bankConnectionId: string | null;
+  providerStatus: "open" | "closed" | null;
 };
 
-export type FinancialAccountDraft = Omit<FinancialAccount, "id" | "updatedAt">;
+export type FinancialAccountDraft = Omit<FinancialAccount, "id" | "updatedAt" | "bankConnectionId" | "providerStatus">;
 
 export type AccountTransferDraft = {
   fromAccountId: string;
@@ -57,6 +59,8 @@ export const demoFinancialAccounts: FinancialAccount[] = [
     balance: 12840.25,
     creditLimit: null,
     updatedAt: "2026-08-14T16:18:00.000Z",
+    bankConnectionId: null,
+    providerStatus: null,
   },
   {
     id: "demo-checking",
@@ -67,6 +71,8 @@ export const demoFinancialAccounts: FinancialAccount[] = [
     balance: 4209.44,
     creditLimit: null,
     updatedAt: "2026-08-14T16:18:00.000Z",
+    bankConnectionId: null,
+    providerStatus: null,
   },
   {
     id: "demo-cash",
@@ -77,6 +83,8 @@ export const demoFinancialAccounts: FinancialAccount[] = [
     balance: 180,
     creditLimit: null,
     updatedAt: "2026-08-10T14:00:00.000Z",
+    bankConnectionId: null,
+    providerStatus: null,
   },
   {
     id: "demo-card",
@@ -87,6 +95,8 @@ export const demoFinancialAccounts: FinancialAccount[] = [
     balance: 552.3,
     creditLimit: 8500,
     updatedAt: "2026-08-14T16:05:00.000Z",
+    bankConnectionId: null,
+    providerStatus: null,
   },
 ];
 
