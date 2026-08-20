@@ -2,6 +2,7 @@
 
 import { UserButton } from "@clerk/nextjs";
 import {
+  IconArrowsExchange,
   IconBell,
   IconLayoutSidebarLeftCollapse,
   IconLayoutSidebarLeftExpand,
@@ -57,6 +58,16 @@ export function PageHeader({
     };
     return actions[pathname.replace(/^\/demo/, "")];
   }, [pathname]);
+  const mobileQuickActions = useMemo(() => {
+    const actions: Record<string, Array<{ action: ShellQuickAddAction; label: string; secondary?: boolean }>> = {
+      "/accounts": [
+        { action: "account-transfer", label: "Transfer", secondary: true },
+        { action: "account", label: "Add account" },
+      ],
+    };
+    const route = pathname.replace(/^\/demo/, "");
+    return actions[route] ?? (quickAdd ? [quickAdd] : []);
+  }, [pathname, quickAdd]);
 
   return (
     <>
@@ -127,14 +138,20 @@ export function PageHeader({
         <strong className={styles.mobileTitle}>BearVault</strong>
         <span className={styles.mobileProfile}><Link className={styles.mobileHousehold} href="/household" aria-label="Open household"><IconMessage size={24}/></Link><UserButton /></span>
       </header>
-      {quickAdd && (
-        <button
-          className={styles.mobileQuickAdd}
-          type="button"
-          onClick={() => requestShellQuickAdd(quickAdd.action)}
-        >
-          <IconPlus size={17} aria-hidden="true" /> {quickAdd.label}
-        </button>
+      {mobileQuickActions.length > 0 && (
+        <div className={styles.mobileQuickActions} aria-label="Page actions">
+          {mobileQuickActions.map((action) => (
+            <button
+              className={`${styles.mobileQuickAdd} ${action.secondary ? styles.mobileQuickSecondary : ""}`}
+              type="button"
+              onClick={() => requestShellQuickAdd(action.action)}
+              key={action.action}
+            >
+              {action.action === "account-transfer" ? <IconArrowsExchange size={17} aria-hidden="true" /> : <IconPlus size={17} aria-hidden="true" />}
+              {action.label}
+            </button>
+          ))}
+        </div>
       )}
     </>
   );

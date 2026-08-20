@@ -262,6 +262,7 @@
 .quickAddControl { border-color: transparent !important; color: #fff; background: var(--app-accent) !important; font-weight: 750; cursor: pointer; }
 .quickAddControl:hover { filter: brightness(0.96); }
 .quickAddControl:focus-visible { outline: 2px solid var(--app-focus); outline-offset: 2px; }
+.mobileQuickActions,
 .mobileQuickAdd { display: none; }
 .iconControl { display: grid; width: 34px; place-items: center; padding: 0; }
 .periodControl::before, .iconControl::before { display: none; }
@@ -516,11 +517,17 @@
 }
 
 @media (max-width: 47.999rem) {
-  .mobileQuickAdd {
+  .mobileQuickActions {
     position: fixed;
     right: max(18px, env(safe-area-inset-right));
     bottom: max(18px, env(safe-area-inset-bottom));
     z-index: 35;
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .mobileQuickAdd {
     display: inline-flex;
     min-height: 52px;
     align-items: center;
@@ -537,6 +544,14 @@
     cursor: pointer;
   }
   .mobileQuickAdd:focus-visible { outline: 2px solid var(--app-focus); outline-offset: 3px; }
+  .mobileQuickSecondary {
+    border: 1px solid color-mix(in srgb, var(--app-border) 82%, transparent);
+    color: var(--app-text-strong);
+    background: color-mix(in srgb, var(--app-surface) 94%, transparent);
+    box-shadow: 0 12px 28px rgb(17 20 57 / 14%);
+    backdrop-filter: blur(24px) saturate(145%);
+    -webkit-backdrop-filter: blur(24px) saturate(145%);
+  }
   .mobileNav {
     transition:
       opacity var(--motion-effect-fast) ease,
@@ -546,6 +561,10 @@
   .shell:has(input:focus, textarea:focus, select:focus) .mobileNav {
     opacity: 0;
     transform: translateY(calc(100% + 32px));
+    pointer-events: none;
+  }
+  .shell:has(input:focus, textarea:focus, select:focus) .mobileQuickActions {
+    opacity: 0;
     pointer-events: none;
   }
 }

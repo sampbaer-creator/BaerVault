@@ -18,7 +18,7 @@ import {
   IconX,
   type Icon,
 } from "@tabler/icons-react";
-import { type FormEvent, useRef, useState } from "react";
+import { type FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import {
   addFinancialAccountAction,
@@ -39,6 +39,7 @@ import {
 
 import styles from "./AccountsWorkspace.module.css";
 import { invalidateMobileShell } from "@/lib/mobileShell";
+import { SHELL_QUICK_ADD_EVENT, type ShellQuickAddAction } from "@/lib/shellQuickAdd";
 
 type AccountsWorkspaceProps = {
   initialAccounts: FinancialAccount[];
@@ -170,20 +171,23 @@ export function AccountsWorkspace({
 
   const selected = accounts.find((account) => account.id === selectedId) ?? null;
   const totals = totalsFor(accounts);
-  const transferableAccounts = accounts.filter((account) => !isDebtAccount(account.type));
+  const transferableAccounts = useMemo(
+    () => accounts.filter((account) => !isDebtAccount(account.type)),
+    [accounts],
+  );
 
-  function showError(error: string) {
+  const showError = useCallback((error: string) => {
     setMessageTone("error");
     setMessage(error);
-  }
+  }, []);
 
-  function openAdd(type: FinancialAccountType = "checking") {
+  const openAdd = useCallback((type: FinancialAccountType = "checking") => {
     setEditingId(null);
     setForm({ ...blankForm, type });
     setMessage("");
     setMessageTone("error");
     setFormOpen(true);
-  }
+  }, []);
 
   function openEdit(account: FinancialAccount) {
     setEditingId(account.id);
@@ -193,7 +197,7 @@ export function AccountsWorkspace({
     setFormOpen(true);
   }
 
-  function openTransfer(preferredSourceId?: string) {
+  const openTransfer = useCallback((preferredSourceId?: string) => {
     if (transferableAccounts.length < 2) {
       showError("Add at least two checking, savings, cash, or other accounts before making a transfer.");
       return;
@@ -208,7 +212,17 @@ export function AccountsWorkspace({
     setMessage("");
     setMessageTone("error");
     setTransferOpen(true);
-  }
+  }, [showError, transferableAccounts]);
+
+  useEffect(() => {
+    const openAccountAction = (event: Event) => {
+      const action = (event as CustomEvent<ShellQuickAddAction>).detail;
+      if (action === "account") openAdd();
+      if (action === "account-transfer") openTransfer();
+    };
+    window.addEventListener(SHELL_QUICK_ADD_EVENT, openAccountAction);
+    return () => window.removeEventListener(SHELL_QUICK_ADD_EVENT, openAccountAction);
+  }, [openAdd, openTransfer]);
 
   async function saveAccount(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
