@@ -15,8 +15,7 @@ import {
   updateFinancialAccount,
 } from "@/lib/data/accounts";
 import { DataAccessError, errorMessage } from "@/lib/data/errors";
-import { completeTellerEnrollment, createConnectionNonce, disconnectBankConnection, refreshBankConnection } from "@/lib/data/bankConnections";
-import type { TellerEnrollmentResult } from "@/lib/banking/teller/signatures";
+import { completePlaidConnection, createPlaidLinkToken, disconnectBankConnection, refreshBankConnection } from "@/lib/data/bankConnections";
 
 const owners = ["user", "spouse", "joint", "other"];
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -112,19 +111,19 @@ export async function transferFundsAction(input: AccountTransferDraft) {
   }
 }
 
-export async function startBankConnectionAction() {
+export async function startBankConnectionAction(connectionId?: string) {
   try {
-    const data = await createConnectionNonce();
-    if (!data.applicationId) throw new DataAccessError("Teller is not configured yet.");
+    if (connectionId && !uuidPattern.test(connectionId)) throw new DataAccessError("That bank connection is invalid.");
+    const data = await createPlaidLinkToken(connectionId);
     return { ok: true as const, data };
   } catch (error) {
     return { ok: false as const, error: errorMessage(error) };
   }
 }
 
-export async function completeBankConnectionAction(input: { nonce: string; enrollment: TellerEnrollmentResult }) {
+export async function completeBankConnectionAction(input: { publicToken: string; institution: { id: string; name: string } }) {
   try {
-    await completeTellerEnrollment(input.nonce, input.enrollment);
+    await completePlaidConnection(input.publicToken, input.institution);
     refreshAccounts();
     revalidatePath("/transactions");
     return { ok: true as const };

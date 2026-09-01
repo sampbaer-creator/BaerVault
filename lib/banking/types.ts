@@ -1,9 +1,10 @@
 export type BankConnection = {
   id: string;
   householdId: string;
-  provider: "teller";
+  institutionName: string;
+  provider: "plaid";
   encryptedAccessToken: string;
-  environment: "development" | "production";
+  environment: "sandbox" | "production";
 };
 
 export type ProviderAccount = {

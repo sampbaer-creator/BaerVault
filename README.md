@@ -68,22 +68,22 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). The landing page and public demo work without an account. Protected household features require Clerk and Supabase credentials in `.env.local`; optional market data and live bank connections use Twelve Data and Teller. Copy `.env.example` for the full variable list.
+Open [http://localhost:3000](http://localhost:3000). The landing page and public demo work without an account. Protected household features require Clerk and Supabase credentials in `.env.local`; optional market data and live bank connections use Twelve Data and Plaid. Copy `.env.example` for the full variable list.
 
 > [!IMPORTANT]
 > Keep credentials in `.env.local` and never commit secret values.
 
-### Teller bank connections
+### Plaid bank connections
 
-The Accounts workspace supports selected bank accounts through Teller Connect. Enrollment tokens are signature-verified, encrypted with AES-256-GCM, and stored once per institution enrollment. Development and production API traffic uses Teller's required mTLS certificate and private key from server-only environment variables.
+The Accounts workspace connects bank accounts through Plaid Link. Plaid access tokens are encrypted with AES-256-GCM and stored once per Item. BearVault syncs cached balances and 90 days of posted transactions, maps recognized Plaid categories into existing monthly budget categories, and sends unmatched expenses to an `Uncategorized` category. Income is added to the matching month's totals; pending items, transfers, and refunds are not added to budgets automatically.
 
-Apply the latest Supabase migration, configure the Teller variables in `.env.example`, and register the following URL in Teller's dashboard:
+Apply the latest Supabase migration and configure the Plaid variables in `.env.example`. Set the webhook URL in `PLAID_WEBHOOK_URL`:
 
 ```text
-https://YOUR_APP_HOST/api/teller/webhook
+https://YOUR_APP_HOST/api/plaid/webhook
 ```
 
-BearVault requests only Teller's `balance` and `transactions` products. Imported bank activity remains separate from budget entries so transfers, refunds, payments, and duplicates can be reconciled before affecting budgets.
+Start with `PLAID_ENV=sandbox`. Plaid Link requests the Transactions product; `/accounts/get` supplies its cached account balances without adding real-time Balance API charges.
 
 ### Development commands
 
@@ -108,7 +108,7 @@ For a deeper tour, read the [architecture guide](docs/ARCHITECTURE.md) and [proj
 
 ## Project status
 
-BearVault is under active development. Core household-finance workflows are available today. Direct bank connections, payments, email, and analytics are not yet integrated.
+BearVault is under active development. Core household-finance workflows and Plaid bank synchronization are available today. Payments, email, and analytics are not yet integrated.
 
 ---
 

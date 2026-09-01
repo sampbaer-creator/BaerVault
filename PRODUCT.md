@@ -25,7 +25,7 @@ Users review their financial position at a glance, add purchases directly to mon
 
 - Next.js App Router application using TypeScript, Mantine, Tabler Icons, Recharts, and CSS Modules without Tailwind.
 - The public demo uses realistic mock data, while protected pages use household records stored in Supabase.
-- Clerk authentication, Clerk household organizations, Supabase persistence, and the Twelve Data market-data integration are active. Direct bank connections, payments, email, and analytics are not currently integrated.
+- Clerk authentication, Clerk household organizations, Supabase persistence, Twelve Data market data, and Plaid bank synchronization are active. Payments, email, and analytics are not currently integrated.
 - The responsive application shell remains stable. Primary navigation is Dashboard, Transactions, Accounts, Budgets, Investments, Goals, Household, and Settings.
 - Financial data must use clear formatting and tabular numerals where appropriate.
 

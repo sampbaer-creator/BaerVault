@@ -434,7 +434,7 @@ export function AccountsWorkspace({
               <IconBuildingBank size={14} aria-hidden="true" />
               <strong>{connection.institutionName}</strong>
               {connection.status === "connected" ? "Connected" : connection.status === "disconnected" ? "Reconnect needed" : "Sync needs attention"}
-              {connection.status === "disconnected" ? <BankConnectionButton className={styles.reconnectButton} enrollmentId={connection.providerEnrollmentId} label="Reconnect" onMessage={showBankMessage} /> : null}
+              {connection.status === "disconnected" ? <BankConnectionButton className={styles.reconnectButton} connectionId={connection.id} label="Reconnect" onMessage={showBankMessage} /> : null}
               {connection.status !== "disconnected" ? <button className={styles.connectionAction} type="button" onClick={() => void refreshConnection(connection.id)}>Refresh</button> : null}
               <button className={styles.connectionAction} type="button" onClick={() => void disconnectConnection(connection.id, connection.institutionName)}>Disconnect</button>
             </span>

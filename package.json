@@ -16,6 +16,7 @@
     "@supabase/supabase-js": "^2.112.3",
     "@tabler/icons-react": "^3.46.0",
     "clsx": "^2.1.1",
+    "jose": "^6.2.10",
     "liquid-gl": "^2.0.1",
     "motion": "^13.1.0",
     "next": "16.3.0",
