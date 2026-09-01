@@ -6,6 +6,7 @@ import { useEffect, useRef } from "react";
 
 import { mobileSectionNavigation } from "./navigation";
 import styles from "./AppShell.module.css";
+import { type MonthSelection, withMonth } from "@/lib/monthSelection";
 
 type MobileNavProps = {
   pathname: string;
@@ -13,9 +14,10 @@ type MobileNavProps = {
   activeIndex: number;
   navigate: (href: string) => void;
   pagerEnabled: boolean;
+  selectedMonth?: MonthSelection;
 };
 
-export function MobileNav({ pathname, progress, activeIndex, navigate, pagerEnabled }: MobileNavProps) {
+export function MobileNav({ pathname, progress, activeIndex, navigate, pagerEnabled, selectedMonth }: MobileNavProps) {
   const links = mobileSectionNavigation;
   const navRef = useRef<HTMLElement>(null);
   const linkRefs = useRef<Array<HTMLAnchorElement | null>>([]);
@@ -61,7 +63,7 @@ export function MobileNav({ pathname, progress, activeIndex, navigate, pagerEnab
           return (
             <Link
               className={`${styles.mobileLink} ${isActive ? styles.mobileLinkActive : ""}`}
-              href={href}
+              href={selectedMonth ? withMonth(href, selectedMonth) : href}
               ref={(node) => { linkRefs.current[index] = node; }}
               prefetch={isActive ? false : undefined}
               onClick={(event) => { if (pagerEnabled) { event.preventDefault(); navigate(href); } }}

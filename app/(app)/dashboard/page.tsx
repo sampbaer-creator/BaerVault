@@ -3,13 +3,16 @@ import { createDashboardViewModel } from "@/features/dashboard/dashboardViewMode
 import { getFinancialAccounts } from "@/lib/data/accounts";
 import { getBudgetMonth } from "@/lib/data/budgets";
 import { getInvestmentAccounts } from "@/lib/data/investments";
+import { parseExplicitMonthSelection, parseMonthSelection } from "@/lib/monthSelection";
 
-export default async function DashboardPage() {
-  const now = new Date();
+export default async function DashboardPage({ searchParams }: { searchParams: Promise<{ year?: string; month?: string }> }) {
+  const query = await searchParams;
+  const selected = parseMonthSelection(query.year, query.month);
+  const explicitSelection = parseExplicitMonthSelection(query.year, query.month);
   const [budget, accounts, financialAccounts] = await Promise.all([
-    getBudgetMonth(now.getUTCFullYear(), now.getUTCMonth() + 1),
+    getBudgetMonth(selected.year, selected.month),
     getInvestmentAccounts(),
     getFinancialAccounts(),
   ]);
-  return <DashboardOverview model={createDashboardViewModel(budget, accounts, financialAccounts)} />;
+  return <DashboardOverview model={createDashboardViewModel(budget, accounts, financialAccounts)} selectedMonth={explicitSelection} />;
 }

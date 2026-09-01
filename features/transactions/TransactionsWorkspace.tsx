@@ -16,15 +16,17 @@ import { type BudgetMonth } from "@/lib/finance";
 import styles from "./TransactionsWorkspace.module.css";
 import { invalidateMobileShell } from "@/lib/mobileShell";
 import { SHELL_QUICK_ADD_EVENT, type ShellQuickAddAction } from "@/lib/shellQuickAdd";
+import { type MonthSelection, withMonth } from "@/lib/monthSelection";
 
 type Filter = "all" | "income" | "expenses";
 const freshDraft = () => ({ source: "", amount: "", date: new Date().toISOString().slice(0, 10), owner: "Household" });
 
-export function TransactionsWorkspace({ initialMonth }: { initialMonth: BudgetMonth }) {
+export function TransactionsWorkspace({ initialMonth, selectedMonth }: { initialMonth: BudgetMonth; selectedMonth?: MonthSelection }) {
   const money = useCurrencyFormatter();
   const mobile = useMediaQuery("(max-width: 47.999rem)");
   const pathname = usePathname();
-  const budgetPath = pathname.startsWith("/demo") ? "/demo/budget" : "/budget";
+  const baseBudgetPath = pathname.startsWith("/demo") ? "/demo/budget" : "/budget";
+  const budgetPath = selectedMonth ? withMonth(baseBudgetPath, selectedMonth) : baseBudgetPath;
   const [incomeEntries, setIncomeEntries] = useState(initialMonth.incomeEntries);
   const [expenseEntries, setExpenseEntries] = useState(() => initialMonth.categories.flatMap((category) => category.purchases.map((purchase) => ({ ...purchase, categoryId: category.id, category: category.name }))));
   const [filter, setFilter] = useState<Filter>("all");

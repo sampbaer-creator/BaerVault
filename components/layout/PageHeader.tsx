@@ -23,10 +23,12 @@ import {
   systemNavigation,
 } from "./navigation";
 import styles from "./AppShell.module.css";
+import { type MonthSelection, withMonth } from "@/lib/monthSelection";
 
 type PageHeaderProps = {
   title: string;
   pathname: string;
+  selectedMonth?: MonthSelection;
   sidebarCollapsed: boolean;
   onToggleSidebar: () => void;
 };
@@ -40,6 +42,7 @@ const searchablePages = [
 export function PageHeader({
   title,
   pathname,
+  selectedMonth,
   sidebarCollapsed,
   onToggleSidebar,
 }: PageHeaderProps) {
@@ -113,7 +116,7 @@ export function PageHeader({
                 aria-label="Matching pages"
               >
                 {results.map(({ href, label, icon: Icon }) => (
-                  <Link href={href} key={href} onClick={() => setQuery("")}>
+                  <Link href={selectedMonth ? withMonth(href, selectedMonth) : href} key={href} onClick={() => setQuery("")}>
                     <Icon size={16} aria-hidden="true" />
                     <span>{label}</span>
                   </Link>
@@ -136,9 +139,9 @@ export function PageHeader({
       </header>
 
       <header className={`${styles.mobileHeader} glass-panel`}>
-        <Link className={styles.mobileMark} href="/settings" aria-label="Open settings"><IconSettings size={24} /></Link>
+        <Link className={styles.mobileMark} href={selectedMonth ? withMonth("/settings", selectedMonth) : "/settings"} aria-label="Open settings"><IconSettings size={24} /></Link>
         <strong className={styles.mobileTitle}>BearVault</strong>
-        <span className={styles.mobileProfile}><Link className={styles.mobileHousehold} href="/household" aria-label="Open household"><IconMessage size={24}/></Link><UserButton /></span>
+        <span className={styles.mobileProfile}><Link className={styles.mobileHousehold} href={selectedMonth ? withMonth("/household", selectedMonth) : "/household"} aria-label="Open household"><IconMessage size={24}/></Link><UserButton /></span>
       </header>
       {mobileQuickActions.length > 0 && (
         <div className={styles.mobileQuickActions} aria-label="Page actions">

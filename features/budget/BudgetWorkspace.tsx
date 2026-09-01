@@ -39,6 +39,7 @@ import {
 import styles from "./BudgetWorkspace.module.css";
 import { invalidateMobileShell } from "@/lib/mobileShell";
 import { SHELL_QUICK_ADD_EVENT, type ShellQuickAddAction } from "@/lib/shellQuickAdd";
+import { offsetMonth, withMonth } from "@/lib/monthSelection";
 
 type BudgetAccountOption = {
   id: string;
@@ -135,12 +136,8 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
   const savings = netSavings(month);
 
   function openMonth(offset: number) {
-    const target = new Date(Date.UTC(initialBudget.year, initialBudget.monthNumber - 1 + offset, 1));
-    const params = new URLSearchParams({
-      year: String(target.getUTCFullYear()),
-      month: String(target.getUTCMonth() + 1),
-    });
-    router.push(`${pathname}?${params.toString()}`);
+    const target = offsetMonth({ year: initialBudget.year, month: initialBudget.monthNumber }, offset);
+    router.push(withMonth(pathname, target));
   }
 
   function openCategory(category: BudgetCategory) {

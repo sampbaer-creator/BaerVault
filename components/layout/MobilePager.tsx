@@ -2,12 +2,12 @@
 
 import { animate, motion, type MotionValue, useMotionValue, useReducedMotion } from "motion/react";
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useSearchParams } from "next/navigation";
 
 import { mobileRouteOrder } from "./navigation";
 import type { MobileShellData } from "@/lib/mobileShell";
 import { MOBILE_SHELL_INVALIDATE_EVENT } from "@/lib/mobileShell";
 import styles from "./AppShell.module.css";
+import { currentMonth, monthQuery, type MonthSelection } from "@/lib/monthSelection";
 
 const loaders = {
   "/cash-flow": () => import("@/features/cash-flow/CashFlowWorkspace").then((m) => ({ default: m.CashFlowWorkspace })),
@@ -39,25 +39,33 @@ function blocksPageSwipe(target: EventTarget | null) {
   return target instanceof HTMLElement && Boolean(target.closest("input,textarea,select,button,a,[role='slider'],[data-page-swipe-ignore]"));
 }
 
+function routeHref(href: string, selection?: MonthSelection) {
+  return selection ? `${href}?${monthQuery(selection)}` : href;
+}
+
 function Screen({ route, data }: { route: string; data: MobileShellData }) {
-  if (route === "/cash-flow") return <CashFlowScreen month={data.currentMonth} />;
+  if (route === "/cash-flow") return <CashFlowScreen month={data.selectedMonth} />;
   if (route === "/accounts") return <AccountsScreen initialAccounts={data.financialAccounts} />;
   if (route === "/investments") return <InvestmentsScreen initialAccounts={data.investmentAccounts} />;
-  if (route === "/transactions") return <TransactionsScreen initialMonth={data.currentMonth} />;
-  if (route === "/dashboard") return <DashboardScreen model={data.dashboard} />;
-  if (route === "/budget") return <BudgetScreen initialBudget={data.selectedBudget} accounts={data.financialAccounts.map(({ id, name, institution, type }) => ({ id, name, institution, type }))} />;
+  const selectedMonth = { year: data.selectedMonth.year, month: data.selectedMonth.monthNumber };
+  if (route === "/transactions") return <TransactionsScreen initialMonth={data.selectedMonth} selectedMonth={selectedMonth} />;
+  if (route === "/dashboard") return <DashboardScreen model={data.dashboard} selectedMonth={selectedMonth} />;
+  if (route === "/budget") return <BudgetScreen initialBudget={data.selectedMonth} accounts={data.financialAccounts.map(({ id, name, institution, type }) => ({ id, name, institution, type }))} />;
   return <GoalsScreen initialGoals={data.goals} />;
 }
 
 type Gesture = { pointerId: number; startX: number; startY: number; lastX: number; lastTime: number; velocity: number; axis: "x" | "y" | null };
 
-export function MobilePager({ children, pathname, progress, onActiveIndex }: {
+export function MobilePager({ children, pathname, progress, onActiveIndex, selectedMonth }: {
   children: React.ReactNode;
   pathname: string;
   progress: MotionValue<number>;
   onActiveIndex: (index: number, navigate: (href: string) => void, enabled: boolean) => void;
+  selectedMonth?: MonthSelection;
 }) {
-  const searchParams = useSearchParams();
+  const resolvedMonth = selectedMonth ?? currentMonth();
+  const selectedYear = resolvedMonth.year;
+  const selectedMonthNumber = resolvedMonth.month;
   const reduceMotion = useReducedMotion();
   const x = useMotionValue(0);
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -74,11 +82,7 @@ export function MobilePager({ children, pathname, progress, onActiveIndex }: {
     requestRef.current?.abort();
     const controller = new AbortController();
     requestRef.current = controller;
-    const query = new URLSearchParams();
-    const year = searchParams.get("year");
-    const month = searchParams.get("month");
-    if (year) query.set("year", year);
-    if (month) query.set("month", month);
+    const query = monthQuery({ year: selectedYear, month: selectedMonthNumber });
     try {
       const response = await fetch(`/api/mobile-shell?${query}`, { cache: "no-store", signal: controller.signal });
       const next = await response.json();
@@ -92,7 +96,7 @@ export function MobilePager({ children, pathname, progress, onActiveIndex }: {
     } catch (error) {
       if (!(error instanceof DOMException && error.name === "AbortError")) console.error(error);
     }
-  }, [searchParams]);
+  }, [selectedMonthNumber, selectedYear]);
 
   useEffect(() => {
     const media = window.matchMedia("(max-width: 47.999rem)");
@@ -129,10 +133,10 @@ export function MobilePager({ children, pathname, progress, onActiveIndex }: {
       setActiveIndex(bounded);
       x.set(-width());
       progress.set(bounded);
-      window.history.replaceState(null, "", mobileRouteOrder[bounded]);
+      window.history.replaceState(null, "", routeHref(mobileRouteOrder[bounded], selectedMonth));
       document.getElementById("main-content")?.focus({ preventScroll: true });
     });
-  }, [progress, reduceMotion, x]);
+  }, [progress, reduceMotion, selectedMonth, x]);
 
   const navigate = useCallback((href: string) => {
     const target = mobileRouteOrder.indexOf(href);
@@ -140,9 +144,9 @@ export function MobilePager({ children, pathname, progress, onActiveIndex }: {
     if (Math.abs(target - activeRef.current) === 1) commit(target);
     else {
       activeRef.current = target; setActiveIndex(target); x.set(-width()); progress.set(target);
-      window.history.replaceState(null, "", href);
+      window.history.replaceState(null, "", routeHref(href, selectedMonth));
     }
-  }, [commit, progress, x]);
+  }, [commit, progress, selectedMonth, x]);
 
   useEffect(() => { onActiveIndex(activeIndex, navigate, enabled); }, [activeIndex, enabled, navigate, onActiveIndex]);
   useEffect(() => {

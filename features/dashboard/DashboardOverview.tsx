@@ -7,8 +7,9 @@ import { useEffect, useMemo, useState } from "react";
 import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
 import type { DashboardViewModel } from "./dashboardViewModel";
 import styles from "./DashboardOverview.module.css";
+import { type MonthSelection, withMonth } from "@/lib/monthSelection";
 
-type DashboardProps = { model: DashboardViewModel; basePath?: string };
+type DashboardProps = { model: DashboardViewModel; basePath?: string; selectedMonth?: MonthSelection };
 type MarketState = { key: string; prices: Record<string, number>; unavailable: string[] };
 
 const marketRequests = new Map<string, Promise<MarketState>>();
@@ -31,7 +32,8 @@ function PanelHeading({ title, href, action }: { title: string; href: string; ac
   return <div className={styles.panelHeading}><h2>{title}</h2><Link href={href}>{action}<IconArrowRight size={14} aria-hidden="true" /></Link></div>;
 }
 
-export function DashboardOverview({ model, basePath = "" }: DashboardProps) {
+export function DashboardOverview({ model, basePath = "", selectedMonth }: DashboardProps) {
+  const monthHref = (href: string) => selectedMonth ? withMonth(`${basePath}${href}`, selectedMonth) : `${basePath}${href}`;
   const money = useCurrencyFormatter();
   const requestKey = useMemo(() => model.symbols.toSorted().join(","), [model.symbols]);
   const [marketState, setMarketState] = useState<MarketState>(() => ({ key: basePath ? requestKey : "", prices: {}, unavailable: [] }));
@@ -68,27 +70,27 @@ export function DashboardOverview({ model, basePath = "" }: DashboardProps) {
           <svg viewBox="0 0 320 92" role="img" aria-label={`${model.month} budget progress`}><path d="M10 79 L42 68 L72 65 L101 53 L129 50 L157 35 L186 32 L214 25 L245 15 L310 4"/><path className="finance-chart-line" pathLength="1" d="M10 79 L40 70 L68 67 L96 56 L124 52 L151 39 L178 37 L207 30 L236 19 L267 13"/><circle className="finance-chart-point" cx="267" cy="13" r="5"/></svg>
         </section>
         <section className={styles.mobileBudgetSection}>
-          <div className={styles.mobileSectionHead}><h2>Budgets</h2><Link href={`${basePath}/budget`}>Categories <IconArrowRight size={14}/></Link></div>
+          <div className={styles.mobileSectionHead}><h2>Budgets</h2><Link href={monthHref("/budget")}>Categories <IconArrowRight size={14}/></Link></div>
           <div className={styles.mobileBudgetRail}>{model.categories.slice(0,5).map((category,index)=>{
             const remaining=category.planned-category.value; const used=category.planned?Math.min(category.value/category.planned*100,100):0;
-            return <Link href={`${basePath}/budget`} key={category.name} className={styles.mobileBudgetItem}>
+            return <Link href={monthHref("/budget")} key={category.name} className={styles.mobileBudgetItem}>
               <span className={styles.mobileRing} data-animate-ring-angle style={{"--ring-progress":`${used*3.6}deg`,"--ring-color":`var(--category-${(index%4)+1})`} as React.CSSProperties}><IconReceipt size={20}/></span>
               <strong>{money.format(Math.abs(remaining))}</strong><small>{remaining>=0?"left":"over"}</small>
             </Link>;
           })}</div>
         </section>
         <section className={styles.mobileNet}>
-          <div className={styles.mobileSectionHead}><h2>Net this month</h2><Link href={`${basePath}/cash-flow`}>Cash flow <IconArrowRight size={14}/></Link></div>
+          <div className={styles.mobileSectionHead}><h2>Net this month</h2><Link href={monthHref("/cash-flow")}>Cash flow <IconArrowRight size={14}/></Link></div>
           <div className={styles.mobileNetCard}><strong>{money.format(model.cashAvailable)}</strong><div className={styles.mobileSplit}><i data-animate-progress style={{width:`${model.income?Math.min(model.income/(model.income+model.spending)*100,100):50}%`}}/><i/></div><div className={styles.mobileNetLegend}><span>Income <b>{money.format(model.income)}</b></span><span>Spend <b>{money.format(model.spending)}</b></span></div></div>
         </section>
         <section className={styles.mobilePlan}>
-          <div className={styles.mobileSectionHead}><h2>Monthly plan</h2><Link href={`${basePath}/goals`}>Goals <IconArrowRight size={14}/></Link></div>
+          <div className={styles.mobileSectionHead}><h2>Monthly plan</h2><Link href={monthHref("/goals")}>Goals <IconArrowRight size={14}/></Link></div>
           <div><strong>{money.format(Math.max(model.planned-model.spending,0))}</strong><span> remaining in {model.month}</span><i><b data-animate-progress style={{width:`${model.planned?Math.min(model.spending/model.planned*100,100):0}%`}}/></i></div>
         </section>
       </div>
       <div className={styles.dashboardGrid}>
         <section className={styles.netWorthPanel}>
-          <PanelHeading title="Current position" href={`${basePath}/accounts`} action="View accounts" />
+          <PanelHeading title="Current position" href={monthHref("/accounts")} action="View accounts" />
           <div className={styles.netWorthLead}>
             <span>Net worth</span>
             <strong>{waitingForMarket ? "Updating…" : marketUnavailable ? money.format(model.cashAssets - model.debts) : money.format(netWorth)}</strong>
@@ -102,7 +104,7 @@ export function DashboardOverview({ model, basePath = "" }: DashboardProps) {
         </section>
 
         <section className={styles.spendingPanel}>
-          <PanelHeading title="This month" href={`${basePath}/budget`} action="Open budget" />
+          <PanelHeading title="This month" href={monthHref("/budget")} action="Open budget" />
           <div className={styles.spendingSummary}><span>{model.month}</span><strong>{money.format(Math.abs(budgetLeft))} {budgetLeft >= 0 ? "remaining" : "over plan"}</strong></div>
           <div className={styles.progressTrack} role="progressbar" aria-label="Monthly budget used" aria-valuemin={0} aria-valuemax={budgetRangeMax} aria-valuenow={model.spending}><i data-animate-progress style={{ width: `${spendingProgress}%` }} /></div>
           <div className={styles.spendingRail}>
@@ -113,7 +115,7 @@ export function DashboardOverview({ model, basePath = "" }: DashboardProps) {
         </section>
 
         <section className={styles.transactionsPanel}>
-          <PanelHeading title="Recent activity" href={`${basePath}/transactions`} action="View all" />
+          <PanelHeading title="Recent activity" href={monthHref("/transactions")} action="View all" />
           <div className={styles.transactionList}>
             {model.activity.length ? model.activity.map((item) => (
               <div className={styles.transactionRow} key={item.id}>
@@ -127,7 +129,7 @@ export function DashboardOverview({ model, basePath = "" }: DashboardProps) {
 
         <div className={styles.sideStack}>
           <section className={styles.categoriesPanel}>
-            <PanelHeading title="Top categories" href={`${basePath}/budget`} action="View budget" />
+            <PanelHeading title="Top categories" href={monthHref("/budget")} action="View budget" />
             <div className={styles.categoryList}>
               {topCategories.length ? topCategories.map((category, index) => (
                 <div key={category.name}><span><i style={{ background: `var(--category-${index + 1})` }} />{category.name}</span><strong>{money.format(category.value)}</strong></div>
@@ -135,7 +137,7 @@ export function DashboardOverview({ model, basePath = "" }: DashboardProps) {
             </div>
           </section>
           <section className={styles.upcomingPanel}>
-            <PanelHeading title="Planning ahead" href={`${basePath}/goals`} action="View goals" />
+            <PanelHeading title="Planning ahead" href={monthHref("/goals")} action="View goals" />
             <div className={styles.upcomingEmpty}><p>Use your budget and goals to plan what comes next.</p><span>No projected bills are shown without historical evidence.</span></div>
           </section>
         </div>

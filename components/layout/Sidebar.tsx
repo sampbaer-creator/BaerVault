@@ -9,19 +9,22 @@ import {
 } from "./navigation";
 import styles from "./AppShell.module.css";
 import { BearVaultLogo } from "@/components/brand/BearVaultLogo";
+import { type MonthSelection, withMonth } from "@/lib/monthSelection";
 
 type SidebarProps = {
   pathname: string;
   collapsed?: boolean;
+  selectedMonth?: MonthSelection;
 };
 
 type NavigationSectionProps = {
   label: string;
   items: NavigationItem[];
   pathname: string;
+  selectedMonth?: MonthSelection;
 };
 
-function NavigationSection({ label, items, pathname }: NavigationSectionProps) {
+function NavigationSection({ label, items, pathname, selectedMonth }: NavigationSectionProps) {
   return (
     <section
       className={styles.navSection}
@@ -36,7 +39,7 @@ function NavigationSection({ label, items, pathname }: NavigationSectionProps) {
         return (
           <Link
             className={`${styles.navLink} ${isActive ? styles.navLinkActive : ""}`}
-            href={href}
+            href={selectedMonth ? withMonth(href, selectedMonth) : href}
             aria-current={isActive ? "page" : undefined}
             key={href}
           >
@@ -49,7 +52,7 @@ function NavigationSection({ label, items, pathname }: NavigationSectionProps) {
   );
 }
 
-export function Sidebar({ pathname, collapsed = false }: SidebarProps) {
+export function Sidebar({ pathname, collapsed = false, selectedMonth }: SidebarProps) {
   return (
     <aside
       className={`${styles.sidebar} ${collapsed ? styles.sidebarCompact : ""}`}
@@ -68,16 +71,19 @@ export function Sidebar({ pathname, collapsed = false }: SidebarProps) {
           label="Main"
           items={mainNavigation}
           pathname={pathname}
+          selectedMonth={selectedMonth}
         />
         <NavigationSection
           label="Household"
           items={householdNavigation}
           pathname={pathname}
+          selectedMonth={selectedMonth}
         />
         <NavigationSection
           label="System"
           items={systemNavigation}
           pathname={pathname}
+          selectedMonth={selectedMonth}
         />
       </nav>
 

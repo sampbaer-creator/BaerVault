@@ -11,8 +11,7 @@ export type MobileBudgetMonth = BudgetMonth & {
 };
 
 export type MobileShellData = {
-  currentMonth: MobileBudgetMonth;
-  selectedBudget: MobileBudgetMonth;
+  selectedMonth: MobileBudgetMonth;
   financialAccounts: FinancialAccount[];
   investmentAccounts: InvestmentAccount[];
   goals: SavingsGoal[];

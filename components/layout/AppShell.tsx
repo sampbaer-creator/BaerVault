@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useMotionValue } from "motion/react";
 
@@ -11,6 +11,7 @@ import { Sidebar } from "./Sidebar";
 import styles from "./AppShell.module.css";
 import { LiquidGLRuntime } from "@/components/shared/LiquidGLRuntime";
 import { MobilePager } from "./MobilePager";
+import { parseExplicitMonthSelection } from "@/lib/monthSelection";
 
 type AppShellProps = {
   children: React.ReactNode;
@@ -18,6 +19,8 @@ type AppShellProps = {
 
 export function AppShell({ children }: AppShellProps) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const selectedMonth = parseExplicitMonthSelection(searchParams.get("year"), searchParams.get("month"));
   const title = pageTitles[pathname] ?? "BearVault";
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileScrolled, setMobileScrolled] = useState(false);
@@ -49,11 +52,12 @@ export function AppShell({ children }: AppShellProps) {
         Skip to main content
       </a>
       <LiquidGLRuntime />
-      <Sidebar pathname={pathname} collapsed={sidebarCollapsed} />
+      <Sidebar pathname={pathname} collapsed={sidebarCollapsed} selectedMonth={selectedMonth} />
       <div className={styles.contentColumn}>
         <PageHeader
           title={title}
           pathname={pathname}
+          selectedMonth={selectedMonth}
           sidebarCollapsed={sidebarCollapsed}
           onToggleSidebar={() => setSidebarCollapsed((current) => !current)}
         />
@@ -63,10 +67,10 @@ export function AppShell({ children }: AppShellProps) {
           ref={mainRef}
           tabIndex={-1}
         >
-          <MobilePager pathname={pathname} progress={pagerProgress} onActiveIndex={updatePager}>{children}</MobilePager>
+          <MobilePager pathname={pathname} progress={pagerProgress} onActiveIndex={updatePager} selectedMonth={selectedMonth}>{children}</MobilePager>
         </main>
       </div>
-      <MobileNav pathname={pathname} progress={pagerProgress} activeIndex={pager.activeIndex} navigate={pager.navigate} pagerEnabled={pager.enabled} />
+      <MobileNav pathname={pathname} progress={pagerProgress} activeIndex={pager.activeIndex} navigate={pager.navigate} pagerEnabled={pager.enabled} selectedMonth={selectedMonth} />
     </div>
   );
 }
