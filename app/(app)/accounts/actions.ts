@@ -138,6 +138,8 @@ export async function refreshBankConnectionAction(connectionId: string) {
     await refreshBankConnection(connectionId);
     refreshAccounts();
     revalidatePath("/transactions");
+    revalidatePath("/budget");
+    revalidatePath("/cash-flow");
     return { ok: true as const };
   } catch (error) { return { ok: false as const, error: errorMessage(error) }; }
 }

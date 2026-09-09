@@ -1,4 +1,5 @@
 import type { FinancialAccount } from "@/lib/accounts";
+import type { BankConnectionSummary } from "@/lib/data/bankConnections";
 import type { BudgetMonth } from "@/lib/finance";
 import type { SavingsGoal } from "@/lib/goals";
 import type { InvestmentAccount } from "@/lib/investmentData";
@@ -13,6 +14,7 @@ export type MobileBudgetMonth = BudgetMonth & {
 export type MobileShellData = {
   selectedMonth: MobileBudgetMonth;
   financialAccounts: FinancialAccount[];
+  bankConnections: BankConnectionSummary[];
   investmentAccounts: InvestmentAccount[];
   goals: SavingsGoal[];
   dashboard: DashboardViewModel;

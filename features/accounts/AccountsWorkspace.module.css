@@ -105,18 +105,38 @@
 
 .connectionStrip span {
   display: inline-flex;
+  flex-wrap: wrap;
+  min-width: 0;
   min-height: 34px;
   align-items: center;
   gap: 7px;
   padding: 6px 10px;
   border: 1px solid var(--app-border);
-  border-radius: 999px;
+  border-radius: 14px;
   color: var(--app-text-muted);
   background: var(--app-surface);
   font-size: 11px;
 }
 
 .connectionStrip strong { color: var(--app-text-strong); }
+.lastSynced { flex-basis: 100%; font-size: 11px; }
+.refreshButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--app-border);
+  border-radius: 9px;
+  color: var(--accounts-blue);
+  background: var(--accounts-blue-soft);
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+}
+.refreshButton:disabled, .connectionAction:disabled { opacity: .6; cursor: wait; }
+.refreshButton:focus-visible, .connectionAction:focus-visible { outline: 2px solid var(--accounts-blue); outline-offset: 3px; }
 .reconnectButton { border: 0; padding: 0; color: var(--accounts-blue); background: transparent; font: inherit; font-weight: 750; cursor: pointer; }
 .reconnectButton svg { display: none; }
 .connectionAction { border: 0; padding: 0; color: var(--accounts-blue); background: transparent; font: inherit; font-weight: 750; cursor: pointer; }
@@ -126,6 +146,9 @@
 @media (max-width: 47.999rem) {
   .pageHeader .headerActions { display: none; }
   .connectionStrip { margin-top: -4px; }
+  .connectionStrip > span { width: 100%; border-radius: 14px; }
+  .connectionStrip strong { overflow-wrap: anywhere; }
+  .connectionAction { min-height: 44px; padding-inline: 10px; }
 }
 
 .transferButton:disabled,

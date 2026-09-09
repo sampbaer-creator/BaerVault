@@ -12,6 +12,7 @@ import {
   IconPigMoney,
   IconPlus,
   IconReceiptTax,
+  IconRefresh,
   IconShieldLock,
   IconTrash,
   IconWallet,
@@ -172,6 +173,8 @@ export function AccountsWorkspace({
   const [form, setForm] = useState<FormState>(blankForm);
   const [transferForm, setTransferForm] = useState<TransferFormState>(blankTransferForm);
   const [saving, setSaving] = useState(false);
+  const [refreshingId, setRefreshingId] = useState<string | null>(null);
+  const refreshInFlight = useRef(false);
   const [message, setMessage] = useState("");
   const [messageTone, setMessageTone] = useState<"error" | "success">("error");
   const detailCloseRef = useRef<HTMLButtonElement>(null);
@@ -195,11 +198,22 @@ export function AccountsWorkspace({
   }, []);
 
   async function refreshConnection(id: string) {
+    if (refreshInFlight.current) return;
+    refreshInFlight.current = true;
+    setRefreshingId(id);
     showBankMessage("Refreshing connected accounts…", true);
-    const result = await refreshBankConnectionAction(id);
-    if (!result.ok) return showBankMessage(result.error);
-    showBankMessage("Bank balances and transactions refreshed.", true);
-    router.refresh();
+    try {
+      const result = await refreshBankConnectionAction(id);
+      if (!result.ok) return showBankMessage(result.error);
+      showBankMessage("Accounts updated with the latest balances and transactions available from Plaid.", true);
+      invalidateMobileShell();
+      router.refresh();
+    } catch {
+      showBankMessage("Could not refresh your bank. Please try again.");
+    } finally {
+      refreshInFlight.current = false;
+      setRefreshingId(null);
+    }
   }
 
   async function disconnectConnection(id: string, institution: string) {
@@ -207,6 +221,7 @@ export function AccountsWorkspace({
     const result = await disconnectBankConnectionAction(id);
     if (!result.ok) return showBankMessage(result.error);
     showBankMessage(`${institution} was disconnected.`, true);
+    invalidateMobileShell();
     router.refresh();
   }
 
@@ -435,8 +450,14 @@ export function AccountsWorkspace({
               <strong>{connection.institutionName}</strong>
               {connection.status === "connected" ? "Connected" : connection.status === "disconnected" ? "Reconnect needed" : "Sync needs attention"}
               {connection.status === "disconnected" ? <BankConnectionButton className={styles.reconnectButton} connectionId={connection.id} label="Reconnect" onMessage={showBankMessage} /> : null}
-              {connection.status !== "disconnected" ? <button className={styles.connectionAction} type="button" onClick={() => void refreshConnection(connection.id)}>Refresh</button> : null}
-              <button className={styles.connectionAction} type="button" onClick={() => void disconnectConnection(connection.id, connection.institutionName)}>Disconnect</button>
+              {connection.lastSyncedAt ? <small className={styles.lastSynced}>Last synced {formatUpdatedAt(connection.lastSyncedAt)}</small> : null}
+              {connection.status !== "disconnected" ? (
+                <button className={styles.refreshButton} type="button" disabled={refreshingId !== null} aria-busy={refreshingId === connection.id} aria-label={`Refresh accounts from ${connection.institutionName}`} onClick={() => void refreshConnection(connection.id)}>
+                  <IconRefresh size={16} aria-hidden="true" />
+                  {refreshingId === connection.id ? "Refreshing…" : "Refresh accounts"}
+                </button>
+              ) : null}
+              <button className={styles.connectionAction} type="button" disabled={refreshingId !== null} onClick={() => void disconnectConnection(connection.id, connection.institutionName)}>Disconnect</button>
             </span>
           ))}
         </div>

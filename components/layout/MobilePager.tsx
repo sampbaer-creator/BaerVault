@@ -45,7 +45,7 @@ function routeHref(href: string, selection?: MonthSelection) {
 
 function Screen({ route, data }: { route: string; data: MobileShellData }) {
   if (route === "/cash-flow") return <CashFlowScreen month={data.selectedMonth} />;
-  if (route === "/accounts") return <AccountsScreen initialAccounts={data.financialAccounts} />;
+  if (route === "/accounts") return <AccountsScreen initialAccounts={data.financialAccounts} bankConnections={data.bankConnections} />;
   if (route === "/investments") return <InvestmentsScreen initialAccounts={data.investmentAccounts} />;
   const selectedMonth = { year: data.selectedMonth.year, month: data.selectedMonth.monthNumber };
   if (route === "/transactions") return <TransactionsScreen initialMonth={data.selectedMonth} selectedMonth={selectedMonth} />;

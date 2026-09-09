@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { completeBankConnectionAction, refreshBankConnectionAction, startBankConnectionAction } from "@/app/(app)/accounts/actions";
 import { SHELL_QUICK_ADD_EVENT, type ShellQuickAddAction } from "@/lib/shellQuickAdd";
+import { invalidateMobileShell } from "@/lib/mobileShell";
 
 type PlaidMetadata = { institution: { institution_id: string; name: string } | null };
 declare global { interface Window { Plaid?: { create(options: { token: string; onSuccess(publicToken: string, metadata: PlaidMetadata): void; onExit(): void }): { open(): void; destroy(): void } } } }
@@ -34,7 +35,7 @@ export function BankConnectionButton({ className, onMessage, connectionId, label
           const result = connectionId ? await refreshBankConnectionAction(connectionId) : await completeBankConnectionAction({ publicToken, institution: { id: metadata.institution?.institution_id ?? "unknown", name: metadata.institution?.name ?? "Connected bank" } });
           handler?.destroy(); setConnecting(false);
           if (!result.ok) return onMessage(result.error);
-          onMessage(connectionId ? "Bank connection repaired." : "Bank connected. Posted spending is syncing into your budgets.", true); router.refresh();
+          onMessage(connectionId ? "Bank connection repaired." : "Bank connected. Posted spending is syncing into your budgets.", true); invalidateMobileShell(); router.refresh();
         }, onExit: () => { handler?.destroy(); setConnecting(false); } });
       if (!handler) throw new Error("Plaid Link is unavailable."); handler.open();
     } catch (error) { setConnecting(false); onMessage(error instanceof Error ? error.message : "Could not open Plaid Link."); }

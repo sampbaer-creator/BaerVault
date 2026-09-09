@@ -3,6 +3,7 @@ import { NextRequest } from "next/server";
 
 import { createDashboardViewModel } from "@/features/dashboard/dashboardViewModel";
 import { getFinancialAccounts } from "@/lib/data/accounts";
+import { getBankConnections } from "@/lib/data/bankConnections";
 import { getBudgetMonth } from "@/lib/data/budgets";
 import { errorMessage } from "@/lib/data/errors";
 import { getSavingsGoals } from "@/lib/data/goals";
@@ -16,15 +17,17 @@ export async function GET(request: NextRequest) {
 
   try {
     const selected = parseMonthSelection(request.nextUrl.searchParams.get("year"), request.nextUrl.searchParams.get("month"));
-    const [selectedMonth, financialAccounts, investmentAccounts, goals] = await Promise.all([
+    const [selectedMonth, financialAccounts, investmentAccounts, goals, bankConnections] = await Promise.all([
       getBudgetMonth(selected.year, selected.month),
       getFinancialAccounts(),
       getInvestmentAccounts(),
       getSavingsGoals(),
+      getBankConnections(),
     ]);
     const payload: MobileShellData = {
       selectedMonth,
       financialAccounts,
+      bankConnections,
       investmentAccounts,
       goals,
       dashboard: createDashboardViewModel(selectedMonth, investmentAccounts, financialAccounts),
