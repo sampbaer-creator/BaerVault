@@ -12,19 +12,20 @@ import { type MonthSelection, withMonth } from "@/lib/monthSelection";
 type DashboardProps = { model: DashboardViewModel; basePath?: string; selectedMonth?: MonthSelection };
 type MarketState = { key: string; prices: Record<string, number>; unavailable: string[] };
 
-const marketRequests = new Map<string, Promise<MarketState>>();
+const marketRequests = new Map<string, { expires: number; request: Promise<MarketState> }>();
 
 function loadMarketPrices(key: string, symbols: string[]) {
   const cached = marketRequests.get(key);
-  if (cached) return cached;
-  const request = fetch(`/api/market-data?symbols=${encodeURIComponent(symbols.join(","))}&range=1M&pricesOnly=1`)
+  if (cached && cached.expires > Date.now()) return cached.request;
+  const chunks = Array.from({ length: Math.ceil(symbols.length / 10) }, (_, index) => symbols.slice(index * 10, index * 10 + 10));
+  const request = Promise.all(chunks.map((chunk) => fetch(`/api/market-data?symbols=${encodeURIComponent(chunk.join(","))}&range=1M&pricesOnly=1`)
     .then(async (response) => {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error ?? "Market prices unavailable");
       return { key, prices: data.prices as Record<string, number>, unavailable: (data.unavailable ?? []) as string[] };
-    })
+    }))).then((states) => ({ key, prices: Object.assign({}, ...states.map((state) => state.prices)), unavailable: states.flatMap((state) => state.unavailable) }))
     .catch((error) => { marketRequests.delete(key); throw error; });
-  marketRequests.set(key, request);
+  marketRequests.set(key, { expires: Date.now() + 900000, request });
   return request;
 }
 
@@ -54,53 +55,29 @@ export function DashboardOverview({ model, basePath = "", selectedMonth }: Dashb
   ), 0);
   const netWorth = model.cashAssets - model.debts + portfolioValue;
   const totalAssets = netWorth + model.debts;
-  const displayedAssets = waitingForMarket || marketUnavailable ? model.cashAssets : totalAssets;
+  const displayedAssets = totalAssets;
   const budgetLeft = model.planned - model.spending;
   const spendingProgress = model.planned > 0 ? Math.min((model.spending / model.planned) * 100, 100) : 0;
-  const debtShare = displayedAssets > 0 ? Math.max((model.debts / displayedAssets) * 100, 2) : 0;
+  const debtShare = displayedAssets > 0 ? Math.min(100, Math.max((model.debts / displayedAssets) * 100, 0)) : 0;
   const budgetRangeMax = Math.max(model.planned, model.spending, 1);
   const topCategories = model.categories.slice(0, 4);
 
   return (
     <div className={styles.dashboard}>
-      <div className={styles.mobileReference}>
-        <section className={styles.mobileTrajectory}>
-          <strong>{money.format(Math.max(budgetLeft, 0))} left</strong>
-          <span>out of {money.format(model.planned)} budgeted</span>
-          <svg viewBox="0 0 320 92" role="img" aria-label={`${model.month} budget progress`}><path d="M10 79 L42 68 L72 65 L101 53 L129 50 L157 35 L186 32 L214 25 L245 15 L310 4"/><path className="finance-chart-line" pathLength="1" d="M10 79 L40 70 L68 67 L96 56 L124 52 L151 39 L178 37 L207 30 L236 19 L267 13"/><circle className="finance-chart-point" cx="267" cy="13" r="5"/></svg>
-        </section>
-        <section className={styles.mobileBudgetSection}>
-          <div className={styles.mobileSectionHead}><h2>Budgets</h2><Link href={monthHref("/budget")}>Categories <IconArrowRight size={14}/></Link></div>
-          <div className={styles.mobileBudgetRail}>{model.categories.slice(0,5).map((category,index)=>{
-            const remaining=category.planned-category.value; const used=category.planned?Math.min(category.value/category.planned*100,100):0;
-            return <Link href={monthHref("/budget")} key={category.name} className={styles.mobileBudgetItem}>
-              <span className={styles.mobileRing} data-animate-ring-angle style={{"--ring-progress":`${used*3.6}deg`,"--ring-color":`var(--category-${(index%4)+1})`} as React.CSSProperties}><IconReceipt size={20}/></span>
-              <strong>{money.format(Math.abs(remaining))}</strong><small>{remaining>=0?"left":"over"}</small>
-            </Link>;
-          })}</div>
-        </section>
-        <section className={styles.mobileNet}>
-          <div className={styles.mobileSectionHead}><h2>Net this month</h2><Link href={monthHref("/cash-flow")}>Cash flow <IconArrowRight size={14}/></Link></div>
-          <div className={styles.mobileNetCard}><strong>{money.format(model.cashAvailable)}</strong><div className={styles.mobileSplit}><i data-animate-progress style={{width:`${model.income?Math.min(model.income/(model.income+model.spending)*100,100):50}%`}}/><i/></div><div className={styles.mobileNetLegend}><span>Income <b>{money.format(model.income)}</b></span><span>Spend <b>{money.format(model.spending)}</b></span></div></div>
-        </section>
-        <section className={styles.mobilePlan}>
-          <div className={styles.mobileSectionHead}><h2>Monthly plan</h2><Link href={monthHref("/goals")}>Goals <IconArrowRight size={14}/></Link></div>
-          <div><strong>{money.format(Math.max(model.planned-model.spending,0))}</strong><span> remaining in {model.month}</span><i><b data-animate-progress style={{width:`${model.planned?Math.min(model.spending/model.planned*100,100):0}%`}}/></i></div>
-        </section>
-      </div>
       <div className={styles.dashboardGrid}>
         <section className={styles.netWorthPanel}>
           <PanelHeading title="Current position" href={monthHref("/accounts")} action="View accounts" />
           <div className={styles.netWorthLead}>
             <span>Net worth</span>
-            <strong>{waitingForMarket ? "Updating…" : marketUnavailable ? money.format(model.cashAssets - model.debts) : money.format(netWorth)}</strong>
-            {marketUnavailable && <small>Investment prices are temporarily unavailable.</small>}
+            <strong>{money.format(netWorth)}</strong>
+            {(waitingForMarket || marketUnavailable) && <small>{waitingForMarket ? "Updating prices. " : "Some prices are unavailable. "}Unpriced investments use purchase cost.</small>}
           </div>
           <div className={styles.compositionTrack} aria-label="Current assets and debts"><i data-animate-progress style={{ width: `${debtShare}%` }} /></div>
           <div className={styles.netWorthSummary}>
-            <div><span><i className={styles.assetDot} />Assets</span><strong>{waitingForMarket ? "—" : money.format(displayedAssets)}</strong></div>
+            <div><span><i className={styles.assetDot} />Assets</span><strong>{money.format(displayedAssets)}</strong></div>
             <div><span><i className={styles.debtDot} />Debts</span><strong>{money.format(model.debts)}</strong></div>
           </div>
+          <p className={styles.emptyCopy}>Accounts {money.format(model.cashAssets)} + investments {money.format(portfolioValue)} − debts {money.format(model.debts)}</p>
         </section>
 
         <section className={styles.spendingPanel}>
@@ -137,8 +114,8 @@ export function DashboardOverview({ model, basePath = "", selectedMonth }: Dashb
             </div>
           </section>
           <section className={styles.upcomingPanel}>
-            <PanelHeading title="Planning ahead" href={monthHref("/goals")} action="View goals" />
-            <div className={styles.upcomingEmpty}><p>Use your budget and goals to plan what comes next.</p><span>No projected bills are shown without historical evidence.</span></div>
+            <PanelHeading title="Upcoming payments" href={monthHref("/recurring")} action="View all" />
+            {model.upcomingPayments.length ? <div className={styles.transactionList}>{model.upcomingPayments.slice(0, 5).map((payment) => <div className={styles.transactionRow} key={payment.id}><span className={styles.transactionIcon}><IconReceipt size={16} aria-hidden="true" /></span><div><strong>{payment.name}</strong><span>{payment.date}{payment.estimated ? " · Estimated" : " · Scheduled"}</span></div><strong>{money.format(payment.amount)}</strong></div>)}</div> : <div className={styles.upcomingEmpty}><p>No upcoming payments found.</p><span>Estimates appear after three months of consistent payments. You can also record a future payment in your budget.</span></div>}
           </section>
         </div>
       </div>

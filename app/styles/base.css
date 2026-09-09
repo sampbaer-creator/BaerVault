@@ -1,0 +1,39 @@
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+html, body { min-height: 100%; margin: 0; background: var(--app-background); }
+body { color: var(--app-text-strong); font-family: var(--font-system); font-size: 1rem; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { font-family: var(--font-heading); line-height: 1.2; letter-spacing: -.025em; text-wrap: balance; }
+a { color: inherit; }
+button, input, select, textarea { font: inherit; }
+button, a, input, select, textarea { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+button { cursor: pointer; transition: transform var(--motion-spatial-fast) var(--ease-out), opacity var(--motion-effect-fast) ease, background-color var(--motion-effect-fast) ease; }
+button:active:not(:disabled), a.btn:active { transform: scale(.97); opacity: .8; }
+button:disabled { opacity: .5; cursor: not-allowed; }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible { outline: 3px solid var(--app-focus); outline-offset: 3px; }
+input, select, textarea { color: var(--app-text-strong); accent-color: var(--app-accent); }
+input::placeholder, textarea::placeholder { color: var(--app-text-muted); opacity: .8; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: var(--control-height); padding: .625rem 1rem; border: 0; border-radius: var(--radius-control); font-weight: 600; text-decoration: none; }
+.btn-primary { color: #fff; background: var(--app-accent); }
+.btn-ghost { color: var(--app-accent); background: var(--app-accent-soft); }
+.card { border: 1px solid var(--app-border); border-radius: var(--radius-panel); background: var(--app-surface); box-shadow: var(--shadow-surface); }
+.finance-chart-line, .finance-chart-area, .finance-chart-point { opacity: 1; }
+.finance-chart-line { stroke-dashoffset: 0; }
+table, strong, b { font-variant-numeric: tabular-nums; }
+.mantine-Drawer-content, .mantine-Modal-content, .mantine-Popover-dropdown, .mantine-Menu-dropdown { color: var(--app-text-strong); background: var(--app-surface); box-shadow: var(--shadow-dialog); border: 1px solid var(--app-border); }
+.mantine-Drawer-header, .mantine-Modal-header { color: var(--app-text-strong); background: var(--app-surface); }
+.mantine-Drawer-close, .mantine-Modal-close { min-width: 44px; min-height: 44px; color: var(--app-text-muted); border-radius: 50%; }
+.mantine-Drawer-body { padding-bottom: max(24px, env(safe-area-inset-bottom)); }
+@media (max-width: 47.999rem) {
+  input:not([type="checkbox"]):not([type="radio"]), select, textarea { font-size: max(1rem, 16px); }
+  .mantine-Drawer-content { max-height: 92dvh; border-radius: 1.75rem 1.75rem 0 0; }
+  .mantine-Drawer-header { border-radius: 1.75rem 1.75rem 0 0; padding: 1rem 1.25rem; }
+  .mantine-Drawer-body { padding-inline: 1.25rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+  button:active:not(:disabled), a.btn:active { transform: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .mantine-Drawer-content, .mantine-Modal-content { backdrop-filter: none; }
+}
+@media (prefers-contrast: more) { :root { --app-border: currentColor; } }

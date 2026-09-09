@@ -9,7 +9,7 @@ export function DemoHousehold() {
       </div>
       <header>
         <h1>Demo Household</h1>
-        <p>See how a shared Clerk household appears in BearVault.</p>
+        <p>See how a shared Clerk household appears in BaerVault.</p>
       </header>
       <div className={styles.grid}>
         <section className={styles.card}>

@@ -20,7 +20,7 @@ export function InstallPwaCard() {
   return <section id="install" aria-labelledby="install-title">
     <div className="settings-section-heading">
       <span><IconDeviceMobileDown size={18} aria-hidden="true" /></span>
-      <div><h3 id="install-title">Install BearVault</h3><p>{ios ? "In Safari, tap Share, then Add to Home Screen." : "Open BearVault in its own app window."}</p></div>
+      <div><h3 id="install-title">Install BaerVault</h3><p>{ios ? "In Safari, tap Share, then Add to Home Screen." : "Open BaerVault in its own app window."}</p></div>
     </div>
     {prompt && <button type="button" onClick={() => { void prompt.prompt().then(() => prompt.userChoice).then(() => setPrompt(null)); }}>Install app</button>}
   </section>;

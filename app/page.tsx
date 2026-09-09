@@ -17,7 +17,7 @@ import {
 } from "@tabler/icons-react";
 import Link from "next/link";
 
-import { BearVaultLogo } from "@/components/brand/BearVaultLogo";
+import { BaerVaultLogo } from "@/components/brand/BaerVaultLogo";
 import styles from "./page.module.css";
 
 const benefits = [
@@ -61,7 +61,7 @@ const setupSteps = [
 
 function DashboardPreview() {
   return (
-    <div className={styles.previewWindow} aria-label="Preview of the BearVault dashboard">
+    <div className={styles.previewWindow} aria-label="Preview of the BaerVault dashboard">
       <div className={styles.previewSidebar} aria-hidden="true">
         <span className={styles.previewMark}><IconLock size={14} /></span>
         <i className={styles.previewNavActive} />
@@ -143,8 +143,8 @@ export default function Home() {
     <main className={styles.page}>
       <header className={styles.siteHeader}>
         <nav className={styles.nav} aria-label="Main navigation">
-          <Link className={styles.brand} href="/" aria-label="BearVault home">
-            <BearVaultLogo />
+          <Link className={styles.brand} href="/" aria-label="BaerVault home">
+            <BaerVaultLogo />
           </Link>
           <div className={styles.navLinks}>
             <a href="#product">Product</a>
@@ -163,7 +163,7 @@ export default function Home() {
           <p className={styles.eyebrow}>Household finance, clearly organized</p>
           <h1>Know where your household stands.</h1>
           <p className={styles.lede}>
-            BearVault brings spending, accounts, budgets, goals, and investments
+            BaerVault brings spending, accounts, budgets, goals, and investments
             into one calm workspace built for your whole household.
           </p>
           <div className={styles.heroActions}>
@@ -180,7 +180,7 @@ export default function Home() {
         <DashboardPreview />
       </section>
 
-      <section className={styles.benefitStrip} aria-label="Why households use BearVault">
+      <section className={styles.benefitStrip} aria-label="Why households use BaerVault">
         {benefits.map(({ icon: Icon, title, copy }) => (
           <div key={title}>
             <Icon size={18} aria-hidden="true" />
@@ -189,7 +189,7 @@ export default function Home() {
         ))}
       </section>
 
-      <section className={styles.factStrip} aria-label="BearVault product coverage">
+      <section className={styles.factStrip} aria-label="BaerVault product coverage">
         <div><strong>9</strong><span>connected workspaces</span></div>
         <div><strong>1</strong><span>shared household view</span></div>
         <div><strong>Light + dark</strong><span>theme support</span></div>
@@ -284,7 +284,7 @@ export default function Home() {
         <div className={styles.securityList}>
           <div><IconKey size={18} aria-hidden="true" /><span><strong>Protected identity</strong><small>Clerk handles secure sign-in, MFA, and membership.</small></span></div>
           <div><IconDatabase size={18} aria-hidden="true" /><span><strong>Household-isolated records</strong><small>Supabase row-level security keeps data in the correct household.</small></span></div>
-          <div><IconWallet size={18} aria-hidden="true" /><span><strong>Clear ownership</strong><small>Market services provide prices; BearVault stores what your household owns.</small></span></div>
+          <div><IconWallet size={18} aria-hidden="true" /><span><strong>Clear ownership</strong><small>Market services provide prices; BaerVault stores what your household owns.</small></span></div>
         </div>
       </section>
 
@@ -302,7 +302,7 @@ export default function Home() {
       </section>
 
       <footer className={styles.footer}>
-        <BearVaultLogo />
+        <BaerVaultLogo />
         <span>A calm, shared home for household finances.</span>
       </footer>
     </main>

@@ -1,29 +1,23 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import "@mantine/core/styles.css";
 
-import { ColorSchemeScript, MantineProvider } from "@mantine/core";
+import { ColorSchemeScript } from "@mantine/core";
+import { UiProvider } from "@/components/preferences/UiProvider";
 import type { Metadata, Viewport } from "next";
-import { Manrope } from "next/font/google";
 import Script from "next/script";
 
 import "./globals.css";
-import "./redesign.css";
 import { PreferencesProvider } from "@/components/preferences/PreferencesProvider";
 import { MobileViewportRuntime } from "@/components/shared/MobileViewportRuntime";
 import { PwaRuntime } from "@/components/shared/PwaRuntime";
 
-const manrope = Manrope({
-  variable: "--font-manrope",
-  subsets: ["latin"],
-});
-
 const preferenceBootstrap = `(function(){try{var root=document.documentElement;var saved=JSON.parse(localStorage.getItem("bearvault-preferences")||"{}");var choice=["light","dark","system"].includes(saved.theme)?saved.theme:"system";var theme=choice==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":choice==="dark"?"dark":"light";root.dataset.theme=theme;root.style.colorScheme=theme;delete root.dataset.palette;delete root.dataset.density;delete root.dataset.motion;}catch(e){var dark=window.matchMedia("(prefers-color-scheme: dark)").matches;document.documentElement.dataset.theme=dark?"dark":"light";document.documentElement.style.colorScheme=dark?"dark":"light";}})();`;
 
 export const metadata: Metadata = {
-  title: { default: "BearVault", template: "%s | BearVault" },
+  title: { default: "BaerVault", template: "%s | BaerVault" },
   description: "A calm, shared home for your household finances.",
-  applicationName: "BearVault",
-  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "BearVault" },
+  applicationName: "BaerVault",
+  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "BaerVault" },
   formatDetection: { telephone: false },
   icons: {
     icon: [{ url: "/icon.png", type: "image/png", sizes: "512x512" }],
@@ -41,7 +35,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={manrope.variable} suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <ColorSchemeScript defaultColorScheme="auto" />
       </head>
@@ -52,7 +46,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <MobileViewportRuntime />
         <PwaRuntime />
         <ClerkProvider>
-          <MantineProvider defaultColorScheme="auto"><PreferencesProvider>{children}</PreferencesProvider></MantineProvider>
+          <UiProvider><PreferencesProvider>{children}</PreferencesProvider></UiProvider>
         </ClerkProvider>
       </body>
     </html>

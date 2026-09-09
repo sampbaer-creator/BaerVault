@@ -9,7 +9,6 @@ import { mobileRouteOrder, pageTitles } from "./navigation";
 import { PageHeader } from "./PageHeader";
 import { Sidebar } from "./Sidebar";
 import styles from "./AppShell.module.css";
-import { LiquidGLRuntime } from "@/components/shared/LiquidGLRuntime";
 import { MobilePager } from "./MobilePager";
 import { parseExplicitMonthSelection } from "@/lib/monthSelection";
 
@@ -21,7 +20,7 @@ export function AppShell({ children }: AppShellProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const selectedMonth = parseExplicitMonthSelection(searchParams.get("year"), searchParams.get("month"));
-  const title = pageTitles[pathname] ?? "BearVault";
+  const title = pageTitles[pathname] ?? "BaerVault";
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileScrolled, setMobileScrolled] = useState(false);
   const mainRef = useRef<HTMLElement>(null);
@@ -51,7 +50,6 @@ export function AppShell({ children }: AppShellProps) {
       <a className={styles.skipLink} href="#main-content">
         Skip to main content
       </a>
-      <LiquidGLRuntime />
       <Sidebar pathname={pathname} collapsed={sidebarCollapsed} selectedMonth={selectedMonth} />
       <div className={styles.contentColumn}>
         <PageHeader

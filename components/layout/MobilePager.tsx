@@ -8,6 +8,7 @@ import type { MobileShellData } from "@/lib/mobileShell";
 import { MOBILE_SHELL_INVALIDATE_EVENT } from "@/lib/mobileShell";
 import styles from "./AppShell.module.css";
 import { currentMonth, monthQuery, type MonthSelection } from "@/lib/monthSelection";
+import { gestureSpring, navigationSpring } from "@/lib/ui/motion";
 
 const loaders = {
   "/cash-flow": () => import("@/features/cash-flow/CashFlowWorkspace").then((m) => ({ default: m.CashFlowWorkspace })),
@@ -74,7 +75,7 @@ export function MobilePager({ children, pathname, progress, onActiveIndex, selec
   const activeRef = useRef(initialIndex);
   const [activeIndex, setActiveIndex] = useState(initialIndex);
   const [data, setData] = useState<MobileShellData | null>(null);
-  const [revision, setRevision] = useState(0);
+  const [loadError, setLoadError] = useState("");
   const [mobile, setMobile] = useState(false);
   const requestRef = useRef<AbortController | null>(null);
 
@@ -91,10 +92,9 @@ export function MobilePager({ children, pathname, progress, onActiveIndex, selec
       await Promise.all([mobileRouteOrder[index - 1], mobileRouteOrder[index], mobileRouteOrder[index + 1]].map(preloadRoute));
       if (controller.signal.aborted) return;
       setData(next as MobileShellData);
-      setRevision((value) => value + 1);
-      window.setTimeout(() => { void Promise.all(Object.values(loaders).map((loader) => loader())); }, 0);
+      setLoadError("");
     } catch (error) {
-      if (!(error instanceof DOMException && error.name === "AbortError")) console.error(error);
+      if (!controller.signal.aborted) setLoadError(error instanceof Error ? error.message : "Could not update your data.");
     }
   }, [selectedMonthNumber, selectedYear]);
 
@@ -109,6 +109,7 @@ export function MobilePager({ children, pathname, progress, onActiveIndex, selec
     const timer = window.setTimeout(() => { void load(); }, 0);
     return () => window.clearTimeout(timer);
   }, [mobile, load]);
+  useEffect(() => () => requestRef.current?.abort(), []);
   useEffect(() => {
     const invalidate = () => { if (mobile) void load(); };
     window.addEventListener(MOBILE_SHELL_INVALIDATE_EVENT, invalidate);
@@ -122,13 +123,13 @@ export function MobilePager({ children, pathname, progress, onActiveIndex, selec
     const current = activeRef.current;
     const bounded = Math.max(0, Math.min(mobileRouteOrder.length - 1, nextIndex));
     if (bounded === current) {
-      animate(x, -width(), reduceMotion ? { duration: 0 } : { type: "spring", bounce: 0, duration: 0.32, velocity });
+      animate(x, -width(), reduceMotion ? { duration: 0 } : { ...navigationSpring, velocity });
       animate(progress, current, reduceMotion ? { duration: 0 } : { type: "spring", bounce: 0, duration: 0.32, velocity: -velocity / Math.max(width(), 1) });
       return;
     }
     const direction = bounded > current ? -1 : 1;
     const target = direction < 0 ? -2 * width() : 0;
-    animate(x, target, reduceMotion ? { duration: 0 } : { type: "spring", bounce: 0.08, duration: 0.36, velocity }).then(() => {
+    animate(x, target, reduceMotion ? { duration: 0 } : { ...gestureSpring, velocity }).then(() => {
       activeRef.current = bounded;
       setActiveIndex(bounded);
       x.set(-width());
@@ -161,7 +162,7 @@ export function MobilePager({ children, pathname, progress, onActiveIndex, selec
   }, [enabled, x]);
 
   const routes = useMemo(() => [activeIndex - 1, activeIndex, activeIndex + 1].map((i) => mobileRouteOrder[i] ?? null), [activeIndex]);
-  if (!enabled || !data) return <>{children}</>;
+  if (!enabled || !data) return <>{mobile && loadError ? <p role="alert">{loadError} <button type="button" onClick={() => void load()}>Retry</button></p> : null}{children}</>;
 
   function pointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (event.pointerType === "mouse" || event.clientX <= EDGE_WIDTH || event.clientX >= window.innerWidth - EDGE_WIDTH || blocksPageSwipe(event.target)) return;
@@ -195,9 +196,10 @@ export function MobilePager({ children, pathname, progress, onActiveIndex, selec
   }
 
   return <div className={styles.mobilePager} ref={viewportRef} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={() => { gesture.current = null; commit(activeRef.current); }}>
+    {loadError ? <p className={styles.syncError} role="alert">{loadError} <button type="button" onClick={() => void load()}>Retry</button></p> : null}
     <motion.div className={styles.mobilePagerTrack} style={{ x }}>
       {routes.map((route, slot) => <section key={route ?? `empty-${slot}`} className={styles.mobilePagerPanel} aria-hidden={slot !== 1} inert={slot !== 1} onScroll={(event) => { if (slot === 1) window.dispatchEvent(new CustomEvent("bearvault:mobile-scroll", { detail: event.currentTarget.scrollTop > 10 })); }}>
-        {route ? <Suspense fallback={<div className={styles.mobilePagerLoading} aria-label="Loading screen" />}><Screen key={`${route}-${revision}`} route={route} data={data} /></Suspense> : null}
+        {route ? <Suspense fallback={<div className={styles.mobilePagerLoading} aria-label="Loading screen" />}><Screen key={`${route}-${selectedYear}-${selectedMonthNumber}`} route={route} data={data} /></Suspense> : null}
       </section>)}
     </motion.div>
   </div>;

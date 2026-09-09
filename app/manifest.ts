@@ -3,8 +3,8 @@ import type { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: "/",
-    name: "BearVault",
-    short_name: "BearVault",
+    name: "BaerVault",
+    short_name: "BaerVault",
     description: "A calm, shared home for your household finances.",
     start_url: "/dashboard",
     scope: "/",

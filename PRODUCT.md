@@ -11,11 +11,11 @@ Households, including spouses or household members, who need a shared and approa
 
 ## Product Purpose
 
-BearVault helps a household understand its current financial position, build monthly spending from category-level purchases, track income and transactions, maintain investments, and plan ahead. Success means the household can answer how it is doing financially without navigating a complex accounting interface or trading terminal.
+BaerVault helps a household understand its current financial position, build monthly spending from category-level purchases, track income and transactions, maintain investments, and plan ahead. Success means the household can answer how it is doing financially without navigating a complex accounting interface or trading terminal.
 
 ## Positioning
 
-BearVault combines a calm household-finance overview with explicit shared-household organization, prioritizing clarity, trust, and long-term financial confidence over transaction volume or market speculation.
+BaerVault combines a calm household-finance overview with explicit shared-household organization, prioritizing clarity, trust, and long-term financial confidence over transaction volume or market speculation.
 
 ## Operating Context
 
@@ -31,15 +31,15 @@ Users review their financial position at a glance, add purchases directly to mon
 
 ## Brand Commitments
 
-- Product name: BearVault.
-- The supplied BearVault logo combines a bear silhouette, vault/security geometry, and an upward financial trend in deep navy and muted green.
+- Product name: BaerVault.
+- The supplied BaerVault logo combines a bear silhouette, vault/security geometry, and an upward financial trend in deep navy and muted green.
 - The product should feel premium, calm, trustworthy, financially serious, precise, modern, polished, and approachable.
 - Origin-quality personal-finance hierarchy and restrained Apple-style Liquid Glass are binding references, without copying proprietary layouts, assets, or branding.
 - Bear and vault cues remain subtle rather than decorative or literal throughout the interface.
 
 ## Evidence on Hand
 
-- BearVault logo and app-icon presentation: `C:\Users\10953612\Downloads\TruBaer Logo and App Icon Presentation(3).png`.
+- BaerVault logo and app-icon presentation: `C:\Users\10953612\Downloads\TruBaer Logo and App Icon Presentation(3).png`.
 - Dashboard reference: `C:\Users\10953612\Downloads\d802a3b4-fd5f-4c01-b2d1-10ae53ced20c.png`.
 - Origin personal-finance reference: `C:\Users\10953612\Downloads\7aafb6db-96b0-41d5-a492-076cad74f02e.png`.
 - No production customer data, testimonials, account balances, or connected financial records exist yet; UI data must remain clearly synthetic.

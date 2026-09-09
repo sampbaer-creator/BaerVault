@@ -131,7 +131,7 @@ export async function GET(request: NextRequest) {
   }
 
   const rangeParam = request.nextUrl.searchParams.get("range") ?? "1Y";
-  const range = rangeParam in ranges ? (rangeParam as keyof typeof ranges) : "1Y";
+  const range = Object.hasOwn(ranges, rangeParam) ? (rangeParam as keyof typeof ranges) : "1Y";
   const symbolsParam = request.nextUrl.searchParams.get("symbols");
   if (symbolsParam) {
     const symbols: string[] = [...new Set<string>(

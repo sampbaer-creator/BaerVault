@@ -1,5 +1,5 @@
 ---
-name: BearVault
+name: BaerVault
 description: A calm, protected household-finance cockpit built from selective glass and precise solid records.
 colors:
   protected-navy: "#062650"
@@ -80,13 +80,13 @@ components:
     height: "42px"
 ---
 
-# Design System: BearVault
+# Design System: BaerVault
 
 ## Overview
 
 **Creative North Star: "The Refracted Vault"**
 
-BearVault is a premium, calm household-finance workspace whose material hierarchy separates orientation from record keeping. The shell floats as selective glass: desktop sidebar, desktop header, responsive mobile header, five-item mobile navigation, dialogs, and high-level summary planes may refract the palette beneath them. Tables, activity lists, category rows, holdings, forms, and other detailed financial surfaces remain solid so numbers and actions never compete with the material effect.
+BaerVault is a premium, calm household-finance workspace whose material hierarchy separates orientation from record keeping. The shell floats as selective glass: desktop sidebar, desktop header, responsive mobile header, five-item mobile navigation, dialogs, and high-level summary planes may refract the palette beneath them. Tables, activity lists, category rows, holdings, forms, and other detailed financial surfaces remain solid so numbers and actions never compete with the material effect.
 
 The page field is not a flat neutral. Soft radial color from the active palette sits behind the shell and summary planes, making glass feel native to every light, dark, and user-selected palette. The default ledger palette is protected navy and blue, but the system's real invariant is semantic contrast: strong ink, quiet metadata, one measured accent, meaningful positive/negative color, and opaque reading surfaces.
 
@@ -166,7 +166,7 @@ At 70rem the dashboard becomes a single column. Below 48rem, desktop chrome yiel
 
 ## Elevation & Depth
 
-BearVault uses depth selectively. Floating shell chrome and summary planes combine translucent palette-aware gradients, a bright edge, 28–30px backdrop blur, a subtle inset highlight, and a broad ambient shadow. Solid record and form panels use tonal contrast, a quiet border, and a much smaller shadow. The distinction must remain obvious: glass orients and summarizes; opaque surfaces support reading, editing, and comparison.
+BaerVault uses depth selectively. Floating shell chrome and summary planes combine translucent palette-aware gradients, a bright edge, 28–30px backdrop blur, a subtle inset highlight, and a broad ambient shadow. Solid record and form panels use tonal contrast, a quiet border, and a much smaller shadow. The distinction must remain obvious: glass orients and summarizes; opaque surfaces support reading, editing, and comparison.
 
 ### Shadow Vocabulary
 

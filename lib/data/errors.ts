@@ -13,7 +13,7 @@ export function throwDataError(error: PostgrestError | null, fallback: string): 
   if (error.code === "23505") throw new DataAccessError("That record already exists.", error.code);
   if (error.code === "23503") throw new DataAccessError("That related record no longer exists. Refresh and try again.", error.code);
   if (error.code === "23514" || error.code === "22P02") throw new DataAccessError("Some submitted information is invalid.", error.code);
-  if (error.code === "42P01") throw new DataAccessError("The BearVault database migration has not been applied yet.", error.code);
+  if (error.code === "42P01") throw new DataAccessError("The BaerVault database migration has not been applied yet.", error.code);
   throw new DataAccessError(fallback, error.code);
 }
 

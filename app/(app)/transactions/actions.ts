@@ -1,6 +1,7 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { refreshFinanceViews } from "@/lib/data/revalidate";
+import { isValidDate } from "@/lib/validation";
 
 import { DataAccessError, errorMessage } from "@/lib/data/errors";
 import {
@@ -26,7 +27,7 @@ function validateIncome(input: IncomeInput) {
     description.length > 160 ||
     !Number.isFinite(input.amount) ||
     input.amount <= 0 ||
-    !/^\d{4}-\d{2}-\d{2}$/.test(input.date) ||
+    !isValidDate(input.date) ||
     (ownerLabel?.length ?? 0) > 80
   ) {
     throw new DataAccessError("Enter a valid income source, amount, and date.");
@@ -53,10 +54,7 @@ export async function saveIncomeAction(input: IncomeInput) {
           ownerLabel,
         );
 
-    revalidatePath("/transactions");
-    revalidatePath("/dashboard");
-    revalidatePath("/budget");
-    return { ok: true as const, data };
+    refreshFinanceViews(); return { ok: true as const, data };
   } catch (error) {
     return { ok: false as const, error: errorMessage(error) };
   }
@@ -65,10 +63,7 @@ export async function saveIncomeAction(input: IncomeInput) {
 export async function deleteIncomeAction(id: string) {
   try {
     await deleteIncomeEntry(id);
-    revalidatePath("/transactions");
-    revalidatePath("/dashboard");
-    revalidatePath("/budget");
-    return { ok: true as const };
+    refreshFinanceViews(); return { ok: true as const };
   } catch (error) {
     return { ok: false as const, error: errorMessage(error) };
   }

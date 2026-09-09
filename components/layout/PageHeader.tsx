@@ -100,7 +100,7 @@ export function PageHeader({
           <div className={styles.searchWrap}>
             <label className={styles.searchControl}>
               <IconSearch size={16} aria-hidden="true" />
-              <span className={styles.srOnly}>Search BearVault pages</span>
+              <span className={styles.srOnly}>Search BaerVault pages</span>
               <input
                 type="search"
                 placeholder="Search pages"
@@ -140,7 +140,7 @@ export function PageHeader({
 
       <header className={`${styles.mobileHeader} glass-panel`}>
         <Link className={styles.mobileMark} href={selectedMonth ? withMonth("/settings", selectedMonth) : "/settings"} aria-label="Open settings"><IconSettings size={24} /></Link>
-        <strong className={styles.mobileTitle}>BearVault</strong>
+        <strong className={styles.mobileTitle}>BaerVault</strong>
         <span className={styles.mobileProfile}><Link className={styles.mobileHousehold} href={selectedMonth ? withMonth("/household", selectedMonth) : "/household"} aria-label="Open household"><IconMessage size={24}/></Link><UserButton /></span>
       </header>
       {mobileQuickActions.length > 0 && (

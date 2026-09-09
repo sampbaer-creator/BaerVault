@@ -4,9 +4,5 @@ import { getBankConnections } from "@/lib/data/bankConnections";
 
 export default async function AccountsPage() {
   const [accounts, bankConnections] = await Promise.all([getFinancialAccounts(), getBankConnections()]);
-  const workspaceVersion = [
-    ...accounts.map((account) => `${account.id}:${account.updatedAt}`),
-    ...bankConnections.map((connection) => `${connection.id}:${connection.lastSyncedAt ?? connection.status}`),
-  ].join("|");
-  return <AccountsWorkspace key={workspaceVersion} initialAccounts={accounts} bankConnections={bankConnections} />;
+  return <AccountsWorkspace initialAccounts={accounts} bankConnections={bankConnections} />;
 }

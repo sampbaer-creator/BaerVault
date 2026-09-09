@@ -10,7 +10,7 @@ type AnimatedNumberProps = {
 
 export function AnimatedNumber({ value, format }: AnimatedNumberProps) {
   const elementRef = useRef<HTMLSpanElement>(null);
-  const current = useRef(0);
+  const current = useRef(value);
   const formatRef = useRef(format);
   const reduceMotion = useReducedMotion();
 
@@ -26,7 +26,7 @@ export function AnimatedNumber({ value, format }: AnimatedNumberProps) {
     }
 
     const playback = animate(current.current, value, {
-      duration: 0.8,
+      duration: 0.24,
       ease: [0.23, 1, 0.32, 1],
       onUpdate: (latest) => {
         current.current = latest;

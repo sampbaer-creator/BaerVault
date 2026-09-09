@@ -6,7 +6,8 @@ import {
   type BudgetMonth,
 } from "@/lib/finance";
 import { isDebtAccount, type FinancialAccount } from "@/lib/accounts";
-import { sharesFor, type InvestmentAccount } from "@/lib/investmentData";
+import { costFor, sharesFor, type InvestmentAccount } from "@/lib/investmentData";
+import type { UpcomingPayment } from "@/lib/recurring";
 
 export type DashboardCategory = {
   name: string;
@@ -51,12 +52,14 @@ export type DashboardViewModel = {
   accounts: DashboardAccount[];
   financialAccounts: DashboardFinancialAccount[];
   symbols: string[];
+  upcomingPayments: UpcomingPayment[];
 };
 
 export function createDashboardViewModel(
   budget: BudgetMonth,
   accounts: InvestmentAccount[],
   financialAccounts: FinancialAccount[] = [],
+  upcomingPayments: UpcomingPayment[] = [],
 ): DashboardViewModel {
   const income = totalIncome(budget);
   const spending = totalSpending(budget);
@@ -67,7 +70,7 @@ export function createDashboardViewModel(
     holdings: account.holdings.map((holding) => ({
       symbol: holding.symbol,
       shares: sharesFor(holding),
-      fallbackPrice: holding.fallbackPrice,
+      fallbackPrice: holding.fallbackPrice || (sharesFor(holding) ? costFor(holding) / sharesFor(holding) : 0),
     })),
   }));
 
@@ -102,6 +105,7 @@ export function createDashboardViewModel(
     }));
 
   return {
+    upcomingPayments,
     month: budget.month,
     income,
     spending,
@@ -121,7 +125,7 @@ export function createDashboardViewModel(
         value: categoryActual(category),
         planned: category.plannedAmount,
       }))
-      .filter((category) => category.value > 0)
+      .filter((category) => category.value > 0 || category.planned > 0)
       .sort((a, b) => b.value - a.value),
     activity,
     accounts: dashboardAccounts,

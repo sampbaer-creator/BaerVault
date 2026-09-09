@@ -1,13 +1,13 @@
 "use client";
 
 import { Drawer } from "@mantine/core";
+import { useServerState } from "@/lib/hooks/useServerState";
 import { useMediaQuery } from "@mantine/hooks";
 import {
   IconArrowLeft,
   IconArrowRight,
   IconCheck,
   IconChevronRight,
-  IconCopy,
   IconEdit,
   IconPlus,
   IconReceipt,
@@ -103,7 +103,7 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
   const pathname = usePathname();
   const accountsPath = pathname.startsWith("/demo") ? "/demo/accounts" : "/accounts";
   const isMobile = useMediaQuery("(max-width: 47.999rem)");
-  const [categories, setCategories] = useState<BudgetCategory[]>(initialBudget.categories);
+  const [categories, setCategories] = useServerState<BudgetCategory[]>(initialBudget.categories);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -214,7 +214,7 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
     const result = await actions.addCategoryAction({ year: initialBudget.year, month: initialBudget.monthNumber, name: categoryDraft.name, plannedAmount });
     setSaving(false);
     if (!result.ok) { setError(result.error); return; }
-    setCategories((current) => [...current, result.data]);
+    setCategories((current) => [...current.filter((category) => category.id !== result.data.id), result.data]);
     setCategoryDraft({ name: "", plannedAmount: "" });
     setAddingCategory(false);
     router.refresh(); invalidateMobileShell();
@@ -240,7 +240,6 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
     <div className={styles.budget}>
       <header className={styles.intro}>
         <div><p className={styles.eyebrow}>Monthly plan</p><h2>{initialBudget.month} budget</h2><p>Plan the month, then add purchases where they belong.</p></div>
-        <button className={`${styles.copyButton} btn btn-ghost`} type="button" disabled title="Available when another month has been created"><IconCopy size={16} />Copy previous month</button>
       </header>
 
       <section className={styles.monthBar} aria-label="Budget month navigation">

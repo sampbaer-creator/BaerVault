@@ -1,6 +1,8 @@
 "use client";
 
 import { Drawer } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
+import { useServerState } from "@/lib/hooks/useServerState";
 import {
   IconBuildingBank,
   IconArrowsExchange,
@@ -165,7 +167,8 @@ export function AccountsWorkspace({
 }: AccountsWorkspaceProps) {
   const money = useCurrencyFormatter();
   const router = useRouter();
-  const [accounts, setAccounts] = useState(initialAccounts);
+  const [accounts, setAccounts] = useServerState(initialAccounts);
+  const mobile = useMediaQuery("(max-width: 47.999rem)");
   const [selectedId, setSelectedId] = useState("");
   const [formOpen, setFormOpen] = useState(false);
   const [transferOpen, setTransferOpen] = useState(false);
@@ -217,7 +220,7 @@ export function AccountsWorkspace({
   }
 
   async function disconnectConnection(id: string, institution: string) {
-    if (!window.confirm(`Disconnect ${institution}? Its synced accounts and imported transactions will be removed from BearVault.`)) return;
+    if (!window.confirm(`Disconnect ${institution}? Its synced accounts and imported transactions will be removed from BaerVault.`)) return;
     const result = await disconnectBankConnectionAction(id);
     if (!result.ok) return showBankMessage(result.error);
     showBankMessage(`${institution} was disconnected.`, true);
@@ -316,7 +319,7 @@ export function AccountsWorkspace({
         ? current.map((account) =>
             account.id === editingId ? result.data : account,
           )
-        : [...current, result.data],
+        : [...current.filter((account) => account.id !== result.data.id), result.data],
     );
     setSelectedId(result.data.id);
     setFormOpen(false);
@@ -469,7 +472,7 @@ export function AccountsWorkspace({
           <section className={`${styles.netWorthCard} card chart-summary`} aria-labelledby="net-worth-title">
             <div className={styles.summaryHeader}>
               <div>
-                <span id="net-worth-title">Net worth</span>
+                <span id="net-worth-title">Net account balance</span>
                 <strong>{money.format(totals.netWorth)}</strong>
               </div>
               <span className={styles.privateBadge}>
@@ -620,8 +623,8 @@ export function AccountsWorkspace({
       <Drawer
         opened={formOpen}
         onClose={() => setFormOpen(false)}
-        position="right"
-        size="md"
+        position={mobile ? "bottom" : "right"}
+        size={mobile ? "auto" : "md"}
         title={editingId ? "Edit account" : "Add account"}
       >
         <form className={styles.accountForm} onSubmit={saveAccount}>
@@ -670,8 +673,8 @@ export function AccountsWorkspace({
       <Drawer
         opened={transferOpen}
         onClose={() => setTransferOpen(false)}
-        position="right"
-        size="md"
+        position={mobile ? "bottom" : "right"}
+        size={mobile ? "auto" : "md"}
         title="Transfer between accounts"
       >
         <form className={styles.accountForm} onSubmit={saveTransfer}>

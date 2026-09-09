@@ -1,6 +1,6 @@
-# BearVault project map
+# BaerVault project map
 
-This is the shortest reliable map of the repository. BearVault is a Next.js household-finance application with a public demo and an authenticated workspace.
+This is the shortest reliable map of the repository. BaerVault is a Next.js household-finance application with a public demo and an authenticated workspace.
 
 ## Top-level structure
 
@@ -47,7 +47,7 @@ Each folder under `features/` owns the main workspace component and its CSS Modu
 - `components/preferences/`: global preference provider.
 - `components/shared/`: reusable dialogs and browser runtimes.
 - `components/ui/`: low-level reusable controls.
-- `components/brand/`: BearVault brand components.
+- `components/brand/`: BaerVault brand components.
 
 ## Shared logic and services
 

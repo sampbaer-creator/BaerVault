@@ -10,7 +10,7 @@ export function HouseholdWorkspace() {
         <p className={styles.eyebrow}>Shared vault</p>
         <h2>Household</h2>
         <p className={styles.intro}>
-          Manage the people who share your BearVault household. Members of this household
+          Manage the people who share your BaerVault household. Members of this household
           see the same budgets, transactions, accounts, and holdings.
         </p>
       </header>

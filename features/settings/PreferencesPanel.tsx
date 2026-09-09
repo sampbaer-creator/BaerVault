@@ -1,4 +1,7 @@
 "use client";
+import { motion, useReducedMotion } from "motion/react";
+import { useId } from "react";
+import { navigationSpring } from "@/lib/ui/motion";
 
 import {
   IconCurrencyDollar,
@@ -99,6 +102,8 @@ function Segment({
   options: string[];
   onChange: (value: string) => void;
 }) {
+  const id = useId();
+  const reduced = useReducedMotion();
   return (
     <div className={styles.segment}>
       {options.map((option) => (
@@ -108,7 +113,8 @@ function Segment({
           aria-pressed={value === option}
           onClick={() => onChange(option)}
         >
-          {option}
+          {value === option ? <motion.i aria-hidden="true" className={styles.segmentIndicator} layoutId={id} transition={reduced ? { duration: 0 } : navigationSpring} /> : null}
+          <span>{option}</span>
         </button>
       ))}
     </div>

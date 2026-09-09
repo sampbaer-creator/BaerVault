@@ -1,6 +1,7 @@
 "use client";
 
 import { Drawer } from "@mantine/core";
+import { useServerState } from "@/lib/hooks/useServerState";
 import { useMediaQuery } from "@mantine/hooks";
 import { IconArrowDown, IconArrowUp, IconCheck, IconEdit, IconPlus, IconSearch, IconTrash } from "@tabler/icons-react";
 import { FormEvent, useEffect, useMemo, useState } from "react";
@@ -27,8 +28,9 @@ export function TransactionsWorkspace({ initialMonth, selectedMonth }: { initial
   const pathname = usePathname();
   const baseBudgetPath = pathname.startsWith("/demo") ? "/demo/budget" : "/budget";
   const budgetPath = selectedMonth ? withMonth(baseBudgetPath, selectedMonth) : baseBudgetPath;
-  const [incomeEntries, setIncomeEntries] = useState(initialMonth.incomeEntries);
-  const [expenseEntries, setExpenseEntries] = useState(() => initialMonth.categories.flatMap((category) => category.purchases.map((purchase) => ({ ...purchase, categoryId: category.id, category: category.name }))));
+  const [incomeEntries, setIncomeEntries] = useServerState(initialMonth.incomeEntries);
+  const serverExpenses = useMemo(() => initialMonth.categories.flatMap((category) => category.purchases.map((purchase) => ({ ...purchase, categoryId: category.id, category: category.name }))), [initialMonth.categories]);
+  const [expenseEntries, setExpenseEntries] = useServerState(serverExpenses);
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
   const [filterOpen, setFilterOpen] = useState(false);
@@ -73,12 +75,19 @@ export function TransactionsWorkspace({ initialMonth, selectedMonth }: { initial
   }
   async function save(event: FormEvent) {
     event.preventDefault(); setSaving(true); setError("");
+    if (pathname.startsWith("/demo")) {
+      const entry = { id: editingId ?? crypto.randomUUID(), source: draft.source.trim(), amount: Number(draft.amount), date: draft.date, owner: draft.owner };
+      setIncomeEntries((current) => [entry, ...current.filter((item) => item.id !== entry.id)]);
+      setSaving(false); setOpen(false); return;
+    }
+    try {
     const result = await saveIncomeAction({ id: editingId ?? undefined, description: draft.source, amount: Number(draft.amount), date: draft.date, ownerLabel: draft.owner });
     setSaving(false);
     if (!result.ok) { setError(result.error); return; }
-    setIncomeEntries((current) => editingId ? current.map((entry) => entry.id === editingId ? result.data : entry) : [result.data, ...current]);
+    setIncomeEntries((current) => [result.data, ...current.filter((entry) => entry.id !== result.data.id)]);
     setOpen(false);
     invalidateMobileShell();
+    } catch { setError("Could not save income. Please try again."); } finally { setSaving(false); }
   }
   function editExpense(id: string) {
     const entry = expenseEntries.find((item) => item.id === id);
@@ -122,6 +131,8 @@ export function TransactionsWorkspace({ initialMonth, selectedMonth }: { initial
   }
 
   return <div className={styles.page}>
+    {error && !open && !expenseOpen ? <p className={styles.error} role="alert">{error}</p> : null}
+    {!visibleItems.length ? <p className={styles.emptyChart} role="status">{query ? "No transactions match your search." : "No transactions yet. Add income or a budget expense to get started."}</p> : null}
     <div className={styles.mobileSearch}><IconSearch size={23} aria-hidden="true"/><input value={query} onChange={(event)=>setQuery(event.target.value)} placeholder="Search" aria-label="Search transactions"/><button type="button" aria-label={`Filter transactions: ${filter}`} aria-expanded={filterOpen} aria-controls="transaction-filter-menu" onClick={()=>setFilterOpen((open)=>!open)}><Image src="/transaction-filter.png" alt="" width={22} height={22}/></button>{filterOpen&&<div className={styles.mobileFilterMenu} id="transaction-filter-menu" role="menu">{(["all","income","expenses"] as Filter[]).map((value)=><button type="button" role="menuitemradio" aria-checked={filter===value} key={value} onClick={()=>{setFilter(value);setFilterOpen(false)}}><span>{value==="all"?"All transactions":value==="income"?"Income":"Expenses"}</span>{filter===value&&<IconCheck size={17} aria-hidden="true"/>}</button>)}</div>}</div>
     <header className={styles.intro}><div><span>Household activity</span><h2>Every dollar, in one ledger.</h2><p>Income entered here also updates your Budget and Dashboard totals.</p></div><button className="btn btn-primary" onClick={() => launch()}><IconPlus size={16}/>Add income</button></header>
     <div className={styles.summary}><Summary label="Money in" value={`+${money.format(income)}`} positive/><Summary label="Money out" value={`−${money.format(spending)}`} negative/><Summary label="Net" value={money.format(income-spending)}/></div>
@@ -144,7 +155,7 @@ export function TransactionsWorkspace({ initialMonth, selectedMonth }: { initial
     </section>
     <Drawer opened={open} onClose={() => setOpen(false)} position={mobile?"bottom":"right"} size={mobile?"auto":430} title={editingId?"Edit income":"Add income"} classNames={{content:styles.drawer,header:styles.drawerHeader,body:styles.drawerBody,title:styles.drawerTitle}}><form className={styles.form} onSubmit={save}>{error&&<p className={styles.error}>{error}</p>}<label>Amount<div className={styles.moneyInput}><span>$</span><input type="number" min="0.01" step="0.01" required autoFocus value={draft.amount} onChange={(event) => setDraft({...draft,amount:event.target.value})} placeholder="0.00"/></div></label><label>Income source<input required maxLength={160} value={draft.source} onChange={(event) => setDraft({...draft,source:event.target.value})} placeholder="Payroll"/></label><div className={styles.formRow}><label>Date<input type="date" required value={draft.date} onChange={(event) => setDraft({...draft,date:event.target.value})}/></label><label>Owner<select value={draft.owner} onChange={(event) => setDraft({...draft,owner:event.target.value})}><option>Household</option><option>User</option><option>Spouse</option><option>Joint</option></select></label></div><button className={`${styles.submit} btn btn-primary`} disabled={saving}>{saving?"Saving…":editingId?"Save changes":"Add income"}</button></form></Drawer>
     <Drawer opened={expenseOpen} onClose={()=>setExpenseOpen(false)} position={mobile?"bottom":"right"} size={mobile?"auto":430} title="Edit expense" classNames={{content:styles.drawer,header:styles.drawerHeader,body:styles.drawerBody,title:styles.drawerTitle}}><form className={styles.form} onSubmit={saveExpense}>{error&&<p className={styles.error}>{error}</p>}<label>Amount<div className={styles.moneyInput}><span>$</span><input type="number" min="0.01" step="0.01" required autoFocus value={expenseDraft.amount} onChange={(event)=>setExpenseDraft({...expenseDraft,amount:event.target.value})}/></div></label><label>Description<input required maxLength={160} value={expenseDraft.description} onChange={(event)=>setExpenseDraft({...expenseDraft,description:event.target.value})}/></label><label>Date<input type="date" required value={expenseDraft.date} onChange={(event)=>setExpenseDraft({...expenseDraft,date:event.target.value})}/></label><button className={`${styles.submit} btn btn-primary`} disabled={saving}>{saving?"Saving…":"Save expense"}</button></form></Drawer>
-    <ConfirmDialog opened={Boolean(pendingDelete)} title={`Delete ${pendingDelete?.name ?? "this transaction"}?`} description={pendingDelete?.incoming?"This updates income totals everywhere in BearVault.":"This permanently removes the expense from its budget category."} confirmLabel={pendingDelete?.incoming?"Delete income":"Delete expense"} onCancel={() => setPendingDelete(null)} onConfirm={() => { void remove(); }}/>
+    <ConfirmDialog opened={Boolean(pendingDelete)} title={`Delete ${pendingDelete?.name ?? "this transaction"}?`} description={pendingDelete?.incoming?"This updates income totals everywhere in BaerVault.":"This permanently removes the expense from its budget category."} confirmLabel={pendingDelete?.incoming?"Delete income":"Delete expense"} onCancel={() => setPendingDelete(null)} onConfirm={() => { void remove(); }}/>
   </div>;
 }
 function Summary({label,value,positive,negative}:{label:string;value:string;positive?:boolean;negative?:boolean}) { return <div><span>{label}</span><strong className={positive?styles.positive:negative?styles.negative:""}>{value}</strong></div>; }

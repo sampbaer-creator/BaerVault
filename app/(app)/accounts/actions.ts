@@ -1,6 +1,7 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { refreshFinanceViews } from "@/lib/data/revalidate";
+import { isValidDate } from "@/lib/validation";
 
 import {
   type AccountTransferDraft,
@@ -30,12 +31,11 @@ function validate(input: FinancialAccountDraft): FinancialAccountDraft {
     !financialAccountTypes.includes(input.type) ||
     !owners.includes(input.owner) ||
     !Number.isFinite(input.balance) ||
-    input.balance < 0 ||
     (input.type === "credit_card" &&
       input.creditLimit !== null &&
       (!Number.isFinite(input.creditLimit) || input.creditLimit <= 0))
   ) {
-    throw new DataAccessError("Enter valid account details and a balance of zero or more.");
+    throw new DataAccessError("Enter valid account details and a finite balance.");
   }
   return {
     ...input,
@@ -46,9 +46,7 @@ function validate(input: FinancialAccountDraft): FinancialAccountDraft {
 }
 
 function refreshAccounts() {
-  revalidatePath("/accounts");
-  revalidatePath("/dashboard");
-}
+  refreshFinanceViews(); }
 
 function validateTransfer(input: AccountTransferDraft): AccountTransferDraft {
   const note = input.note.trim();
@@ -61,7 +59,7 @@ function validateTransfer(input: AccountTransferDraft): AccountTransferDraft {
     input.amount <= 0 ||
     input.amount > 999999999999.99 ||
     Math.abs(Math.round(cents) - cents) > 0.000001 ||
-    !/^\d{4}-\d{2}-\d{2}$/.test(input.date) ||
+    !isValidDate(input.date) ||
     note.length > 160
   ) {
     throw new DataAccessError("Choose two different accounts and enter a valid amount and date.");
@@ -125,8 +123,7 @@ export async function completeBankConnectionAction(input: { publicToken: string;
   try {
     await completePlaidConnection(input.publicToken, input.institution);
     refreshAccounts();
-    revalidatePath("/transactions");
-    return { ok: true as const };
+    refreshFinanceViews(); return { ok: true as const };
   } catch (error) {
     return { ok: false as const, error: errorMessage(error) };
   }
@@ -137,10 +134,7 @@ export async function refreshBankConnectionAction(connectionId: string) {
     if (!uuidPattern.test(connectionId)) throw new DataAccessError("That bank connection is invalid.");
     await refreshBankConnection(connectionId);
     refreshAccounts();
-    revalidatePath("/transactions");
-    revalidatePath("/budget");
-    revalidatePath("/cash-flow");
-    return { ok: true as const };
+    refreshFinanceViews(); return { ok: true as const };
   } catch (error) { return { ok: false as const, error: errorMessage(error) }; }
 }
 
@@ -149,7 +143,6 @@ export async function disconnectBankConnectionAction(connectionId: string) {
     if (!uuidPattern.test(connectionId)) throw new DataAccessError("That bank connection is invalid.");
     await disconnectBankConnection(connectionId);
     refreshAccounts();
-    revalidatePath("/transactions");
-    return { ok: true as const };
+    refreshFinanceViews(); return { ok: true as const };
   } catch (error) { return { ok: false as const, error: errorMessage(error) }; }
 }

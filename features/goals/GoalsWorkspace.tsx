@@ -6,7 +6,8 @@ import { IconEdit, IconPlus, IconTargetArrow, IconTrash } from "@tabler/icons-re
 import { FormEvent, useEffect, useState } from "react";
 import { addGoalAction, deleteGoalAction, updateGoalAction } from "@/app/(app)/goals/actions";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
-import { currency } from "@/lib/finance";
+import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
+import { useServerState } from "@/lib/hooks/useServerState";
 import type { SavingsGoal } from "@/lib/goals";
 import styles from "./GoalsWorkspace.module.css";
 import { invalidateMobileShell } from "@/lib/mobileShell";
@@ -16,8 +17,9 @@ const emptyDraft = { name: "", targetAmount: "", savedAmount: "0", targetDate: "
 const colors = ["#4f8389", "#d4af37", "#000080", "#5e191a", "#cfac87", "#e8b00f"];
 
 export function GoalsWorkspace({ initialGoals }: { initialGoals: SavingsGoal[] }) {
+  const currency = useCurrencyFormatter();
   const mobile = useMediaQuery("(max-width: 47.999rem)");
-  const [goals, setGoals] = useState(initialGoals);
+  const [goals, setGoals] = useServerState(initialGoals);
   const [editing, setEditing] = useState<SavingsGoal | null>(null);
   const [draft, setDraft] = useState(emptyDraft);
   const [open, setOpen] = useState(false);
@@ -49,7 +51,7 @@ export function GoalsWorkspace({ initialGoals }: { initialGoals: SavingsGoal[] }
     const result = editing ? await updateGoalAction({ id: editing.id, ...input }) : await addGoalAction(input);
     setSaving(false);
     if (!result.ok) { setError(result.error); return; }
-    setGoals((current) => editing ? current.map((goal) => goal.id === editing.id ? result.data : goal) : [...current, result.data]);
+    setGoals((current) => [...current.filter((goal) => goal.id !== result.data.id), result.data]);
     setOpen(false);
     invalidateMobileShell();
   }

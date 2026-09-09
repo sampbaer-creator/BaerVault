@@ -1,8 +1,8 @@
-# BearVault architecture
+# BaerVault architecture
 
 ## System overview
 
-BearVault is a Next.js 16 App Router application built with React 19 and TypeScript. It has two presentation modes:
+BaerVault is a Next.js 16 App Router application built with React 19 and TypeScript. It has two presentation modes:
 
 1. An authenticated household workspace backed by Supabase.
 2. A public demo backed by static mock records and local React state.

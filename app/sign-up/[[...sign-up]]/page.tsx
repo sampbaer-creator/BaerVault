@@ -6,7 +6,7 @@ import styles from "../../auth.module.css";
 export default function SignUpPage() {
   return (
     <main className={styles.page}>
-      <Link className={styles.brand} href="/">BearVault</Link>
+      <Link className={styles.brand} href="/">BaerVault</Link>
       <div className={styles.authCard}>
         <p className={styles.step}>Step 1 of 2</p>
         <SignUp forceRedirectUrl="/onboarding" signInUrl="/sign-in" />

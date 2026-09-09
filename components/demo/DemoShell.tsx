@@ -20,7 +20,6 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import styles from "./DemoShell.module.css";
-import { LiquidGLRuntime } from "@/components/shared/LiquidGLRuntime";
 import { useMobilePageSwipe } from "@/components/layout/useMobilePageSwipe";
 import { mobileSectionNavigation } from "@/components/layout/navigation";
 
@@ -41,7 +40,7 @@ const mobileLinks = mobileSectionNavigation.map((item) => ({
 }));
 
 const accountGroups = [
-  { label: "Credit cards", accounts: [["BearVault Card", "$552"], ["Everyday Visa", "$0"]] },
+  { label: "Credit cards", accounts: [["BaerVault Card", "$552"], ["Everyday Visa", "$0"]] },
   { label: "Cash", accounts: [["Household checking", "$8,420"], ["Emergency savings", "$12,600"]] },
   { label: "Investments", accounts: [["Joint brokerage", "$17,817"], ["Retirement", "$21,603"]] },
 ] as const;
@@ -85,7 +84,6 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
       <a className={styles.skipLink} href="#demo-main-content">
         Skip to main content
       </a>
-      <LiquidGLRuntime />
       <div className={styles.demoModeBar}><strong>You&apos;re in demo mode</strong><Link href="/" aria-label="Exit demo"><IconX size={24}/></Link></div>
       <aside className={styles.sidebar}>
         <div
@@ -96,7 +94,7 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
           <span>
             <IconHome size={19} />
           </span>
-          BearVault
+          BaerVault
         </Link>
         <div className={styles.demoBadge}>Interactive demo</div>
         <nav>
@@ -135,8 +133,8 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
         <header>
           <Link className={styles.mobileMark} href="/demo/settings" aria-label="Open settings"><IconSettings size={24}/></Link>
           <div className={styles.headerCopy}>
-            <strong>BearVault</strong>
-            <small>Explore BearVault without signing in</small>
+            <strong>BaerVault</strong>
+            <small>Explore BaerVault without signing in</small>
           </div>
           <Link className={styles.createAccount} href="/sign-up">Create account</Link>
           <Link className={styles.mobileHousehold} href="/demo/household" aria-label="Open household"><IconMessage size={25}/></Link>

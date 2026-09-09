@@ -4,6 +4,9 @@ import { decryptBankToken } from "@/lib/banking/crypto";
 import type { BankConnection } from "@/lib/banking/types";
 
 type PlaidError = { error_code?: string; error_message?: string; request_id?: string };
+export class PlaidRequestError extends Error {
+  constructor(public code: string, message: string) { super(message); }
+}
 
 function configuration(environment = process.env.PLAID_ENV ?? "sandbox") {
   const clientId = process.env.PLAID_CLIENT_ID;
@@ -20,9 +23,10 @@ export async function plaidRequest<T>(path: string, body: Record<string, unknown
     headers: { "Content-Type": "application/json", "PLAID-CLIENT-ID": config.clientId, "PLAID-SECRET": config.secret },
     body: JSON.stringify(body),
     cache: "no-store",
+    signal: AbortSignal.timeout(20000),
   });
   const payload = await response.json() as T & PlaidError;
-  if (!response.ok) throw new Error(payload.error_message ?? payload.error_code ?? `Plaid request failed (${response.status}).`);
+  if (!response.ok) throw new PlaidRequestError(payload.error_code ?? "UNKNOWN", payload.error_message ?? `Plaid request failed (${response.status}).`);
   return payload;
 }
 

@@ -12,7 +12,7 @@ export type CurrentHousehold = { id: string; clerkOrgId: string; name: string };
 export const getCurrentHousehold = cache(async (): Promise<CurrentHousehold> => {
   const { userId, orgId } = await auth.protect();
   if (!userId) throw new DataAccessError("You must sign in to access household data.");
-  if (!orgId) throw new DataAccessError("Select or create a Clerk household before using BearVault.", "MISSING_ORGANIZATION");
+  if (!orgId) throw new DataAccessError("Select or create a Clerk household before using BaerVault.", "MISSING_ORGANIZATION");
 
   const supabase = createServerSupabaseClient();
   const existing = await supabase
@@ -37,6 +37,6 @@ export const getCurrentHousehold = cache(async (): Promise<CurrentHousehold> => 
     if (raced.error) throwDataError(raced.error, "Could not resolve your household.");
     return { id: raced.data.id, clerkOrgId: raced.data.clerk_org_id, name: raced.data.name };
   }
-  if (inserted.error) throwDataError(inserted.error, "Could not create your BearVault household.");
+  if (inserted.error) throwDataError(inserted.error, "Could not create your BaerVault household.");
   return { id: inserted.data.id, clerkOrgId: inserted.data.clerk_org_id, name: inserted.data.name };
 });

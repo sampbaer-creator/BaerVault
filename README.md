@@ -1,7 +1,7 @@
 <div align="center">
-  <img src="app/icon.png" alt="BearVault app icon" width="112" />
+  <img src="app/icon.png" alt="BaerVault app icon" width="112" />
 
-  # BearVault
+  # BaerVault
 
   **A calm, shared home for your household finances.**
 
@@ -18,7 +18,7 @@
 
 ## The household picture, clearly organized
 
-BearVault brings everyday money management and long-term planning into a single responsive application. Clerk Organizations define the household, Supabase keeps financial records isolated with row-level security, and Twelve Data supplies current and historical market information.
+BaerVault brings everyday money management and long-term planning into a single responsive application. Clerk Organizations define the household, Supabase keeps financial records isolated with row-level security, and Twelve Data supplies current and historical market information.
 
 | Understand today | Plan ahead | Share securely |
 | --- | --- | --- |
@@ -75,7 +75,7 @@ Open [http://localhost:3000](http://localhost:3000). The landing page and public
 
 ### Plaid bank connections
 
-The Accounts workspace connects bank accounts through Plaid Link. Plaid access tokens are encrypted with AES-256-GCM and stored once per Item. BearVault syncs cached balances and 90 days of posted transactions, maps recognized Plaid categories into existing monthly budget categories, and sends unmatched expenses to an `Uncategorized` category. Income is added to the matching month's totals; pending items, transfers, and refunds are not added to budgets automatically.
+The Accounts workspace connects bank accounts through Plaid Link. Plaid access tokens are encrypted with AES-256-GCM and stored once per Item. BaerVault syncs cached balances and 90 days of posted transactions, maps recognized Plaid categories into existing monthly budget categories, and sends unmatched expenses to an `Uncategorized` category. Income is added to the matching month's totals; pending items, transfers, and refunds are not added to budgets automatically.
 
 Apply the latest Supabase migration and configure the Plaid variables in `.env.example`. Set the webhook URL in `PLAID_WEBHOOK_URL`:
 
@@ -108,7 +108,7 @@ For a deeper tour, read the [architecture guide](docs/ARCHITECTURE.md) and [proj
 
 ## Project status
 
-BearVault is under active development. Core household-finance workflows and Plaid bank synchronization are available today. Payments, email, and analytics are not yet integrated.
+BaerVault is under active development. Core household-finance workflows and Plaid bank synchronization are available today. Payments, email, and analytics are not yet integrated.
 
 ---
 

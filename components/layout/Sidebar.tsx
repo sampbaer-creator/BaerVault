@@ -8,7 +8,7 @@ import {
   type NavigationItem,
 } from "./navigation";
 import styles from "./AppShell.module.css";
-import { BearVaultLogo } from "@/components/brand/BearVaultLogo";
+import { BaerVaultLogo } from "@/components/brand/BaerVaultLogo";
 import { type MonthSelection, withMonth } from "@/lib/monthSelection";
 
 type SidebarProps = {
@@ -63,7 +63,7 @@ export function Sidebar({ pathname, collapsed = false, selectedMonth }: SidebarP
         aria-hidden="true"
       />
       <div className={styles.brand}>
-        <BearVaultLogo compact={collapsed} />
+        <BaerVaultLogo compact={collapsed} />
       </div>
 
       <nav className={styles.sidebarNav}>

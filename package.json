@@ -17,23 +17,24 @@
     "@tabler/icons-react": "^3.46.0",
     "clsx": "^2.1.1",
     "jose": "^6.2.10",
-    "liquid-gl": "^2.0.1",
     "motion": "^13.1.0",
-    "next": "16.3.0",
+    "next": "^16.3.4",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "recharts": "^3.10.1",
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
-    "eslint-config-next": "16.3.0",
+    "eslint-config-next": "^16.3.4",
     "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.13",
     "typescript": "^5"
   }
 }

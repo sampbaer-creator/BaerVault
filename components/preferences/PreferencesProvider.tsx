@@ -34,7 +34,8 @@ export function PreferencesProvider({
           const theme = ["system", "light", "dark"].includes(parsed.theme ?? "")
             ? (parsed.theme as ThemeMode)
             : defaults.theme;
-          setPreferences({ ...defaults, currency: parsed.currency ?? defaults.currency, theme });
+          const currency = ["USD", "CAD", "EUR", "GBP"].includes(parsed.currency ?? "") ? parsed.currency! : defaults.currency;
+          setPreferences({ ...defaults, currency, theme });
         }
       } catch {}
       setStorageReady(true);
@@ -53,7 +54,7 @@ export function PreferencesProvider({
       root.style.colorScheme = resolvedTheme;
       document.querySelector('meta[name="theme-color"]')?.setAttribute(
         "content",
-        resolvedTheme === "dark" ? "#03031c" : "#f7f8fa",
+        resolvedTheme === "dark" ? "#000000" : "#f2f2f7",
       );
     };
     applyTheme();
@@ -61,7 +62,7 @@ export function PreferencesProvider({
     delete root.dataset.palette;
     delete root.dataset.density;
     delete root.dataset.motion;
-    localStorage.setItem("bearvault-preferences", JSON.stringify(preferences));
+    try { localStorage.setItem("bearvault-preferences", JSON.stringify(preferences)); } catch { /* Private browsing can disable persistence. */ }
     return () => media.removeEventListener("change", applyTheme);
   }, [preferences, storageReady]);
   const value = useMemo(
