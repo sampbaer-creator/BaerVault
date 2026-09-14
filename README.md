@@ -68,7 +68,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). The landing page and public demo work without an account. Protected household features require Clerk and Supabase credentials in `.env.local`; optional market data and live bank connections use Twelve Data and Plaid. Copy `.env.example` for the full variable list.
+Open [http://localhost:3000](http://localhost:3000) on the development computer. The dev server listens on the local network too, so to test on a phone connected to the same Wi-Fi, open `http://YOUR_COMPUTER_IP:3000` (find the address with `ipconfig`). If Windows asks whether Node.js may communicate on private networks, allow it. The landing page and public demo work without an account. Protected household features require Clerk and Supabase credentials in `.env.local`; optional market data and live bank connections use Twelve Data and Plaid. Copy `.env.example` for the full variable list.
 
 > [!IMPORTANT]
 > Keep credentials in `.env.local` and never commit secret values.
