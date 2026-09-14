@@ -417,8 +417,11 @@
 }
 .primaryButton {
   color: #fff !important;
-  background: var(--navy) !important;
+  background: var(--app-accent, #0879dd) !important;
+  border: 1px solid var(--app-accent, #0879dd) !important;
+  color-scheme: light;
 }
+.formActions .primaryButton { min-width: 132px; white-space: nowrap; }
 .purchaseList {
   margin-top: 14px;
 }
