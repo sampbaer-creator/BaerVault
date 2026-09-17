@@ -96,8 +96,16 @@ function categoryEmoji(name: string) {
   return "💳";
 }
 
-type BudgetActions=Pick<typeof realActions,"addCategoryAction"|"deleteBudgetCategoryAction"|"deleteBudgetEntryAction"|"saveBudgetEntryAction"|"updateBudgetCategoryAction">;
-export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActions }: { initialBudget: BudgetMonth & { year: number; monthNumber: number }; accounts?: BudgetAccountOption[]; actions?:BudgetActions }) {
+type BudgetAdvice = {
+  suggestions: Array<{ categoryName: string; suggestedAmount: number; rationale: string }>;
+  overallTip: string;
+  confidence: "low" | "medium" | "high";
+};
+type BudgetAdviceResult = { ok: true; data: BudgetAdvice } | { ok: false; error: string };
+type BudgetActions=Pick<typeof realActions,"addCategoryAction"|"deleteBudgetCategoryAction"|"deleteBudgetEntryAction"|"saveBudgetEntryAction"|"updateBudgetCategoryAction"> & {
+  getBudgetAdviceAction?: (input: { year: number; month: number }) => Promise<BudgetAdviceResult>;
+};
+export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActions, showAdviceBanner = false }: { initialBudget: BudgetMonth & { year: number; monthNumber: number }; accounts?: BudgetAccountOption[]; actions?:BudgetActions; showAdviceBanner?: boolean }) {
   const currency=useCurrencyFormatter();
   const router = useRouter();
   const pathname = usePathname();
@@ -116,6 +124,11 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
   const [categoryDraft, setCategoryDraft] = useState({ name: "", plannedAmount: "" });
   const [categoryNameDraft, setCategoryNameDraft] = useState("");
   const [pendingDelete, setPendingDelete] = useState<{ kind: "entry" | "category"; id: string; label: string } | null>(null);
+  const [advice, setAdvice] = useState<BudgetAdvice | null>(null);
+  const [adviceLoading, setAdviceLoading] = useState(false);
+  const [adviceError, setAdviceError] = useState("");
+  const [bannerDismissed, setBannerDismissed] = useState(false);
+  const [applyingAdvice, setApplyingAdvice] = useState<string | null>(null);
 
   useEffect(() => {
     const openCategory = (event: Event) => {
@@ -220,6 +233,49 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
     router.refresh(); invalidateMobileShell();
   }
 
+  async function requestAdvice() {
+    if (!actions.getBudgetAdviceAction) return;
+    setAdviceLoading(true);
+    setAdviceError("");
+    const result = await actions.getBudgetAdviceAction({ year: initialBudget.year, month: initialBudget.monthNumber });
+    setAdviceLoading(false);
+    if (!result.ok) {
+      setAdviceError(result.error);
+      return;
+    }
+    setAdvice(result.data);
+  }
+
+  async function applyAdvice(suggestion: BudgetAdvice["suggestions"][number]) {
+    const name = suggestion.categoryName.trim();
+    const amount = Math.round(suggestion.suggestedAmount * 100) / 100;
+    const existing = categories.find((category) => category.name.trim().toLocaleLowerCase() === name.toLocaleLowerCase());
+    const key = existing?.id ?? name.toLocaleLowerCase();
+    setApplyingAdvice(key);
+    setAdviceError("");
+
+    if (existing) {
+      const result = await actions.updateBudgetCategoryAction(existing.id, existing.name, amount);
+      if (!result.ok) {
+        setAdviceError(result.error);
+      } else {
+        setCategories((current) => current.map((category) => category.id === existing.id ? { ...category, plannedAmount: amount } : category));
+        router.refresh();
+        invalidateMobileShell();
+      }
+    } else {
+      const result = await actions.addCategoryAction({ year: initialBudget.year, month: initialBudget.monthNumber, name, plannedAmount: amount });
+      if (!result.ok) {
+        setAdviceError(result.error);
+      } else {
+        setCategories((current) => [...current.filter((category) => category.id !== result.data.id), result.data]);
+        router.refresh();
+        invalidateMobileShell();
+      }
+    }
+    setApplyingAdvice(null);
+  }
+
   function renderCategory(category: BudgetCategory) {
     const actual = categoryActual(category);
     const variance = categoryRemaining(category);
@@ -255,6 +311,24 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
 
       {error && <p className={styles.formError} role="alert">{error}</p>}
 
+      {actions.getBudgetAdviceAction && showAdviceBanner && !bannerDismissed && !advice && <aside className={styles.adviceBanner} role="status">
+        <div><strong>Need a starting point?</strong><span>Use your recent spending history to draft this month&apos;s plan.</span></div>
+        <div className={styles.adviceBannerActions}><button className={styles.primaryButton} type="button" onClick={requestAdvice} disabled={adviceLoading}>{adviceLoading ? "Preparing…" : "Get advice"}</button><button className={styles.dismissButton} type="button" onClick={() => setBannerDismissed(true)} aria-label="Dismiss budget advice"><IconX size={16} /></button></div>
+      </aside>}
+
+      {actions.getBudgetAdviceAction && adviceError && <p className={styles.formError} role="alert">{adviceError}</p>}
+
+      {actions.getBudgetAdviceAction && advice && <section className={styles.advicePanel} aria-labelledby="budget-advice-title">
+        <div className={styles.adviceHeading}><div><span className={styles.adviceEyebrow}>AI budget advice</span><h3 id="budget-advice-title">A practical starting point for {initialBudget.month}</h3></div><span className={styles.confidence}>Confidence: {advice.confidence}</span></div>
+        <p className={styles.adviceTip}>{advice.overallTip}</p>
+        {advice.suggestions.length > 0 ? <div className={styles.adviceSuggestions}>{advice.suggestions.map((suggestion) => {
+          const existing = categories.find((category) => category.name.trim().toLocaleLowerCase() === suggestion.categoryName.trim().toLocaleLowerCase());
+          const key = existing?.id ?? suggestion.categoryName.trim().toLocaleLowerCase();
+          return <div className={styles.adviceSuggestion} key={key}><div><strong>{suggestion.categoryName}</strong><span>{suggestion.rationale}</span></div><div className={styles.adviceSuggestionAction}><strong>{currency.format(suggestion.suggestedAmount)}</strong><button type="button" onClick={() => applyAdvice(suggestion)} disabled={Boolean(applyingAdvice)}>{applyingAdvice === key ? "Applying…" : "Apply"}</button></div></div>;
+        })}</div> : <p className={styles.adviceEmpty}>No category changes were suggested from the available history.</p>}
+        <p className={styles.adviceDisclaimer}>AI-generated suggestions based on spending history. Category names and amounts are sent to OpenAI; transaction descriptions and account details are not included.</p>
+      </section>}
+
       <section className={`${styles.summary} chart-summary card`} aria-labelledby="budget-summary-title">
         <div className={styles.summaryLead}><span id="budget-summary-title">Available after spending</span><strong>{currency.format(savings)}</strong><small>{currency.format(income)} income this month</small></div>
         <div className={styles.summaryRail}>
@@ -266,7 +340,7 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
 
       <div className={styles.referenceGrid}>
       <section className={`${styles.sheet} card`} aria-labelledby="categories-title">
-        <div className={styles.sheetHeading}><div><h3 id="categories-title">Spending plan</h3><p>Actuals are calculated from the purchases inside each category.</p></div><button type="button" onClick={() => setAddingCategory(true)}><IconPlus size={16} />Add category</button></div>
+        <div className={styles.sheetHeading}><div><h3 id="categories-title">Spending plan</h3><p>Actuals are calculated from the purchases inside each category.</p></div><div className={styles.headingActions}>{actions.getBudgetAdviceAction && <button type="button" onClick={requestAdvice} disabled={adviceLoading}>{adviceLoading ? "Preparing…" : "Get AI budget advice"}</button>}<button type="button" onClick={() => setAddingCategory(true)}><IconPlus size={16} />Add category</button></div></div>
         <div className={styles.tableHeader} aria-hidden="true"><span>Category</span><span>Budget / projected</span><span>Actual</span><span>Remaining / variance</span><span /></div>
         <div className={styles.rows}>
           <div className={styles.mobileTableHeader}><span>Category</span><span>Spent</span><span>Budget</span></div>

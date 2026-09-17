@@ -15,10 +15,21 @@ type BudgetEntryRow = {
   financial_account?: { name: string } | Array<{ name: string }> | null;
 };
 type CategoryRow = { id: string; name: string; planned_amount: number | string; budget_entries?: BudgetEntryRow[] };
+type BudgetHistoryCategoryRow = { name: string; planned_amount: number | string; budget_entries?: Array<{ amount: number | string }> };
+type BudgetHistoryMonthRow = { year: number; month: number; budget_categories?: BudgetHistoryCategoryRow[] };
 
-export async function getBudgetMonth(year: number, month: number): Promise<BudgetMonth & { id: string | null; year: number; monthNumber: number }> {
+export type BudgetHistoryEntry = {
+  year: number;
+  month: number;
+  categoryName: string;
+  planned: number;
+  actual: number;
+};
+
+export async function getBudgetMonth(year: number, month: number): Promise<BudgetMonth & { id: string; year: number; monthNumber: number; isNewlyCreated: boolean }> {
   const household = await getCurrentHousehold();
   const supabase = createServerSupabaseClient();
+  const ensured = await ensureBudgetMonth(year, month, household, supabase);
   const result = await supabase
     .from("budget_months")
     .select("id, year, month, budget_categories(id, name, planned_amount, sort_order, budget_entries(id, description, amount, entry_date, financial_account_id, financial_account:financial_accounts(name)))")
@@ -55,9 +66,10 @@ export async function getBudgetMonth(year: number, month: number): Promise<Budge
   }));
 
   return {
-    id: result.data?.id ?? null,
+    id: ensured.budgetMonthId,
     year,
     monthNumber: month,
+    isNewlyCreated: ensured.isNewlyCreated,
     month: new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric" }).format(new Date(Date.UTC(year, month - 1, 1))),
     categories,
     incomeEntries: (income.data ?? []).map((entry) => ({
@@ -70,16 +82,23 @@ export async function getBudgetMonth(year: number, month: number): Promise<Budge
   };
 }
 
-async function ensureBudgetMonth(year: number, month: number) {
-  const household = await getCurrentHousehold();
-  const supabase = createServerSupabaseClient();
-  const result = await supabase
-    .from("budget_months")
-    .upsert({ household_id: household.id, year, month }, { onConflict: "household_id,year,month", ignoreDuplicates: false })
-    .select("id")
-    .single();
+async function ensureBudgetMonth(
+  year: number,
+  month: number,
+  household?: Awaited<ReturnType<typeof getCurrentHousehold>>,
+  supabase?: ReturnType<typeof createServerSupabaseClient>,
+) {
+  const currentHousehold = household ?? await getCurrentHousehold();
+  const client = supabase ?? createServerSupabaseClient();
+  const result = await client.rpc("get_or_create_budget_month", {
+    p_household_id: currentHousehold.id,
+    p_year: year,
+    p_month: month,
+  });
   if (result.error) throwDataError(result.error, "Could not create this budget month.");
-  return { household, supabase, budgetMonthId: result.data.id };
+  const row = (Array.isArray(result.data) ? result.data[0] : result.data) as { budget_month_id?: string; created?: boolean } | null;
+  if (!row?.budget_month_id) throw new DataAccessError("Could not resolve this budget month.");
+  return { household: currentHousehold, supabase: client, budgetMonthId: row.budget_month_id, isNewlyCreated: row.created === true };
 }
 
 export async function createBudgetCategory(year: number, month: number, name: string, plannedAmount: number) {
@@ -89,6 +108,29 @@ export async function createBudgetCategory(year: number, month: number, name: st
   const result = await supabase.from("budget_categories").insert({ household_id: household.id, budget_month_id: budgetMonthId, name, planned_amount: plannedAmount, sort_order: count.count ?? 0 }).select("id, name, planned_amount").single();
   if (result.error) throwDataError(result.error, "Could not add the budget category.");
   return { id: result.data.id, name: result.data.name, plannedAmount: Number(result.data.planned_amount), purchases: [] };
+}
+
+export async function getBudgetHistory(targetYear: number, targetMonth: number, monthsBack = 6): Promise<BudgetHistoryEntry[]> {
+  const household = await getCurrentHousehold();
+  const result = await createServerSupabaseClient()
+    .from("budget_months")
+    .select("year, month, budget_categories(name, planned_amount, budget_entries(amount))")
+    .eq("household_id", household.id)
+    .order("year", { ascending: false })
+    .order("month", { ascending: false });
+  if (result.error) throwDataError(result.error, "Could not load budget history.");
+
+  const limit = Number.isInteger(monthsBack) ? Math.min(Math.max(monthsBack, 1), 24) : 6;
+  return ((result.data ?? []) as BudgetHistoryMonthRow[])
+    .filter((budgetMonth) => budgetMonth.year < targetYear || (budgetMonth.year === targetYear && budgetMonth.month < targetMonth))
+    .slice(0, limit)
+    .flatMap((budgetMonth) => (budgetMonth.budget_categories ?? []).map((category) => ({
+      year: budgetMonth.year,
+      month: budgetMonth.month,
+      categoryName: category.name,
+      planned: Number(category.planned_amount),
+      actual: (category.budget_entries ?? []).reduce((sum, entry) => sum + Number(entry.amount), 0),
+    })));
 }
 
 export async function updateBudgetCategory(categoryId: string, name: string, plannedAmount: number) {

@@ -811,6 +811,51 @@
   .summaryRail { padding: 16px 18px; border-top: 1px solid var(--app-border); }
   .categoryRow { padding-inline: 16px; }
 }
+
+.headingActions { display: flex; align-items: center; gap: 8px; }
+.headingActions button,
+.adviceBanner button,
+.adviceSuggestionAction button { min-height: 36px; padding: 0 12px; border: 1px solid var(--app-border); border-radius: 9px; color: var(--app-text-strong); background: var(--app-surface); font: inherit; font-size: 11px; font-weight: 700; cursor: pointer; }
+.headingActions button:disabled,
+.adviceBanner button:disabled,
+.adviceSuggestionAction button:disabled { cursor: not-allowed; opacity: .55; }
+.adviceBanner,
+.advicePanel { margin-bottom: 14px; border: 1px solid color-mix(in srgb, var(--app-accent) 25%, var(--app-border)); border-radius: 14px; background: color-mix(in srgb, var(--app-accent) 6%, var(--app-surface)); }
+.adviceBanner { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 16px; }
+.adviceBanner > div:first-child,
+.adviceHeading { display: grid; gap: 4px; }
+.adviceBanner strong,
+.adviceHeading h3,
+.adviceSuggestion strong { color: var(--app-text-strong); }
+.adviceBanner span,
+.adviceSuggestion span,
+.adviceDisclaimer,
+.adviceEmpty { color: var(--app-text-muted); font-size: 11px; line-height: 1.45; }
+.adviceBannerActions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.adviceBannerActions .primaryButton { color: #fff; border-color: var(--app-accent); background: var(--app-accent); }
+.dismissButton { display: grid; width: 32px; padding: 0 !important; place-items: center; }
+.advicePanel { padding: 18px; }
+.adviceHeading { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.adviceHeading h3 { margin: 0; font-size: 15px; }
+.adviceEyebrow { color: var(--app-accent); font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.confidence { flex-shrink: 0; color: var(--app-text-muted); font-size: 10px; text-transform: capitalize; }
+.adviceTip { margin: 12px 0 14px; color: var(--app-text-strong); font-size: 12px; line-height: 1.5; }
+.adviceSuggestions { display: grid; gap: 8px; }
+.adviceSuggestion { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid var(--app-border); }
+.adviceSuggestion > div:first-child { display: grid; gap: 3px; min-width: 0; }
+.adviceSuggestionAction { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.adviceSuggestionAction > strong { font-size: 12px; }
+.adviceSuggestionAction button { min-height: 32px; color: #fff; border-color: var(--app-accent); background: var(--app-accent); }
+.adviceDisclaimer { margin: 14px 0 0; }
+.adviceEmpty { margin: 12px 0 0; }
+@media (max-width: 47.999rem) {
+  .sheetHeading > .headingActions { display: flex !important; gap: 6px; }
+  .headingActions button { position: static !important; display: inline-flex !important; width: auto !important; height: 36px !important; min-height: 36px; padding: 0 9px !important; color: var(--app-text-strong) !important; border: 1px solid var(--app-border) !important; border-radius: 9px !important; background: var(--app-surface) !important; box-shadow: none !important; font-size: 10px !important; }
+  .adviceBanner { align-items: flex-start; flex-direction: column; }
+  .adviceBannerActions { width: 100%; justify-content: flex-end; }
+  .adviceHeading { display: grid; }
+  .adviceSuggestion { align-items: flex-start; }
+}
 .summary { display: none; }
 .mobileBudgetSummary{display:none}.mobileTableHeader{display:none}
 .referenceGrid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(270px, .75fr); gap: 16px; align-items: start; }
@@ -971,4 +1016,9 @@
 
 @media (max-width: 47.999rem) {
   .sheetHeading button { display: none !important; }
+}
+
+@media (max-width: 47.999rem) {
+  .sheetHeading > .headingActions { display: flex !important; }
+  .sheetHeading > .headingActions button { position: static !important; display: inline-flex !important; width: auto !important; height: 36px !important; min-height: 36px !important; padding: 0 9px !important; color: var(--app-text-strong) !important; border: 1px solid var(--app-border) !important; border-radius: 9px !important; background: var(--app-surface) !important; box-shadow: none !important; font-size: 10px !important; }
 }
