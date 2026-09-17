@@ -99,11 +99,11 @@
   --glass-highlight: rgb(255 255 255 / 8%);
   --shadow-surface: 0 2px 8px rgb(0 0 0 / 12%);
   --shadow-glass: 0 4px 20px rgb(0 0 0 / 20%);
-  --panel-glass-surface: color-mix(in srgb, var(--app-surface) 68%, transparent);
+  --panel-glass-surface: color-mix(in srgb, var(--app-surface) 84%, transparent);
   --panel-glass-border: color-mix(in srgb, rgb(255 255 255 / 14%) 100%, transparent);
   --panel-glass-highlight: rgb(255 255 255 / 10%);
   --panel-glass-shadow: 0 16px 40px rgb(0 0 0 / 30%), inset 0 1px 0 var(--panel-glass-highlight);
-  --row-glass-surface: color-mix(in srgb, var(--app-surface) 88%, transparent);
+  --row-glass-surface: color-mix(in srgb, var(--app-surface) 92%, transparent);
   --row-glass-border: color-mix(in srgb, var(--app-border) 88%, transparent);
 }
 @media (prefers-reduced-motion: reduce) {

@@ -194,8 +194,11 @@ still reads its role through material weight, but nothing is fully flat anymore.
 
 **The Tiered Glass Rule.** Every panel and card carries Panel Glass by default; only
 dense tabular/list rows step down to Row Glass, and only shell chrome/dialogs step up
-to Shell Glass. Nothing in the product renders as fully flat/opaque anymore except form
-inputs, which stay solid for typing legibility.
+to Shell Glass. Form inputs stay solid for typing legibility. The one other exemption
+is the mobile "hero card" pattern (the net worth, budget, and goal summary cards that
+switch to a solid white or navy-gradient treatment below 48rem) — those are a
+deliberate celebratory mobile composition, not a record panel, and stay outside the
+tiered glass system.
 
 **The Accessibility Fallback Rule.** Reduced transparency replaces every glass tier —
 shell, panel, and row — with an opaque application surface, and increased contrast
