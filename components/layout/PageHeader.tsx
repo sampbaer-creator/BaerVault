@@ -15,7 +15,7 @@ import {
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
-import { requestShellQuickAdd, type ShellQuickAddAction } from "@/lib/shellQuickAdd";
+import { requestShellQuickAdd, type ShellQuickAddAction } from "@/lib/helpers/shellQuickAdd";
 
 import {
   householdNavigation,
@@ -23,7 +23,7 @@ import {
   systemNavigation,
 } from "./navigation";
 import styles from "./AppShell.module.css";
-import { type MonthSelection, withMonth } from "@/lib/monthSelection";
+import { type MonthSelection, withMonth } from "@/lib/helpers/monthSelection";
 
 type PageHeaderProps = {
   title: string;

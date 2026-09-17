@@ -1,6 +1,6 @@
 import "server-only";
 
-import type { Holding, InvestmentAccount, InvestmentLot } from "@/lib/investmentData";
+import type { Holding, InvestmentAccount, InvestmentLot } from "@/lib/demo/investmentData";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 import { DataAccessError, throwDataError } from "./errors";

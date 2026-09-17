@@ -2,8 +2,8 @@
 
 import { IconCheck, IconCalendarRepeat } from "@tabler/icons-react";
 import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
-import { type BudgetMonth } from "@/lib/finance";
-import type { UpcomingPayment } from "@/lib/recurring";
+import { type BudgetMonth } from "@/lib/demo/finance";
+import type { UpcomingPayment } from "@/lib/helpers/recurring";
 import styles from "./RecurringWorkspace.module.css";
 
 export function RecurringWorkspace({ month, upcoming = [] }: { month: BudgetMonth; upcoming?: UpcomingPayment[] }) {

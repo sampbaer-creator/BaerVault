@@ -1,6 +1,6 @@
 import { CashFlowWorkspace } from "@/features/cash-flow/CashFlowWorkspace";
 import { getBudgetMonth } from "@/lib/data/budgets";
-import { parseMonthSelection } from "@/lib/monthSelection";
+import { parseMonthSelection } from "@/lib/helpers/monthSelection";
 
 export default async function CashFlowPage({ searchParams }: { searchParams: Promise<{ year?: string; month?: string }> }) {
   const query = await searchParams;

@@ -8,10 +8,10 @@ import { addGoalAction, deleteGoalAction, updateGoalAction } from "@/app/(app)/g
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
 import { useServerState } from "@/lib/hooks/useServerState";
-import type { SavingsGoal } from "@/lib/goals";
+import type { SavingsGoal } from "@/lib/demo/goals";
 import styles from "./GoalsWorkspace.module.css";
-import { invalidateMobileShell } from "@/lib/mobileShell";
-import { SHELL_QUICK_ADD_EVENT, type ShellQuickAddAction } from "@/lib/shellQuickAdd";
+import { invalidateMobileShell } from "@/lib/helpers/mobileShell";
+import { SHELL_QUICK_ADD_EVENT, type ShellQuickAddAction } from "@/lib/helpers/shellQuickAdd";
 
 const emptyDraft = { name: "", targetAmount: "", savedAmount: "0", targetDate: "", monthlyContribution: "0" };
 const colors = ["#4f8389", "#d4af37", "#000080", "#5e191a", "#cfac87", "#e8b00f"];

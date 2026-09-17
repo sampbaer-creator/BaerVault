@@ -1,5 +1,5 @@
 import "server-only";
-import { upcomingPayments, type PaymentHistory } from "@/lib/recurring";
+import { upcomingPayments, type PaymentHistory } from "@/lib/helpers/recurring";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getCurrentHousehold } from "./households";
 import { throwDataError } from "./errors";

@@ -1,7 +1,7 @@
 import { BudgetWorkspace } from "@/features/budget/BudgetWorkspace";
 import { getFinancialAccounts } from "@/lib/data/accounts";
 import { getBudgetMonth } from "@/lib/data/budgets";
-import { parseMonthSelection } from "@/lib/monthSelection";
+import { parseMonthSelection } from "@/lib/helpers/monthSelection";
 
 export default async function BudgetPage({
   searchParams,

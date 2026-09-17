@@ -41,13 +41,13 @@ import {
   type FinancialAccount,
   type FinancialAccountDraft,
   type FinancialAccountType,
-} from "@/lib/accounts";
+} from "@/lib/demo/accounts";
 
 import styles from "./AccountsWorkspace.module.css";
 import { BankConnectionButton } from "./BankConnectionButton";
 import type { BankConnectionSummary } from "@/lib/data/bankConnections";
-import { invalidateMobileShell } from "@/lib/mobileShell";
-import { SHELL_QUICK_ADD_EVENT, type ShellQuickAddAction } from "@/lib/shellQuickAdd";
+import { invalidateMobileShell } from "@/lib/helpers/mobileShell";
+import { SHELL_QUICK_ADD_EVENT, type ShellQuickAddAction } from "@/lib/helpers/shellQuickAdd";
 
 type AccountsWorkspaceProps = {
   initialAccounts: FinancialAccount[];

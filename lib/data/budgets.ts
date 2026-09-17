@@ -1,6 +1,6 @@
 import "server-only";
 
-import type { BudgetMonth } from "@/lib/finance";
+import type { BudgetMonth } from "@/lib/demo/finance";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 import { DataAccessError, throwDataError } from "./errors";

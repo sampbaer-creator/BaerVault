@@ -1,8 +1,8 @@
 import { DashboardOverview } from "@/features/dashboard/DashboardOverview";
 import { createDashboardViewModel } from "@/features/dashboard/dashboardViewModel";
-import { demoFinancialAccounts } from "@/lib/accounts";
-import { investmentAccounts } from "@/lib/investmentData";
-import { augustBudget } from "@/lib/mockFinanceData";
+import { demoFinancialAccounts } from "@/lib/demo/accounts";
+import { investmentAccounts } from "@/lib/demo/investmentData";
+import { augustBudget } from "@/lib/demo/mockFinanceData";
 
 export default function DemoPage() {
   return (

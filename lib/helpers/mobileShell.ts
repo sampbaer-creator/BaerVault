@@ -1,8 +1,8 @@
-import type { FinancialAccount } from "@/lib/accounts";
+import type { FinancialAccount } from "@/lib/demo/accounts";
 import type { BankConnectionSummary } from "@/lib/data/bankConnections";
-import type { BudgetMonth } from "@/lib/finance";
-import type { SavingsGoal } from "@/lib/goals";
-import type { InvestmentAccount } from "@/lib/investmentData";
+import type { BudgetMonth } from "@/lib/demo/finance";
+import type { SavingsGoal } from "@/lib/demo/goals";
+import type { InvestmentAccount } from "@/lib/demo/investmentData";
 import type { DashboardViewModel } from "@/features/dashboard/dashboardViewModel";
 
 export type MobileBudgetMonth = BudgetMonth & {

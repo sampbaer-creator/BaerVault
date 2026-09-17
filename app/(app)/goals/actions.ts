@@ -3,7 +3,7 @@
 import { refreshFinanceViews } from "@/lib/data/revalidate";
 import { createSavingsGoal, deleteSavingsGoal, updateSavingsGoal } from "@/lib/data/goals";
 import { DataAccessError, errorMessage } from "@/lib/data/errors";
-import type { SavingsGoal } from "@/lib/goals";
+import type { SavingsGoal } from "@/lib/demo/goals";
 
 function validate(input: Omit<SavingsGoal, "id">) {
   const name = input.name.trim();

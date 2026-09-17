@@ -1,7 +1,7 @@
 "use server";
 
 import { refreshFinanceViews } from "@/lib/data/revalidate";
-import { isValidDate } from "@/lib/validation";
+import { isValidDate } from "@/lib/helpers/validation";
 
 import { DataAccessError, errorMessage } from "@/lib/data/errors";
 import {

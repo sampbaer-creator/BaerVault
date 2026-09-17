@@ -4,10 +4,10 @@ import {
   totalPlanned,
   totalSpending,
   type BudgetMonth,
-} from "@/lib/finance";
-import { isDebtAccount, type FinancialAccount } from "@/lib/accounts";
-import { costFor, sharesFor, type InvestmentAccount } from "@/lib/investmentData";
-import type { UpcomingPayment } from "@/lib/recurring";
+} from "@/lib/demo/finance";
+import { isDebtAccount, type FinancialAccount } from "@/lib/demo/accounts";
+import { costFor, sharesFor, type InvestmentAccount } from "@/lib/demo/investmentData";
+import type { UpcomingPayment } from "@/lib/helpers/recurring";
 
 export type DashboardCategory = {
   name: string;

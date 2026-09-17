@@ -1,7 +1,7 @@
 "use client";
-import { BudgetWorkspace } from "@/features/budget/BudgetWorkspace";import { augustBudget, withDemoSpendingAccounts } from "@/lib/mockFinanceData";
-import { demoFinancialAccounts } from "@/lib/accounts";
-import type { BudgetMonth } from "@/lib/finance";
+import { BudgetWorkspace } from "@/features/budget/BudgetWorkspace";import { augustBudget, withDemoSpendingAccounts } from "@/lib/demo/mockFinanceData";
+import { demoFinancialAccounts } from "@/lib/demo/accounts";
+import type { BudgetMonth } from "@/lib/demo/finance";
 const ok=<T,>(data:T)=>Promise.resolve({ok:true as const,data});const id=()=>`demo-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 const actions={addCategoryAction:(input:{name:string;plannedAmount:number})=>ok({id:id(),name:input.name,plannedAmount:input.plannedAmount,purchases:[]}),deleteBudgetCategoryAction:()=>ok(undefined),deleteBudgetEntryAction:()=>ok(undefined),saveBudgetEntryAction:(input:{id?:string})=>ok({id:input.id??id()}),updateBudgetCategoryAction:()=>ok(undefined)};
 export function DemoBudget({ year = 2026, month = 8 }: { year?: number; month?: number }) {

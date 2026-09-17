@@ -4,7 +4,7 @@ import { getFinancialAccounts } from "@/lib/data/accounts";
 import { getBudgetMonth } from "@/lib/data/budgets";
 import { getInvestmentAccounts } from "@/lib/data/investments";
 import { getUpcomingPayments } from "@/lib/data/recurring";
-import { parseExplicitMonthSelection, parseMonthSelection } from "@/lib/monthSelection";
+import { parseExplicitMonthSelection, parseMonthSelection } from "@/lib/helpers/monthSelection";
 
 export default async function DashboardPage({ searchParams }: { searchParams: Promise<{ year?: string; month?: string }> }) {
   const query = await searchParams;

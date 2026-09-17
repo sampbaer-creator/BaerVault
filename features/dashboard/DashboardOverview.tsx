@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
 import type { DashboardViewModel } from "./dashboardViewModel";
 import styles from "./DashboardOverview.module.css";
-import { type MonthSelection, withMonth } from "@/lib/monthSelection";
+import { type MonthSelection, withMonth } from "@/lib/helpers/monthSelection";
 
 type DashboardProps = { model: DashboardViewModel; basePath?: string; selectedMonth?: MonthSelection };
 type MarketState = { key: string; prices: Record<string, number>; unavailable: string[] };

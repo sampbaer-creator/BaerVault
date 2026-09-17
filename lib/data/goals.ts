@@ -1,6 +1,6 @@
 import "server-only";
 
-import type { SavingsGoal } from "@/lib/goals";
+import type { SavingsGoal } from "@/lib/demo/goals";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { throwDataError } from "./errors";
 import { getCurrentHousehold } from "./households";

@@ -1,6 +1,6 @@
 import "server-only";
 
-import type { IncomeEntry } from "@/lib/finance";
+import type { IncomeEntry } from "@/lib/demo/finance";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 import { throwDataError } from "./errors";

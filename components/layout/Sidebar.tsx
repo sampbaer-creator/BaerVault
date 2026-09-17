@@ -9,7 +9,7 @@ import {
 } from "./navigation";
 import styles from "./AppShell.module.css";
 import { BaerVaultLogo } from "@/components/brand/BaerVaultLogo";
-import { type MonthSelection, withMonth } from "@/lib/monthSelection";
+import { type MonthSelection, withMonth } from "@/lib/helpers/monthSelection";
 
 type SidebarProps = {
   pathname: string;

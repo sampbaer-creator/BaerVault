@@ -5,7 +5,7 @@ import type {
   AccountTransferResult,
   FinancialAccount,
   FinancialAccountDraft,
-} from "@/lib/accounts";
+} from "@/lib/demo/accounts";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 import { DataAccessError, throwDataError } from "./errors";

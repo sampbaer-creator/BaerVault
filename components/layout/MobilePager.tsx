@@ -4,10 +4,10 @@ import { animate, motion, type MotionValue, useMotionValue, useReducedMotion } f
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { mobileRouteOrder } from "./navigation";
-import type { MobileShellData } from "@/lib/mobileShell";
-import { MOBILE_SHELL_INVALIDATE_EVENT } from "@/lib/mobileShell";
+import type { MobileShellData } from "@/lib/helpers/mobileShell";
+import { MOBILE_SHELL_INVALIDATE_EVENT } from "@/lib/helpers/mobileShell";
 import styles from "./AppShell.module.css";
-import { currentMonth, monthQuery, type MonthSelection } from "@/lib/monthSelection";
+import { currentMonth, monthQuery, type MonthSelection } from "@/lib/helpers/monthSelection";
 import { gestureSpring, navigationSpring } from "@/lib/ui/motion";
 
 const loaders = {

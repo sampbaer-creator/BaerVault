@@ -6,7 +6,7 @@ import { useEffect, useRef } from "react";
 
 import { mobileSectionNavigation } from "./navigation";
 import styles from "./AppShell.module.css";
-import { type MonthSelection, withMonth } from "@/lib/monthSelection";
+import { type MonthSelection, withMonth } from "@/lib/helpers/monthSelection";
 
 type MobileNavProps = {
   pathname: string;

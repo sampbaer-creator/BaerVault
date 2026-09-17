@@ -1,7 +1,7 @@
 import { RecurringWorkspace } from "@/features/recurring/RecurringWorkspace";
 import { getBudgetMonth } from "@/lib/data/budgets";
 import { getUpcomingPayments } from "@/lib/data/recurring";
-import { parseMonthSelection } from "@/lib/monthSelection";
+import { parseMonthSelection } from "@/lib/helpers/monthSelection";
 
 export default async function RecurringPage({ searchParams }: { searchParams: Promise<{ year?: string; month?: string }> }) {
   const query = await searchParams;

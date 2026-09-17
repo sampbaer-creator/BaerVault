@@ -9,8 +9,8 @@ import { getBudgetMonth } from "@/lib/data/budgets";
 import { errorMessage } from "@/lib/data/errors";
 import { getSavingsGoals } from "@/lib/data/goals";
 import { getInvestmentAccounts } from "@/lib/data/investments";
-import type { MobileShellData } from "@/lib/mobileShell";
-import { parseMonthSelection } from "@/lib/monthSelection";
+import type { MobileShellData } from "@/lib/helpers/mobileShell";
+import { parseMonthSelection } from "@/lib/helpers/monthSelection";
 
 export async function GET(request: NextRequest) {
   const { orgId } = await auth.protect();

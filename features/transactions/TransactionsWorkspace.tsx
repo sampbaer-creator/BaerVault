@@ -13,11 +13,11 @@ import { deleteBudgetEntryAction, saveBudgetEntryAction } from "@/app/(app)/budg
 import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { SwipeActionRow } from "@/components/shared/SwipeActionRow";
-import { type BudgetMonth } from "@/lib/finance";
+import { type BudgetMonth } from "@/lib/demo/finance";
 import styles from "./TransactionsWorkspace.module.css";
-import { invalidateMobileShell } from "@/lib/mobileShell";
-import { SHELL_QUICK_ADD_EVENT, type ShellQuickAddAction } from "@/lib/shellQuickAdd";
-import { type MonthSelection, withMonth } from "@/lib/monthSelection";
+import { invalidateMobileShell } from "@/lib/helpers/mobileShell";
+import { SHELL_QUICK_ADD_EVENT, type ShellQuickAddAction } from "@/lib/helpers/shellQuickAdd";
+import { type MonthSelection, withMonth } from "@/lib/helpers/monthSelection";
 
 type Filter = "all" | "income" | "expenses";
 const freshDraft = () => ({ source: "", amount: "", date: new Date().toISOString().slice(0, 10), owner: "Household" });

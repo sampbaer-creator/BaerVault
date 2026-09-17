@@ -40,7 +40,7 @@ import {
 } from "@/app/(app)/investments/actions";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { SwipeActionRow } from "@/components/shared/SwipeActionRow";
-import { currency } from "@/lib/finance";
+import { currency } from "@/lib/demo/finance";
 import {
   costFor,
   sharesFor,
@@ -48,9 +48,9 @@ import {
   type Holding,
   type InvestmentAccount,
   type InvestmentLot,
-} from "@/lib/investmentData";
+} from "@/lib/demo/investmentData";
 import styles from "./InvestmentsWorkspace.module.css";
-import { invalidateMobileShell } from "@/lib/mobileShell";
+import { invalidateMobileShell } from "@/lib/helpers/mobileShell";
 
 type Range = "1M" | "3M" | "1Y" | "5Y";
 type PortfolioSection = "overview" | "holdings" | "performance";

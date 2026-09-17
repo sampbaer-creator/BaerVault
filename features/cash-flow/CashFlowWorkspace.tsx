@@ -15,7 +15,7 @@ import {
   YAxis,
 } from "recharts";
 
-import { currency, totalIncome, totalSpending, type BudgetMonth } from "@/lib/finance";
+import { currency, totalIncome, totalSpending, type BudgetMonth } from "@/lib/demo/finance";
 import { AnimatedNumber } from "@/components/shared/AnimatedNumber";
 import styles from "./CashFlowWorkspace.module.css";
 

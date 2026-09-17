@@ -10,7 +10,7 @@ import { PageHeader } from "./PageHeader";
 import { Sidebar } from "./Sidebar";
 import styles from "./AppShell.module.css";
 import { MobilePager } from "./MobilePager";
-import { parseExplicitMonthSelection } from "@/lib/monthSelection";
+import { parseExplicitMonthSelection } from "@/lib/helpers/monthSelection";
 
 type AppShellProps = {
   children: React.ReactNode;

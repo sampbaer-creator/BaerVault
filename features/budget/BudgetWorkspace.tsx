@@ -34,12 +34,12 @@ import {
   type BudgetCategory,
   type BudgetMonth,
   type Purchase,
-} from "@/lib/finance";
+} from "@/lib/demo/finance";
 
 import styles from "./BudgetWorkspace.module.css";
-import { invalidateMobileShell } from "@/lib/mobileShell";
-import { SHELL_QUICK_ADD_EVENT, type ShellQuickAddAction } from "@/lib/shellQuickAdd";
-import { offsetMonth, withMonth } from "@/lib/monthSelection";
+import { invalidateMobileShell } from "@/lib/helpers/mobileShell";
+import { SHELL_QUICK_ADD_EVENT, type ShellQuickAddAction } from "@/lib/helpers/shellQuickAdd";
+import { offsetMonth, withMonth } from "@/lib/helpers/monthSelection";
 
 type BudgetAccountOption = {
   id: string;

@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { upcomingPayments } from "../../lib/recurring";
-import { isValidDate, isValidMonth } from "../../lib/validation";
+import { upcomingPayments } from "../../lib/helpers/recurring";
+import { isValidDate, isValidMonth } from "../../lib/helpers/validation";
 import { createDashboardViewModel } from "../../features/dashboard/dashboardViewModel";
-import { demoFinancialAccounts } from "../../lib/accounts";
+import { demoFinancialAccounts } from "../../lib/demo/accounts";
 
 test("date validation rejects impossible dates and out-of-range months", () => {
   assert.equal(isValidDate("2026-02-30"), false);

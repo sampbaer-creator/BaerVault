@@ -4,8 +4,8 @@ import { IconBuildingBank } from "@tabler/icons-react";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { completeBankConnectionAction, refreshBankConnectionAction, startBankConnectionAction } from "@/app/(app)/accounts/actions";
-import { SHELL_QUICK_ADD_EVENT, type ShellQuickAddAction } from "@/lib/shellQuickAdd";
-import { invalidateMobileShell } from "@/lib/mobileShell";
+import { SHELL_QUICK_ADD_EVENT, type ShellQuickAddAction } from "@/lib/helpers/shellQuickAdd";
+import { invalidateMobileShell } from "@/lib/helpers/mobileShell";
 
 type PlaidMetadata = { institution: { institution_id: string; name: string } | null };
 declare global { interface Window { Plaid?: { create(options: { token: string; onSuccess(publicToken: string, metadata: PlaidMetadata): void; onExit(): void }): { open(): void; destroy(): void } } } }

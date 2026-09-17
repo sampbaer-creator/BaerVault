@@ -1,6 +1,6 @@
 import { TransactionsWorkspace } from "@/features/transactions/TransactionsWorkspace";
 import { getBudgetMonth } from "@/lib/data/budgets";
-import { parseExplicitMonthSelection, parseMonthSelection } from "@/lib/monthSelection";
+import { parseExplicitMonthSelection, parseMonthSelection } from "@/lib/helpers/monthSelection";
 
 export default async function TransactionsPage({ searchParams }: { searchParams: Promise<{ year?: string; month?: string }> }) {
   const query = await searchParams;

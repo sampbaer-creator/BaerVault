@@ -1,7 +1,7 @@
 "use server";
 
 import { refreshFinanceViews } from "@/lib/data/revalidate";
-import { isValidDate, isValidMonth } from "@/lib/validation";
+import { isValidDate, isValidMonth } from "@/lib/helpers/validation";
 import { createBudgetCategory, createBudgetEntry, deleteBudgetCategory, deleteBudgetEntry, updateBudgetCategory, updateBudgetEntry } from "@/lib/data/budgets";
 import { DataAccessError, errorMessage } from "@/lib/data/errors";
 
