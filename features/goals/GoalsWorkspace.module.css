@@ -8,7 +8,7 @@
 .page { max-width: 1240px; margin-inline: auto; }
 .metrics { border: 1px solid var(--glass-border) !important; border-radius: 16px !important; background: var(--glass-surface) !important; box-shadow: var(--shadow-glass) !important; backdrop-filter: blur(30px) saturate(155%); }
 .metric { background: transparent; box-shadow: none; }
-.goal { border-radius: 16px !important; border-color: color-mix(in srgb, var(--app-border) 84%, transparent) !important; background: color-mix(in srgb, var(--app-surface) 96%, transparent) !important; box-shadow: var(--shadow-surface) !important; }
+.goal, .empty { border-radius: 16px !important; border-color: var(--panel-glass-border) !important; background: var(--panel-glass-surface) !important; box-shadow: var(--panel-glass-shadow) !important; backdrop-filter: var(--panel-glass-blur) !important; -webkit-backdrop-filter: var(--panel-glass-blur) !important; }
 @media (max-width: 47.999rem) { .metrics, .goal { border-radius: 15px; } }
 .top {
   display: flex;

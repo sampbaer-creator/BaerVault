@@ -847,9 +847,12 @@
 }
 .allocationPanel {
   padding: 22px;
-  border: 1px solid #e3e8e5;
+  border: 1px solid var(--panel-glass-border);
   border-radius: 14px;
-  background: #fff;
+  background: var(--panel-glass-surface);
+  box-shadow: var(--panel-glass-shadow);
+  backdrop-filter: var(--panel-glass-blur);
+  -webkit-backdrop-filter: var(--panel-glass-blur);
 }
 .allocationPanel h3 {
   margin: 0;
@@ -1210,18 +1213,18 @@
 .intro h2 { margin: 0; font-size: 20px; letter-spacing: -0.025em; }
 .intro span { margin-top: 4px; font-size: 12px; }
 .intro > button { min-height: 38px; border-radius: 10px; box-shadow: none; }
-.hero { display: grid; grid-template-columns: minmax(260px, .9fr) minmax(0, 1.5fr); min-height: 0; margin-bottom: 14px; padding: 20px 22px; border: 1px solid var(--app-border); border-radius: 14px; background: var(--app-surface); box-shadow: none; backdrop-filter: none; }
+.hero { display: grid; grid-template-columns: minmax(260px, .9fr) minmax(0, 1.5fr); min-height: 0; margin-bottom: 14px; padding: 20px 22px; border: 1px solid var(--panel-glass-border); border-radius: 14px; background: var(--panel-glass-surface); box-shadow: var(--panel-glass-shadow); backdrop-filter: var(--panel-glass-blur); -webkit-backdrop-filter: var(--panel-glass-blur); }
 .hero > div:first-child > strong { font-size: 32px; }
 .heroRail { align-self: stretch; padding-left: 20px; border-left: 1px solid var(--app-border); }
-.portfolioChartPanel { margin-bottom: 14px; padding: 20px; border: 1px solid var(--app-border); border-radius: 14px; background: var(--app-surface); }
+.portfolioChartPanel { margin-bottom: 14px; padding: 20px; border: 1px solid var(--panel-glass-border); border-radius: 14px; background: var(--panel-glass-surface); box-shadow: var(--panel-glass-shadow); backdrop-filter: var(--panel-glass-blur); -webkit-backdrop-filter: var(--panel-glass-blur); }
 .portfolioChartHeading h3 { font-size: 14px; }
 .portfolioChartHeading p { margin-top: 4px; font-size: 11px; }
 .portfolioRanges button { min-height: 34px; padding: 6px 10px; border-radius: 8px; box-shadow: none; }
 .portfolioChart { height: 230px; }
 .accountTabs { gap: 8px; margin-bottom: 14px; padding: 0; background: transparent; }
-.accountTabs button { min-height: 48px; border: 1px solid var(--app-border) !important; border-radius: 10px; background: var(--app-surface) !important; box-shadow: none !important; }
+.accountTabs button { min-height: 48px; border: 1px solid var(--panel-glass-border) !important; border-radius: 10px; background: var(--panel-glass-surface) !important; box-shadow: none !important; backdrop-filter: var(--row-glass-blur); -webkit-backdrop-filter: var(--row-glass-blur); }
 .accountTabs button::before { display: none; }
-.sheet { overflow: hidden; border: 1px solid var(--app-border); border-radius: 14px; background: var(--app-surface); box-shadow: none; }
+.sheet { overflow: hidden; border: 1px solid var(--panel-glass-border); border-radius: 14px; background: var(--panel-glass-surface); box-shadow: var(--panel-glass-shadow); backdrop-filter: var(--panel-glass-blur); -webkit-backdrop-filter: var(--panel-glass-blur); }
 .sheetHeading { padding: 17px 20px; }
 .sheetHeading h3 { font-size: 14px; }
 .tableHead { padding: 10px 20px; font-size: 9px; letter-spacing: .05em; }
@@ -1229,7 +1232,7 @@
 .holdingRow { min-height: 58px; padding: 10px 20px; border-radius: 0; background: transparent !important; box-shadow: none !important; }
 .holdingRow::before { display: none; }
 .holdingSpark { display: none; }
-.projection { margin-top: 14px; border: 1px solid var(--app-border); border-radius: 14px; background: var(--app-surface); }
+.projection { margin-top: 14px; border: 1px solid var(--panel-glass-border); border-radius: 14px; background: var(--panel-glass-surface); box-shadow: var(--panel-glass-shadow); backdrop-filter: var(--panel-glass-blur); -webkit-backdrop-filter: var(--panel-glass-blur); }
 @media (max-width: 48rem) {
   .intro { align-items: flex-start; }
   .intro h2 { font-size: 18px; }
@@ -1345,9 +1348,12 @@
 }
 .watchlistPanel {
   overflow: hidden;
-  border: 1px solid var(--app-border);
+  border: 1px solid var(--panel-glass-border);
   border-radius: 14px;
-  background: var(--app-surface);
+  background: var(--panel-glass-surface);
+  box-shadow: var(--panel-glass-shadow);
+  backdrop-filter: var(--panel-glass-blur);
+  -webkit-backdrop-filter: var(--panel-glass-blur);
 }
 .watchlistHeading,
 .activityHeading {
@@ -1418,9 +1424,12 @@
   margin-top: 14px;
   overflow: hidden;
   scroll-margin-top: 112px;
-  border: 1px solid var(--app-border);
+  border: 1px solid var(--panel-glass-border);
   border-radius: 14px;
-  background: var(--app-surface);
+  background: var(--panel-glass-surface);
+  box-shadow: var(--panel-glass-shadow);
+  backdrop-filter: var(--panel-glass-blur);
+  -webkit-backdrop-filter: var(--panel-glass-blur);
 }
 .activityHeading > div {
   display: flex;

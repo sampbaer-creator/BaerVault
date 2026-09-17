@@ -36,7 +36,7 @@
     z-index: 1;
     display: block;
     min-width: 0;
-    background: var(--app-surface);
+    background: var(--row-glass-surface);
     will-change: transform;
   }
 }

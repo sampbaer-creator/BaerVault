@@ -61,8 +61,8 @@ components:
     typography: "{typography.label}"
     rounded: "{rounded.control}"
     height: "42px"
-  panel-solid:
-    backgroundColor: "{colors.surface}"
+  panel-glass:
+    backgroundColor: "var(--panel-glass-surface)"
     textColor: "{colors.protected-navy}"
     rounded: "{rounded.panel}"
     padding: "24px"
@@ -166,20 +166,40 @@ At 70rem the dashboard becomes a single column. Below 48rem, desktop chrome yiel
 
 ## Elevation & Depth
 
-BaerVault uses depth selectively. Floating shell chrome and summary planes combine translucent palette-aware gradients, a bright edge, 28–30px backdrop blur, a subtle inset highlight, and a broad ambient shadow. Solid record and form panels use tonal contrast, a quiet border, and a much smaller shadow. The distinction must remain obvious: glass orients and summarizes; opaque surfaces support reading, editing, and comparison.
+BaerVault now uses a **three-tier glass system** across the whole product — marketing
+site included — instead of a binary glass-shell/solid-everything split. Every surface
+still reads its role through material weight, but nothing is fully flat anymore.
+
+1. **Shell Glass** (strongest — unchanged): sidebar, desktop/mobile headers, mobile
+   navigation, dialogs, drawers, menus. Translucent palette-aware gradients, a bright
+   edge, 28–30px backdrop blur, a subtle inset highlight, and a broad ambient shadow.
+2. **Panel Glass** (new — medium): every card, summary plane, and record panel across
+   the app and the marketing site — dashboard modules, budget/account/goal/investment
+   cards, settings sections, and landing-page sections. Lighter translucency
+   (`--panel-glass-*` tokens), ~20px blur, tuned so body text and numerals stay at full
+   contrast.
+3. **Row Glass** (new — subtle): dense table/list rows inside a panel — transaction
+   rows, holding rows, mobile ledger groups. Near-opaque with a small blur, preserving
+   the numeral-legibility guarantee the product depends on.
 
 ### Shadow Vocabulary
 
-- **Solid Surface** (`0 10px 30px rgb(18 35 68 / 7%)`): Quiet lift for record panels without making every row feel like a card.
+- **Panel Glass** (`var(--panel-glass-shadow)`): Quiet lift plus inset highlight for
+  cards, record panels, and marketing sections — replaces the old flat "Solid Surface."
 - **Glass Plane** (`0 20px 55px rgb(17 30 62 / 12%), inset 0 1px 0 rgb(255 255 255 / 94%)`): Floating shell chrome and summary planes in the light theme.
 - **Dark Glass Plane** (`0 24px 64px rgb(0 0 0 / 36%), inset 0 1px 0 rgb(255 255 255 / 14%)`): The same material role in dark mode.
 - **Mobile Navigation** (`0 18px 54px rgb(17 30 62 / 20%), inset 0 1px 0 var(--glass-highlight)`): Separation above content and the safe-area edge.
 
 ### Named Rules
 
-**The Selective Glass Rule.** Glass belongs to floating chrome, dialogs, high-level summaries, and hero-like overview planes—not tables, transaction rows, holdings, category records, or form bodies.
+**The Tiered Glass Rule.** Every panel and card carries Panel Glass by default; only
+dense tabular/list rows step down to Row Glass, and only shell chrome/dialogs step up
+to Shell Glass. Nothing in the product renders as fully flat/opaque anymore except form
+inputs, which stay solid for typing legibility.
 
-**The Accessibility Fallback Rule.** Reduced transparency replaces glass with an opaque application surface, and increased contrast strengthens borders and muted text without changing hierarchy.
+**The Accessibility Fallback Rule.** Reduced transparency replaces every glass tier —
+shell, panel, and row — with an opaque application surface, and increased contrast
+strengthens borders and muted text without changing hierarchy.
 
 ## Shapes
 
@@ -197,9 +217,10 @@ The form language is stable and gently vault-like. Standard panels and summary p
 
 ### Cards / Record Containers
 
-- **Shape:** Solid 16px panels, adjusted to 15px on mobile.
-- **Background:** Nearly opaque application surface with a quiet semantic border.
-- **Depth:** Small solid-surface shadow; rows are grouped by whitespace and hairlines.
+- **Shape:** Panel-glass 16px panels, adjusted to 15px on mobile.
+- **Background:** `--panel-glass-surface` with a quiet semantic border and backdrop blur.
+- **Depth:** Panel-glass shadow with inset highlight; rows inside a panel step down to
+  Row Glass and are grouped by whitespace and hairlines rather than nested cards.
 - **Use:** Transactions, accounts, holdings, budget categories, goals, settings, tables, and other detailed records.
 
 ### Inputs / Forms
@@ -244,8 +265,9 @@ The monthly budget plane leads with remaining or over-plan money, then a progres
 ### Don't:
 
 - **Don't** add eyebrow kickers above page titles.
-- **Don't** spread blur and translucency through detailed record or form surfaces.
+- **Don't** apply Shell Glass strength (30px blur, bright edge) to record panels — use
+  the Panel Glass tier so numbers stay legible; reserve Row Glass for dense list rows.
+- **Don't** apply any glass tier to form inputs — they stay solid for typing legibility.
 - **Don't** invent historic charts, projected bills, future cash flow, or market narratives from data the household has not recorded.
-- **Don't** turn every metric or row into a detached card.
 - **Don't** hard-code decorative atmosphere that ignores the selected palette or dark mode.
-- **Don't** adopt crypto-terminal, trading-dashboard, generic admin, or AI-SaaS visual patterns.
+- **Don't** adopt crypto-terminal or trading-dashboard visual patterns, or fabricate customer counts/testimonials that don't exist yet.

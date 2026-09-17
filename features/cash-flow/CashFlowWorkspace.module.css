@@ -1,6 +1,6 @@
 .page { --cash-1:#138cf0; --cash-2:#ff6415; --cash-3:#cb08ef; --cash-4:#d00b16; --cash-5:#95a0b7; display:grid; gap:18px; color:var(--app-text-strong); }
-.netCard,.breakdown,.incomeCard { padding:24px; border:1px solid var(--app-border); border-radius:16px; background:var(--app-surface); }
-.netCard { text-align:center; box-shadow:var(--shadow-surface); }
+.netCard,.breakdown,.incomeCard { padding:24px; border:1px solid var(--panel-glass-border); border-radius:16px; background:var(--panel-glass-surface); backdrop-filter:var(--panel-glass-blur); -webkit-backdrop-filter:var(--panel-glass-blur); }
+.netCard { text-align:center; box-shadow:var(--panel-glass-shadow); }
 .page h2 { margin:0; font-size:15px; }.page section>span,.breakdown header span { display:block; margin-top:8px; color:var(--app-text-muted); font-size:11px; }
 .netCard>strong { display:block; margin-top:12px; font-size:34px; font-variant-numeric:tabular-nums; }.positive { color:var(--money-positive); }.negative { color:var(--money-negative); }
 .changePill { display:inline-flex; min-height:32px; align-items:center; gap:5px; margin:14px auto 0; padding:0 12px; border-radius:999px; color:var(--app-text-muted); background:var(--app-hover); font-size:11px; font-weight:700; }

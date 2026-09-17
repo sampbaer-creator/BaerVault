@@ -2,7 +2,7 @@
 .mobileSummary,.mobileHeading{display:none}
 .metrics { border: 1px solid var(--glass-border); border-radius: 16px; background: var(--glass-surface); box-shadow: var(--shadow-glass); backdrop-filter: blur(30px) saturate(155%); }
 .metric { border: 0 !important; background: transparent !important; }
-.card, .goal { border-color: color-mix(in srgb, var(--app-border) 84%, transparent) !important; border-radius: 16px !important; background: color-mix(in srgb, var(--app-surface) 96%, transparent) !important; box-shadow: var(--shadow-surface) !important; }
+.card, .goal { border-color: var(--panel-glass-border) !important; border-radius: 16px !important; background: var(--panel-glass-surface) !important; box-shadow: var(--panel-glass-shadow) !important; backdrop-filter: var(--panel-glass-blur) !important; -webkit-backdrop-filter: var(--panel-glass-blur) !important; }
 .metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 16px; }
 .metric, .card, .goal { border: 1px solid var(--app-border); border-radius: 14px; background: var(--app-surface); }
 .metric { padding: 20px; }

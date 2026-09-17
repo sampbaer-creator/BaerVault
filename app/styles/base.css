@@ -15,7 +15,7 @@ input::placeholder, textarea::placeholder { color: var(--app-text-muted); opacit
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: var(--control-height); padding: .625rem 1rem; border: 0; border-radius: var(--radius-control); font-weight: 600; text-decoration: none; }
 .btn-primary { color: #fff; background: var(--app-accent); }
 .btn-ghost { color: var(--app-accent); background: var(--app-accent-soft); }
-.card { border: 1px solid var(--app-border); border-radius: var(--radius-panel); background: var(--app-surface); box-shadow: var(--shadow-surface); }
+.card { border: 1px solid var(--panel-glass-border); border-radius: var(--radius-panel); background: var(--panel-glass-surface); box-shadow: var(--panel-glass-shadow); backdrop-filter: var(--panel-glass-blur); -webkit-backdrop-filter: var(--panel-glass-blur); }
 .finance-chart-line, .finance-chart-area, .finance-chart-point { opacity: 1; }
 .finance-chart-line { stroke-dashoffset: 0; }
 table, strong, b { font-variant-numeric: tabular-nums; }
@@ -35,5 +35,6 @@ table, strong, b { font-variant-numeric: tabular-nums; }
 }
 @media (prefers-reduced-transparency: reduce) {
   .mantine-Drawer-content, .mantine-Modal-content { backdrop-filter: none; }
+  .card, [class*="Panel"], [class*="Card"], [class*="Row"] { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: var(--app-surface) !important; }
 }
 @media (prefers-contrast: more) { :root { --app-border: currentColor; } }

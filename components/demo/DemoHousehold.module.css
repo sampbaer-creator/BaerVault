@@ -4,7 +4,7 @@
 }
 
 .banner { border: 1px solid var(--glass-border) !important; border-radius: 16px !important; background: var(--glass-surface) !important; box-shadow: var(--shadow-glass) !important; backdrop-filter: blur(30px) saturate(155%); }
-.card { border-color: color-mix(in srgb, var(--app-border) 84%, transparent) !important; border-radius: 16px !important; background: color-mix(in srgb, var(--app-surface) 96%, transparent) !important; box-shadow: var(--shadow-surface) !important; }
+.card { border-color: var(--panel-glass-border) !important; border-radius: 16px !important; background: var(--panel-glass-surface) !important; box-shadow: var(--panel-glass-shadow) !important; backdrop-filter: var(--panel-glass-blur) !important; -webkit-backdrop-filter: var(--panel-glass-blur) !important; }
 
 .banner {
   display: flex;

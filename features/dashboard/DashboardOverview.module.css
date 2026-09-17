@@ -1,6 +1,6 @@
 .dashboard { --category-1: var(--chart-primary); --category-2: #af7e32; --category-3: #8b73cc; --category-4: var(--chart-secondary); width: 100%; color: var(--app-text-strong); }
 .dashboardGrid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); grid-template-areas: "worth spending" "transactions side"; gap: var(--space-5); }
-.netWorthPanel, .spendingPanel, .transactionsPanel, .categoriesPanel, .upcomingPanel { min-width: 0; padding: var(--space-6); border: 1px solid var(--app-border); border-radius: var(--radius-panel); background: var(--app-surface); box-shadow: var(--shadow-surface); }
+.netWorthPanel, .spendingPanel, .transactionsPanel, .categoriesPanel, .upcomingPanel { min-width: 0; padding: var(--space-6); border: 1px solid var(--panel-glass-border); border-radius: var(--radius-panel); background: var(--panel-glass-surface); box-shadow: var(--panel-glass-shadow); backdrop-filter: var(--panel-glass-blur); -webkit-backdrop-filter: var(--panel-glass-blur); }
 .netWorthPanel { grid-area: worth; }
 .spendingPanel { grid-area: spending; }
 .transactionsPanel { grid-area: transactions; }
