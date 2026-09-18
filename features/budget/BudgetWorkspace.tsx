@@ -381,7 +381,18 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
       </Drawer>
 
       <Drawer opened={addingCategory} onClose={() => setAddingCategory(false)} position={isMobile ? "bottom" : "right"} size={isMobile ? "auto" : 400} radius={isMobile ? "18px 18px 0 0" : 0} title="Add category" classNames={{ content: styles.drawer, header: styles.drawerHeader, body: styles.drawerBody, title: styles.drawerTitle }}>
-        <form className={styles.categoryForm} onSubmit={addCategory}><label>Category<select required value={categoryDraft.name} onChange={(e) => setCategoryDraft({ ...categoryDraft, name: e.target.value })} autoFocus><option value="" disabled>Choose a popular category</option>{popularCategoryGroups.map((group)=><optgroup label={group.label} key={group.label}>{group.categories.map((category)=><option value={category} key={category}>{categoryEmoji(category)} {category}</option>)}</optgroup>)}</select></label><label>Planned amount<div className={styles.simpleAmount}><span>$</span><input inputMode="decimal" placeholder="0.00" value={categoryDraft.plannedAmount} onChange={(e) => setCategoryDraft({ ...categoryDraft, plannedAmount: e.target.value })} /></div></label><button className={styles.primaryButton} type="submit" disabled={saving}>{saving ? "Saving…" : "Add category"}</button></form>
+        <form className={styles.categoryForm} onSubmit={addCategory}>
+          <label>Category name<input required placeholder="e.g. Subscriptions" value={categoryDraft.name} onChange={(e) => setCategoryDraft({ ...categoryDraft, name: e.target.value })} autoFocus /></label>
+          <div className={styles.categorySuggestions}>
+            {popularCategoryGroups.flatMap((group) => group.categories).map((category) => (
+              <button type="button" key={category} className={styles.categoryChip} data-active={categoryDraft.name === category} onClick={() => setCategoryDraft({ ...categoryDraft, name: category })}>
+                <i aria-hidden="true">{categoryEmoji(category)}</i>{category}
+              </button>
+            ))}
+          </div>
+          <label>Planned amount<div className={styles.simpleAmount}><span>$</span><input inputMode="decimal" placeholder="0.00" value={categoryDraft.plannedAmount} onChange={(e) => setCategoryDraft({ ...categoryDraft, plannedAmount: e.target.value })} /></div></label>
+          <button className={styles.primaryButton} type="submit" disabled={saving}>{saving ? "Saving…" : "Add category"}</button>
+        </form>
       </Drawer>
       <ConfirmDialog opened={Boolean(pendingDelete)} title={`Delete ${pendingDelete?.label ?? "record"}?`} description={pendingDelete?.kind==="category"?"This permanently deletes the category and every spending entry inside it.":"This permanently deletes this spending entry."} confirmLabel={pendingDelete?.kind==="category"?"Delete category":"Delete entry"} busy={saving} onCancel={()=>setPendingDelete(null)} onConfirm={confirmDelete}/>
     </div>
