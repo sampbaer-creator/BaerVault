@@ -705,3 +705,18 @@
   .accountRow { min-height: 64px; grid-template-columns: 42px minmax(0, 1.4fr) minmax(150px, .65fr) 18px; padding-inline: 22px; }
   .detailPanel { top: 96px; min-height: 460px; }
 }
+
+/* Mobile account rows: solid card with a liquid-glass edge, instead of the flat transparent strip above. */
+@media (max-width: 47.999rem) {
+  .accountRows { display: grid; gap: 10px; }
+  .accountRow {
+    border: 1px solid var(--panel-glass-border) !important;
+    border-radius: 16px !important;
+    padding: 14px 16px !important;
+    background: color-mix(in srgb, var(--app-surface) 94%, transparent) !important;
+    box-shadow: var(--panel-glass-shadow) !important;
+    backdrop-filter: var(--panel-glass-blur);
+    -webkit-backdrop-filter: var(--panel-glass-blur);
+  }
+  .accountRow::before { display: none !important; }
+}
