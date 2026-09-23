@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
-import type { DashboardViewModel } from "./dashboardViewModel";
+import type { DashboardViewModel } from "@/lib/dashboard";
 import styles from "./DashboardOverview.module.css";
 import { type MonthSelection, withMonth } from "@/lib/helpers/monthSelection";
 
