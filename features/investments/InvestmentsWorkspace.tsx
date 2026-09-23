@@ -1,5 +1,5 @@
 "use client";
-import { useServerState } from "@/lib/hooks/useServerState";
+import { useServerSnapshotState } from "@/lib/hooks/useServerSnapshotState";
 
 import { Drawer } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
@@ -73,7 +73,7 @@ export function InvestmentsWorkspace({
   const router = useRouter();
   const reduceMotion = useReducedMotion();
   const mobile = useMediaQuery("(max-width: 47.999rem)");
-  const [accounts, setAccounts] = useServerState(initialAccounts);
+  const [accounts, setAccounts] = useServerSnapshotState(initialAccounts);
   const [accountId, setAccountId] = useState(initialAccounts[0]?.id ?? "");
   const [holding, setHolding] = useState<Holding | null>(null);
   const [range, setRange] = useState<Range>("1Y");

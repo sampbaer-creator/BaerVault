@@ -2,7 +2,7 @@
 
 import { Drawer } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { useServerState } from "@/lib/hooks/useServerState";
+import { useServerSnapshotState } from "@/lib/hooks/useServerSnapshotState";
 import {
   IconBuildingBank,
   IconArrowsExchange,
@@ -167,7 +167,7 @@ export function AccountsWorkspace({
 }: AccountsWorkspaceProps) {
   const money = useCurrencyFormatter();
   const router = useRouter();
-  const [accounts, setAccounts] = useServerState(initialAccounts);
+  const [accounts, setAccounts] = useServerSnapshotState(initialAccounts);
   const mobile = useMediaQuery("(max-width: 47.999rem)");
   const [selectedId, setSelectedId] = useState("");
   const [formOpen, setFormOpen] = useState(false);

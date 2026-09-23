@@ -1,7 +1,7 @@
 "use client";
 
 import { Drawer } from "@mantine/core";
-import { useServerState } from "@/lib/hooks/useServerState";
+import { useServerSnapshotState } from "@/lib/hooks/useServerSnapshotState";
 import { useMediaQuery } from "@mantine/hooks";
 import { IconArrowDown, IconArrowUp, IconCheck, IconEdit, IconPlus, IconSearch, IconTrash } from "@tabler/icons-react";
 import { FormEvent, useEffect, useMemo, useState } from "react";
@@ -28,9 +28,9 @@ export function TransactionsWorkspace({ initialMonth, selectedMonth }: { initial
   const pathname = usePathname();
   const baseBudgetPath = pathname.startsWith("/demo") ? "/demo/budget" : "/budget";
   const budgetPath = selectedMonth ? withMonth(baseBudgetPath, selectedMonth) : baseBudgetPath;
-  const [incomeEntries, setIncomeEntries] = useServerState(initialMonth.incomeEntries);
+  const [incomeEntries, setIncomeEntries] = useServerSnapshotState(initialMonth.incomeEntries);
   const serverExpenses = useMemo(() => initialMonth.categories.flatMap((category) => category.purchases.map((purchase) => ({ ...purchase, categoryId: category.id, category: category.name }))), [initialMonth.categories]);
-  const [expenseEntries, setExpenseEntries] = useServerState(serverExpenses);
+  const [expenseEntries, setExpenseEntries] = useServerSnapshotState(serverExpenses);
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
   const [filterOpen, setFilterOpen] = useState(false);

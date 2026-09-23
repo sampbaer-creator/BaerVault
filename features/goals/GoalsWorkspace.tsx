@@ -7,7 +7,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { addGoalAction, deleteGoalAction, updateGoalAction } from "@/app/(app)/goals/actions";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
-import { useServerState } from "@/lib/hooks/useServerState";
+import { useServerSnapshotState } from "@/lib/hooks/useServerSnapshotState";
 import type { SavingsGoal } from "@/lib/demo/goals";
 import styles from "./GoalsWorkspace.module.css";
 import { invalidateMobileShell } from "@/lib/helpers/mobileShell";
@@ -19,7 +19,7 @@ const colors = ["#4f8389", "#d4af37", "#000080", "#5e191a", "#cfac87", "#e8b00f"
 export function GoalsWorkspace({ initialGoals }: { initialGoals: SavingsGoal[] }) {
   const currency = useCurrencyFormatter();
   const mobile = useMediaQuery("(max-width: 47.999rem)");
-  const [goals, setGoals] = useServerState(initialGoals);
+  const [goals, setGoals] = useServerSnapshotState(initialGoals);
   const [editing, setEditing] = useState<SavingsGoal | null>(null);
   const [draft, setDraft] = useState(emptyDraft);
   const [open, setOpen] = useState(false);

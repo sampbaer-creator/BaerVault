@@ -1,7 +1,7 @@
 "use client";
 
 import { Drawer } from "@mantine/core";
-import { useServerState } from "@/lib/hooks/useServerState";
+import { useServerSnapshotState } from "@/lib/hooks/useServerSnapshotState";
 import { useMediaQuery } from "@mantine/hooks";
 import {
   IconArrowLeft,
@@ -111,7 +111,7 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
   const pathname = usePathname();
   const accountsPath = pathname.startsWith("/demo") ? "/demo/accounts" : "/accounts";
   const isMobile = useMediaQuery("(max-width: 47.999rem)");
-  const [categories, setCategories] = useServerState<BudgetCategory[]>(initialBudget.categories);
+  const [categories, setCategories] = useServerSnapshotState<BudgetCategory[]>(initialBudget.categories);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
