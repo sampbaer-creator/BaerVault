@@ -9,7 +9,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { deleteIncomeAction, saveIncomeAction } from "@/app/(app)/transactions/actions";
-import { deleteBudgetEntryAction, saveBudgetEntryAction } from "@/app/(app)/budget/actions";
+import { deleteBudgetEntryAction, saveBudgetEntryAction } from "@/features/budgets/actions";
 import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { SwipeActionRow } from "@/components/shared/SwipeActionRow";

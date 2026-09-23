@@ -18,7 +18,7 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
-import * as realActions from "@/app/(app)/budget/actions";
+import * as realActions from "./actions";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { SwipeActionRow } from "@/components/shared/SwipeActionRow";
 import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
