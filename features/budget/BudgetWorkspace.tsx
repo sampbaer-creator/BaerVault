@@ -357,7 +357,8 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
 
       <Drawer opened={Boolean(selected)} onClose={() => setSelectedId(null)} position={isMobile ? "bottom" : "right"} size={isMobile ? "88%" : 440} radius={isMobile ? "18px 18px 0 0" : 0} title={selected?.name} classNames={{ content: styles.drawer, header: styles.drawerHeader, body: styles.drawerBody, title: styles.drawerTitle }}>
         {selected && <div className={styles.categoryDetail}>
-          <label className={styles.categoryForm}>Category name<input value={categoryNameDraft} onChange={(event)=>setCategoryNameDraft(event.target.value)} onBlur={savePlanned}/></label>
+          <label className={styles.categoryForm}>Category name<input value={categoryNameDraft} onChange={(event)=>setCategoryNameDraft(event.target.value)} /></label>
+          <button type="button" className={styles.primaryButton} onClick={() => void savePlanned()}>Save category changes</button>
           <div className={styles.detailTotals}>
             <div><span>Budget</span>{editingPlanned ? <div className={styles.inlineEdit}><span>$</span><input aria-label="Planned budget amount" inputMode="decimal" value={plannedDraft} onChange={(e) => setPlannedDraft(e.target.value)} autoFocus /><button type="button" onClick={savePlanned} aria-label="Save planned amount"><IconCheck size={17} /></button></div> : <button type="button" onClick={() => setEditingPlanned(true)}>{currency.format(selected.plannedAmount)}<IconEdit size={14} /></button>}</div>
             <div><span>Actual</span><strong>{currency.format(categoryActual(selected))}</strong></div>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion, type MotionValue, useMotionValue, useMotionValueEvent } from "motion/react";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import { mobileSectionNavigation } from "./navigation";
 import styles from "./AppShell.module.css";
@@ -24,7 +24,7 @@ export function MobileNav({ pathname, progress, activeIndex, navigate, pagerEnab
   const bubbleX = useMotionValue(0);
   const bubbleWidth = useMotionValue(0);
 
-  function positionBubble(value: number) {
+  const positionBubble = useCallback((value: number) => {
     const low = Math.max(0, Math.min(links.length - 1, Math.floor(value)));
     const high = Math.max(0, Math.min(links.length - 1, Math.ceil(value)));
     const from = linkRefs.current[low];
@@ -33,7 +33,7 @@ export function MobileNav({ pathname, progress, activeIndex, navigate, pagerEnab
     const amount = value - low;
     bubbleX.set(from.offsetLeft + (to.offsetLeft - from.offsetLeft) * amount);
     bubbleWidth.set(from.offsetWidth + (to.offsetWidth - from.offsetWidth) * amount);
-  }
+  }, [bubbleWidth, bubbleX, links.length]);
   useMotionValueEvent(progress, "change", positionBubble);
 
   useEffect(() => {
@@ -52,7 +52,7 @@ export function MobileNav({ pathname, progress, activeIndex, navigate, pagerEnab
     requestAnimationFrame(update);
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
-  });
+  }, [positionBubble, progress]);
 
   return (
       <nav ref={navRef} className={`${styles.mobileNav} mobile-nav-enhanced`} aria-label="Mobile sections">

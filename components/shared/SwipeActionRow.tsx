@@ -2,7 +2,7 @@
 
 import { IconPencil, IconTrash } from "@tabler/icons-react";
 import { animate, motion, useDragControls, useMotionValue, useReducedMotion } from "motion/react";
-import { type PointerEvent, type ReactNode, useEffect, useId, useRef, useState } from "react";
+import { type PointerEvent, type ReactNode, useCallback, useEffect, useId, useRef, useState } from "react";
 
 import styles from "./SwipeActionRow.module.css";
 
@@ -38,12 +38,12 @@ export function SwipeActionRow({
   const dragging = useRef(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
-  function settle(nextOpen: boolean) {
+  const settle = useCallback((nextOpen: boolean) => {
     setOpen(nextOpen);
     animate(x, nextOpen ? -ACTION_WIDTH : 0, reduceMotion
       ? { duration: 0.12, ease: "easeOut" }
       : { type: "spring", duration: 0.5, bounce: 0.2 });
-  }
+  }, [reduceMotion, x]);
 
   useEffect(() => {
     const closeOther = (event: Event) => {
@@ -63,7 +63,7 @@ export function SwipeActionRow({
       window.removeEventListener("scroll", close, true);
       document.removeEventListener("pointerdown", closeFromOutside, true);
     };
-  });
+  }, [id, open, settle]);
 
   function startPointer(event: PointerEvent<HTMLDivElement>) {
     if (event.pointerType === "mouse") return;
@@ -133,6 +133,14 @@ export function SwipeActionRow({
       >
         {children}
       </motion.div>
+      <div className={styles.keyboardActions} aria-label="Row actions">
+        <button type="button" onClick={() => runAction(onEdit)}>
+          <IconPencil size={16} aria-hidden="true" />{editLabel}
+        </button>
+        <button type="button" onClick={() => runAction(onDelete)}>
+          <IconTrash size={16} aria-hidden="true" />{deleteLabel}
+        </button>
+      </div>
     </div>
   );
 }

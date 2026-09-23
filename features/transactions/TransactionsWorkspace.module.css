@@ -8,6 +8,7 @@
 .summary strong { display: block; margin-top: .375rem; font-size: clamp(1rem, 2.5vw, 1.5rem); overflow-wrap: anywhere; }
 .positive { color: var(--money-positive); }
 .negative { color: var(--money-negative); }
+.success { margin: 0 0 1rem; color: var(--money-positive); font-weight: 650; }
 .accountChart { padding: 1.5rem; margin-bottom: 1.5rem; }
 .chartHeading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
 .chartHeading h3 { margin: .25rem 0; font-size: 1rem; }

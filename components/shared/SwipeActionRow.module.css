@@ -1,6 +1,7 @@
 .root { display: contents; }
 .actions { display: none; }
 .content { display: contents; }
+.keyboardActions { display: none; }
 
 @media (max-width: 47.999rem) and (pointer: coarse) {
   .root {
@@ -39,6 +40,31 @@
     background: var(--row-glass-surface);
     will-change: transform;
   }
+  .root:focus-within .keyboardActions {
+    position: absolute;
+    inset: 0 0 0 auto;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px;
+    background: var(--app-surface);
+  }
+  .keyboardActions button {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    gap: 4px;
+    padding: 0 10px;
+    border: 1px solid var(--app-border);
+    border-radius: var(--radius-control);
+    color: var(--app-text-strong);
+    background: var(--app-surface);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .keyboardActions button:last-child { color: var(--money-negative); }
 }
 
 @media (prefers-reduced-motion: reduce) {

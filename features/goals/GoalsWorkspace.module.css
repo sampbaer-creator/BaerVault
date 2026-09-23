@@ -170,6 +170,7 @@
   color: var(--app-text-muted);
   font-size: 13px;
 }
+.success { margin: 0; color: var(--money-positive); font-weight: 650; }
 .drawer {
   background: var(--app-background);
 }

@@ -39,6 +39,7 @@ export function TransactionsWorkspace({ initialMonth, selectedMonth }: { initial
   const [draft, setDraft] = useState(freshDraft);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [pendingDelete, setPendingDelete] = useState<{id:string;name:string;incoming:boolean} | null>(null);
   const [expenseOpen, setExpenseOpen] = useState(false);
   const [expenseDraft, setExpenseDraft] = useState({ id:"", categoryId:"", description:"", amount:"", date:"", accountId:null as string | null });
@@ -74,7 +75,7 @@ export function TransactionsWorkspace({ initialMonth, selectedMonth }: { initial
     setError(""); setOpen(true);
   }
   async function save(event: FormEvent) {
-    event.preventDefault(); setSaving(true); setError("");
+    event.preventDefault(); setSaving(true); setError(""); setSuccessMessage("");
     if (pathname.startsWith("/demo")) {
       const entry = { id: editingId ?? crypto.randomUUID(), source: draft.source.trim(), amount: Number(draft.amount), date: draft.date, owner: draft.owner };
       setIncomeEntries((current) => [entry, ...current.filter((item) => item.id !== entry.id)]);
@@ -86,6 +87,7 @@ export function TransactionsWorkspace({ initialMonth, selectedMonth }: { initial
     if (!result.ok) { setError(result.error); return; }
     setIncomeEntries((current) => [result.data, ...current.filter((entry) => entry.id !== result.data.id)]);
     setOpen(false);
+    setSuccessMessage(editingId ? "Income updated." : "Income added.");
     invalidateMobileShell();
     } catch { setError("Could not save income. Please try again."); } finally { setSaving(false); }
   }
@@ -93,7 +95,7 @@ export function TransactionsWorkspace({ initialMonth, selectedMonth }: { initial
     const entry = expenseEntries.find((item) => item.id === id);
     if (!entry) return;
     setExpenseDraft({ id:entry.id, categoryId:entry.categoryId, description:entry.description, amount:String(entry.amount), date:entry.date, accountId:entry.accountId ?? null });
-    setError(""); setExpenseOpen(true);
+    setError(""); setSuccessMessage(""); setExpenseOpen(true);
   }
   useEffect(() => {
     const openIncome = (event: Event) => {
@@ -106,16 +108,25 @@ export function TransactionsWorkspace({ initialMonth, selectedMonth }: { initial
     window.addEventListener(SHELL_QUICK_ADD_EVENT, openIncome);
     return () => window.removeEventListener(SHELL_QUICK_ADD_EVENT, openIncome);
   }, []);
+  useEffect(() => {
+    if (!filterOpen) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setFilterOpen(false);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [filterOpen]);
   async function saveExpense(event: FormEvent) {
     event.preventDefault();
     const amount = Number(expenseDraft.amount);
-    setSaving(true); setError("");
+    setSaving(true); setError(""); setSuccessMessage("");
     if (!pathname.startsWith("/demo")) {
       const result = await saveBudgetEntryAction({ id:expenseDraft.id, categoryId:expenseDraft.categoryId, description:expenseDraft.description, amount, date:expenseDraft.date, accountId:expenseDraft.accountId });
       if (!result.ok) { setSaving(false); setError(result.error); return; }
     }
     setExpenseEntries((current) => current.map((entry) => entry.id === expenseDraft.id ? {...entry,description:expenseDraft.description.trim(),amount,date:expenseDraft.date} : entry));
     setSaving(false); setExpenseOpen(false);
+    setSuccessMessage("Expense updated.");
     if (!pathname.startsWith("/demo")) invalidateMobileShell();
   }
   async function remove() {
@@ -127,11 +138,13 @@ export function TransactionsWorkspace({ initialMonth, selectedMonth }: { initial
     if (pendingDelete.incoming) setIncomeEntries((current) => current.filter((entry) => entry.id !== pendingDelete.id));
     else setExpenseEntries((current) => current.filter((entry) => entry.id !== pendingDelete.id));
     setPendingDelete(null);
+    setSuccessMessage("Transaction deleted.");
     if (!pathname.startsWith("/demo")) invalidateMobileShell();
   }
 
   return <div className={styles.page}>
     {error && !open && !expenseOpen ? <p className={styles.error} role="alert">{error}</p> : null}
+    {successMessage && !open && !expenseOpen ? <p className={styles.success} role="status" aria-live="polite">{successMessage}</p> : null}
     {!visibleItems.length ? <p className={styles.emptyChart} role="status">{query ? "No transactions match your search." : "No transactions yet. Add income or a budget expense to get started."}</p> : null}
     <div className={styles.mobileSearch}><IconSearch size={23} aria-hidden="true"/><input value={query} onChange={(event)=>setQuery(event.target.value)} placeholder="Search" aria-label="Search transactions"/><button type="button" aria-label={`Filter transactions: ${filter}`} aria-expanded={filterOpen} aria-controls="transaction-filter-menu" onClick={()=>setFilterOpen((open)=>!open)}><Image src="/transaction-filter.png" alt="" width={22} height={22}/></button>{filterOpen&&<div className={styles.mobileFilterMenu} id="transaction-filter-menu" role="menu">{(["all","income","expenses"] as Filter[]).map((value)=><button type="button" role="menuitemradio" aria-checked={filter===value} key={value} onClick={()=>{setFilter(value);setFilterOpen(false)}}><span>{value==="all"?"All transactions":value==="income"?"Income":"Expenses"}</span>{filter===value&&<IconCheck size={17} aria-hidden="true"/>}</button>)}</div>}</div>
     <header className={styles.intro}><div><span>Household activity</span><h2>Every dollar, in one ledger.</h2><p>Income entered here also updates your Budget and Dashboard totals.</p></div><button className="btn btn-primary" onClick={() => launch()}><IconPlus size={16}/>Add income</button></header>
@@ -153,8 +166,8 @@ export function TransactionsWorkspace({ initialMonth, selectedMonth }: { initial
     <section className={`${styles.panel} table-wrapper card`}><div className={styles.tabs}>{(["all","income","expenses"] as Filter[]).map((value) => <button className={filter === value ? styles.active : ""} key={value} onClick={() => setFilter(value)}>{value[0].toUpperCase()+value.slice(1)}</button>)}<span>{visibleItems.length} transactions</span></div><table><thead><tr><th>Merchant</th><th>Category</th><th>Account</th><th>Date</th><th>Amount</th><th/></tr></thead><tbody>{visibleItems.map((item) => <tr key={item.id}><td><div className={styles.merchant}><i>{item.name.slice(0,1)}</i><strong>{item.name}</strong></div></td><td><span className={styles.chip}><i style={{background:item.incoming?"var(--money-positive)":"var(--chart-secondary)"}}/>{item.category}</span></td><td className={styles.muted}>{item.account}</td><td className={styles.muted}>{item.date}</td><td className={item.incoming?styles.positive:styles.negative}><strong>{item.incoming?"+":"−"}{money.format(item.amount)}</strong></td><td>{item.incoming&&<div className={styles.actions}><button aria-label={`Edit ${item.name}`} onClick={() => launch(item.id)}><IconEdit size={15}/></button><button aria-label={`Delete ${item.name}`} onClick={() => setPendingDelete({id:item.id,name:item.name,incoming:true})}><IconTrash size={15}/></button></div>}</td></tr>)}</tbody></table>
       <div className={styles.mobileLedger}>{mobileGroups.map(([date,group])=><section className={styles.mobileDateGroup} key={date}><h3>{new Date(`${date}T12:00:00`).toLocaleDateString(undefined,{weekday:"short",month:"long",day:"numeric"})}</h3>{group.map((item)=><SwipeActionRow key={item.id} onEdit={()=>item.incoming?launch(item.id):editExpense(item.id)} onDelete={()=>setPendingDelete({id:item.id,name:item.name,incoming:item.incoming})}><button type="button" className={styles.mobileTransaction} onClick={()=>item.incoming?launch(item.id):editExpense(item.id)}><strong>{item.name}</strong><span>{item.category}</span><b className={item.incoming?styles.positive:undefined}>{item.incoming?"+":""}{money.format(item.amount)}</b></button></SwipeActionRow>)}</section>)}</div>
     </section>
-    <Drawer opened={open} onClose={() => setOpen(false)} position={mobile?"bottom":"right"} size={mobile?"auto":430} title={editingId?"Edit income":"Add income"} classNames={{content:styles.drawer,header:styles.drawerHeader,body:styles.drawerBody,title:styles.drawerTitle}}><form className={styles.form} onSubmit={save}>{error&&<p className={styles.error}>{error}</p>}<label>Amount<div className={styles.moneyInput}><span>$</span><input type="number" min="0.01" step="0.01" required autoFocus value={draft.amount} onChange={(event) => setDraft({...draft,amount:event.target.value})} placeholder="0.00"/></div></label><label>Income source<input required maxLength={160} value={draft.source} onChange={(event) => setDraft({...draft,source:event.target.value})} placeholder="Payroll"/></label><div className={styles.formRow}><label>Date<input type="date" required value={draft.date} onChange={(event) => setDraft({...draft,date:event.target.value})}/></label><label>Owner<select value={draft.owner} onChange={(event) => setDraft({...draft,owner:event.target.value})}><option>Household</option><option>User</option><option>Spouse</option><option>Joint</option></select></label></div><button className={`${styles.submit} btn btn-primary`} disabled={saving}>{saving?"Saving…":editingId?"Save changes":"Add income"}</button></form></Drawer>
-    <Drawer opened={expenseOpen} onClose={()=>setExpenseOpen(false)} position={mobile?"bottom":"right"} size={mobile?"auto":430} title="Edit expense" classNames={{content:styles.drawer,header:styles.drawerHeader,body:styles.drawerBody,title:styles.drawerTitle}}><form className={styles.form} onSubmit={saveExpense}>{error&&<p className={styles.error}>{error}</p>}<label>Amount<div className={styles.moneyInput}><span>$</span><input type="number" min="0.01" step="0.01" required autoFocus value={expenseDraft.amount} onChange={(event)=>setExpenseDraft({...expenseDraft,amount:event.target.value})}/></div></label><label>Description<input required maxLength={160} value={expenseDraft.description} onChange={(event)=>setExpenseDraft({...expenseDraft,description:event.target.value})}/></label><label>Date<input type="date" required value={expenseDraft.date} onChange={(event)=>setExpenseDraft({...expenseDraft,date:event.target.value})}/></label><button className={`${styles.submit} btn btn-primary`} disabled={saving}>{saving?"Saving…":"Save expense"}</button></form></Drawer>
+    <Drawer opened={open} onClose={() => setOpen(false)} position={mobile?"bottom":"right"} size={mobile?"auto":430} title={editingId?"Edit income":"Add income"} classNames={{content:styles.drawer,header:styles.drawerHeader,body:styles.drawerBody,title:styles.drawerTitle}}><form className={styles.form} onSubmit={save}>{error&&<p className={styles.error} role="alert" aria-live="assertive">{error}</p>}<label>Amount<div className={styles.moneyInput}><span>$</span><input type="number" min="0.01" step="0.01" required autoFocus value={draft.amount} onChange={(event) => setDraft({...draft,amount:event.target.value})} placeholder="0.00"/></div></label><label>Income source<input required maxLength={160} value={draft.source} onChange={(event) => setDraft({...draft,source:event.target.value})} placeholder="Payroll"/></label><div className={styles.formRow}><label>Date<input type="date" required value={draft.date} onChange={(event) => setDraft({...draft,date:event.target.value})}/></label><label>Owner<select value={draft.owner} onChange={(event) => setDraft({...draft,owner:event.target.value})}><option>Household</option><option>User</option><option>Spouse</option><option>Joint</option></select></label></div><button className={`${styles.submit} btn btn-primary`} disabled={saving}>{saving?"Saving…":editingId?"Save changes":"Add income"}</button></form></Drawer>
+    <Drawer opened={expenseOpen} onClose={()=>setExpenseOpen(false)} position={mobile?"bottom":"right"} size={mobile?"auto":430} title="Edit expense" classNames={{content:styles.drawer,header:styles.drawerHeader,body:styles.drawerBody,title:styles.drawerTitle}}><form className={styles.form} onSubmit={saveExpense}>{error&&<p className={styles.error} role="alert" aria-live="assertive">{error}</p>}<label>Amount<div className={styles.moneyInput}><span>$</span><input type="number" min="0.01" step="0.01" required autoFocus value={expenseDraft.amount} onChange={(event)=>setExpenseDraft({...expenseDraft,amount:event.target.value})}/></div></label><label>Description<input required maxLength={160} value={expenseDraft.description} onChange={(event)=>setExpenseDraft({...expenseDraft,description:event.target.value})}/></label><label>Date<input type="date" required value={expenseDraft.date} onChange={(event)=>setExpenseDraft({...expenseDraft,date:event.target.value})}/></label><button className={`${styles.submit} btn btn-primary`} disabled={saving}>{saving?"Saving…":"Save expense"}</button></form></Drawer>
     <ConfirmDialog opened={Boolean(pendingDelete)} title={`Delete ${pendingDelete?.name ?? "this transaction"}?`} description={pendingDelete?.incoming?"This updates income totals everywhere in BaerVault.":"This permanently removes the expense from its budget category."} confirmLabel={pendingDelete?.incoming?"Delete income":"Delete expense"} onCancel={() => setPendingDelete(null)} onConfirm={() => { void remove(); }}/>
   </div>;
 }

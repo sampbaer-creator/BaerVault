@@ -116,14 +116,13 @@ export async function getBudgetHistory(targetYear: number, targetMonth: number, 
     .from("budget_months")
     .select("year, month, budget_categories(name, planned_amount, budget_entries(amount))")
     .eq("household_id", household.id)
+    .or(`year.lt.${targetYear},and(year.eq.${targetYear},month.lt.${targetMonth})`)
     .order("year", { ascending: false })
-    .order("month", { ascending: false });
+    .order("month", { ascending: false })
+    .limit(Number.isInteger(monthsBack) ? Math.min(Math.max(monthsBack, 1), 24) : 6);
   if (result.error) throwDataError(result.error, "Could not load budget history.");
 
-  const limit = Number.isInteger(monthsBack) ? Math.min(Math.max(monthsBack, 1), 24) : 6;
   return ((result.data ?? []) as BudgetHistoryMonthRow[])
-    .filter((budgetMonth) => budgetMonth.year < targetYear || (budgetMonth.year === targetYear && budgetMonth.month < targetMonth))
-    .slice(0, limit)
     .flatMap((budgetMonth) => (budgetMonth.budget_categories ?? []).map((category) => ({
       year: budgetMonth.year,
       month: budgetMonth.month,

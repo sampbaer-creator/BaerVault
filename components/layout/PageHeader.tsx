@@ -106,6 +106,9 @@ export function PageHeader({
                 placeholder="Search pages"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
+                role="combobox"
+                aria-autocomplete="list"
+                aria-expanded={results.length > 0}
                 aria-controls="page-search-results"
               />
             </label>
@@ -114,9 +117,10 @@ export function PageHeader({
                 className={styles.searchResults}
                 id="page-search-results"
                 aria-label="Matching pages"
+                role="listbox"
               >
                 {results.map(({ href, label, icon: Icon }) => (
-                  <Link href={selectedMonth ? withMonth(href, selectedMonth) : href} key={href} onClick={() => setQuery("")}>
+                  <Link role="option" href={selectedMonth ? withMonth(href, selectedMonth) : href} key={href} onClick={() => setQuery("")}>
                     <Icon size={16} aria-hidden="true" />
                     <span>{label}</span>
                   </Link>

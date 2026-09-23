@@ -152,18 +152,17 @@ export function InvestmentsWorkspace({
   useEffect(() => {
     if (!account?.holdings.length) return;
     const controller = new AbortController();
-    Promise.all(
-      account.holdings.map(async (item) => {
-        const response = await fetch(
-          `/api/market-data?symbol=${encodeURIComponent(item.symbol)}&range=${portfolioRange}`,
-          { signal: controller.signal },
-        );
+    const symbols = [...new Set(account.holdings.map((item) => item.symbol))];
+    fetch(
+      `/api/market-data?symbols=${encodeURIComponent(symbols.join(","))}&range=${portfolioRange}`,
+      { signal: controller.signal },
+    )
+      .then(async (response) => {
         const data = await response.json();
         if (!response.ok) throw new Error(data.error);
-        return [item.symbol, data] as const;
-      }),
-    )
-      .then((entries) => setAccountMarkets(Object.fromEntries(entries)))
+        return (data.series ?? {}) as Record<string, MarketData>;
+      })
+      .then((markets) => setAccountMarkets(markets))
       .catch(() => undefined);
     return () => controller.abort();
   }, [account, portfolioRange]);
@@ -1115,7 +1114,7 @@ export function InvestmentsWorkspace({
           title: styles.drawerTitle,
         }}
       >
-        {error && <p className={styles.formError}>{error}</p>}
+        {error && <p className={styles.formError} role="alert" aria-live="assertive">{error}</p>}
         <form className={styles.holdingForm} onSubmit={addAccount}>
           <label>
             Account name
@@ -1180,7 +1179,7 @@ export function InvestmentsWorkspace({
           title: styles.drawerTitle,
         }}
       >
-        {error && <p className={styles.formError}>{error}</p>}
+        {error && <p className={styles.formError} role="alert" aria-live="assertive">{error}</p>}
         <form className={styles.holdingForm} onSubmit={addHolding}>
           <div className={styles.formRow}>
             <label>
@@ -1303,7 +1302,7 @@ export function InvestmentsWorkspace({
             </div>
             {holdingEdit && (
               <form className={styles.holdingForm} onSubmit={saveHolding}>
-                {error && <p className={styles.formError}>{error}</p>}
+                {error && <p className={styles.formError} role="alert" aria-live="assertive">{error}</p>}
                 <div className={styles.formRow}>
                   <label>
                     Ticker
@@ -1416,7 +1415,7 @@ export function InvestmentsWorkspace({
               </div>
               {lotOpen && (
                 <form className={styles.holdingForm} onSubmit={addLot}>
-                  {error && <p className={styles.formError}>{error}</p>}
+                  {error && <p className={styles.formError} role="alert" aria-live="assertive">{error}</p>}
                   <div className={styles.formRow}>
                     <label>
                       Shares

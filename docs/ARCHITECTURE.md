@@ -93,15 +93,16 @@ investment/dashboard client -> /api/market-data -> Twelve Data
 
 ## Testing and verification
 
-The repository currently has no automated unit, integration, or end-to-end tests. The supported checks are:
+The repository has unit tests for finance helpers and dashboard calculations, plus PGlite-backed database tests for budget carry-forward and bank synchronization. The supported checks are:
 
 ```bash
+npm test
 npm run typecheck
 npm run lint
 npm run build
 ```
 
-High-value future tests are repository validation, finance calculations, server-action input handling, household isolation, and mobile navigation reachability.
+High-value additional tests are repository validation, server-action input handling, market-data response normalization, webhook verification, and mobile navigation reachability.
 
 ## Architectural constraints
 
@@ -116,5 +117,5 @@ High-value future tests are repository validation, finance calculations, server-
 - `features/investments/InvestmentsWorkspace.tsx` and its CSS Module are the largest files in the repository. They should be split by cohesive screen section and form flow, but that refactor should be behavior-tested rather than combined with a folder move.
 - Several older workspaces use densely compressed JSX or CSS. Formatting them is safe, but component extraction should happen feature by feature.
 - The authenticated and demo shells intentionally differ, but their navigation definitions are duplicated. A future shared navigation model could remove drift while preserving distinct route prefixes.
-- There is no automated test suite. Finance calculations, repository contracts, server-action validation, and navigation reachability are the best first targets.
+- Repository contracts, server-action validation, accessible mutation feedback, and navigation reachability remain the best next test targets.
 - The `cloudy-cashflow` palette key remains for saved-preference compatibility even though its displayed name is “Cloudy Slate.” Renaming the persisted key requires a preference migration.

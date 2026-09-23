@@ -25,6 +25,7 @@ export function GoalsWorkspace({ initialGoals }: { initialGoals: SavingsGoal[] }
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [pendingDelete, setPendingDelete] = useState<SavingsGoal | null>(null);
   const totalSaved = goals.reduce((sum, goal) => sum + goal.savedAmount, 0);
   const totalTarget = goals.reduce((sum, goal) => sum + goal.targetAmount, 0);
@@ -32,7 +33,7 @@ export function GoalsWorkspace({ initialGoals }: { initialGoals: SavingsGoal[] }
   function launch(goal?: SavingsGoal) {
     setEditing(goal ?? null);
     setDraft(goal ? { name: goal.name, targetAmount: String(goal.targetAmount), savedAmount: String(goal.savedAmount), targetDate: goal.targetDate ?? "", monthlyContribution: String(goal.monthlyContribution) } : emptyDraft);
-    setError(""); setOpen(true);
+    setError(""); setSuccessMessage(""); setOpen(true);
   }
   useEffect(() => {
     const openGoal = (event: Event) => {
@@ -46,20 +47,21 @@ export function GoalsWorkspace({ initialGoals }: { initialGoals: SavingsGoal[] }
     return () => window.removeEventListener(SHELL_QUICK_ADD_EVENT, openGoal);
   }, []);
   async function save(event: FormEvent) {
-    event.preventDefault(); setSaving(true); setError("");
+    event.preventDefault(); setSaving(true); setError(""); setSuccessMessage("");
     const input = { name: draft.name, targetAmount: Number(draft.targetAmount), savedAmount: Number(draft.savedAmount), targetDate: draft.targetDate || null, monthlyContribution: Number(draft.monthlyContribution) };
     const result = editing ? await updateGoalAction({ id: editing.id, ...input }) : await addGoalAction(input);
     setSaving(false);
     if (!result.ok) { setError(result.error); return; }
     setGoals((current) => [...current.filter((goal) => goal.id !== result.data.id), result.data]);
     setOpen(false);
+    setSuccessMessage(editing ? "Goal updated." : "Goal created.");
     invalidateMobileShell();
   }
   async function remove() {
     if (!pendingDelete) return;
     const result = await deleteGoalAction(pendingDelete.id);
     if (!result.ok) { setError(result.error); setPendingDelete(null); return; }
-    setGoals((current) => current.filter((goal) => goal.id !== pendingDelete.id)); setPendingDelete(null);
+    setGoals((current) => current.filter((goal) => goal.id !== pendingDelete.id)); setPendingDelete(null); setSuccessMessage("Goal deleted.");
     invalidateMobileShell();
   }
 
@@ -71,6 +73,7 @@ export function GoalsWorkspace({ initialGoals }: { initialGoals: SavingsGoal[] }
       <div><strong>{currency.format(Math.max(0, totalTarget - totalSaved))}</strong><span>left to save</span></div>
     </div>
     <div className={styles.metrics}><Metric label="Total saved" value={currency.format(totalSaved)} /><Metric label="Combined target" value={currency.format(totalTarget)} /><Metric label="Overall progress" value={totalTarget ? `${Math.round(totalSaved / totalTarget * 100)}%` : "—"} /></div>
+    {successMessage && !open ? <p className={styles.success} role="status" aria-live="polite">{successMessage}</p> : null}
     {goals.length ? <section className={styles.grid} aria-label="Savings goals">{goals.map((goal, index) => {
       const progress = Math.min(100, Math.round(goal.savedAmount / goal.targetAmount * 100));
       const remaining = Math.max(0, goal.targetAmount - goal.savedAmount);
@@ -81,7 +84,7 @@ export function GoalsWorkspace({ initialGoals }: { initialGoals: SavingsGoal[] }
       </article>;
     })}</section> : <section className={styles.empty}><IconTargetArrow size={32}/><h3>Create your first goal</h3><p>Give your household something concrete to work toward.</p><button className={styles.add} onClick={() => launch()}><IconPlus size={17}/>Add goal</button></section>}
     <Drawer opened={open} onClose={() => setOpen(false)} position={mobile ? "bottom" : "right"} size={mobile ? "auto" : 430} title={editing ? "Edit goal" : "Add a goal"} classNames={{ content: styles.drawer, header: styles.drawerHeader, body: styles.drawerBody, title: styles.drawerTitle }}>
-      <form className={styles.form} onSubmit={save}>{error && <p className={styles.error}>{error}</p>}<label>Goal name<input required maxLength={100} autoFocus value={draft.name} onChange={(e) => setDraft({...draft, name:e.target.value})} placeholder="Emergency fund"/></label><div className={styles.formRow}><label>Target amount<input required min="1" step="0.01" type="number" value={draft.targetAmount} onChange={(e) => setDraft({...draft,targetAmount:e.target.value})}/></label><label>Already saved<input required min="0" step="0.01" type="number" value={draft.savedAmount} onChange={(e) => setDraft({...draft,savedAmount:e.target.value})}/></label></div><div className={styles.formRow}><label>Target date<input type="date" value={draft.targetDate} onChange={(e) => setDraft({...draft,targetDate:e.target.value})}/></label><label>Monthly contribution<input required min="0" step="0.01" type="number" value={draft.monthlyContribution} onChange={(e) => setDraft({...draft,monthlyContribution:e.target.value})}/></label></div><button className={styles.submit} disabled={saving}>{saving ? "Saving…" : editing ? "Save changes" : "Create goal"}</button></form>
+      <form className={styles.form} onSubmit={save}>{error && <p className={styles.error} role="alert" aria-live="assertive">{error}</p>}<label>Goal name<input required maxLength={100} autoFocus value={draft.name} onChange={(e) => setDraft({...draft, name:e.target.value})} placeholder="Emergency fund"/></label><div className={styles.formRow}><label>Target amount<input required min="1" step="0.01" type="number" value={draft.targetAmount} onChange={(e) => setDraft({...draft,targetAmount:e.target.value})}/></label><label>Already saved<input required min="0" step="0.01" type="number" value={draft.savedAmount} onChange={(e) => setDraft({...draft,savedAmount:e.target.value})}/></label></div><div className={styles.formRow}><label>Target date<input type="date" value={draft.targetDate} onChange={(e) => setDraft({...draft,targetDate:e.target.value})}/></label><label>Monthly contribution<input required min="0" step="0.01" type="number" value={draft.monthlyContribution} onChange={(e) => setDraft({...draft,monthlyContribution:e.target.value})}/></label></div><button className={styles.submit} disabled={saving}>{saving ? "Saving…" : editing ? "Save changes" : "Create goal"}</button></form>
     </Drawer>
     <ConfirmDialog opened={Boolean(pendingDelete)} title="Delete this goal?" description={pendingDelete ? `${pendingDelete.name} and its progress will be permanently removed.` : ""} confirmLabel="Delete goal" onCancel={() => setPendingDelete(null)} onConfirm={() => { void remove(); }}/>
   </div>;
