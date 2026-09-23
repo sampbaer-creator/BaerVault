@@ -32,7 +32,7 @@ export const mobileSectionNavigation: NavigationItem[] = [
   { href: "/investments", label: "Investments", icon: IconChartPie },
   { href: "/transactions", label: "Transactions", icon: IconArrowsExchange },
   { href: "/dashboard", label: "Dashboard", icon: IconLayoutDashboard },
-  { href: "/budget", label: "Categories", icon: IconPigMoney },
+  { href: "/budget", label: "Budgets", icon: IconPigMoney },
   { href: "/goals", label: "Goals", icon: IconTargetArrow },
 ];
 

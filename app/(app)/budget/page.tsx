@@ -1,11 +1,11 @@
-import { BudgetWorkspace } from "@/features/budget/BudgetWorkspace";
+import { BudgetsWorkspace } from "@/features/budgets/BudgetsWorkspace";
 import { getFinancialAccounts } from "@/lib/data/accounts";
 import { getBudgetHistory, getBudgetMonth } from "@/lib/data/budgets";
 import { parseMonthSelection } from "@/lib/helpers/monthSelection";
 import * as budgetActions from "./actions";
 import { getBudgetAdviceAction } from "./aiActions";
 
-export default async function BudgetPage({
+export default async function BudgetsPage({
   searchParams,
 }: {
   searchParams: Promise<{ year?: string; month?: string }>;
@@ -20,7 +20,7 @@ export default async function BudgetPage({
   const hasEnoughHistory = new Set(history.map((entry) => `${entry.year}-${entry.month}`)).size >= 3;
   const allCategoriesUnplanned = budget.categories.every((category) => category.plannedAmount === 0);
   return (
-    <BudgetWorkspace
+    <BudgetsWorkspace
       key={`${year}-${month}`}
       initialBudget={budget}
       accounts={accounts.map(({ id, name, institution, type }) => ({ id, name, institution, type }))}

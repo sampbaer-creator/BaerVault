@@ -16,7 +16,7 @@ const loaders = {
   "/investments": () => import("@/features/investments/InvestmentsWorkspace").then((m) => ({ default: m.InvestmentsWorkspace })),
   "/transactions": () => import("@/features/transactions/TransactionsWorkspace").then((m) => ({ default: m.TransactionsWorkspace })),
   "/dashboard": () => import("@/features/dashboard/DashboardOverview").then((m) => ({ default: m.DashboardOverview })),
-  "/budget": () => import("@/features/budget/BudgetWorkspace").then((m) => ({ default: m.BudgetWorkspace })),
+  "/budget": () => import("@/features/budgets/BudgetsWorkspace").then((m) => ({ default: m.BudgetsWorkspace })),
   "/goals": () => import("@/features/goals/GoalsWorkspace").then((m) => ({ default: m.GoalsWorkspace })),
 } as const;
 
@@ -25,7 +25,7 @@ const AccountsScreen = lazy(loaders["/accounts"]);
 const InvestmentsScreen = lazy(loaders["/investments"]);
 const TransactionsScreen = lazy(loaders["/transactions"]);
 const DashboardScreen = lazy(loaders["/dashboard"]);
-const BudgetScreen = lazy(loaders["/budget"]);
+const BudgetsScreen = lazy(loaders["/budget"]);
 const GoalsScreen = lazy(loaders["/goals"]);
 
 function preloadRoute(route: string | undefined) {
@@ -51,7 +51,7 @@ function Screen({ route, data }: { route: string; data: MobileShellData }) {
   const selectedMonth = { year: data.selectedMonth.year, month: data.selectedMonth.monthNumber };
   if (route === "/transactions") return <TransactionsScreen initialMonth={data.selectedMonth} selectedMonth={selectedMonth} />;
   if (route === "/dashboard") return <DashboardScreen model={data.dashboard} selectedMonth={selectedMonth} />;
-  if (route === "/budget") return <BudgetScreen initialBudget={data.selectedMonth} accounts={data.financialAccounts.map(({ id, name, institution, type }) => ({ id, name, institution, type }))} />;
+  if (route === "/budget") return <BudgetsScreen initialBudget={data.selectedMonth} accounts={data.financialAccounts.map(({ id, name, institution, type }) => ({ id, name, institution, type }))} />;
   return <GoalsScreen initialGoals={data.goals} />;
 }
 

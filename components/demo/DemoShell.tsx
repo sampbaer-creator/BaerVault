@@ -27,7 +27,7 @@ const links = [
   ["/demo", "Dashboard", IconLayoutDashboard],
   ["/demo/transactions", "Transactions", IconArrowsExchange],
   ["/demo/accounts", "Accounts", IconBuildingBank],
-  ["/demo/budget", "Categories", IconPigMoney],
+  ["/demo/budget", "Budgets", IconPigMoney],
   ["/demo/investments", "Investments", IconChartPie],
   ["/demo/goals", "Goals", IconTargetArrow],
   ["/demo/household", "Household", IconUsers],

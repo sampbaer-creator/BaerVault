@@ -36,7 +36,7 @@ import {
   type Purchase,
 } from "@/lib/demo/finance";
 
-import styles from "./BudgetWorkspace.module.css";
+import styles from "./BudgetsWorkspace.module.css";
 import { invalidateMobileShell } from "@/lib/helpers/mobileShell";
 import { SHELL_QUICK_ADD_EVENT, type ShellQuickAddAction } from "@/lib/helpers/shellQuickAdd";
 import { offsetMonth, withMonth } from "@/lib/helpers/monthSelection";
@@ -105,7 +105,7 @@ type BudgetAdviceResult = { ok: true; data: BudgetAdvice } | { ok: false; error:
 type BudgetActions=Pick<typeof realActions,"addCategoryAction"|"deleteBudgetCategoryAction"|"deleteBudgetEntryAction"|"saveBudgetEntryAction"|"updateBudgetCategoryAction"> & {
   getBudgetAdviceAction?: (input: { year: number; month: number }) => Promise<BudgetAdviceResult>;
 };
-export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActions, showAdviceBanner = false }: { initialBudget: BudgetMonth & { year: number; monthNumber: number }; accounts?: BudgetAccountOption[]; actions?:BudgetActions; showAdviceBanner?: boolean }) {
+export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realActions, showAdviceBanner = false }: { initialBudget: BudgetMonth & { year: number; monthNumber: number }; accounts?: BudgetAccountOption[]; actions?:BudgetActions; showAdviceBanner?: boolean }) {
   const currency=useCurrencyFormatter();
   const router = useRouter();
   const pathname = usePathname();
