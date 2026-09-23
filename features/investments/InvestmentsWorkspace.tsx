@@ -37,7 +37,7 @@ import {
   deletePurchaseLotAction,
   updateHoldingAction,
   updatePurchaseLotAction,
-} from "@/app/(app)/investments/actions";
+} from "./actions";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { SwipeActionRow } from "@/components/shared/SwipeActionRow";
 import { currency } from "@/lib/demo/finance";
