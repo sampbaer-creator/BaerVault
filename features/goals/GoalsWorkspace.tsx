@@ -4,7 +4,7 @@ import { Drawer } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { IconEdit, IconPlus, IconTargetArrow, IconTrash } from "@tabler/icons-react";
 import { FormEvent, useEffect, useState } from "react";
-import { addGoalAction, deleteGoalAction, updateGoalAction } from "@/app/(app)/goals/actions";
+import { addGoalAction, deleteGoalAction, updateGoalAction } from "./actions";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
 import { useServerSnapshotState } from "@/lib/hooks/useServerSnapshotState";
