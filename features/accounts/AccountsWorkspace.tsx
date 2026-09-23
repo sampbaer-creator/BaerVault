@@ -31,7 +31,7 @@ import {
   refreshBankConnectionAction,
   transferFundsAction,
   updateFinancialAccountAction,
-} from "@/app/(app)/accounts/actions";
+} from "./actions";
 import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
 import { SwipeActionRow } from "@/components/shared/SwipeActionRow";
 import {
