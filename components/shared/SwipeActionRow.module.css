@@ -50,6 +50,8 @@
     padding: 8px;
     background: var(--app-surface);
   }
+  /* Pointer focus on a revealed swipe action must not put this layer over the tap. */
+  .root.open:focus-within .keyboardActions { display: none; }
   .keyboardActions button {
     display: inline-flex;
     min-height: 44px;

@@ -1043,3 +1043,18 @@
 .categoryChip { display: inline-flex; align-items: center; gap: 5px; padding: 6px 10px; border: 1px solid var(--app-border); border-radius: 999px; color: var(--app-text-muted); background: var(--app-surface); font: inherit; font-size: 11px; cursor: pointer; }
 .categoryChip i { font-style: normal; }
 .categoryChip[data-active="true"] { color: #fff; border-color: var(--app-accent); background: var(--app-accent); }
+
+@media (max-width: 47.999rem) {
+  .categoryDetail > .copyButton {
+    width: auto;
+    min-width: 0;
+    min-height: 48px;
+    height: auto;
+    justify-content: center;
+    gap: 9px;
+    overflow: visible;
+    padding: 10px 16px;
+    color: var(--money-negative);
+    font-size: 13px;
+  }
+}
