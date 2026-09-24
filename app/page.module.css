@@ -633,3 +633,165 @@
 @media (prefers-reduced-motion: reduce) {
   .page * { scroll-behavior: auto; }
 }
+
+/* Liquid glass: the public surface shares the same material language as the app. */
+.page {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  background:
+    radial-gradient(ellipse 54% 34% at 89% 1%, color-mix(in srgb, var(--app-accent) 15%, transparent), transparent 75%),
+    radial-gradient(ellipse 42% 34% at 2% 18%, color-mix(in srgb, var(--chart-secondary) 11%, transparent), transparent 78%),
+    linear-gradient(150deg, color-mix(in srgb, var(--app-surface) 55%, var(--app-background)), var(--app-background) 58%);
+}
+.siteHeader {
+  top: 12px;
+  border-color: var(--glass-border) !important;
+  border-radius: 18px;
+  background: var(--glass-strong) !important;
+  box-shadow: var(--shadow-glass);
+  -webkit-backdrop-filter: blur(30px) saturate(170%);
+  backdrop-filter: blur(30px) saturate(170%);
+}
+.siteHeader::after,
+.previewWindow::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 55%), inset 0 -1px 0 color-mix(in srgb, var(--app-accent) 7%, transparent);
+  content: "";
+  pointer-events: none;
+}
+.nav { min-height: 66px; }
+.navLinks a,
+.signIn { transition: background-color 220ms ease, color 220ms ease; }
+.navLinks a:hover,
+.signIn:hover { color: var(--app-text-strong); background: var(--app-accent-soft); }
+.navCta,
+.primaryAction {
+  min-height: 46px;
+  border-radius: 11px;
+  color: #fff;
+  background: linear-gradient(145deg, var(--app-accent), color-mix(in srgb, var(--app-accent) 78%, #063d78));
+  box-shadow: 0 9px 24px rgb(8 105 193 / 19%), inset 0 1px 0 rgb(255 255 255 / 25%);
+  transition: transform 300ms var(--ease-out), box-shadow 300ms ease, filter 300ms ease;
+}
+.navCta:hover,
+.primaryAction:hover { transform: translateY(-2px); filter: brightness(1.04); box-shadow: 0 15px 30px rgb(8 105 193 / 24%); }
+.secondaryAction {
+  min-height: 46px;
+  border-color: var(--glass-border);
+  border-radius: 11px;
+  background: var(--glass-strong);
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  transition: transform 300ms var(--ease-out), background-color 300ms ease;
+}
+.secondaryAction:hover { transform: translateY(-2px); background: var(--app-accent-soft); }
+.hero {
+  position: relative;
+  min-height: min(760px, calc(100svh - 78px));
+  gap: clamp(32px, 4vw, 70px);
+  padding-block: clamp(70px, 9vw, 130px) 92px;
+}
+.hero::before,
+.hero::after {
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+.hero::before {
+  width: clamp(420px, 54vw, 760px);
+  aspect-ratio: 1;
+  top: -18%;
+  right: -18%;
+  background: radial-gradient(circle at 35% 35%, color-mix(in srgb, var(--app-accent) 27%, white), color-mix(in srgb, var(--app-accent) 9%, transparent) 43%, transparent 70%);
+  filter: blur(36px);
+  animation: ambientDrift 16s ease-in-out infinite alternate;
+}
+.hero::after {
+  width: clamp(240px, 33vw, 490px);
+  aspect-ratio: 1;
+  bottom: -16%;
+  left: 30%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--chart-secondary) 18%, transparent), transparent 68%);
+  filter: blur(30px);
+}
+.eyebrow { display: none; }
+.hero h1 { font-size: clamp(38px, 5.5vw, 62px); letter-spacing: -.04em; line-height: 1.02; }
+.lede { margin-block: 26px 30px; color: var(--app-text-muted); }
+.previewWindow {
+  position: relative;
+  transform: perspective(1400px) rotateY(-4deg) rotateX(2deg);
+  transform-origin: center;
+  border-color: var(--glass-border) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 38px 90px rgb(14 35 56 / 18%), 0 8px 24px rgb(14 35 56 / 8%), inset 0 1px 0 var(--glass-highlight) !important;
+  animation: previewSettle 900ms var(--ease-out) both;
+  transition: transform 650ms var(--ease-out), box-shadow 650ms ease;
+}
+.previewWindow:hover { transform: perspective(1400px) rotateY(0) rotateX(0) translateY(-5px); box-shadow: 0 48px 100px rgb(14 35 56 / 21%), inset 0 1px 0 var(--glass-highlight) !important; }
+.previewSidebar,
+.previewTopbar { background: var(--glass-strong); }
+.previewMain { background: color-mix(in srgb, var(--app-background) 72%, transparent); }
+.spendingCard,
+.worthCard,
+.activityCard,
+.categoriesCard,
+.accountPreview { box-shadow: 0 12px 32px rgb(15 52 84 / 7%), inset 0 1px 0 var(--panel-glass-highlight) !important; }
+.benefitStrip,
+.factStrip,
+.securitySection,
+.finalCta,
+.pricingCard,
+.faqItem,
+.comparisonTable { border-color: var(--panel-glass-border); background: var(--panel-glass-surface); box-shadow: var(--panel-glass-shadow); -webkit-backdrop-filter: var(--panel-glass-blur); backdrop-filter: var(--panel-glass-blur); }
+.benefitStrip,
+.factStrip { border-radius: 16px; }
+.securitySection,
+.finalCta { border-radius: 18px; }
+.featureGrid article,
+.stepGrid article,
+.faqItem { transition: background-color 250ms ease, transform 350ms var(--ease-out); }
+.featureGrid article:hover,
+.stepGrid article:hover { background: color-mix(in srgb, var(--app-accent-soft) 42%, transparent); }
+.faqItem:hover { transform: translateY(-2px); }
+@keyframes ambientDrift { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(-6%, 6%, 0) scale(1.1); } }
+@keyframes previewSettle { from { opacity: .65; transform: perspective(1400px) rotateY(-9deg) rotateX(5deg) translateY(24px); } to { opacity: 1; transform: perspective(1400px) rotateY(-4deg) rotateX(2deg); } }
+@media (max-width: 62rem) {
+  .hero { min-height: 0; }
+  .previewWindow { transform: none; animation: none; }
+  .previewWindow:hover { transform: translateY(-3px); }
+}
+@media (max-width: 47.999rem) {
+  .siteHeader { top: 6px; border-radius: 15px; }
+  .nav { min-height: 58px; }
+  .hero { padding-block: 60px 74px; }
+  .hero h1 { font-size: clamp(38px, 10vw, 56px); }
+  .hero::before { right: -65%; top: -15%; }
+  .hero::after { left: -25%; }
+  .previewWindow { border-radius: 16px !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero::before,
+  .previewWindow { animation: none; }
+  .previewWindow,
+  .previewWindow:hover,
+  .navCta:hover,
+  .primaryAction:hover,
+  .secondaryAction:hover { transform: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .siteHeader,
+  .previewWindow,
+  .benefitStrip,
+  .factStrip,
+  .securitySection,
+  .finalCta,
+  .pricingCard,
+  .faqItem,
+  .comparisonTable { background: var(--app-surface) !important; -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
