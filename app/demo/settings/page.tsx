@@ -1,6 +1,2 @@
-import type { Metadata } from "next";
-
-export const metadata: Metadata = { title: "Demo settings" };
-
 import { PreferencesPanel } from "@/features/settings/PreferencesPanel";import styles from "@/features/settings/SettingsWorkspace.module.css";
 export default function DemoSettingsPage(){return <div className={styles.page}><header><h2>Demo settings</h2><p>Theme and formatting preferences work without an account and stay on this device.</p></header><div className={styles.sections}><PreferencesPanel/></div></div>}

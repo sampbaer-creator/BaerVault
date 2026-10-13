@@ -27,22 +27,16 @@ export const mainNavigation: NavigationItem[] = [
 ];
 
 export const mobileSectionNavigation: NavigationItem[] = [
-  { href: "/dashboard", label: "Home", icon: IconLayoutDashboard },
-  { href: "/transactions", label: "Activity", icon: IconArrowsExchange },
-  { href: "/budget", label: "Budget", icon: IconPigMoney },
-  { href: "/investments", label: "Holdings", icon: IconChartPie },
-  { href: "/accounts", label: "Accounts", icon: IconBuildingBank },
-];
-
-export const mobileRouteOrder = ["/cash-flow", "/accounts", "/investments", "/transactions", "/dashboard", "/budget", "/goals"];
-
-export const allNavigation: NavigationItem[] = [
-  ...mainNavigation,
   { href: "/cash-flow", label: "Cash flow", icon: IconChartHistogram },
-  { href: "/recurring", label: "Recurring", icon: IconArrowsExchange },
-  { href: "/household", label: "Household", icon: IconBuildingCommunity },
-  { href: "/settings", label: "Settings", icon: IconSettings },
+  { href: "/accounts", label: "Accounts", icon: IconBuildingBank },
+  { href: "/investments", label: "Investments", icon: IconChartPie },
+  { href: "/transactions", label: "Transactions", icon: IconArrowsExchange },
+  { href: "/dashboard", label: "Dashboard", icon: IconLayoutDashboard },
+  { href: "/budget", label: "Budgets", icon: IconPigMoney },
+  { href: "/goals", label: "Goals", icon: IconTargetArrow },
 ];
+
+export const mobileRouteOrder = mobileSectionNavigation.map(({ href }) => href);
 
 export const householdNavigation: NavigationItem[] = [
   { href: "/household", label: "Household", icon: IconBuildingCommunity },

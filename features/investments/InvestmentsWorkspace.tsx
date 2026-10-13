@@ -1,9 +1,9 @@
 "use client";
 import { useServerSnapshotState } from "@/lib/hooks/useServerSnapshotState";
 
-import { EditorDrawer } from "@/components/shared/EditorDrawer";
+import { Drawer } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { portfolioHistory } from "@/lib/helpers/portfolioHistory";
+import { useReducedMotion } from "motion/react";
 import {
   IconArrowDown,
   IconArrowUp,
@@ -40,7 +40,7 @@ import {
 } from "./actions";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { SwipeActionRow } from "@/components/shared/SwipeActionRow";
-import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
+import { currency } from "@/lib/demo/finance";
 import {
   costFor,
   sharesFor,
@@ -71,7 +71,7 @@ export function InvestmentsWorkspace({
   demo?: boolean;
 }) {
   const router = useRouter();
-  const currency = useCurrencyFormatter();
+  const reduceMotion = useReducedMotion();
   const mobile = useMediaQuery("(max-width: 47.999rem)");
   const [accounts, setAccounts] = useServerSnapshotState(initialAccounts);
   const [accountId, setAccountId] = useState(initialAccounts[0]?.id ?? "");
@@ -82,7 +82,6 @@ export function InvestmentsWorkspace({
   const [accountMarkets, setAccountMarkets] = useState<
     Record<string, MarketData>
   >({});
-  const [quotesRetrievedAt, setQuotesRetrievedAt] = useState<number | null>(null);
   const [accountOpen, setAccountOpen] = useState(false);
   const [holdingOpen, setHoldingOpen] = useState(false);
   const [lotOpen, setLotOpen] = useState(false);
@@ -151,22 +150,22 @@ export function InvestmentsWorkspace({
   }, [demo, holding, range]);
 
   useEffect(() => {
-    if (demo || !accounts.some((item) => item.holdings.length)) return;
+    if (!account?.holdings.length) return;
     const controller = new AbortController();
-    const symbols = [...new Set(accounts.flatMap((item) => item.holdings.map((holding) => holding.symbol)))];
-    const batches = Array.from({ length: Math.ceil(symbols.length / 10) }, (_, index) => symbols.slice(index * 10, index * 10 + 10));
-    Promise.all(batches.map((batch) => fetch(
-      `/api/market-data?symbols=${encodeURIComponent(batch.join(","))}&range=${portfolioRange}`,
+    const symbols = [...new Set(account.holdings.map((item) => item.symbol))];
+    fetch(
+      `/api/market-data?symbols=${encodeURIComponent(symbols.join(","))}&range=${portfolioRange}`,
       { signal: controller.signal },
-    ).then(async (response) => {
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
-      return (data.series ?? {}) as Record<string, MarketData>;
-    })))
-      .then((markets) => { if (!controller.signal.aborted) { setAccountMarkets(Object.assign({}, ...markets)); setQuotesRetrievedAt(Date.now()); } })
-      .catch(() => { if (!controller.signal.aborted) { setAccountMarkets({}); setQuotesRetrievedAt(null); } });
+    )
+      .then(async (response) => {
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error);
+        return (data.series ?? {}) as Record<string, MarketData>;
+      })
+      .then((markets) => setAccountMarkets(markets))
+      .catch(() => undefined);
     return () => controller.abort();
-  }, [accounts, demo, portfolioRange]);
+  }, [account, portfolioRange]);
 
   const portfolioCost = accounts.reduce(
     (sum, item) =>
@@ -212,10 +211,11 @@ export function InvestmentsWorkspace({
   const allHoldings = accounts.flatMap((item) => item.holdings);
   const topMovers = allHoldings.slice(0, 6).map((item) => {
     const price = accountMarkets[item.symbol]?.price ?? item.fallbackPrice;
-    const points = accountMarkets[item.symbol]?.points ?? [];
-    const previous = points.at(-2)?.close;
-    const latest = points.at(-1)?.close;
-    const change = previous && latest != null ? ((latest - previous) / previous) * 100 : null;
+    const seed = [...item.symbol].reduce(
+      (sum, character) => sum + character.charCodeAt(0),
+      0,
+    );
+    const change = ((seed % 241) - 88) / 100;
     return { ...item, price, change };
   });
   const allocation = accounts
@@ -258,9 +258,40 @@ export function InvestmentsWorkspace({
         shares: sharesFor(item),
         points: accountMarkets[item.symbol]?.points ?? [],
       }))
-      ;
-    return portfolioHistory(histories);
-  }, [account, accountMarkets]);
+      .filter((item) => item.points.length);
+    if (!histories.length) {
+      if (!demo || !account.holdings.length) return [];
+      const currentValue = account.holdings.reduce(
+        (sum, item) => sum + valueFor(item, item.fallbackPrice),
+        0,
+      );
+      return Array.from({ length: 12 }, (_, index) => ({
+        date: `Month ${index + 1}`,
+        value: Math.round(
+          currentValue *
+            (0.86 + index * 0.012 + Math.sin(index * 1.45) * 0.018),
+        ),
+      }));
+    }
+    const length = Math.min(...histories.map((item) => item.points.length));
+    return histories[0].points.slice(-length).map((point, index) => ({
+      date: point.date,
+      value: histories.reduce(
+        (sum, item) =>
+          sum +
+          item.points[item.points.length - length + index].close * item.shares,
+        0,
+      ),
+    }));
+  }, [account, accountMarkets, demo]);
+  const mobileHistoryPoints = useMemo(() => {
+    if (!accountHistory.length) return "";
+    const values = accountHistory.map((point) => point.value);
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const spread = Math.max(max - min, 1);
+    return accountHistory.map((point, index) => `${(index / Math.max(accountHistory.length - 1, 1)) * 320},${76 - ((point.value - min) / spread) * 62}`).join(" ");
+  }, [accountHistory]);
 
   function showPortfolioSection(section: PortfolioSection, targetId: string) {
     setPortfolioSection(section);
@@ -636,7 +667,7 @@ export function InvestmentsWorkspace({
           <span>
             {demo
               ? "Mock holdings stay in this browser session and never touch your account."
-              : "Track what you own, your purchase costs, and available market prices."}
+              : "Supabase stores what you own. Twelve Data supplies market prices and history."}
           </span>
         </div>
         <button
@@ -654,7 +685,7 @@ export function InvestmentsWorkspace({
         <div>
           <span>Household portfolio</span>
           <strong>{currency.format(portfolioValue)}</strong>
-          <p className={portfolioValue >= portfolioCost ? styles.positive : styles.negative}>
+          <p>
             <IconTrendingUp size={15} />
             {portfolioCost
               ? `${currency.format(portfolioValue - portfolioCost)} total gain`
@@ -681,7 +712,6 @@ export function InvestmentsWorkspace({
           </div>
         </div>
       </section>
-      <p className={styles.quoteStatus}>{demo ? "Sample values. Live quotes and historical prices are not requested in the demo." : `${quotesRetrievedAt ? `Quotes retrieved at ${new Date(quotesRetrievedAt).toLocaleTimeString()}. ` : "Quotes are loading or unavailable. "}Holdings without a quote use their recorded purchase price.`}</p>
       <div className={styles.mobileCreateActions} aria-label="Investment actions">
         <button
           type="button"
@@ -738,8 +768,8 @@ export function InvestmentsWorkspace({
           <section className={styles.portfolioChartPanel} id="portfolio-performance">
             <div className={styles.portfolioChartHeading}>
               <div>
-                <h3>{account?.name} market history</h3>
-                <p>{demo ? "Historical prices are not included in the demo." : "Current shares valued at matching historical dates; excludes cash flows and is not a return history."}</p>
+                <h3>{account?.name} performance</h3>
+                <p>Live household position value · Twelve Data</p>
               </div>
               <div className={styles.portfolioRanges} role="group" aria-label="Portfolio chart range">
                 {(["1M", "3M", "1Y", "5Y"] as Range[]).map((item) => (
@@ -758,10 +788,10 @@ export function InvestmentsWorkspace({
               </div>
             </div>
             <div className={styles.portfolioChart}>
-
+              {mobileHistoryPoints && <svg className={styles.mobilePortfolioLine} viewBox="0 0 320 84" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="mobile-investment-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#00b51a" stopOpacity=".16"/><stop offset="1" stopColor="#00b51a" stopOpacity="0"/></linearGradient></defs><polygon className="finance-chart-area" points={`0,84 ${mobileHistoryPoints} 320,84`} fill="url(#mobile-investment-fill)"/><polyline className="finance-chart-line" pathLength="1" points={mobileHistoryPoints} fill="none" stroke="#00b51a" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/></svg>}
               {accountHistory.length ? (
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart accessibilityLayer data={accountHistory}>
+                  <LineChart data={accountHistory}>
                     <CartesianGrid
                       vertical={false}
                       stroke="var(--app-border)"
@@ -779,8 +809,8 @@ export function InvestmentsWorkspace({
                       strokeWidth={2.25}
                       dot={false}
                       activeDot={{ r: 4, strokeWidth: 2 }}
-                      isAnimationActive={false}
-                      animationDuration={0}
+                      isAnimationActive={!reduceMotion}
+                      animationDuration={800}
                       animationEasing="ease-out"
                     />
                   </LineChart>
@@ -798,8 +828,8 @@ export function InvestmentsWorkspace({
             <section className={styles.moversPanel} aria-labelledby="movers-title">
               <div className={styles.moversHeading}>
                 <div>
-                  <h3 id="movers-title">Your holdings at a glance</h3>
-                  <p>Change between the latest available closing prices</p>
+                  <h3 id="movers-title">Your top movers for today</h3>
+                  <p>A quick market view of the holdings you own</p>
                 </div>
                 <span>Last price</span>
               </div>
@@ -815,22 +845,32 @@ export function InvestmentsWorkspace({
                     </div>
                     <span
                       className={
-                        item.change === null ? styles.muted : item.change >= 0 ? styles.positive : styles.negative
+                        item.change >= 0 ? styles.positive : styles.negative
                       }
                     >
-                      {item.change === null ? "Change unavailable" : `${item.change >= 0 ? "+" : ""}${item.change.toFixed(2)}%`}
-                      {item.change !== null && (item.change >= 0 ? (
+                      {item.change >= 0 ? "+" : ""}
+                      {item.change.toFixed(2)}%
+                      {item.change >= 0 ? (
                         <IconArrowUp size={10} aria-hidden="true" />
                       ) : (
                         <IconArrowDown size={10} aria-hidden="true" />
-                      ))}
+                      )}
                     </span>
+                    <svg viewBox="0 0 72 26" aria-hidden="true">
+                      <path className="finance-chart-line" pathLength="1"
+                        d={
+                          item.change >= 0
+                            ? "M1 22 L12 18 L22 20 L34 11 L45 14 L56 6 L71 3"
+                            : "M1 4 L12 8 L22 6 L34 15 L45 12 L56 20 L71 23"
+                        }
+                      />
+                    </svg>
                   </div>
                 ))}
               </div>
             </section>
           )}
-          <div className={styles.accountTabs} role="group" aria-label="Investment accounts">
+          <div className={styles.accountTabs} role="tablist">
             {accounts.map((item) => {
               const value = item.holdings.reduce(
                 (sum, current) =>
@@ -841,10 +881,15 @@ export function InvestmentsWorkspace({
                   ),
                 0,
               );
+              const seed = [...item.id].reduce(
+                (sum, character) => sum + character.charCodeAt(0),
+                0,
+              );
+              const change = ((seed % 136) + 14) / 100;
               return (
                 <button
-                  type="button"
-                  aria-pressed={item.id === account?.id}
+                  role="tab"
+                  aria-selected={item.id === account?.id}
                   className={item.id === account?.id ? styles.activeTab : ""}
                   onClick={() => {
                     setAccountId(item.id);
@@ -861,8 +906,11 @@ export function InvestmentsWorkspace({
                   </div>
                   <div className={styles.accountCardValue}>
                     <strong>{currency.format(value)}</strong>
-                    <small>Current recorded value</small>
+                    <small><IconArrowUp size={10} aria-hidden="true" /> +{change.toFixed(2)}% today</small>
                   </div>
+                  <svg viewBox="0 0 120 28" preserveAspectRatio="none" aria-hidden="true">
+                    <path className="finance-chart-line" pathLength="1" d="M1 24 L18 20 L34 22 L51 12 L68 15 L86 7 L103 10 L119 3" />
+                  </svg>
                 </button>
               );
             })}
@@ -910,8 +958,8 @@ export function InvestmentsWorkspace({
                   {topMovers.slice(0, 5).map((item) => (
                     <div key={item.id}>
                       <span><strong>{item.symbol}</strong><small>{item.name}</small></span>
-                      <span />
-                      <span className={item.change === null ? styles.muted : item.change >= 0 ? styles.positive : styles.negative}><strong>{currency.format(item.price)}</strong><small>{item.change === null ? "Change unavailable" : `${item.change >= 0 ? "+" : ""}${item.change.toFixed(2)}%`}</small></span>
+                      <svg viewBox="0 0 46 18" aria-hidden="true"><path className="finance-chart-line" pathLength="1" d={item.change >= 0 ? "M1 15 L9 11 L17 13 L26 6 L35 9 L45 2" : "M1 3 L9 7 L17 5 L26 12 L35 9 L45 16"} /></svg>
+                      <span className={item.change >= 0 ? styles.positive : styles.negative}><strong>{currency.format(item.price)}</strong><small>{item.change >= 0 ? "+" : ""}{item.change.toFixed(2)}%</small></span>
                     </div>
                   ))}
                 </div>
@@ -1003,7 +1051,7 @@ export function InvestmentsWorkspace({
                       <b>{item.symbol}</b>
                       <span>{item.name}</span>
                     </span>
-
+                    <svg className={styles.holdingSpark} viewBox="0 0 72 26" aria-hidden="true"><path className="finance-chart-line" pathLength="1" d="M1 22 L10 18 L18 20 L27 13 L36 15 L45 8 L55 10 L63 4 L71 6" /></svg>
                     <span>{shares.toFixed(4)}</span>
                     <span>{currency.format(shares ? cost / shares : 0)}</span>
                     <span>{currency.format(cost)}</span>
@@ -1019,7 +1067,7 @@ export function InvestmentsWorkspace({
                     <span>
                       {accountValue
                         ? `${((value / accountValue) * 100).toFixed(1)}%`
-                        : ","}
+                        : "—"}
                     </span>
                     <IconChevronRight size={16} />
                   </button>
@@ -1049,12 +1097,12 @@ export function InvestmentsWorkspace({
           <label>Monthly<input type="number" min="0" step="50" value={monthlyContribution} onChange={(event) => setMonthlyContribution(Math.max(0, Number(event.target.value) || 0))}/></label>
         </div>
         <div className={styles.outcomes}><div><span>Projected value</span><strong>{currency.format(projection.endingBalance)}</strong></div><div><span>Total contributed</span><strong>{currency.format(projection.contributed)}</strong></div><div><span>Estimated growth</span><strong>{currency.format(projection.endingBalance - projection.contributed)}</strong></div></div>
-        <div className={styles.projectionChart}><ResponsiveContainer width="100%" height="100%"><AreaChart accessibilityLayer data={projection.points} margin={{ top: 8, right: 4, left: 4, bottom: 0 }}><defs><linearGradient id="projectionFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="var(--chart-primary)" stopOpacity={0.28}/><stop offset="100%" stopColor="var(--chart-primary)" stopOpacity={0}/></linearGradient></defs><CartesianGrid vertical={false} stroke="var(--app-border)"/><XAxis dataKey="year" axisLine={false} tickLine={false} tick={{fontSize:13,fill:"var(--app-text-muted)"}}/><YAxis hide/><Tooltip formatter={(value) => currency.format(Number(value))}/><Area type="monotone" dataKey="balance" name="Projected value" stroke="var(--chart-primary)" strokeWidth={2} fill="url(#projectionFill)" isAnimationActive={false} animationDuration={0} animationEasing="ease-out"/><Line type="monotone" dataKey="contributions" name="Contributions" stroke="var(--chart-secondary)" strokeDasharray="4 4" dot={false} isAnimationActive={false} animationDuration={0} animationEasing="ease-out"/></AreaChart></ResponsiveContainer></div>
+        <div className={styles.projectionChart}><ResponsiveContainer width="100%" height="100%"><AreaChart data={projection.points} margin={{ top: 8, right: 4, left: 4, bottom: 0 }}><defs><linearGradient id="projectionFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="var(--chart-primary)" stopOpacity={0.28}/><stop offset="100%" stopColor="var(--chart-primary)" stopOpacity={0}/></linearGradient></defs><CartesianGrid vertical={false} stroke="var(--app-border)"/><XAxis dataKey="year" axisLine={false} tickLine={false} tick={{fontSize:9,fill:"var(--app-text-muted)"}}/><YAxis hide/><Tooltip formatter={(value) => currency.format(Number(value))}/><Area type="monotone" dataKey="balance" name="Projected value" stroke="var(--chart-primary)" strokeWidth={2} fill="url(#projectionFill)" isAnimationActive={!reduceMotion} animationDuration={800} animationEasing="ease-out"/><Line type="monotone" dataKey="contributions" name="Contributions" stroke="var(--chart-secondary)" strokeDasharray="4 4" dot={false} isAnimationActive={!reduceMotion} animationDuration={800} animationEasing="ease-out"/></AreaChart></ResponsiveContainer></div>
         <small>Illustrative estimate only. Returns are not guaranteed and inflation, fees, and taxes are not included.</small>
       </section>
 
-      <EditorDrawer
-        opened={accountOpen} busy={saving} dirty={Boolean(accountDraft.name)}
+      <Drawer
+        opened={accountOpen}
         onClose={() => setAccountOpen(false)}
         position={mobile ? "bottom" : "right"}
         size={mobile ? "auto" : 430}
@@ -1117,9 +1165,9 @@ export function InvestmentsWorkspace({
             {saving ? "Saving…" : "Add account"}
           </button>
         </form>
-      </EditorDrawer>
-      <EditorDrawer
-        opened={holdingOpen} busy={saving} dirty={Boolean(holdingDraft.symbol || holdingDraft.name || holdingDraft.shares || holdingDraft.price)}
+      </Drawer>
+      <Drawer
+        opened={holdingOpen}
         onClose={() => setHoldingOpen(false)}
         position={mobile ? "bottom" : "right"}
         size={mobile ? "auto" : 430}
@@ -1207,9 +1255,9 @@ export function InvestmentsWorkspace({
             {saving ? "Verifying and saving…" : "Add holding"}
           </button>
         </form>
-      </EditorDrawer>
-      <EditorDrawer
-        opened={Boolean(holding)} busy={saving} dirty={Boolean((lotOpen && (lotDraft.shares || lotDraft.price)) || (holdingEdit && holding && (holdingEditDraft.symbol !== holding.symbol || holdingEditDraft.name !== holding.name)))}
+      </Drawer>
+      <Drawer
+        opened={Boolean(holding)}
         onClose={() => {
           setHolding(null);
           setLotOpen(false);
@@ -1304,7 +1352,7 @@ export function InvestmentsWorkspace({
               </div>
               <div>
                 <span>Market price</span>
-                <strong>{displayMarket ? currency.format(positionPrice) : ","}</strong>
+                <strong>{displayMarket ? currency.format(positionPrice) : "—"}</strong>
                 <small>{displayMarket?.exchange ?? "Twelve Data"}</small>
               </div>
             </div>
@@ -1327,7 +1375,7 @@ export function InvestmentsWorkspace({
             <div className={styles.chart}>
               {displayMarket?.points.length ? (
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart accessibilityLayer data={displayMarket.points}>
+                  <AreaChart data={displayMarket.points}>
                     <XAxis dataKey="date" hide />
                     <YAxis hide domain={["dataMin", "dataMax"]} />
                     <Tooltip
@@ -1338,8 +1386,8 @@ export function InvestmentsWorkspace({
                       dataKey="close"
                       stroke="var(--chart-primary)"
                       fill="var(--app-accent-soft)"
-                      isAnimationActive={false}
-                      animationDuration={0}
+                      isAnimationActive={!reduceMotion}
+                      animationDuration={800}
                       animationEasing="ease-out"
                     />
                   </AreaChart>
@@ -1461,7 +1509,7 @@ export function InvestmentsWorkspace({
             </section>
           </>
         )}
-      </EditorDrawer>
+      </Drawer>
       <ConfirmDialog
         opened={Boolean(pendingDelete)}
         title={

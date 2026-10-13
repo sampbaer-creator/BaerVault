@@ -1,7 +1,3 @@
-import type { Metadata } from "next";
-
-export const metadata: Metadata = { title: "Demo dashboard" };
-
 import { DashboardOverview } from "@/features/dashboard/DashboardOverview";
 import { createDashboardViewModel } from "@/features/dashboard/dashboardViewModel";
 import { demoFinancialAccounts } from "@/lib/demo/accounts";

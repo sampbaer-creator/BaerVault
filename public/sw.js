@@ -1,12 +1,8 @@
-const CACHE = "bearvault-static-v2";
-const CORE = ["/offline.html", "/icon.png", "/icon-192.png", "/apple-icon.png"];
+const CACHE = "bearvault-static-v1";
+const CORE = ["/offline.html", "/icon.png", "/apple-icon.png", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(CORE)));
-});
-
-self.addEventListener("message", (event) => {
-  if (event.data?.type === "SKIP_WAITING") void self.skipWaiting();
+  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(CORE)).then(() => self.skipWaiting()));
 });
 
 self.addEventListener("activate", (event) => {
@@ -22,7 +18,7 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
   if (request.mode === "navigate") {
-    event.respondWith(fetch(request).catch(async () => (await caches.match("/offline.html")) || Response.error()));
+    event.respondWith(fetch(request).catch(() => caches.match("/offline.html")));
     return;
   }
   const staticAsset = url.pathname.startsWith("/_next/static/") || CORE.includes(url.pathname);

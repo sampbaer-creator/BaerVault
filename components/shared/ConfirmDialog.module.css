@@ -2,16 +2,15 @@
   border: 1px solid var(--glass-edge);
   border-radius: 16px !important;
   color: var(--app-text-strong);
-  background: var(--app-surface) !important;
-  box-shadow: none;
+  background: var(--glass-strong) !important;
+  box-shadow: var(--shadow-dialog), inset 0 1px 0 var(--glass-highlight);
+  backdrop-filter: blur(34px) saturate(165%);
+  -webkit-backdrop-filter: blur(34px) saturate(165%);
 }
 .header { background: transparent !important; }
-.title { font-weight: 650; }
+.title { font-weight: 700; }
 .body p { margin: 0; color: var(--app-text-muted); line-height: 1.55; }
 .actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
-.actions button { min-height: 44px; padding: 9px 15px; border: 1px solid var(--glass-edge); border-radius: 10px; color: var(--app-text-strong); background: var(--control-glass); font: inherit; font-weight: 650; cursor: pointer; }
-.actions .danger { border-color: var(--app-danger-fill); color: var(--app-on-danger); background: var(--app-danger-fill); }
+.actions button { min-height: 42px; padding: 9px 15px; border: 1px solid var(--glass-edge); border-radius: 10px; color: var(--app-text-strong); background: var(--control-glass); font: inherit; font-weight: 650; cursor: pointer; }
+.actions .danger { border-color: #a34444; color: white; background: #a34444; }
 .actions button:focus-visible { outline: 2px solid var(--app-focus); outline-offset: 2px; }
-@media (prefers-reduced-transparency: reduce) { .content { background: var(--app-surface) !important; } }
-@media (max-width: 24rem) { .actions { flex-wrap: wrap; } .actions button { flex: 1; min-height: 44px; } }
-.cancelEdit { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 44px; margin-top: 1rem; padding: .625rem 1rem; border: 1px solid var(--app-border-strong); border-radius: var(--radius-control); color: var(--app-text-strong); background: var(--app-surface); font-weight: 600; }

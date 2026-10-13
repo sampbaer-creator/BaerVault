@@ -58,6 +58,7 @@ export function DashboardOverview({ model, basePath = "", selectedMonth }: Dashb
   const displayedAssets = totalAssets;
   const budgetLeft = model.planned - model.spending;
   const spendingProgress = model.planned > 0 ? Math.min((model.spending / model.planned) * 100, 100) : 0;
+  const debtShare = displayedAssets > 0 ? Math.min(100, Math.max((model.debts / displayedAssets) * 100, 0)) : 0;
   const budgetRangeMax = Math.max(model.planned, model.spending, 1);
   const topCategories = model.categories.slice(0, 4);
 
@@ -69,8 +70,9 @@ export function DashboardOverview({ model, basePath = "", selectedMonth }: Dashb
           <div className={styles.netWorthLead}>
             <span>Net worth</span>
             <strong>{money.format(netWorth)}</strong>
-            <small>{basePath ? "Sample balances and investment prices." : waitingForMarket ? "Updating investment prices. Unpriced holdings use purchase cost." : marketUnavailable ? "Some prices are unavailable. Unpriced holdings use purchase cost." : "Account balances and the latest available investment quotes."}</small>
+            {(waitingForMarket || marketUnavailable) && <small>{waitingForMarket ? "Updating prices. " : "Some prices are unavailable. "}Unpriced investments use purchase cost.</small>}
           </div>
+          <div className={styles.compositionTrack} aria-label="Current assets and debts"><i data-animate-progress style={{ width: `${debtShare}%` }} /></div>
           <div className={styles.netWorthSummary}>
             <div><span><i className={styles.assetDot} />Assets</span><strong>{money.format(displayedAssets)}</strong></div>
             <div><span><i className={styles.debtDot} />Debts</span><strong>{money.format(model.debts)}</strong></div>

@@ -3,10 +3,10 @@
   margin: 0 auto;
 }
 
-/* Financial surfaces */
+/* Refracted Vault presentation */
 .page { max-width: 1180px; margin-inline: auto; }
-.layout { border: 1px solid var(--app-border); border-radius: 16px; background: var(--app-surface); box-shadow: none;  }
-.sections { background: var(--app-surface); }
+.layout { border: 1px solid var(--glass-border) !important; border-radius: 16px !important; background: var(--glass-surface) !important; box-shadow: var(--shadow-glass) !important; backdrop-filter: blur(30px) saturate(155%); }
+.sections { background: color-mix(in srgb, var(--app-surface) 88%, transparent); }
 .paletteTrigger, .paletteMenu, .segment { border-radius: 12px; }
 @media (max-width: 47.999rem) { .layout { border-radius: 15px; }.sections { background: transparent; } }
 
@@ -18,15 +18,15 @@
 .page h2 {
   margin: 0;
   color: var(--app-text-strong);
-  font-size: clamp(1.75rem, 3vw, 2.125rem);
-  font-weight: 650;
+  font-size: clamp(28px, 3vw, 34px);
+  font-weight: 720;
   letter-spacing: -0.04em;
 }
 
 .page > header p {
   margin: 8px 0 0;
   color: var(--app-text-muted);
-  font-size: 0.875rem;
+  font-size: 14px;
   line-height: 1.55;
 }
 
@@ -43,11 +43,11 @@
   align-self: start;
   gap: 2px;
   padding: 6px;
-  border: 1px solid var(--app-border);
+  border: 1px solid var(--panel-glass-border);
   border-radius: 12px;
-  background: var(--app-surface);
-
-
+  background: var(--panel-glass-surface);
+  backdrop-filter: var(--panel-glass-blur);
+  -webkit-backdrop-filter: var(--panel-glass-blur);
 }
 
 .layout > nav a {
@@ -55,7 +55,7 @@
   padding: 10px 11px;
   border-radius: 8px;
   color: var(--app-text-muted);
-  font-size: 0.8125rem;
+  font-size: 12px;
   font-weight: 650;
   text-decoration: none;
   transition: color var(--motion-effect-fast), background var(--motion-effect-fast);
@@ -75,12 +75,12 @@
 .sections section {
   overflow: visible;
   padding: 0 22px 18px;
-  border: 1px solid var(--app-border);
+  border: 1px solid var(--panel-glass-border);
   border-radius: 14px;
-  background: var(--app-surface);
-  box-shadow: none;
-
-
+  background: var(--panel-glass-surface);
+  box-shadow: var(--panel-glass-shadow);
+  backdrop-filter: var(--panel-glass-blur);
+  -webkit-backdrop-filter: var(--panel-glass-blur);
 }
 
 .sectionHeading {
@@ -109,8 +109,8 @@
 .sectionHeading h3,
 .sections section > h3 {
   color: var(--app-text-strong);
-  font-size: 0.9375rem;
-  font-weight: 650;
+  font-size: 15px;
+  font-weight: 700;
   letter-spacing: -0.015em;
 }
 
@@ -118,7 +118,7 @@
 .sections section > p {
   margin-top: 3px;
   color: var(--app-text-muted);
-  font-size: 0.8125rem;
+  font-size: 11px;
   line-height: 1.45;
 }
 
@@ -160,8 +160,8 @@
 .fieldCopy strong,
 .toggle strong {
   color: var(--app-text-strong);
-  font-size: 0.8125rem;
-  font-weight: 650;
+  font-size: 12px;
+  font-weight: 680;
 }
 
 .fieldCopy small,
@@ -169,7 +169,7 @@
   max-width: 300px;
   margin-top: 3px;
   color: var(--app-text-muted);
-  font-size: 0.8125rem;
+  font-size: 10px;
   line-height: 1.4;
 }
 
@@ -182,16 +182,16 @@
 }
 
 .segment button {
-  min-height: 44px;
+  min-height: 34px;
   flex: 1;
-  border: 0;
+  border: 0 !important;
   border-radius: 7px;
-  color: var(--app-text-muted);
-  background: transparent;
-  box-shadow: none;
-  font-size: 0.8125rem;
+  color: var(--app-text-muted) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: 11px;
   text-transform: capitalize;
-  text-shadow: none;
+  text-shadow: none !important;
 }
 
 .segment button::before,
@@ -201,9 +201,9 @@
 }
 
 .segment button[aria-pressed="true"] {
-  color: var(--app-text-strong);
-  background: var(--app-surface);
-  box-shadow: none;
+  color: var(--app-text-strong) !important;
+  background: var(--app-surface) !important;
+  box-shadow: 0 1px 4px rgb(8 20 40 / 12%) !important;
 }
 
 .palettePicker {
@@ -219,18 +219,18 @@
   align-items: center;
   gap: 11px;
   padding: 8px 11px;
-  border: 1px solid var(--app-border);
+  border: 1px solid var(--app-border) !important;
   border-radius: 10px;
-  color: var(--app-text-strong);
-  background: var(--app-surface);
-  box-shadow: none;
+  color: var(--app-text-strong) !important;
+  background: var(--app-surface) !important;
+  box-shadow: none !important;
   text-align: left;
-  text-shadow: none;
+  text-shadow: none !important;
 }
 
 .paletteTrigger[aria-expanded="true"] {
-  border-color: color-mix(in srgb, var(--app-accent) 58%, var(--app-border));
-  box-shadow: none;
+  border-color: color-mix(in srgb, var(--app-accent) 58%, var(--app-border)) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--app-accent) 14%, transparent) !important;
 }
 
 .palettePreview {
@@ -256,13 +256,13 @@
 .paletteChoiceCopy strong,
 .paletteChoiceCopy small { display: block; }
 .paletteSummaryCopy strong,
-.paletteChoiceCopy strong { font-size: 0.8125rem; }
+.paletteChoiceCopy strong { font-size: 11px; }
 .paletteSummaryCopy small,
 .paletteChoiceCopy small {
   margin-top: 2px;
   overflow: hidden;
   color: var(--app-text-muted);
-  font-size: 0.8125rem;
+  font-size: 9px;
   line-height: 1.35;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -286,9 +286,9 @@
   overflow-y: auto;
   border: 1px solid var(--glass-edge);
   border-radius: 12px;
-  background: var(--app-surface);
-  box-shadow: none;
-
+  background: color-mix(in srgb, var(--app-surface) 88%, transparent);
+  box-shadow: var(--shadow-dialog);
+  backdrop-filter: blur(24px) saturate(145%);
 }
 
 .paletteMenu button {
@@ -298,21 +298,21 @@
   align-items: center;
   gap: 10px;
   padding: 7px 9px;
-  border: 0;
+  border: 0 !important;
   border-radius: 8px;
-  color: var(--app-text-strong);
-  background: transparent;
-  box-shadow: none;
+  color: var(--app-text-strong) !important;
+  background: transparent !important;
+  box-shadow: none !important;
   text-align: left;
-  text-shadow: none;
+  text-shadow: none !important;
 }
 
 .paletteMenu button:hover,
 .paletteMenu button[aria-selected="true"] {
-  background: var(--app-hover);
+  background: var(--app-hover) !important;
 }
 
-.paletteMenu button[aria-selected="true"] { color: var(--app-accent); }
+.paletteMenu button[aria-selected="true"] { color: var(--app-accent) !important; }
 .paletteMenu button > svg { justify-self: end; }
 
 .toggle {
@@ -325,32 +325,32 @@
   width: 100%;
   min-height: 40px;
   padding: 7px 32px 7px 10px;
-  border: 1px solid var(--app-border-strong);
+  border: 1px solid var(--app-border);
   border-radius: 9px;
   color: var(--app-text-strong);
   background: var(--app-surface);
-  font-size: 0.8125rem;
+  font-size: 12px;
 }
 
 .reset {
   display: inline-flex;
-  min-height: 44px;
+  min-height: 38px;
   align-items: center;
   gap: 7px;
   margin-top: 14px;
   padding: 8px 11px;
-  border: 1px solid var(--app-border);
+  border: 1px solid var(--app-border) !important;
   border-radius: 9px;
-  color: var(--app-accent);
-  background: var(--app-surface);
-  box-shadow: none;
-  font-size: 0.8125rem;
+  color: var(--app-accent) !important;
+  background: var(--app-surface) !important;
+  box-shadow: none !important;
+  font-size: 11px;
 }
 
 .note {
   margin: 12px 0 0;
   color: var(--app-text-muted);
-  font-size: 0.8125rem;
+  font-size: 10px;
 }
 
 .clerk {
@@ -361,7 +361,7 @@
 
 :global(:root[data-theme="dark"]) .sections section,
 :global(:root[data-theme="dark"]) .layout > nav {
-  box-shadow: none;
+  box-shadow: 0 1px 0 rgb(255 255 255 / 3%);
 }
 
 @media (max-width: 760px) {
@@ -381,7 +381,7 @@
 }
 
 @media (max-width: 520px) {
-  .page h2 { font-size: 1.75rem; }
+  .page h2 { font-size: 28px; }
   .paletteTrigger { grid-template-columns: 76px minmax(0, 1fr) auto; }
   .paletteMenu { right: auto; left: 0; width: min(420px, calc(100vw - 52px)); }
   .paletteMenu button { grid-template-columns: 68px minmax(0, 1fr) 18px; }
@@ -389,7 +389,7 @@
 }
 
 @media (prefers-reduced-transparency: reduce) {
-  .paletteMenu { background: var(--app-surface);  }
+  .paletteMenu { background: var(--app-surface); backdrop-filter: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -397,50 +397,27 @@
 }
 .sections :global(.settings-section-heading) { display:flex;align-items:center;gap:12px;min-height:72px; }
 .sections :global(.settings-section-heading > span) { display:grid;width:34px;height:34px;flex:0 0 auto;place-items:center;border-radius:9px;color:var(--app-accent);background:var(--app-accent-soft); }
-.sections :global(.settings-section-heading h3) { margin:0;color:var(--app-text-strong);font-size:0.875rem; }
-.sections :global(.settings-section-heading p) { margin:3px 0 0;color:var(--app-text-muted);font-size:0.8125rem; }
-.sections :global(#install > button) { min-height:44px;padding:0 16px;border:0;border-radius:10px;color: var(--app-on-accent);background:var(--app-accent);font-weight:650; }
+.sections :global(.settings-section-heading h3) { margin:0;color:var(--app-text-strong);font-size:14px; }
+.sections :global(.settings-section-heading p) { margin:3px 0 0;color:var(--app-text-muted);font-size:12px; }
+.sections :global(#install > button) { min-height:40px;padding:0 16px;border:0;border-radius:10px;color:white;background:var(--app-accent);font-weight:700; }
 
 @media (max-width: 47.999rem) {
-  .page { margin: -26px -14px 0; padding: 24px 18px max(30px, env(safe-area-inset-bottom)); border-radius: 28px 28px 0 0; background: var(--app-surface); }
+  .page { margin: -26px -14px 0; padding: 24px 18px max(30px, env(safe-area-inset-bottom)); border-radius: 28px 28px 0 0; background: #fff; }
   .page, .layout, .sections, .sections section, .field, .field > * { min-width: 0; max-width: 100%; }
-  .page::before { display: block; width: 44px; height: 5px; margin: -10px auto 24px; border-radius: 999px; background: var(--app-surface); content: ""; }
+  .page::before { display: block; width: 44px; height: 5px; margin: -10px auto 24px; border-radius: 999px; background: #cfd5df; content: ""; }
   .page > header { display: none; }
-  .layout { display: block; border: 0; border-radius: 0; background: transparent; box-shadow: none;  }
+  .layout { display: block; border: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; backdrop-filter: none; }
   .layout > nav { display: none; }
   .sections { gap: 28px; }
   .sections section { padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
   .sectionHeading { min-height: 54px; }
   .sectionHeading > span, .sectionHeading p { display: none; }
-  .sectionHeading h3 { color: var(--app-text-muted); font-size: 1.375rem; }
-  .field, .toggle { min-height: 66px; border-top-color: var(--app-border); }
+  .sectionHeading h3 { color: #65728b; font-size: 22px; }
+  .field, .toggle { min-height: 66px; border-top-color: #e4e8ee; }
   .field { grid-template-columns: 1fr; gap: 10px; padding: 14px 0; }
-  .fieldCopy strong, .toggle strong { font-size: 0.9375rem; }
-  .fieldCopy small, .toggle small { font-size: 0.8125rem; }
+  .fieldCopy strong, .toggle strong { font-size: 15px; }
+  .fieldCopy small, .toggle small { font-size: 11px; }
   .segment { border-radius: 14px; }
   .reset { min-height: 46px; }
   .clerk { max-height: 760px; overflow: auto; }
-}
-
-.layout { border: 0; background: transparent; box-shadow: none;  }
-.sectionHeading p, .sections section > p, .fieldCopy small, .note { font-size: .8125rem; }
-.segment button, .field select { min-height: 44px; font-size: .875rem; }
-@media (max-width: 47.999rem) {
-  .page { width: 100%; margin: 0; padding: 0; border-radius: 0; background: transparent; }
-  .page::before { display: none; }
-  .page > header { display: block; }
-  .sections { gap: 1rem; }
-  .sections section { padding: 1rem; border: 1px solid var(--app-border); border-radius: var(--radius-panel); background: var(--app-surface); }
-  .sectionHeading { min-height: 64px; }
-  .sectionHeading > span { display: grid; }
-  .sectionHeading p { display: block; }
-  .sectionHeading h3 { color: var(--app-text-strong); font-size: 1rem; }
-  .field, .toggle { border-top-color: var(--app-border); }
-  .fieldCopy small, .toggle small { font-size: .8125rem; }
-}
-
-@media (max-width: 70rem) {
-  .layout { grid-template-columns: minmax(0, 1fr); }
-  .layout > nav { position: static; display: flex; flex-wrap: wrap; }
-  .field { grid-template-columns: minmax(0, 1fr); gap: .75rem; padding-block: 1rem; }
 }

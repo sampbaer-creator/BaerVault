@@ -1,11 +1,12 @@
 "use client";
 
-import { EditorDrawer } from "@/components/shared/EditorDrawer";
+import { Drawer } from "@mantine/core";
 import { useServerSnapshotState } from "@/lib/hooks/useServerSnapshotState";
 import { useMediaQuery } from "@mantine/hooks";
 import {
   IconArrowLeft,
   IconArrowRight,
+  IconCheck,
   IconChevronRight,
   IconEdit,
   IconPlus,
@@ -199,23 +200,12 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
 
   async function savePlanned() {
     const value = Number(plannedDraft);
-    if (!selected || saving) return;
-    if (!Number.isFinite(value) || value < 0 || !categoryNameDraft.trim()) {
-      setError("Enter a category name and a valid planned amount.");
-      return;
+    if (value >= 0 && selected) {
+      const previous = categories; updateSelected((category) => ({ ...category, plannedAmount: value }));
+      const result = await actions.updateBudgetCategoryAction(selected.id, categoryNameDraft, value);
+      if (!result.ok) { setCategories(previous); setError(result.error); } else { router.refresh(); invalidateMobileShell(); }
     }
-    setSaving(true); setError("");
-    try {
-      const result = await actions.updateBudgetCategoryAction(selected.id, categoryNameDraft.trim(), value);
-      if (!result.ok) { setError(result.error); return; }
-      updateSelected((category) => ({ ...category, name: categoryNameDraft.trim(), plannedAmount: value }));
-      setEditingPlanned(false);
-      router.refresh(); invalidateMobileShell();
-    } catch {
-      setError("Could not save the category. Your changes are still here. Try again.");
-    } finally {
-      setSaving(false);
-    }
+    setEditingPlanned(false);
   }
 
   async function confirmDelete() {
@@ -296,7 +286,7 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
       <span className={styles.desktopValue}>{currency.format(category.plannedAmount)}</span>
       <span className={styles.desktopValue}>{currency.format(actual)}</span>
       <span className={`${styles.desktopValue} ${variance < 0 ? styles.over : ""}`}>{variance < 0 ? "−" : ""}{currency.format(Math.abs(variance))}</span>
-      <span className={styles.mobileProgress}><span><strong>{currency.format(actual)} spent</strong><em>{compactCurrency.format(category.plannedAmount)} planned</em></span><small className={variance < 0 ? styles.over : ""}>{variance < 0 ? `${currency.format(Math.abs(variance))} over` : `${currency.format(variance)} remaining`}</small><i role="progressbar" aria-label={`${category.name} budget used`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent} aria-valuetext={`${currency.format(actual)} spent of ${currency.format(category.plannedAmount)} planned`}><b data-animate-progress style={{ width: `${percent}%` }} /></i></span>
+      <span className={styles.mobileProgress}><span><strong>{currency.format(actual)}</strong><em>{compactCurrency.format(category.plannedAmount)}</em></span><small className={variance < 0 ? styles.over : ""}>{variance < 0 ? `${currency.format(Math.abs(variance))} over` : `${currency.format(variance)} remaining`}</small><i role="progressbar" aria-label={`${category.name} budget used`} aria-valuemin={0} aria-valuemax={category.plannedAmount} aria-valuenow={actual}><b data-animate-progress style={{ width: `${percent}%` }} /></i></span>
       <IconChevronRight className={styles.rowChevron} size={17} aria-hidden="true" />
       </button>
     </SwipeActionRow>;
@@ -340,7 +330,7 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
       </section>}
 
       <section className={`${styles.summary} chart-summary card`} aria-labelledby="budget-summary-title">
-        <div className={styles.summaryLead}><span id="budget-summary-title">Recorded income less spending</span><strong>{currency.format(savings)}</strong><small>{currency.format(income)} recorded income. Upcoming obligations are not deducted.</small></div>
+        <div className={styles.summaryLead}><span id="budget-summary-title">Available after spending</span><strong>{currency.format(savings)}</strong><small>{currency.format(income)} income this month</small></div>
         <div className={styles.summaryRail}>
           <div><span>Planned</span><strong>{currency.format(planned)}</strong></div>
           <div><span>Actual</span><strong>{currency.format(spending)}</strong></div>
@@ -351,7 +341,7 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
       <div className={styles.referenceGrid}>
       <section className={`${styles.sheet} card`} aria-labelledby="categories-title">
         <div className={styles.sheetHeading}><div><h3 id="categories-title">Spending plan</h3><p>Actuals are calculated from the purchases inside each category.</p></div><div className={styles.headingActions}>{actions.getBudgetAdviceAction && <button type="button" onClick={requestAdvice} disabled={adviceLoading}>{adviceLoading ? "Preparing…" : "Get AI budget advice"}</button>}<button type="button" onClick={() => setAddingCategory(true)}><IconPlus size={16} />Add category</button></div></div>
-        <div className={styles.tableHeader} aria-hidden="true"><span>Category</span><span>Planned</span><span>Spent</span><span>Remaining</span><span /></div>
+        <div className={styles.tableHeader} aria-hidden="true"><span>Category</span><span>Budget / projected</span><span>Actual</span><span>Remaining / variance</span><span /></div>
         <div className={styles.rows}>
           <div className={styles.mobileTableHeader}><span>Category</span><span>Spent</span><span>Budget</span></div>
           {!categories.length && <div className={styles.emptyState}>No budget categories yet. Add your first category to start planning this month.</div>}
@@ -359,18 +349,18 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
         </div>
       </section>
 
+      <aside className={styles.budgetAside}>
+        <section className={`${styles.allocationPanel} card chart-summary`}><h3>Where it goes</h3><div className={styles.allocationRing} data-animate-ring-percent style={{ "--used": `${planned ? Math.min(spending / planned * 100, 100) : 0}%` } as React.CSSProperties}><div><strong>{currency.format(spending)}</strong><span>spent</span></div></div><div className={styles.allocationLegend}>{categories.slice(0, 4).map((category) => <div key={category.id}><i /><span>{category.name}</span><strong>{currency.format(categoryActual(category))}</strong></div>)}</div></section>
+        <section className={`${styles.remainingPanel} card`}><span>Left to spend</span><strong>{currency.format(remaining)}</strong><p>{remaining >= 0 ? "Your plan is on pace for this month." : "Review categories currently over budget."}</p></section>
+      </aside>
       </div>
 
-      <EditorDrawer opened={Boolean(selected)} busy={saving} dirty={Boolean(selected && (categoryNameDraft !== selected.name || plannedDraft !== String(selected.plannedAmount) || (showPurchaseForm && (purchaseDraft.description || purchaseDraft.amount))))} onClose={() => setSelectedId(null)} position={isMobile ? "bottom" : "right"} size={isMobile ? "88%" : 440} radius={isMobile ? "18px 18px 0 0" : 0} title={selected?.name} classNames={{ content: styles.drawer, header: styles.drawerHeader, body: styles.drawerBody, title: styles.drawerTitle }}>
+      <Drawer opened={Boolean(selected)} onClose={() => setSelectedId(null)} position={isMobile ? "bottom" : "right"} size={isMobile ? "88%" : 440} radius={isMobile ? "18px 18px 0 0" : 0} title={selected?.name} classNames={{ content: styles.drawer, header: styles.drawerHeader, body: styles.drawerBody, title: styles.drawerTitle }}>
         {selected && <div className={styles.categoryDetail}>
-          {error && <p className={styles.formError} role="alert">{error}</p>}
           <label className={styles.categoryForm}>Category name<input value={categoryNameDraft} onChange={(event)=>setCategoryNameDraft(event.target.value)} /></label>
-          <div className={styles.formActions}>
-            <button type="button" disabled={saving} onClick={() => { setCategoryNameDraft(selected.name); setPlannedDraft(String(selected.plannedAmount)); setEditingPlanned(false); setError(""); }}>Cancel changes</button>
-            <button type="button" className={styles.primaryButton} disabled={saving} onClick={() => void savePlanned()}>{saving ? "Saving…" : "Save category changes"}</button>
-          </div>
+          <button type="button" className={styles.primaryButton} onClick={() => void savePlanned()}>Save category changes</button>
           <div className={styles.detailTotals}>
-            <div><span>Planned</span>{editingPlanned ? <div className={styles.inlineEdit}><input type="number" min="0" step="0.01" aria-label="Planned budget amount" inputMode="decimal" value={plannedDraft} onChange={(e) => setPlannedDraft(e.target.value)} autoFocus /></div> : <button type="button" onClick={() => setEditingPlanned(true)}>{currency.format(selected.plannedAmount)}<IconEdit size={14} aria-hidden="true" /></button>}</div>
+            <div><span>Budget</span>{editingPlanned ? <div className={styles.inlineEdit}><span>$</span><input aria-label="Planned budget amount" inputMode="decimal" value={plannedDraft} onChange={(e) => setPlannedDraft(e.target.value)} autoFocus /><button type="button" onClick={savePlanned} aria-label="Save planned amount"><IconCheck size={17} /></button></div> : <button type="button" onClick={() => setEditingPlanned(true)}>{currency.format(selected.plannedAmount)}<IconEdit size={14} /></button>}</div>
             <div><span>Actual</span><strong>{currency.format(categoryActual(selected))}</strong></div>
             <div><span>Remaining</span><strong className={categoryRemaining(selected) < 0 ? styles.over : ""}>{currency.format(categoryRemaining(selected))}</strong></div>
           </div>
@@ -389,9 +379,9 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
           </div>
           <button className={`${styles.copyButton} btn btn-ghost`} type="button" onClick={()=>setPendingDelete({kind:"category",id:selected.id,label:selected.name})}><IconTrash size={15}/>Delete category</button>
         </div>}
-      </EditorDrawer>
+      </Drawer>
 
-      <EditorDrawer opened={addingCategory} busy={saving} dirty={Boolean(categoryDraft.name || categoryDraft.plannedAmount)} onClose={() => setAddingCategory(false)} position={isMobile ? "bottom" : "right"} size={isMobile ? "auto" : 400} radius={isMobile ? "18px 18px 0 0" : 0} title="Add category" classNames={{ content: styles.drawer, header: styles.drawerHeader, body: styles.drawerBody, title: styles.drawerTitle }}>
+      <Drawer opened={addingCategory} onClose={() => setAddingCategory(false)} position={isMobile ? "bottom" : "right"} size={isMobile ? "auto" : 400} radius={isMobile ? "18px 18px 0 0" : 0} title="Add category" classNames={{ content: styles.drawer, header: styles.drawerHeader, body: styles.drawerBody, title: styles.drawerTitle }}>
         <form className={styles.categoryForm} onSubmit={addCategory}>
           <label>Category name<input required placeholder="e.g. Subscriptions" value={categoryDraft.name} onChange={(e) => setCategoryDraft({ ...categoryDraft, name: e.target.value })} autoFocus /></label>
           <div className={styles.categorySuggestions}>
@@ -404,7 +394,7 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
           <label>Planned amount<div className={styles.simpleAmount}><span>$</span><input inputMode="decimal" placeholder="0.00" value={categoryDraft.plannedAmount} onChange={(e) => setCategoryDraft({ ...categoryDraft, plannedAmount: e.target.value })} /></div></label>
           <button className={styles.primaryButton} type="submit" disabled={saving}>{saving ? "Saving…" : "Add category"}</button>
         </form>
-      </EditorDrawer>
+      </Drawer>
       <ConfirmDialog opened={Boolean(pendingDelete)} title={`Delete ${pendingDelete?.label ?? "record"}?`} description={pendingDelete?.kind==="category"?"This permanently deletes the category and every spending entry inside it.":"This permanently deletes this spending entry."} confirmLabel={pendingDelete?.kind==="category"?"Delete category":"Delete entry"} busy={saving} onCancel={()=>setPendingDelete(null)} onConfirm={confirmDelete}/>
     </div>
   );

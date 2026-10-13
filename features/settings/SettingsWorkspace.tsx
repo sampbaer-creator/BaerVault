@@ -16,7 +16,6 @@ export function SettingsWorkspace() {
       <div className={styles.layout}>
         <nav aria-label="Settings sections">
           <a href="#theme">Theme</a>
-          <a href="#accessibility">Reading comfort</a>
           <a href="#formatting">Formatting</a>
           <a href="#account">Account</a>
         </nav>

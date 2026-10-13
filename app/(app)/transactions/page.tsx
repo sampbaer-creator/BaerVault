@@ -1,7 +1,3 @@
-import type { Metadata } from "next";
-
-export const metadata: Metadata = { title: "Transactions" };
-
 import { TransactionsWorkspace } from "@/features/transactions/TransactionsWorkspace";
 import { getBudgetMonth } from "@/lib/data/budgets";
 import { parseExplicitMonthSelection, parseMonthSelection } from "@/lib/helpers/monthSelection";

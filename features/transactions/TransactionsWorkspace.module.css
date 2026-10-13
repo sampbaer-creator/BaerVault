@@ -3,7 +3,7 @@
 .intro h2 { margin: .25rem 0; font-size: 1.5rem; }
 .intro p, .intro > div > span { color: var(--app-text-muted); font-size: .875rem; }
 .summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
-.summary > div { padding: 1.25rem; border: 1px solid var(--app-border); border-radius: var(--radius-panel); background: var(--app-surface); box-shadow: none;   }
+.summary > div { padding: 1.25rem; border: 1px solid var(--panel-glass-border); border-radius: var(--radius-panel); background: var(--panel-glass-surface); box-shadow: var(--panel-glass-shadow); backdrop-filter: var(--panel-glass-blur); -webkit-backdrop-filter: var(--panel-glass-blur); }
 .summary span { color: var(--app-text-muted); font-size: .8125rem; }
 .summary strong { display: block; margin-top: .375rem; font-size: clamp(1rem, 2.5vw, 1.5rem); overflow-wrap: anywhere; }
 .positive { color: var(--money-positive); }
@@ -23,13 +23,13 @@
 .tabs .active { color: var(--app-accent); background: var(--app-accent-soft); }
 .tabs > span { margin-left: auto; color: var(--app-text-muted); font-size: .8125rem; }
 .panel table { width: 100%; border-collapse: collapse; }
-.panel th { padding: .875rem 1rem; color: var(--app-text-muted); font-size: .8125rem; text-align: left; font-weight: 500; }
+.panel th { padding: .875rem 1rem; color: var(--app-text-muted); font-size: .75rem; text-align: left; font-weight: 500; }
 .panel td { padding: .75rem 1rem; border-top: 1px solid var(--app-border); font-size: .875rem; }
 .panel td:nth-last-child(2), .panel th:nth-last-child(2) { text-align: right; }
 .merchant { display: flex; align-items: center; gap: .75rem; }
 .merchant > i { display: grid; flex-shrink: 0; width: 34px; height: 34px; place-items: center; border-radius: 50%; background: var(--app-accent-soft); color: var(--app-accent); font-style: normal; }
 .merchant strong { font-weight: 600; }
-.chip { display: inline-flex; align-items: center; gap: .375rem; color: var(--app-text-muted); font-size: .8125rem; }
+.chip { display: inline-flex; align-items: center; gap: .375rem; color: var(--app-text-muted); font-size: .75rem; }
 .chip i { width: 6px; height: 6px; border-radius: 50%; }
 .muted { color: var(--app-text-muted); }
 .actions { display: flex; gap: .25rem; }
@@ -39,7 +39,7 @@
 .drawerBody { padding: 1.5rem; }
 .form { display: grid; gap: 1.25rem; }
 .form label { display: grid; gap: .5rem; font-size: .875rem; font-weight: 600; }
-.form input, .form select { width: 100%; min-height: 48px; padding: .75rem; border: 1px solid var(--app-border-strong); border-radius: var(--radius-control); background: var(--app-surface-raised); }
+.form input, .form select { width: 100%; min-height: 48px; padding: .75rem; border: 1px solid var(--app-border); border-radius: var(--radius-control); background: var(--app-surface-raised); }
 .formRow { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
 .moneyInput { position: relative; }
 .moneyInput > span { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--app-text-muted); }
@@ -49,7 +49,7 @@
 .mobileSearch { position: relative; display: flex; align-items: center; gap: .75rem; padding: .625rem 1rem; margin-bottom: 1.5rem; border-radius: var(--radius-control); background: var(--app-surface-raised); color: var(--app-text-muted); }
 .mobileSearch input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; }
 .mobileSearch > button { display: grid; width: 44px; height: 44px; place-items: center; border: 0; border-radius: .75rem; color: var(--app-accent); background: var(--app-surface); }
-.mobileFilterMenu { position: absolute; top: calc(100% + .5rem); right: 0; z-index: 10; width: 210px; padding: .375rem; border: 1px solid var(--app-border); border-radius: var(--radius-panel); background: var(--app-surface); box-shadow: none; }
+.mobileFilterMenu { position: absolute; top: calc(100% + .5rem); right: 0; z-index: 10; width: 210px; padding: .375rem; border: 1px solid var(--app-border); border-radius: var(--radius-panel); background: var(--app-surface); box-shadow: var(--shadow-dialog); }
 .mobileFilterMenu button { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 44px; padding: .75rem; border: 0; border-radius: .75rem; background: transparent; color: var(--app-text-strong); font-size: .875rem; }
 .mobileFilterMenu button[aria-checked="true"] { color: var(--app-accent); background: var(--app-accent-soft); }
 .mobileActions, .mobileLedger { display: none; }
@@ -60,7 +60,7 @@
   .summary { gap: .5rem; margin-bottom: 1rem; }
   .summary > div { padding: 1rem .75rem; border-radius: 1rem; }
   .summary strong { font-size: 1rem; }
-  .summary span { font-size: .8125rem; }
+  .summary span { font-size: .75rem; }
   .accountChart { display: none; }
   .mobileSearch { margin-bottom: 1rem; background: var(--app-surface); }
   .mobileActions { display: flex; gap: .75rem; margin-bottom: 1rem; }
@@ -68,28 +68,10 @@
   .panel { border: 0; border-radius: 0; background: transparent; box-shadow: none; }
   .panel table, .tabs { display: none; }
   .mobileLedger { display: block; padding-bottom: 2rem; }
-  .mobileDateGroup { margin-top: 1.5rem; overflow: hidden; border-radius: var(--radius-panel); background: var(--app-surface); border: 1px solid var(--app-border);   }
+  .mobileDateGroup { margin-top: 1.5rem; overflow: hidden; border-radius: var(--radius-panel); background: var(--row-glass-surface); border: 1px solid var(--row-glass-border); backdrop-filter: var(--row-glass-blur); -webkit-backdrop-filter: var(--row-glass-blur); }
   .mobileDateGroup h3 { margin: 0; padding: 1rem; border-bottom: 1px solid var(--app-border); color: var(--app-text-muted); font-size: .8125rem; font-weight: 500; }
   .mobileTransaction { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto auto; align-items: center; gap: .25rem 1rem; width: 100%; min-height: 76px; padding: 1rem; border: 0; border-bottom: 1px solid var(--app-border); color: var(--app-text-strong); background: var(--app-surface); text-align: left; }
-  .mobileTransaction > strong { min-width: 0; overflow-wrap: anywhere; font-size: .9375rem; font-weight: 600; }
+  .mobileTransaction > strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .9375rem; font-weight: 600; }
   .mobileTransaction > span { grid-column: 1; grid-row: 2; color: var(--app-text-muted); font-size: .8125rem; }
   .mobileTransaction > b { grid-column: 2; grid-row: 1 / 3; font-size: .9375rem; font-weight: 600; }
 }
-
-@media (max-width: 23rem) {
-  .summary { grid-template-columns: minmax(0, 1fr); }
-  .formRow { grid-template-columns: minmax(0, 1fr); }
-  .mobileTransaction { grid-template-columns: minmax(0, 1fr); }
-  .mobileTransaction > b { grid-column: 1; grid-row: 3; }
-}
-
-.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.mobileSearch { flex-wrap: wrap; border: 1px solid var(--app-border-strong); }
-.mobileSearch input { flex: 1 1 160px; min-height: 44px; }
-.mobileSearch select { max-width: 100%; min-height: 44px; padding: .5rem .75rem; border: 1px solid var(--app-border-strong); border-radius: var(--radius-control); color: var(--app-text-strong); background: var(--app-surface); font-size: .875rem; }
-.intro { justify-content: flex-end; flex-wrap: wrap; gap: .75rem; }
-.intro > p { margin-right: auto; max-width: 45ch; }
-@media (max-width: 47.999rem) { .mobileSearch input { flex-basis: calc(100% - 40px); } .mobileSearch select { flex: 1 1 110px; font-size: 1rem; } }
-
-.tableScroll { position: relative; width: 100%; overflow-x: auto; }
-@media (max-width: 47.999rem) { .tableScroll { display: none; } }

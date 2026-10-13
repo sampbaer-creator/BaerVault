@@ -17,7 +17,7 @@ export default async function OnboardingPage() {
         <div className={styles.icon}><IconHome size={24} /></div>
         <p className={styles.eyebrow}>One last step</p>
         <h1>Set up your household</h1>
-        <p className={styles.intro}>Create a household or select one you have joined. Everyone in the active household shares the same BearVault data.</p>
+        <p className={styles.intro}>Create a household or select one you have joined. Everyone in the active household shares the same BaerVault data.</p>
         <div className={styles.clerkPanel}>
           <OrganizationList hidePersonal skipInvitationScreen={false} afterCreateOrganizationUrl="/dashboard" afterSelectOrganizationUrl="/dashboard" />
         </div>

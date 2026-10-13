@@ -1,7 +1,3 @@
-import type { Metadata } from "next";
-
-export const metadata: Metadata = { title: "Budgets" };
-
 import { BudgetsWorkspace } from "@/features/budgets/BudgetsWorkspace";
 import { getFinancialAccounts } from "@/lib/data/accounts";
 import { getBudgetHistory, getBudgetMonth } from "@/lib/data/budgets";

@@ -1,25 +1,25 @@
 .page { max-width: 1240px; margin: 0 auto; }
 .mobileSummary,.mobileHeading{display:none}
-.metrics { border: 1px solid var(--app-border); border-radius: 16px; background: var(--app-surface); box-shadow: none;  }
-.metric { border: 0; background: transparent; }
-.card, .goal { border-color: color-mix(in srgb, var(--app-border) 84%, transparent); border-radius: 16px; background: var(--app-surface); box-shadow: none; }
+.metrics { border: 1px solid var(--glass-border); border-radius: 16px; background: var(--glass-surface); box-shadow: var(--shadow-glass); backdrop-filter: blur(30px) saturate(155%); }
+.metric { border: 0 !important; background: transparent !important; }
+.card, .goal { border-color: var(--panel-glass-border) !important; border-radius: 16px !important; background: var(--panel-glass-surface) !important; box-shadow: var(--panel-glass-shadow) !important; backdrop-filter: var(--panel-glass-blur) !important; -webkit-backdrop-filter: var(--panel-glass-blur) !important; }
 .metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 16px; }
 .metric, .card, .goal { border: 1px solid var(--app-border); border-radius: 14px; background: var(--app-surface); }
 .metric { padding: 20px; }
-.metric span, .cardMeta, .goalMeta { display: block; color: var(--app-text-muted); font-size: 0.8125rem; }
-.metric strong { display: block; margin-top: 8px; font-size: 1.625rem; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
-.positive { color: var(--money-positive); }
-.negative { color: var(--app-danger); }
+.metric span, .cardMeta, .goalMeta { display: block; color: var(--app-text-muted); font-size: 12px; }
+.metric strong { display: block; margin-top: 8px; font-size: 26px; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+.positive { color: #267056 !important; }
+.negative { color: var(--app-danger) !important; }
 .accountGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .card { position: relative; min-height: 150px; padding: 20px; overflow: hidden; }
 .cardTop { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
 .cardIdentity { display: flex; min-width: 0; align-items: center; gap: 12px; }
-.iconTile { display: grid; width: 40px; height: 40px; flex: 0 0 auto; place-items: center; border-radius: 10px; color: var(--app-accent); background: var(--app-accent-soft); font-weight: 650; }
+.iconTile { display: grid; width: 40px; height: 40px; flex: 0 0 auto; place-items: center; border-radius: 10px; color: var(--app-accent); background: var(--app-accent-soft); font-weight: 800; }
 .cardIdentity strong, .cardIdentity small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.cardIdentity strong { font-size: 0.875rem; }
-.cardIdentity small { margin-top: 3px; color: var(--app-text-muted); font-size: 0.8125rem; }
-.type { padding: 5px 8px; border: 1px solid var(--app-border); border-radius: 8px; color: var(--app-text-muted); font-size: 0.8125rem; }
-.balance { margin: 23px 0 3px; font-size: 1.5625rem; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+.cardIdentity strong { font-size: 14px; }
+.cardIdentity small { margin-top: 3px; color: var(--app-text-muted); font-size: 11px; }
+.type { padding: 5px 8px; border: 1px solid var(--app-border); border-radius: 8px; color: var(--app-text-muted); font-size: 10px; }
+.balance { margin: 23px 0 3px; font-size: 25px; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
 .spark { position: absolute; right: 20px; bottom: 20px; width: 115px; height: 38px; }
 .spark polyline { fill: none; stroke: #267056; stroke-width: 2; }
 .debt polyline { stroke: var(--app-danger); }
@@ -28,14 +28,14 @@
 .goalHead { display: grid; grid-template-columns: 80px minmax(0, 1fr); align-items: center; gap: 16px; }
 .ring { --progress: 50%; --ring: var(--app-accent); display: grid; width: 76px; height: 76px; place-items: center; border-radius: 50%; background: conic-gradient(var(--ring) var(--progress), var(--app-border) 0); }
 .ring::before { grid-area: 1 / 1; width: 58px; height: 58px; border-radius: 50%; background: var(--app-surface); content: ""; }
-.ring strong { z-index: 1; grid-area: 1 / 1; font-size: 0.8125rem; }
-.goal h3 { margin: 0; font-size: 0.9375rem; }
-.goalValue { margin: 22px 0 3px; font-size: 1.3125rem; font-variant-numeric: tabular-nums; }
-.goalFooter { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; padding-top: 15px; border-top: 1px solid var(--app-border); color: var(--app-text-muted); font-size: 0.8125rem; }
-.status { padding: 5px 8px; border-radius: 7px; color: var(--money-positive); background: var(--app-surface); font-weight: 650; }
+.ring strong { z-index: 1; grid-area: 1 / 1; font-size: 13px; }
+.goal h3 { margin: 0; font-size: 15px; }
+.goalValue { margin: 22px 0 3px; font-size: 21px; font-variant-numeric: tabular-nums; }
+.goalFooter { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; padding-top: 15px; border-top: 1px solid var(--app-border); color: var(--app-text-muted); font-size: 11px; }
+.status { padding: 5px 8px; border-radius: 7px; color: #267056; background: #e8f1ed; font-weight: 700; }
 @media (max-width: 70rem) { .goalsGrid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 48rem) {
-  .metrics{display:none}.mobileSummary{display:grid;min-height:132px;grid-template-columns:minmax(0,1fr) 82px minmax(0,1fr);align-items:center;gap:8px;margin:-18px 0 28px;padding:20px 12px;border-radius:22px;background:var(--app-surface);box-shadow: none;text-align:center}.mobileSummary>div{display:grid;min-width:0;gap:4px}.mobileSummary strong{overflow:hidden;color:var(--app-text-strong);font-size:1.0625rem;text-overflow:ellipsis}.mobileSummary span{color:var(--app-text-muted);font-size:0.8125rem}.mobileSummary>i{display:grid;width:76px;height:76px;place-items:center;border-radius:50%;background:radial-gradient(circle,var(--app-surface) 56%,transparent 58%),conic-gradient(#1687f5 var(--progress),var(--app-border) 0);font-style:normal}.mobileSummary b{font-size:0.8125rem}.mobileHeading{display:block;margin:0 0 12px;color:var(--app-text-strong);font-size:1.125rem}
+  .metrics{display:none!important}.mobileSummary{display:grid;min-height:132px;grid-template-columns:minmax(0,1fr) 82px minmax(0,1fr);align-items:center;gap:8px;margin:-18px 0 28px;padding:20px 12px;border-radius:22px;background:#fff;box-shadow:0 18px 38px rgb(43 119 183 / 10%);text-align:center}.mobileSummary>div{display:grid;min-width:0;gap:4px}.mobileSummary strong{overflow:hidden;color:#102653;font-size:17px;text-overflow:ellipsis}.mobileSummary span{color:var(--app-text-muted);font-size:10px}.mobileSummary>i{display:grid;width:76px;height:76px;place-items:center;border-radius:50%;background:radial-gradient(circle,#fff 56%,transparent 58%),conic-gradient(#1687f5 var(--progress),#e5e9ee 0);font-style:normal}.mobileSummary b{font-size:12px}.mobileHeading{display:block;margin:0 0 12px;color:#102653;font-size:18px}
   .metrics {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1px;
@@ -43,7 +43,7 @@
     border: 1px solid var(--app-border);
     border-radius: 17px;
     background: var(--app-border);
-    box-shadow: none;
+    box-shadow: 0 10px 30px rgb(19 38 63 / 5%);
   }
   .metric {
     min-width: 0;
@@ -52,31 +52,17 @@
     border-radius: 0;
     text-align: center;
   }
-  .metric span { font-size: 0.8125rem; }
+  .metric span { font-size: 10px; }
   .metric strong {
     overflow: hidden;
     margin-top: 5px;
-    font-size: clamp(0.8125rem, 3.8vw, 1rem);
+    font-size: clamp(13px, 3.8vw, 16px);
     text-overflow: ellipsis;
     white-space: nowrap;
   }
   .accountGrid,
   .goalsGrid { grid-template-columns: 1fr; }
   .goalsGrid { display:block; }
-  .goal { display:grid;min-height:86px;grid-template-columns:minmax(0,1fr) auto;align-items:center;padding:12px 2px;border:0;border-bottom:1px solid var(--app-border);border-radius:0;background:transparent;box-shadow:none}.goalHead{display:block;grid-column:1}.ring{display:none}.goal h3{font-size:1rem}.goalValue{grid-column:2;grid-row:1;margin:0;font-size:1rem;text-align:right}.goal>span.goalMeta{grid-column:1;grid-row:2}.goalFooter{grid-column:1/-1;grid-row:3;margin-top:8px;padding-top:0;border:0}.status{display:none}
+  .goal { display:grid;min-height:86px;grid-template-columns:minmax(0,1fr) auto;align-items:center;padding:12px 2px;border:0!important;border-bottom:1px solid var(--app-border)!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}.goalHead{display:block;grid-column:1}.ring{display:none}.goal h3{font-size:16px}.goalValue{grid-column:2;grid-row:1;margin:0;font-size:16px;text-align:right}.goal>span.goalMeta{grid-column:1;grid-row:2}.goalFooter{grid-column:1/-1;grid-row:3;margin-top:8px;padding-top:0;border:0}.status{display:none}
   .card { min-height: 142px; }
-}
-
-.metrics { background: var(--app-surface);  }
-@media (max-width: 48rem) {
-  .mobileSummary { display: none; }
-  .metrics { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; }
-  .metric { padding: 1rem 1.25rem; border-bottom: 1px solid var(--app-border); text-align: left; }
-  .metric strong { white-space: normal; overflow: visible; font-size: 1.5rem; }
-  .goalsGrid { display: grid; grid-template-columns: minmax(0, 1fr); }
-  .goal { display: block; padding: 1.25rem; border: 1px solid var(--app-border); border-radius: var(--radius-panel); background: var(--app-surface); }
-  .goalHead { display: grid; grid-template-columns: 76px minmax(0, 1fr); }
-  .ring { display: grid; }
-  .goalValue { margin: 1rem 0 .25rem; text-align: left; font-size: 1.5rem; }
-  .goalFooter { border-top: 1px solid var(--app-border); padding-top: .75rem; }
 }

@@ -1,63 +1,115 @@
-﻿:root {
+:root {
   color-scheme: light;
-  --font-system: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-body: var(--font-manrope, var(--font-system));
-  --font-heading: var(--font-body);
-  --space-1: .25rem; --space-2: .5rem; --space-3: .75rem; --space-4: 1rem;
-  --space-5: 1.5rem; --space-6: 2rem; --space-7: 3rem;
-  --space-page: clamp(1.5rem, 3vw, 2.5rem);
-  --radius-control: .6875rem; --radius-panel: 1rem; --window-radius: 1.125rem;
+  --font-system: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+  --font-manrope: var(--font-system);
+  --font-heading: var(--font-system);
+  --space-1: .25rem;
+  --space-2: .5rem;
+  --space-3: .75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-page: clamp(1rem, 3vw, 2.5rem);
+  --radius-control: .75rem;
+  --radius-panel: 1.25rem;
+  --window-radius: 1.75rem;
   --control-height: 2.75rem;
-  --app-background: #f7f8fa; --app-surface: #ffffff; --app-surface-raised: #f0f3f7;
-  --app-border: #dce2e9; --app-border-strong: #748196;
-  --app-text-strong: #062650; --app-text: var(--app-text-strong); --app-text-muted: #56657a;
-  --app-accent: #245edb; --app-on-accent: #ffffff; --app-accent-soft: #edf3ff;
-  --app-focus: var(--app-accent); --app-hover: var(--app-surface-raised);
-  --app-danger: #b02d43; --app-danger-fill: #b02d43; --app-on-danger: #ffffff;
-  --money-positive: #137548; --money-negative: #a3432a;
-  --chart-primary: var(--app-accent); --chart-secondary: #6a4eb5; --chart-tertiary: #9b620c;
-  --chart-grid: var(--app-border); --chart-axis: var(--app-text-muted); --chart-tooltip: var(--app-surface);
-  --brand-navy: #062650; --brand-gold: var(--app-accent); --brand-gold-bright: var(--app-accent);
-  --brand-gold-soft: var(--app-accent-soft); --brand-green: var(--money-positive);
-  /* Translucency is reserved for navigation chrome, with solid fallbacks. */
-  --glass-surface: var(--app-surface); --glass-strong: var(--app-surface);
-  --glass-border: var(--app-border); --glass-highlight: transparent;
-  --glass-edge: var(--app-border); --glass-blur: 16px;
-  /* Compatibility roles for financial components are deliberately opaque. */
-  --panel-glass-surface: var(--app-surface); --panel-glass-border: var(--app-border);
-  --panel-glass-highlight: transparent; --panel-glass-blur: none; --panel-glass-shadow: none;
-  --row-glass-surface: var(--app-surface); --row-glass-border: var(--app-border); --row-glass-blur: none;
-  --control-surface: var(--app-surface-raised); --control-hover: var(--app-accent-soft);
-  --control-glass: var(--control-surface); --glass-button-surface: var(--control-surface);
-  --glass-button-border: var(--app-border-strong); --glass-button-text: var(--app-text-strong);
+  --app-background: #f3f7fc;
+  --app-surface: #fff;
+  --app-surface-raised: #edf3fa;
+  --app-border: #dbe5f0;
+  --app-text-strong: #09294a;
+  --app-text-muted: #52677d;
+  --app-accent: #0879dd;
+  --app-accent-soft: #e6f3ff;
+  --app-focus: #0879dd;
+  --app-hover: #eaf3fb;
+  --app-danger: #c62f36;
+  --money-positive: #248a3d;
+  --money-negative: #c62f36;
+  --chart-primary: #007aff;
+  --chart-secondary: #30a46c;
+  --chart-tertiary: #d9e9ff;
+  --chart-grid: var(--app-border);
+  --chart-axis: var(--app-text-muted);
+  --chart-tooltip: var(--app-surface);
+  --brand-navy: var(--app-text-strong);
+  --brand-gold: var(--app-accent);
+  --brand-gold-bright: var(--app-accent);
+  --brand-gold-soft: var(--app-accent-soft);
+  --brand-green: var(--money-positive);
+  --glass-surface: color-mix(in srgb, var(--app-surface) 76%, transparent);
+  --glass-strong: color-mix(in srgb, var(--app-surface) 82%, transparent);
+  --glass-border: rgb(255 255 255 / 78%);
+  --glass-highlight: rgb(255 255 255 / 70%);
+  --glass-edge: var(--app-border);
+  --glass-blur: 16px;
+  --panel-glass-surface: color-mix(in srgb, var(--app-surface) 82%, transparent);
+  --panel-glass-border: color-mix(in srgb, var(--app-border) 80%, transparent);
+  --panel-glass-highlight: rgb(255 255 255 / 55%);
+  --panel-glass-blur: blur(20px) saturate(150%);
+  --panel-glass-shadow: 0 18px 48px rgb(18 56 95 / 9%), inset 0 1px 0 var(--panel-glass-highlight);
+  --row-glass-surface: color-mix(in srgb, var(--app-surface) 92%, transparent);
+  --row-glass-border: color-mix(in srgb, var(--app-border) 90%, transparent);
+  --row-glass-blur: blur(10px) saturate(130%);
+  --control-surface: var(--app-surface-raised);
+  --control-hover: var(--app-accent-soft);
+  --control-glass: var(--control-surface);
+  --glass-button-surface: var(--control-surface);
+  --glass-button-border: var(--app-border);
+  --glass-button-text: var(--app-text-strong);
   --glass-button-hover: var(--control-hover);
-  --shadow-surface: none; --surface-shadow: none; --app-shadow: none;
-  --shadow-glass: 0 2px 12px rgb(6 38 80 / 5%);
-  --shadow-dialog: 0 16px 48px rgb(6 38 80 / 18%);
-  --window-shadow: var(--shadow-glass); --window-edge: var(--app-border);
-  --motion-spatial-fast: 140ms; --motion-spatial-default: 200ms; --motion-spatial-slow: 240ms;
-  --motion-effect-fast: 140ms; --motion-effect-default: 180ms; --motion-effect-slow: 240ms;
-  --ease-out: cubic-bezier(.2, 0, 0, 1); --ease-in-out: cubic-bezier(.4, 0, .2, 1);
-  --ease-drawer: var(--ease-out); --ease-expressive: var(--ease-out);
-  --motion-fast: var(--motion-spatial-fast); --motion-standard: var(--motion-spatial-default);
+  --shadow-surface: 0 2px 8px rgb(0 0 0 / 3%);
+  --surface-shadow: var(--shadow-surface);
+  --shadow-glass: 0 22px 60px rgb(16 62 103 / 11%), inset 0 1px 0 rgb(255 255 255 / 85%);
+  --shadow-dialog: 0 16px 60px rgb(0 0 0 / 18%);
+  --window-shadow: var(--shadow-glass);
+  --window-edge: var(--app-border);
+  --motion-spatial-fast: 160ms;
+  --motion-spatial-default: 240ms;
+  --motion-spatial-slow: 280ms;
+  --motion-effect-fast: 140ms;
+  --motion-effect-default: 200ms;
+  --motion-effect-slow: 280ms;
+  --ease-out: cubic-bezier(.23, 1, .32, 1);
+  --ease-in-out: cubic-bezier(.77, 0, .175, 1);
+  --ease-drawer: cubic-bezier(.32, .72, 0, 1);
+  --ease-expressive: var(--ease-out);
+  --motion-fast: var(--motion-spatial-fast);
+  --motion-standard: var(--motion-spatial-default);
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --app-background: #0c1420; --app-surface: #141f2e; --app-surface-raised: #1d2a3c;
-  --app-border: #33445b; --app-border-strong: #7489a6;
-  --app-text-strong: #e8eef7; --app-text-muted: #a5b3c7;
-  --app-accent: #8cb4ff; --app-accent-soft: #20334f; --app-on-accent: #0c1420;
-  --app-danger: #ff91a3; --money-positive: #6bd49b; --money-negative: #f2a18b;
-  --chart-secondary: #b8a2ed; --chart-tertiary: #e8be79;
-  --shadow-glass: 0 2px 12px rgb(0 0 0 / 12%);
-}
-@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  :root { --glass-surface: color-mix(in srgb, var(--app-surface) 92%, transparent); --glass-strong: color-mix(in srgb, var(--app-surface) 96%, transparent); }
-}
-:root[data-transparency="opaque"] { --glass-surface: var(--app-surface); --glass-strong: var(--app-surface); --glass-blur: 0px; }
-@media (prefers-reduced-transparency: reduce) {
-  :root { --glass-surface: var(--app-surface); --glass-strong: var(--app-surface); --glass-blur: 0px; }
+  --app-background: #071423;
+  --app-surface: #10243a;
+  --app-surface-raised: #1b344e;
+  --app-border: #31475e;
+  --app-text-strong: #f5f5f7;
+  --app-text-muted: #aeaeb2;
+  --app-accent: #56a9ff;
+  --app-accent-soft: #112d49;
+  --app-hover: #1b344e;
+  --glass-surface: color-mix(in srgb, var(--app-surface) 76%, transparent);
+  --glass-strong: color-mix(in srgb, var(--app-surface) 84%, transparent);
+  --glass-border: rgb(255 255 255 / 13%);
+  --shadow-glass: 0 22px 60px rgb(0 0 0 / 28%), inset 0 1px 0 rgb(255 255 255 / 9%);
+  --app-danger: #ff6961;
+  --money-positive: #32d74b;
+  --money-negative: #ff6961;
+  --chart-primary: #409cff;
+  --chart-secondary: #32d79c;
+  --chart-tertiary: #163e6c;
+  --glass-highlight: rgb(255 255 255 / 8%);
+  --shadow-surface: 0 2px 8px rgb(0 0 0 / 12%);
+  --shadow-glass: 0 4px 20px rgb(0 0 0 / 20%);
+  --panel-glass-surface: color-mix(in srgb, var(--app-surface) 84%, transparent);
+  --panel-glass-border: color-mix(in srgb, rgb(255 255 255 / 14%) 100%, transparent);
+  --panel-glass-highlight: rgb(255 255 255 / 10%);
+  --panel-glass-shadow: 0 16px 40px rgb(0 0 0 / 30%), inset 0 1px 0 var(--panel-glass-highlight);
+  --row-glass-surface: color-mix(in srgb, var(--app-surface) 92%, transparent);
+  --row-glass-border: color-mix(in srgb, var(--app-border) 88%, transparent);
 }
 @media (prefers-reduced-motion: reduce) {
-  :root { --motion-spatial-fast: 0ms; --motion-spatial-default: 0ms; --motion-spatial-slow: 0ms; --motion-effect-fast: 0ms; --motion-effect-default: 0ms; --motion-effect-slow: 0ms; }
+  :root { --motion-spatial-fast: 0ms; --motion-spatial-default: 0ms; --motion-spatial-slow: 0ms; }
 }

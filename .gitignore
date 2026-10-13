@@ -48,5 +48,3 @@ next-env.d.ts
 /skills-lock.json
 # clerk configuration (can include secrets)
 /.clerk/
-
-/.playwright-mcp/
