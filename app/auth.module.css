@@ -8,27 +8,17 @@
   gap: 24px;
   padding: 74px 18px 32px;
   background:
-    radial-gradient(
-      circle at 50% 12%,
-      rgb(126 133 215 / 24%),
-      transparent 27rem
-    ),
-    radial-gradient(
-      circle at 10% 90%,
-      rgb(49 95 80 / 10%),
-      transparent 22rem
-    ),
-    #f8f8f9;
+    var(--app-surface);
 }
-.page { color: var(--app-text-strong); background: radial-gradient(circle at 50% 8%, color-mix(in srgb, var(--app-accent) 16%, transparent), transparent 28rem), var(--app-background); }
+.page { color: var(--app-text-strong); background: var(--app-surface); }
 .brand { color: var(--app-text-strong); }
-.authCard { border: 1px solid var(--glass-border) !important; border-radius: 18px !important; background: var(--glass-strong) !important; box-shadow: var(--shadow-glass) !important; backdrop-filter: blur(30px) saturate(155%); }
+.authCard { border: 1px solid var(--glass-border); border-radius: 18px; background: var(--glass-strong); box-shadow: var(--shadow-glass); backdrop-filter: none; }
 .brand {
   position: absolute;
   top: 28px;
   left: 32px;
-  color: #111439;
-  font-size: 21px;
+  color: var(--app-text-strong);
+  font-size: 1.3125rem;
   font-weight: 780;
   letter-spacing: -0.04em;
   text-decoration: none;
@@ -44,8 +34,8 @@
 }
 .step {
   margin: 0 0 10px;
-  color: #65756c;
-  font-size: 11px;
+  color: var(--app-text-muted);
+  font-size: 0.8125rem;
   font-weight: 750;
   letter-spacing: 0.08em;
   text-align: center;
@@ -53,8 +43,8 @@
 }
 .footer {
   margin: 0;
-  color: #7b8981;
-  font-size: 12px;
+  color: var(--app-text-muted);
+  font-size: 0.8125rem;
   text-align: center;
 }
 
@@ -85,10 +75,10 @@
   .authCard :global(.cl-socialButtons),
   .authCard :global(.cl-form),
   .authCard :global(.cl-footer) {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    margin-inline: auto !important;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin-inline: auto;
   }
 
   .authCard :global(.cl-cardBox),
@@ -98,13 +88,13 @@
 
   .authCard :global(.cl-socialButtonsBlockButton),
   .authCard :global(.cl-formButtonPrimary) {
-    display: flex !important;
-    width: 100% !important;
-    min-width: 0 !important;
+    display: flex;
+    width: 100%;
+    min-width: 0;
     min-height: 48px;
     align-items: center;
     justify-content: center;
-    margin-inline: 0 !important;
+    margin-inline: 0;
   }
 
   .authCard :global(.cl-socialButtonsBlockButtonText) {
@@ -115,6 +105,12 @@
   .authCard :global(.cl-formFieldInput) {
     width: 100%;
     min-width: 0;
-    font-size: 16px !important;
+    font-size: 1rem;
   }
 }
+
+.page { background: var(--app-background); }
+.brand { color: var(--app-text-strong); }
+.step, .footer { color: var(--app-text-muted); }
+.authCard { background: var(--app-surface); backdrop-filter: none; }
+.authCard :global(.cl-card), .authCard :global(.cl-footer) { background: var(--app-surface); color: var(--app-text-strong); }

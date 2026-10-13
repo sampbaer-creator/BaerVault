@@ -286,7 +286,7 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
       <span className={styles.desktopValue}>{currency.format(category.plannedAmount)}</span>
       <span className={styles.desktopValue}>{currency.format(actual)}</span>
       <span className={`${styles.desktopValue} ${variance < 0 ? styles.over : ""}`}>{variance < 0 ? "−" : ""}{currency.format(Math.abs(variance))}</span>
-      <span className={styles.mobileProgress}><span><strong>{currency.format(actual)}</strong><em>{compactCurrency.format(category.plannedAmount)}</em></span><small className={variance < 0 ? styles.over : ""}>{variance < 0 ? `${currency.format(Math.abs(variance))} over` : `${currency.format(variance)} remaining`}</small><i role="progressbar" aria-label={`${category.name} budget used`} aria-valuemin={0} aria-valuemax={category.plannedAmount} aria-valuenow={actual}><b data-animate-progress style={{ width: `${percent}%` }} /></i></span>
+      <span className={styles.mobileProgress}><span><strong>{currency.format(actual)} spent</strong><em>{compactCurrency.format(category.plannedAmount)} planned</em></span><small className={variance < 0 ? styles.over : ""}>{variance < 0 ? `${currency.format(Math.abs(variance))} over` : `${currency.format(variance)} remaining`}</small><i role="progressbar" aria-label={`${category.name} budget used`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent} aria-valuetext={`${currency.format(actual)} spent of ${currency.format(category.plannedAmount)} planned`}><b data-animate-progress style={{ width: `${percent}%` }} /></i></span>
       <IconChevronRight className={styles.rowChevron} size={17} aria-hidden="true" />
       </button>
     </SwipeActionRow>;

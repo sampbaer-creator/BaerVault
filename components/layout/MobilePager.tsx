@@ -134,7 +134,7 @@ export function MobilePager({ children, pathname, progress, onActiveIndex, selec
       setActiveIndex(bounded);
       x.set(-width());
       progress.set(bounded);
-      window.history.replaceState(null, "", routeHref(mobileRouteOrder[bounded], selectedMonth));
+      window.history.pushState(null, "", routeHref(mobileRouteOrder[bounded], selectedMonth));
       document.getElementById("main-content")?.focus({ preventScroll: true });
     });
   }, [progress, reduceMotion, selectedMonth, x]);
@@ -145,7 +145,7 @@ export function MobilePager({ children, pathname, progress, onActiveIndex, selec
     if (Math.abs(target - activeRef.current) === 1) commit(target);
     else {
       activeRef.current = target; setActiveIndex(target); x.set(-width()); progress.set(target);
-      window.history.replaceState(null, "", routeHref(href, selectedMonth));
+      window.history.pushState(null, "", routeHref(href, selectedMonth));
     }
   }, [commit, progress, selectedMonth, x]);
 

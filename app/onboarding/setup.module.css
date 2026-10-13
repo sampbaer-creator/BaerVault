@@ -4,26 +4,20 @@
   place-items: center;
   padding: 32px 18px;
   background:
-    radial-gradient(circle at 50% 0, rgb(126 133 215 / 25%), transparent 30rem),
-    radial-gradient(circle at 8% 92%, rgb(49 95 80 / 10%), transparent 22rem),
-    #f8f8f9;
+    var(--app-surface);
 }
-.page { color: var(--app-text-strong); background: radial-gradient(circle at 50% 4%, color-mix(in srgb, var(--app-accent) 16%, transparent), transparent 30rem), var(--app-background); }
-.card { border: 1px solid var(--glass-border) !important; border-radius: 18px !important; background: var(--glass-strong) !important; box-shadow: var(--shadow-glass) !important; backdrop-filter: blur(30px) saturate(155%); }
+.page { color: var(--app-text-strong); background: var(--app-surface); }
+.card { border: 1px solid var(--glass-border); border-radius: 18px; background: var(--glass-strong); box-shadow: var(--shadow-glass); backdrop-filter: none; }
 .card {
   width: min(100%, 590px);
   padding: clamp(28px, 6vw, 52px);
-  border: 1px solid rgb(255 255 255 / 84%);
+  border: 1px solid var(--app-border);
   border-radius: 24px;
-  background: linear-gradient(
-    145deg,
-    rgb(255 255 255 / 78%),
-    rgb(239 239 248 / 55%)
-  );
+  background: var(--app-surface);
   box-shadow:
     0 28px 80px rgb(17 20 57 / 17%),
     inset 0 1px 0 #fff;
-  backdrop-filter: blur(28px) saturate(150%);
+  backdrop-filter: none;
 }
 .progress {
   display: flex;
@@ -31,8 +25,8 @@
   justify-content: center;
   gap: 9px;
   margin-bottom: 34px;
-  color: #89958e;
-  font-size: 11px;
+  color: var(--app-text-muted);
+  font-size: 0.8125rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.07em;
@@ -46,11 +40,11 @@
 .progress i {
   width: 28px;
   height: 1px;
-  background: #dbe3dc;
+  background: var(--app-surface);
 }
 .progress .done,
 .progress .active {
-  color: #2d684f;
+  color: var(--money-positive);
 }
 .icon {
   display: grid;
@@ -60,15 +54,15 @@
   margin: 0 auto 18px;
   border-radius: 14px;
   color: white;
-  background: linear-gradient(145deg, #1010a0, #000060);
+  background: var(--app-surface);
   box-shadow:
     0 12px 28px rgb(17 20 57 / 22%),
     inset 0 1px 0 rgb(255 255 255 / 28%);
 }
 .eyebrow {
   margin: 0 0 8px;
-  color: #3c755e;
-  font-size: 11px;
+  color: var(--money-positive);
+  font-size: 0.8125rem;
   font-weight: 750;
   letter-spacing: 0.1em;
   text-align: center;
@@ -77,7 +71,7 @@
 .card h1 {
   margin: 0;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(34px, 7vw, 46px);
+  font-size: clamp(2.125rem, 7vw, 2.875rem);
   font-weight: 500;
   letter-spacing: -0.04em;
   text-align: center;
@@ -85,7 +79,7 @@
 .intro {
   max-width: 430px;
   margin: 14px auto 30px;
-  color: #66736b;
+  color: var(--app-text-muted);
   line-height: 1.6;
   text-align: center;
 }
@@ -96,17 +90,17 @@
 .form > label,
 .form legend {
   margin-bottom: 8px;
-  color: #34443b;
-  font-size: 13px;
+  color: var(--money-positive);
+  font-size: 0.8125rem;
   font-weight: 700;
 }
 .form > input {
   height: 48px;
   padding: 0 14px;
-  border: 1px solid #cfd9d1;
+  border: 1px solid var(--app-border);
   border-radius: 10px;
-  color: #17211b;
-  background: white;
+  color: var(--money-positive);
+  background: var(--app-surface);
   font: inherit;
 }
 .form > input:focus {
@@ -137,21 +131,21 @@
   justify-content: center;
   gap: 4px;
   padding: 12px;
-  border: 1px solid #dbe3dc;
+  border: 1px solid var(--app-border);
   border-radius: 11px;
-  background: #fafbfa;
+  background: var(--app-surface);
 }
 .options strong {
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 .options small {
-  color: #758179;
-  font-size: 11px;
+  color: var(--app-text-muted);
+  font-size: 0.8125rem;
 }
 .options input:checked + span {
-  border-color: #397259;
+  border-color: var(--app-border);
   outline: 1px solid #397259;
-  background: #eef5f0;
+  background: var(--app-surface);
 }
 .options input:focus-visible + span {
   outline: 2px solid #397259;
@@ -163,10 +157,10 @@
   align-items: center;
   justify-content: center;
   gap: 9px;
-  border: 1px solid rgb(255 255 255 / 22%);
+  border: 1px solid var(--app-border);
   border-radius: 12px;
   color: white;
-  background: linear-gradient(145deg, #1010a0, #000060);
+  background: var(--app-surface);
   box-shadow:
     0 12px 28px rgb(17 20 57 / 22%),
     inset 0 1px 0 rgb(255 255 255 / 28%);
@@ -176,8 +170,8 @@
 }
 .note {
   margin: 17px 0 0;
-  color: #859088;
-  font-size: 12px;
+  color: var(--app-text-muted);
+  font-size: 0.8125rem;
   text-align: center;
 }
 .clerkPanel {
@@ -216,20 +210,20 @@
   }
   .progress { gap: 6px; margin-bottom: 26px; }
   .progress i { width: clamp(12px, 5vw, 24px); }
-  .progress span { font-size: 10px; }
-  .card h1 { font-size: clamp(30px, 9vw, 38px); line-height: 1.08; }
-  .intro { margin: 12px auto 20px; font-size: 14px; line-height: 1.5; }
+  .progress span { font-size: 0.8125rem; }
+  .card h1 { font-size: clamp(1.875rem, 9vw, 2.375rem); line-height: 1.08; }
+  .intro { margin: 12px auto 20px; font-size: 0.875rem; line-height: 1.5; }
   .clerkPanel { display: block; width: 100%; min-width: 0; margin-top: 18px; }
   .clerkPanel :global(.cl-rootBox),
   .clerkPanel :global(.cl-organizationList-root),
   .clerkPanel :global(.cl-cardBox),
   .clerkPanel :global(.cl-card),
   .clerkPanel :global(.cl-scrollBox) {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
   }
-  .clerkPanel :global(.cl-cardBox) { box-shadow: none !important; }
+  .clerkPanel :global(.cl-cardBox) { box-shadow: none; }
   .clerkPanel :global(.cl-footer) { padding-inline: 8px; }
 }
 @media (max-width: 23rem) {
@@ -244,3 +238,14 @@
   .eyebrow { display: none; }
   .note { margin-top: 12px; }
 }
+
+.page { background: var(--app-background); }
+.card { border: 1px solid var(--app-border); border-radius: var(--radius-panel); background: var(--app-surface); box-shadow: var(--shadow-surface); backdrop-filter: none; }
+.card h1 { font-family: var(--font-heading); font-weight: 650; }
+.form > label, .form legend, .form > input { color: var(--app-text-strong); }
+.intro, .note, .progress, .options small { color: var(--app-text-muted); }
+.icon, .form button { color: var(--app-on-accent); background: var(--app-accent); box-shadow: none; }
+.form button { height: auto; min-height: 50px; padding: .75rem 1rem; }
+.options input:checked + span { border-color: var(--app-accent); outline-color: var(--app-accent); background: var(--app-accent-soft); }
+.options input:focus-visible + span { outline-color: var(--app-focus); }
+.progress .active, .progress .done { color: var(--app-accent); }

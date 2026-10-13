@@ -52,10 +52,10 @@ export function PreferencesProvider({
         : preferences.theme;
       root.dataset.theme = resolvedTheme;
       root.style.colorScheme = resolvedTheme;
-      document.querySelector('meta[name="theme-color"]')?.setAttribute(
-        "content",
-        resolvedTheme === "dark" ? "#000000" : "#f2f2f7",
-      );
+      document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => {
+        meta.removeAttribute("media");
+        meta.setAttribute("content", resolvedTheme === "dark" ? "#000000" : "#f2f2f7");
+      });
     };
     applyTheme();
     media.addEventListener("change", applyTheme);

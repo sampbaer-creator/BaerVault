@@ -41,7 +41,7 @@ export function SwipeActionRow({
   function settle(nextOpen: boolean) {
     setOpen(nextOpen);
     animate(x, nextOpen ? -ACTION_WIDTH : 0, reduceMotion
-      ? { duration: 0.12, ease: "easeOut" }
+      ? { duration: 0 }
       : { type: "spring", duration: 0.5, bounce: 0.2 });
   }
 
@@ -133,6 +133,11 @@ export function SwipeActionRow({
       >
         {children}
       </motion.div>
+      <button className={styles.toggle} type="button" aria-expanded={open} aria-label={open ? "Close row actions" : `${editLabel} or ${deleteLabel}`} onClick={() => {
+        const nextOpen = !open;
+        settle(nextOpen);
+        if (nextOpen) window.dispatchEvent(new CustomEvent(OPEN_EVENT, { detail: id }));
+      }}>{open ? "Close actions" : "Actions"}</button>
     </div>
   );
 }

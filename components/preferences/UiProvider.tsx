@@ -10,8 +10,8 @@ export function UiProvider({ children }: { children: ReactNode }) {
     headings: { fontFamily: "var(--font-system)", fontWeight: "600" },
     defaultRadius: "lg",
     components: {
-      Drawer: Drawer.extend({ defaultProps: { transitionProps: { duration: reduced ? 0 : 240, timingFunction: "cubic-bezier(.32,.72,0,1)" }, overlayProps: { backgroundOpacity: .28 } } }),
-      Modal: Modal.extend({ defaultProps: { transitionProps: { duration: reduced ? 0 : 200 }, overlayProps: { backgroundOpacity: .28 } } }),
+      Drawer: Drawer.extend({ defaultProps: { closeButtonProps: { "aria-label": "Close dialog" }, transitionProps: { duration: reduced ? 0 : 240, timingFunction: "cubic-bezier(.32,.72,0,1)" }, overlayProps: { backgroundOpacity: .28 } } }),
+      Modal: Modal.extend({ defaultProps: { closeButtonProps: { "aria-label": "Close dialog" }, transitionProps: { duration: reduced ? 0 : 200 }, overlayProps: { backgroundOpacity: .28 } } }),
     },
   }), [reduced]);
   return <MantineProvider theme={theme} defaultColorScheme="auto">{children}</MantineProvider>;

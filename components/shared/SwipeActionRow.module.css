@@ -1,6 +1,7 @@
 .root { display: contents; }
 .actions { display: none; }
 .content { display: contents; }
+.toggle { display: none; }
 
 @media (max-width: 47.999rem) and (pointer: coarse) {
   .root {
@@ -24,13 +25,15 @@
     place-content: center;
     gap: 5px;
     border: 0;
-    color: #fff;
+    color: var(--app-on-accent);
     background: var(--app-accent);
     font: inherit;
     font-size: 10px;
     font-weight: 720;
   }
-  .actions button:last-child { background: var(--money-negative); }
+  .actions button:last-child { color: var(--app-on-danger); background: var(--app-danger-fill); }
+  .toggle { position: relative; z-index: 2; display: block; min-height: 44px; width: 100%; padding: .5rem 1rem; border: 0; border-bottom: 1px solid var(--app-border); color: var(--app-accent); background: var(--app-surface); font-size: .8125rem; text-align: right; }
+  .actions { bottom: 44px; }
   .content {
     position: relative;
     z-index: 1;

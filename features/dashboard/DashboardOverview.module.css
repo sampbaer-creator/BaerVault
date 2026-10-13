@@ -52,3 +52,7 @@
   .netWorthLead { margin-block: 1.5rem; }
   .netWorthLead > strong { font-size: clamp(2rem, 9vw, 3rem); }
 }
+
+.dashboardGrid { align-items: start; }
+@media (max-width: 70rem) { .dashboardGrid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "worth" "spending" "transactions" "side"; } }
+@media (max-width: 47.999rem) { .spendingRail, .netWorthSummary { grid-template-columns: minmax(0, 1fr); } .transactionRow { grid-template-columns: 36px minmax(0, 1fr); } .transactionRow > span:last-child { grid-column: 2; } }

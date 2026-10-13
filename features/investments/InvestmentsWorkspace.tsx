@@ -40,7 +40,7 @@ import {
 } from "@/app/(app)/investments/actions";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { SwipeActionRow } from "@/components/shared/SwipeActionRow";
-import { currency } from "@/lib/demo/finance";
+import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
 import {
   costFor,
   sharesFor,
@@ -71,6 +71,7 @@ export function InvestmentsWorkspace({
   demo?: boolean;
 }) {
   const router = useRouter();
+  const currency = useCurrencyFormatter();
   const reduceMotion = useReducedMotion();
   const mobile = useMediaQuery("(max-width: 47.999rem)");
   const [accounts, setAccounts] = useServerState(initialAccounts);
@@ -212,11 +213,10 @@ export function InvestmentsWorkspace({
   const allHoldings = accounts.flatMap((item) => item.holdings);
   const topMovers = allHoldings.slice(0, 6).map((item) => {
     const price = accountMarkets[item.symbol]?.price ?? item.fallbackPrice;
-    const seed = [...item.symbol].reduce(
-      (sum, character) => sum + character.charCodeAt(0),
-      0,
-    );
-    const change = ((seed % 241) - 88) / 100;
+    const points = accountMarkets[item.symbol]?.points ?? [];
+    const previous = points.at(-2)?.close;
+    const latest = points.at(-1)?.close;
+    const change = previous && latest != null ? ((latest - previous) / previous) * 100 : null;
     return { ...item, price, change };
   });
   const allocation = accounts
@@ -285,14 +285,6 @@ export function InvestmentsWorkspace({
       ),
     }));
   }, [account, accountMarkets, demo]);
-  const mobileHistoryPoints = useMemo(() => {
-    if (!accountHistory.length) return "";
-    const values = accountHistory.map((point) => point.value);
-    const min = Math.min(...values);
-    const max = Math.max(...values);
-    const spread = Math.max(max - min, 1);
-    return accountHistory.map((point, index) => `${(index / Math.max(accountHistory.length - 1, 1)) * 320},${76 - ((point.value - min) / spread) * 62}`).join(" ");
-  }, [accountHistory]);
 
   function showPortfolioSection(section: PortfolioSection, targetId: string) {
     setPortfolioSection(section);
@@ -668,7 +660,7 @@ export function InvestmentsWorkspace({
           <span>
             {demo
               ? "Mock holdings stay in this browser session and never touch your account."
-              : "Supabase stores what you own. Twelve Data supplies market prices and history."}
+              : "Track what you own, your purchase costs, and available market prices."}
           </span>
         </div>
         <button
@@ -769,8 +761,8 @@ export function InvestmentsWorkspace({
           <section className={styles.portfolioChartPanel} id="portfolio-performance">
             <div className={styles.portfolioChartHeading}>
               <div>
-                <h3>{account?.name} performance</h3>
-                <p>Live household position value · Twelve Data</p>
+                <h3>{account?.name} market history</h3>
+                <p>{demo ? "Illustrative sample history" : "Current shares valued at historical prices; excludes cash flows."}</p>
               </div>
               <div className={styles.portfolioRanges} role="group" aria-label="Portfolio chart range">
                 {(["1M", "3M", "1Y", "5Y"] as Range[]).map((item) => (
@@ -789,7 +781,7 @@ export function InvestmentsWorkspace({
               </div>
             </div>
             <div className={styles.portfolioChart}>
-              {mobileHistoryPoints && <svg className={styles.mobilePortfolioLine} viewBox="0 0 320 84" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="mobile-investment-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#00b51a" stopOpacity=".16"/><stop offset="1" stopColor="#00b51a" stopOpacity="0"/></linearGradient></defs><polygon className="finance-chart-area" points={`0,84 ${mobileHistoryPoints} 320,84`} fill="url(#mobile-investment-fill)"/><polyline className="finance-chart-line" pathLength="1" points={mobileHistoryPoints} fill="none" stroke="#00b51a" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+
               {accountHistory.length ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={accountHistory}>
@@ -829,8 +821,8 @@ export function InvestmentsWorkspace({
             <section className={styles.moversPanel} aria-labelledby="movers-title">
               <div className={styles.moversHeading}>
                 <div>
-                  <h3 id="movers-title">Your top movers for today</h3>
-                  <p>A quick market view of the holdings you own</p>
+                  <h3 id="movers-title">Your holdings at a glance</h3>
+                  <p>Change between the latest available closing prices</p>
                 </div>
                 <span>Last price</span>
               </div>
@@ -846,32 +838,22 @@ export function InvestmentsWorkspace({
                     </div>
                     <span
                       className={
-                        item.change >= 0 ? styles.positive : styles.negative
+                        item.change === null ? styles.muted : item.change >= 0 ? styles.positive : styles.negative
                       }
                     >
-                      {item.change >= 0 ? "+" : ""}
-                      {item.change.toFixed(2)}%
-                      {item.change >= 0 ? (
+                      {item.change === null ? "Change unavailable" : `${item.change >= 0 ? "+" : ""}${item.change.toFixed(2)}%`}
+                      {item.change !== null && (item.change >= 0 ? (
                         <IconArrowUp size={10} aria-hidden="true" />
                       ) : (
                         <IconArrowDown size={10} aria-hidden="true" />
-                      )}
+                      ))}
                     </span>
-                    <svg viewBox="0 0 72 26" aria-hidden="true">
-                      <path className="finance-chart-line" pathLength="1"
-                        d={
-                          item.change >= 0
-                            ? "M1 22 L12 18 L22 20 L34 11 L45 14 L56 6 L71 3"
-                            : "M1 4 L12 8 L22 6 L34 15 L45 12 L56 20 L71 23"
-                        }
-                      />
-                    </svg>
                   </div>
                 ))}
               </div>
             </section>
           )}
-          <div className={styles.accountTabs} role="tablist">
+          <div className={styles.accountTabs} role="group" aria-label="Investment accounts">
             {accounts.map((item) => {
               const value = item.holdings.reduce(
                 (sum, current) =>
@@ -882,15 +864,10 @@ export function InvestmentsWorkspace({
                   ),
                 0,
               );
-              const seed = [...item.id].reduce(
-                (sum, character) => sum + character.charCodeAt(0),
-                0,
-              );
-              const change = ((seed % 136) + 14) / 100;
               return (
                 <button
-                  role="tab"
-                  aria-selected={item.id === account?.id}
+                  type="button"
+                  aria-pressed={item.id === account?.id}
                   className={item.id === account?.id ? styles.activeTab : ""}
                   onClick={() => {
                     setAccountId(item.id);
@@ -907,11 +884,8 @@ export function InvestmentsWorkspace({
                   </div>
                   <div className={styles.accountCardValue}>
                     <strong>{currency.format(value)}</strong>
-                    <small><IconArrowUp size={10} aria-hidden="true" /> +{change.toFixed(2)}% today</small>
+                    <small>Current recorded value</small>
                   </div>
-                  <svg viewBox="0 0 120 28" preserveAspectRatio="none" aria-hidden="true">
-                    <path className="finance-chart-line" pathLength="1" d="M1 24 L18 20 L34 22 L51 12 L68 15 L86 7 L103 10 L119 3" />
-                  </svg>
                 </button>
               );
             })}
@@ -959,8 +933,8 @@ export function InvestmentsWorkspace({
                   {topMovers.slice(0, 5).map((item) => (
                     <div key={item.id}>
                       <span><strong>{item.symbol}</strong><small>{item.name}</small></span>
-                      <svg viewBox="0 0 46 18" aria-hidden="true"><path className="finance-chart-line" pathLength="1" d={item.change >= 0 ? "M1 15 L9 11 L17 13 L26 6 L35 9 L45 2" : "M1 3 L9 7 L17 5 L26 12 L35 9 L45 16"} /></svg>
-                      <span className={item.change >= 0 ? styles.positive : styles.negative}><strong>{currency.format(item.price)}</strong><small>{item.change >= 0 ? "+" : ""}{item.change.toFixed(2)}%</small></span>
+                      <span />
+                      <span className={item.change === null ? styles.muted : item.change >= 0 ? styles.positive : styles.negative}><strong>{currency.format(item.price)}</strong><small>{item.change === null ? "Change unavailable" : `${item.change >= 0 ? "+" : ""}${item.change.toFixed(2)}%`}</small></span>
                     </div>
                   ))}
                 </div>
@@ -1052,7 +1026,7 @@ export function InvestmentsWorkspace({
                       <b>{item.symbol}</b>
                       <span>{item.name}</span>
                     </span>
-                    <svg className={styles.holdingSpark} viewBox="0 0 72 26" aria-hidden="true"><path className="finance-chart-line" pathLength="1" d="M1 22 L10 18 L18 20 L27 13 L36 15 L45 8 L55 10 L63 4 L71 6" /></svg>
+
                     <span>{shares.toFixed(4)}</span>
                     <span>{currency.format(shares ? cost / shares : 0)}</span>
                     <span>{currency.format(cost)}</span>

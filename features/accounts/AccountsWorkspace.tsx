@@ -489,16 +489,6 @@ export function AccountsWorkspace({
                 <strong>{money.format(totals.debts)}</strong>
               </div>
             </div>
-            <svg
-              className={styles.netWorthLine}
-              viewBox="0 0 900 100"
-              preserveAspectRatio="none"
-              aria-hidden="true"
-            >
-              <path className={`${styles.lineFill} finance-chart-area`} d="M0 78 C180 74 285 76 420 63 S690 49 900 22 L900 100 L0 100 Z" />
-              <path className={`${styles.lineStroke} finance-chart-line`} pathLength="1" d="M0 78 C180 74 285 76 420 63 S690 49 900 22" />
-              <circle className={`${styles.linePoint} finance-chart-point`} cx="900" cy="22" r="5" />
-            </svg>
             <div className={styles.summaryCaption}>
               <IconChartLine size={15} aria-hidden="true" />
               Based on the current balances in {accounts.length} {accounts.length === 1 ? "account" : "accounts"}

@@ -15,18 +15,17 @@ import {
   YAxis,
 } from "recharts";
 
-import { currency, totalIncome, totalSpending, type BudgetMonth } from "@/lib/demo/finance";
+import { totalIncome, totalSpending, type BudgetMonth } from "@/lib/demo/finance";
+import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
 import { AnimatedNumber } from "@/components/shared/AnimatedNumber";
 import styles from "./CashFlowWorkspace.module.css";
 
-const compactMoney = new Intl.NumberFormat("en-US", {
-  notation: "compact",
-  style: "currency",
-  currency: "USD",
-  maximumFractionDigits: 0,
-});
-
 export function CashFlowWorkspace({ month }: { month: BudgetMonth }) {
+  const currency = useCurrencyFormatter();
+  const compactMoney = new Intl.NumberFormat("en-US", {
+    notation: "compact", style: "currency", currency: currency.resolvedOptions().currency,
+    maximumFractionDigits: 0,
+  });
   const reduceMotion = useReducedMotion();
   const income = totalIncome(month);
   const spending = totalSpending(month);
@@ -40,14 +39,10 @@ export function CashFlowWorkspace({ month }: { month: BudgetMonth }) {
     .filter((category) => category.amount > 0 || category.planned > 0)
     .sort((a, b) => b.amount - a.amount);
 
-  let runningBalance = 0;
   const activity = [
     ...month.incomeEntries.map((entry) => ({ label: entry.source, amount: entry.amount })),
     ...categories.filter((category) => category.amount > 0).map((category) => ({ label: category.name, amount: -category.amount })),
-  ].slice(0, 10).map((item) => {
-    runningBalance += item.amount;
-    return { ...item, balance: runningBalance };
-  });
+  ];
   const chartMotion = {
     isAnimationActive: !reduceMotion,
     animationDuration: 800,
@@ -67,12 +62,11 @@ export function CashFlowWorkspace({ month }: { month: BudgetMonth }) {
               <CartesianGrid vertical={false} stroke="var(--app-border)" strokeDasharray="3 5" />
               <XAxis dataKey="label" hide />
               <YAxis width={42} axisLine={false} tickLine={false} tick={{ fill: "var(--app-text-muted)", fontSize: 10 }} tickFormatter={(value) => compactMoney.format(Number(value))}/>
-              <Tooltip formatter={(value, name) => [currency.format(Number(value)), name === "amount" ? "Activity" : "Running balance"]}/>
+              <Tooltip formatter={(value) => [currency.format(Number(value)), "Monthly activity"]}/>
               <ReferenceLine y={0} stroke="var(--app-border-strong)" />
               <Bar dataKey="amount" radius={[5, 5, 5, 5]} maxBarSize={32} {...chartMotion}>
                 {activity.map((item, index) => <Cell key={`${item.label}-${index}`} fill={item.amount >= 0 ? "var(--money-positive)" : "var(--money-negative)"}/>) }
               </Bar>
-              <Line type="monotone" dataKey="balance" stroke="var(--app-text-muted)" strokeWidth={1.5} strokeDasharray="6 6" dot={false} {...chartMotion}/>
             </ComposedChart>
           </ResponsiveContainer>
         </div>

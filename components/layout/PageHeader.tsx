@@ -9,7 +9,6 @@ import {
   IconLayoutSidebarLeftExpand,
   IconPlus,
   IconSearch,
-  IconSettings,
   IconMessage,
 } from "@tabler/icons-react";
 import Link from "next/link";
@@ -23,6 +22,7 @@ import {
   systemNavigation,
 } from "./navigation";
 import styles from "./AppShell.module.css";
+import { NavigationDrawer } from "./NavigationDrawer";
 import { type MonthSelection, withMonth } from "@/lib/helpers/monthSelection";
 
 type PageHeaderProps = {
@@ -139,8 +139,8 @@ export function PageHeader({
       </header>
 
       <header className={`${styles.mobileHeader} glass-panel`}>
-        <Link className={styles.mobileMark} href={selectedMonth ? withMonth("/settings", selectedMonth) : "/settings"} aria-label="Open settings"><IconSettings size={24} /></Link>
-        <strong className={styles.mobileTitle}>BaerVault</strong>
+        <NavigationDrawer pathname={pathname} selectedMonth={selectedMonth} />
+        <h1 className={styles.mobileTitle}>{title}</h1>
         <span className={styles.mobileProfile}><Link className={styles.mobileHousehold} href={selectedMonth ? withMonth("/household", selectedMonth) : "/household"} aria-label="Open household"><IconMessage size={24}/></Link><UserButton /></span>
       </header>
       {mobileQuickActions.length > 0 && (

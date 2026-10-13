@@ -30,7 +30,10 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: "cover",
   interactiveWidget: "resizes-content",
-  themeColor: "#0879dd",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f2f2f7" },
+    { media: "(prefers-color-scheme: dark)", color: "#000000" },
+  ],
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -45,7 +48,26 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         </Script>
         <MobileViewportRuntime />
         <PwaRuntime />
-        <ClerkProvider>
+        <ClerkProvider
+          appearance={{ variables: {
+            colorPrimary: "var(--app-accent)",
+            colorPrimaryForeground: "var(--app-on-accent)",
+            colorBackground: "var(--app-surface)",
+            colorForeground: "var(--app-text-strong)",
+            colorMutedForeground: "var(--app-text-muted)",
+            colorNeutral: "var(--app-text-strong)",
+            colorInput: "var(--app-surface-raised)",
+            colorInputForeground: "var(--app-text-strong)",
+            colorBorder: "var(--app-border)",
+            colorDanger: "var(--app-danger)",
+            fontFamily: "var(--font-system)",
+            borderRadius: "0.6875rem",
+          } }}
+          localization={{
+            signIn: { start: { title: "Sign in to BaerVault" } },
+            signUp: { start: { title: "Create your BaerVault account" } },
+          }}
+        >
           <UiProvider><PreferencesProvider>{children}</PreferencesProvider></UiProvider>
         </ClerkProvider>
       </body>

@@ -12,5 +12,7 @@
 .body p { margin: 0; color: var(--app-text-muted); line-height: 1.55; }
 .actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
 .actions button { min-height: 42px; padding: 9px 15px; border: 1px solid var(--glass-edge); border-radius: 10px; color: var(--app-text-strong); background: var(--control-glass); font: inherit; font-weight: 650; cursor: pointer; }
-.actions .danger { border-color: #a34444; color: white; background: #a34444; }
+.actions .danger { border-color: var(--app-danger-fill); color: var(--app-on-danger); background: var(--app-danger-fill); }
 .actions button:focus-visible { outline: 2px solid var(--app-focus); outline-offset: 2px; }
+@media (prefers-reduced-transparency: reduce) { .content { background: var(--app-surface) !important; backdrop-filter: none; -webkit-backdrop-filter: none; } }
+@media (max-width: 24rem) { .actions { flex-wrap: wrap; } .actions button { flex: 1; min-height: 44px; } }

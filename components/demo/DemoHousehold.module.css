@@ -3,8 +3,8 @@
   margin: auto;
 }
 
-.banner { border: 1px solid var(--glass-border) !important; border-radius: 16px !important; background: var(--glass-surface) !important; box-shadow: var(--shadow-glass) !important; backdrop-filter: blur(30px) saturate(155%); }
-.card { border-color: color-mix(in srgb, var(--app-border) 84%, transparent) !important; border-radius: 16px !important; background: color-mix(in srgb, var(--app-surface) 96%, transparent) !important; box-shadow: var(--shadow-surface) !important; }
+.banner { border: 1px solid var(--glass-border); border-radius: 16px; background: var(--glass-surface); box-shadow: var(--shadow-glass); backdrop-filter: none; }
+.card { border-color: color-mix(in srgb, var(--app-border) 84%, transparent); border-radius: 16px; background: var(--app-surface); box-shadow: var(--shadow-surface); }
 
 .banner {
   display: flex;
@@ -12,11 +12,11 @@
   gap: 10px;
   margin-bottom: 24px;
   padding: 11px 14px;
-  border: 1px solid #d5e4dc;
+  border: 1px solid var(--app-border);
   border-radius: 11px;
-  color: #315f50;
-  background: #edf5f1;
-  font-size: 12px;
+  color: var(--money-positive);
+  background: var(--app-surface);
+  font-size: 0.8125rem;
 }
 
 .banner strong {
@@ -30,8 +30,8 @@
 
 .page h1 {
   margin: 0;
-  color: #15243a;
-  font-size: clamp(30px, 4vw, 42px);
+  color: var(--app-text-strong);
+  font-size: clamp(1.875rem, 4vw, 2.625rem);
   letter-spacing: -0.04em;
 }
 
@@ -58,7 +58,7 @@
 
 .card h2 {
   margin: 0 0 16px;
-  font-size: 17px;
+  font-size: 1.0625rem;
 }
 
 .card p {
@@ -72,11 +72,11 @@
   gap: 18px;
   padding: 12px 0;
   border-top: 1px solid var(--app-border);
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 
 .note {
-  font-size: 12px;
+  font-size: 0.8125rem;
 }
 
 :global(:root[data-theme="dark"]) .page :is(h1, h2, strong) {
