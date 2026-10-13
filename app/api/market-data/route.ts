@@ -134,6 +134,7 @@ export async function GET(request: NextRequest) {
   const range = Object.hasOwn(ranges, rangeParam) ? (rangeParam as keyof typeof ranges) : "1Y";
   const symbolsParam = request.nextUrl.searchParams.get("symbols");
   if (symbolsParam) {
+    const pricesOnly = request.nextUrl.searchParams.get("pricesOnly") === "1";
     const symbols: string[] = [...new Set<string>(
       symbolsParam
         .split(",")
@@ -152,16 +153,18 @@ export async function GET(request: NextRequest) {
       symbols.map((symbol) => fetchMarketSeries(symbol, range, apiKey)),
     );
     const prices: Record<string, number> = {};
+    const series: Record<string, Extract<MarketResult, { ok: true }>["data"]> = {};
     const unavailable: string[] = [];
     results.forEach((result, index) => {
       const symbol = symbols[index];
       if (result.ok && Number.isFinite(result.data.price)) {
         prices[symbol] = Number(result.data.price);
+        if (!pricesOnly) series[symbol] = result.data;
       } else {
         unavailable.push(symbol);
       }
     });
-    return Response.json({ prices, unavailable });
+    return Response.json({ prices, unavailable, ...(pricesOnly ? {} : { series }) });
   }
 
   const symbol = request.nextUrl.searchParams.get("symbol")?.trim().toUpperCase() ?? "";

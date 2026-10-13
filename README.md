@@ -89,7 +89,9 @@ Start with `PLAID_ENV=sandbox`. Plaid Link requests the Transactions product; `/
 
 ```bash
 npm run dev      # Start the development server
+npm test         # Run unit and database tests
 npm run lint     # Check code quality
+npm run typecheck # Check TypeScript
 npm run build    # Create a production build
 ```
 

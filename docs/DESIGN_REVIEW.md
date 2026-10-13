@@ -74,3 +74,9 @@ Build, type checking, lint, unit-test results, responsive measurements, and sele
 Production authentication requires configured Clerk keys. The public landing page and demo bypass authentication middleware; private destinations still require it. This review did not create a real user account or connect a bank.
 
 Current assessment: **Good within the verified web/demo scope**. Real-device PWA installation and authenticated assistive-technology checks remain necessary before claiming full accessibility or platform conformance.
+
+## Visual previews
+
+[Light mobile budget](design-review/budget-light.png), [dark mobile budget](design-review/budget-dark.png), [dark desktop dashboard](design-review/dashboard-desktop-dark.png), and [dark mobile dashboard](design-review/dashboard-mobile-dark.png).
+
+The final production check returned HTTP 200 for the landing page and all ten demo workspaces in both appearances, with no page-level horizontal overflow at 390px. Dark-mode measurements were checked after styles settled; primary and supporting text on opaque financial surfaces meet the intended contrast thresholds. This remains a focused UI review rather than a complete automated accessibility certification.

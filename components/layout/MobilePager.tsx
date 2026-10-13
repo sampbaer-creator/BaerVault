@@ -16,7 +16,7 @@ const loaders = {
   "/investments": () => import("@/features/investments/InvestmentsWorkspace").then((m) => ({ default: m.InvestmentsWorkspace })),
   "/transactions": () => import("@/features/transactions/TransactionsWorkspace").then((m) => ({ default: m.TransactionsWorkspace })),
   "/dashboard": () => import("@/features/dashboard/DashboardOverview").then((m) => ({ default: m.DashboardOverview })),
-  "/budget": () => import("@/features/budget/BudgetWorkspace").then((m) => ({ default: m.BudgetWorkspace })),
+  "/budget": () => import("@/features/budgets/BudgetsWorkspace").then((m) => ({ default: m.BudgetsWorkspace })),
   "/goals": () => import("@/features/goals/GoalsWorkspace").then((m) => ({ default: m.GoalsWorkspace })),
 } as const;
 
@@ -25,7 +25,7 @@ const AccountsScreen = lazy(loaders["/accounts"]);
 const InvestmentsScreen = lazy(loaders["/investments"]);
 const TransactionsScreen = lazy(loaders["/transactions"]);
 const DashboardScreen = lazy(loaders["/dashboard"]);
-const BudgetScreen = lazy(loaders["/budget"]);
+const BudgetsScreen = lazy(loaders["/budget"]);
 const GoalsScreen = lazy(loaders["/goals"]);
 
 function preloadRoute(route: string | undefined) {
@@ -51,7 +51,7 @@ function Screen({ route, data }: { route: string; data: MobileShellData }) {
   const selectedMonth = { year: data.selectedMonth.year, month: data.selectedMonth.monthNumber };
   if (route === "/transactions") return <TransactionsScreen initialMonth={data.selectedMonth} selectedMonth={selectedMonth} />;
   if (route === "/dashboard") return <DashboardScreen model={data.dashboard} selectedMonth={selectedMonth} />;
-  if (route === "/budget") return <BudgetScreen initialBudget={data.selectedMonth} accounts={data.financialAccounts.map(({ id, name, institution, type }) => ({ id, name, institution, type }))} />;
+  if (route === "/budget") return <BudgetsScreen initialBudget={data.selectedMonth} accounts={data.financialAccounts.map(({ id, name, institution, type }) => ({ id, name, institution, type }))} />;
   return <GoalsScreen initialGoals={data.goals} />;
 }
 
@@ -155,6 +155,18 @@ export function MobilePager({ children, pathname, progress, onActiveIndex, selec
     if (index >= 0 && index !== activeRef.current) { activeRef.current = index; setActiveIndex(index); progress.set(index); }
   }, [pathname, progress]);
   useEffect(() => {
+    const syncFromHistory = () => {
+      const index = mobileRouteOrder.indexOf(window.location.pathname);
+      if (index < 0 || index === activeRef.current) return;
+      activeRef.current = index;
+      setActiveIndex(index);
+      progress.set(index);
+      document.getElementById("main-content")?.focus({ preventScroll: true });
+    };
+    window.addEventListener("popstate", syncFromHistory);
+    return () => window.removeEventListener("popstate", syncFromHistory);
+  }, [progress]);
+  useEffect(() => {
     if (!enabled) return;
     const reset = () => x.set(-width());
     reset(); window.addEventListener("resize", reset);
@@ -199,7 +211,7 @@ export function MobilePager({ children, pathname, progress, onActiveIndex, selec
     {loadError ? <p className={styles.syncError} role="alert">{loadError} <button type="button" onClick={() => void load()}>Retry</button></p> : null}
     <motion.div className={styles.mobilePagerTrack} style={{ x }}>
       {routes.map((route, slot) => <section key={route ?? `empty-${slot}`} className={styles.mobilePagerPanel} aria-hidden={slot !== 1} inert={slot !== 1} onScroll={(event) => { if (slot === 1) window.dispatchEvent(new CustomEvent("bearvault:mobile-scroll", { detail: event.currentTarget.scrollTop > 10 })); }}>
-        {route ? <Suspense fallback={<div className={styles.mobilePagerLoading} aria-label="Loading screen" />}><Screen key={`${route}-${selectedYear}-${selectedMonthNumber}`} route={route} data={data} /></Suspense> : null}
+        {route ? <Suspense fallback={<div className={styles.mobilePagerLoading} role="status" aria-label="Loading screen" />}><Screen key={`${route}-${selectedYear}-${selectedMonthNumber}`} route={route} data={data} /></Suspense> : null}
       </section>)}
     </motion.div>
   </div>;

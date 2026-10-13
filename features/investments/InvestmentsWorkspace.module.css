@@ -1043,7 +1043,7 @@
 .accountTabs { gap: 8px; margin-bottom: 14px; padding: 0; background: transparent; }
 .accountTabs button { min-height: 48px; border: 1px solid var(--app-border); border-radius: 10px; background: var(--app-surface); box-shadow: none; }
 .accountTabs button::before { display: none; }
-.sheet { overflow: hidden; border: 1px solid var(--app-border); border-radius: 14px; background: var(--app-surface); box-shadow: none; }
+.sheet { overflow: hidden; border: 1px solid var(--panel-glass-border); border-radius: 14px; background: var(--panel-glass-surface); box-shadow: var(--panel-glass-shadow); backdrop-filter: var(--panel-glass-blur); -webkit-backdrop-filter: var(--panel-glass-blur); }
 .sheetHeading { padding: 17px 20px; }
 .sheetHeading h3 { font-size: 0.875rem; }
 .tableHead { padding: 10px 20px; font-size: 0.8125rem; letter-spacing: .05em; }
@@ -1156,9 +1156,12 @@
 }
 .watchlistPanel {
   overflow: hidden;
-  border: 1px solid var(--app-border);
+  border: 1px solid var(--panel-glass-border);
   border-radius: 14px;
-  background: var(--app-surface);
+  background: var(--panel-glass-surface);
+  box-shadow: var(--panel-glass-shadow);
+  backdrop-filter: var(--panel-glass-blur);
+  -webkit-backdrop-filter: var(--panel-glass-blur);
 }
 .watchlistHeading,
 .activityHeading {
@@ -1229,9 +1232,12 @@
   margin-top: 14px;
   overflow: hidden;
   scroll-margin-top: 112px;
-  border: 1px solid var(--app-border);
+  border: 1px solid var(--panel-glass-border);
   border-radius: 14px;
-  background: var(--app-surface);
+  background: var(--panel-glass-surface);
+  box-shadow: var(--panel-glass-shadow);
+  backdrop-filter: var(--panel-glass-blur);
+  -webkit-backdrop-filter: var(--panel-glass-blur);
 }
 .activityHeading > div {
   display: flex;

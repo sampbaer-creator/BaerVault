@@ -3,7 +3,7 @@
 import { IconBuildingBank } from "@tabler/icons-react";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { completeBankConnectionAction, refreshBankConnectionAction, startBankConnectionAction } from "@/app/(app)/accounts/actions";
+import { completeBankConnectionAction, refreshBankConnectionAction, startBankConnectionAction } from "./actions";
 import { SHELL_QUICK_ADD_EVENT, type ShellQuickAddAction } from "@/lib/helpers/shellQuickAdd";
 import { invalidateMobileShell } from "@/lib/helpers/mobileShell";
 

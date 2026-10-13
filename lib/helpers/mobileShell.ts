@@ -3,7 +3,7 @@ import type { BankConnectionSummary } from "@/lib/data/bankConnections";
 import type { BudgetMonth } from "@/lib/demo/finance";
 import type { SavingsGoal } from "@/lib/demo/goals";
 import type { InvestmentAccount } from "@/lib/demo/investmentData";
-import type { DashboardViewModel } from "@/features/dashboard/dashboardViewModel";
+import type { DashboardViewModel } from "@/lib/dashboard";
 
 export type MobileBudgetMonth = BudgetMonth & {
   id: string | null;

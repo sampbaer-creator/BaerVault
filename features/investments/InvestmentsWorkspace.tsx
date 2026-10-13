@@ -1,5 +1,5 @@
 "use client";
-import { useServerState } from "@/lib/hooks/useServerState";
+import { useServerSnapshotState } from "@/lib/hooks/useServerSnapshotState";
 
 import { Drawer } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
@@ -37,7 +37,7 @@ import {
   deletePurchaseLotAction,
   updateHoldingAction,
   updatePurchaseLotAction,
-} from "@/app/(app)/investments/actions";
+} from "./actions";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { SwipeActionRow } from "@/components/shared/SwipeActionRow";
 import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
@@ -74,7 +74,7 @@ export function InvestmentsWorkspace({
   const currency = useCurrencyFormatter();
   const reduceMotion = useReducedMotion();
   const mobile = useMediaQuery("(max-width: 47.999rem)");
-  const [accounts, setAccounts] = useServerState(initialAccounts);
+  const [accounts, setAccounts] = useServerSnapshotState(initialAccounts);
   const [accountId, setAccountId] = useState(initialAccounts[0]?.id ?? "");
   const [holding, setHolding] = useState<Holding | null>(null);
   const [range, setRange] = useState<Range>("1Y");
@@ -153,18 +153,17 @@ export function InvestmentsWorkspace({
   useEffect(() => {
     if (!account?.holdings.length) return;
     const controller = new AbortController();
-    Promise.all(
-      account.holdings.map(async (item) => {
-        const response = await fetch(
-          `/api/market-data?symbol=${encodeURIComponent(item.symbol)}&range=${portfolioRange}`,
-          { signal: controller.signal },
-        );
+    const symbols = [...new Set(account.holdings.map((item) => item.symbol))];
+    fetch(
+      `/api/market-data?symbols=${encodeURIComponent(symbols.join(","))}&range=${portfolioRange}`,
+      { signal: controller.signal },
+    )
+      .then(async (response) => {
         const data = await response.json();
         if (!response.ok) throw new Error(data.error);
-        return [item.symbol, data] as const;
-      }),
-    )
-      .then((entries) => setAccountMarkets(Object.fromEntries(entries)))
+        return (data.series ?? {}) as Record<string, MarketData>;
+      })
+      .then((markets) => setAccountMarkets(markets))
       .catch(() => undefined);
     return () => controller.abort();
   }, [account, portfolioRange]);
@@ -1089,7 +1088,7 @@ export function InvestmentsWorkspace({
           title: styles.drawerTitle,
         }}
       >
-        {error && <p className={styles.formError}>{error}</p>}
+        {error && <p className={styles.formError} role="alert" aria-live="assertive">{error}</p>}
         <form className={styles.holdingForm} onSubmit={addAccount}>
           <label>
             Account name
@@ -1154,7 +1153,7 @@ export function InvestmentsWorkspace({
           title: styles.drawerTitle,
         }}
       >
-        {error && <p className={styles.formError}>{error}</p>}
+        {error && <p className={styles.formError} role="alert" aria-live="assertive">{error}</p>}
         <form className={styles.holdingForm} onSubmit={addHolding}>
           <div className={styles.formRow}>
             <label>
@@ -1277,7 +1276,7 @@ export function InvestmentsWorkspace({
             </div>
             {holdingEdit && (
               <form className={styles.holdingForm} onSubmit={saveHolding}>
-                {error && <p className={styles.formError}>{error}</p>}
+                {error && <p className={styles.formError} role="alert" aria-live="assertive">{error}</p>}
                 <div className={styles.formRow}>
                   <label>
                     Ticker
@@ -1390,7 +1389,7 @@ export function InvestmentsWorkspace({
               </div>
               {lotOpen && (
                 <form className={styles.holdingForm} onSubmit={addLot}>
-                  {error && <p className={styles.formError}>{error}</p>}
+                  {error && <p className={styles.formError} role="alert" aria-live="assertive">{error}</p>}
                   <div className={styles.formRow}>
                     <label>
                       Shares

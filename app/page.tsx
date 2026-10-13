@@ -7,6 +7,7 @@ import {
   IconDatabase,
   IconKey,
   IconLock,
+  IconMinus,
   IconPigMoney,
   IconReceipt,
   IconShieldCheck,
@@ -18,6 +19,7 @@ import {
 import Link from "next/link";
 
 import { BaerVaultLogo } from "@/components/brand/BaerVaultLogo";
+import { TrackedLink } from "@/components/shared/TrackedLink";
 import styles from "./page.module.css";
 
 const benefits = [
@@ -57,6 +59,41 @@ const setupSteps = [
   ["01", "Create your household", "Sign in securely and create the private workspace your records belong to."],
   ["02", "Add what matters", "Start with accounts, a monthly budget, goals, or the investments you already own."],
   ["03", "Review together", "Use the dashboard to see changes, priorities, and progress in one place."],
+] as const;
+
+const comparisonRows = [
+  ["One household view instead of one spreadsheet per person", true, false],
+  ["Budgets, accounts, goals, and investments in one workspace", true, false],
+  ["Bank sync so balances stay current automatically", true, false],
+  ["Built specifically for shared household finances", true, false],
+  ["Someone has to remember to update it every week", false, true],
+] as const;
+
+const faqs = [
+  {
+    q: "Is BaerVault free right now?",
+    a: "Yes. BaerVault is free while it's in early access. We'll be upfront before that ever changes.",
+  },
+  {
+    q: "How does bank connection work?",
+    a: "Account syncing runs through Plaid, the same connection layer used by most major finance apps. BaerVault never sees or stores your bank credentials.",
+  },
+  {
+    q: "Can my partner or household see the same data?",
+    a: "Yes — that's the point. Invite your household and everyone sees the same accounts, budget, and goals, isolated from every other household on BaerVault.",
+  },
+  {
+    q: "Is my data actually private?",
+    a: "Your household's records are isolated with Supabase row-level security and protected behind Clerk authentication with MFA support. See the Security section below.",
+  },
+  {
+    q: "Do I have to connect a bank account to use it?",
+    a: "No. You can track accounts, budgets, and goals manually, and connect a bank later if you want balances to update automatically.",
+  },
+  {
+    q: "What happens to my data if I stop using BaerVault?",
+    a: "It's yours. You can export or delete your household's records at any time from Settings.",
+  },
 ] as const;
 
 function DashboardPreview() {
@@ -148,7 +185,8 @@ export default function Home() {
           </Link>
           <div className={styles.navLinks}>
             <a href="#product">Product</a>
-            <a href="#how">How it works</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#faq">FAQ</a>
             <a href="#security">Security</a>
           </div>
           <div className={styles.navActions}>
@@ -167,10 +205,10 @@ export default function Home() {
             into one calm workspace built for your whole household.
           </p>
           <div className={styles.heroActions}>
-            <Link className={styles.primaryAction} href="/sign-up">
+            <TrackedLink className={styles.primaryAction} href="/sign-up" event="cta_click" eventProps={{ placement: "hero", label: "create_account" }}>
               Create your free account <IconArrowRight size={17} aria-hidden="true" />
-            </Link>
-            <Link className={styles.secondaryAction} href="/demo">Explore the demo</Link>
+            </TrackedLink>
+            <TrackedLink className={styles.secondaryAction} href="/demo" event="cta_click" eventProps={{ placement: "hero", label: "explore_demo" }}>Explore the demo</TrackedLink>
             <Link className={styles.mobileSignInAction} href="/sign-in">Sign in</Link>
           </div>
           <p className={styles.securityNote}>
@@ -273,6 +311,75 @@ export default function Home() {
         </div>
       </section>
 
+      <section className={styles.comparisonSection} aria-labelledby="comparison-heading">
+        <div className={styles.sectionHeading}>
+          <p>Why not just a spreadsheet</p>
+          <h2 id="comparison-heading">Built for a household, not one person&apos;s habit.</h2>
+        </div>
+        <div className={styles.comparisonTable} role="table">
+          <div className={styles.comparisonHead} role="row">
+            <span role="columnheader" />
+            <span role="columnheader">BaerVault</span>
+            <span role="columnheader">A shared spreadsheet</span>
+          </div>
+          {comparisonRows.map(([label, hasIt, spreadsheetHasIt]) => (
+            <div className={styles.comparisonRow} role="row" key={label}>
+              <span role="cell">{label}</span>
+              <span role="cell" className={styles.comparisonCell}>
+                {hasIt ? <IconCheck size={16} className={styles.checkIcon} aria-hidden="true" /> : <IconMinus size={16} aria-hidden="true" />}
+              </span>
+              <span role="cell" className={styles.comparisonCell}>
+                {spreadsheetHasIt ? <IconCheck size={16} className={styles.checkIcon} aria-hidden="true" /> : <IconMinus size={16} aria-hidden="true" />}
+              </span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className={styles.pricingSection} id="pricing" aria-labelledby="pricing-heading">
+        <div className={styles.sectionHeading}>
+          <p>Pricing</p>
+          <h2 id="pricing-heading">Free while BaerVault is in early access.</h2>
+          <span>No trial countdown, no card required. We will tell you plainly before that ever changes.</span>
+        </div>
+        <div className={styles.pricingCard}>
+          <div className={styles.pricingCardHead}>
+            <span>Early access</span>
+            <strong>$0</strong>
+            <small>per household, for now</small>
+          </div>
+          <ul className={styles.pricingList}>
+            {[
+              "Unlimited accounts, budgets, and goals",
+              "Shared household workspace",
+              "Bank sync via Plaid",
+              "Investment tracking",
+              "Light and dark themes",
+            ].map((item) => (
+              <li key={item}><IconCheck size={16} className={styles.checkIcon} aria-hidden="true" /> {item}</li>
+            ))}
+          </ul>
+          <TrackedLink className={styles.primaryAction} href="/sign-up" event="cta_click" eventProps={{ placement: "pricing", label: "create_account" }}>
+            Create your free account <IconArrowRight size={17} aria-hidden="true" />
+          </TrackedLink>
+        </div>
+      </section>
+
+      <section className={styles.faqSection} id="faq" aria-labelledby="faq-heading">
+        <div className={styles.sectionHeading}>
+          <p>Questions</p>
+          <h2 id="faq-heading">Before you connect anything.</h2>
+        </div>
+        <div className={styles.faqList}>
+          {faqs.map(({ q, a }) => (
+            <details className={styles.faqItem} key={q}>
+              <summary>{q}</summary>
+              <p>{a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
       <section className={styles.securitySection} id="security" aria-labelledby="security-heading">
         <div>
           <IconShieldCheck size={24} aria-hidden="true" />
@@ -294,10 +401,10 @@ export default function Home() {
           <h2>Bring your household finances into one place.</h2>
         </div>
         <div>
-          <Link className={styles.primaryAction} href="/sign-up">
+          <TrackedLink className={styles.primaryAction} href="/sign-up" event="cta_click" eventProps={{ placement: "final_cta", label: "create_account" }}>
             Create account <IconArrowRight size={17} aria-hidden="true" />
-          </Link>
-          <Link className={styles.secondaryAction} href="/demo">Try the demo first</Link>
+          </TrackedLink>
+          <TrackedLink className={styles.secondaryAction} href="/demo" event="cta_click" eventProps={{ placement: "final_cta", label: "try_demo" }}>Try the demo first</TrackedLink>
         </div>
       </section>
 

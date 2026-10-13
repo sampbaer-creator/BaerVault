@@ -26,7 +26,7 @@ The root entry point is `app/layout.tsx`. It installs Clerk, Mantine, preference
 | `/dashboard` | `app/(app)/dashboard/page.tsx` | `features/dashboard/` |
 | `/transactions` | `app/(app)/transactions/page.tsx` | `features/transactions/` |
 | `/accounts` | `app/(app)/accounts/page.tsx` | `features/accounts/` |
-| `/budget` | `app/(app)/budget/page.tsx` | `features/budget/` |
+| `/budget` | `app/(app)/budget/page.tsx` | `features/budgets/` |
 | `/investments` | `app/(app)/investments/page.tsx` | `features/investments/` |
 | `/goals` | `app/(app)/goals/page.tsx` | `features/goals/` |
 | `/household` | `app/(app)/household/page.tsx` | `features/household/` |

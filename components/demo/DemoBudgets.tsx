@@ -1,10 +1,10 @@
 "use client";
-import { BudgetWorkspace } from "@/features/budget/BudgetWorkspace";import { augustBudget, withDemoSpendingAccounts } from "@/lib/demo/mockFinanceData";
+import { BudgetsWorkspace } from "@/features/budgets/BudgetsWorkspace";import { augustBudget, withDemoSpendingAccounts } from "@/lib/demo/mockFinanceData";
 import { demoFinancialAccounts } from "@/lib/demo/accounts";
 import type { BudgetMonth } from "@/lib/demo/finance";
 const ok=<T,>(data:T)=>Promise.resolve({ok:true as const,data});const id=()=>`demo-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 const actions={addCategoryAction:(input:{name:string;plannedAmount:number})=>ok({id:id(),name:input.name,plannedAmount:input.plannedAmount,purchases:[]}),deleteBudgetCategoryAction:()=>ok(undefined),deleteBudgetEntryAction:()=>ok(undefined),saveBudgetEntryAction:(input:{id?:string})=>ok({id:input.id??id()}),updateBudgetCategoryAction:()=>ok(undefined)};
-export function DemoBudget({ year = 2026, month = 8 }: { year?: number; month?: number }) {
+export function DemoBudgets({ year = 2026, month = 8 }: { year?: number; month?: number }) {
   const isFeaturedMonth = year === 2026 && month === 8;
   const label = new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric", timeZone: "UTC" })
     .format(new Date(Date.UTC(year, month - 1, 1)));
@@ -16,5 +16,5 @@ export function DemoBudget({ year = 2026, month = 8 }: { year?: number; month?: 
     year,
     monthNumber: month,
   };
-  return <BudgetWorkspace key={`${year}-${month}`} initialBudget={budget} accounts={demoFinancialAccounts.map(({ id, name, institution, type }) => ({ id, name, institution, type }))} actions={actions} />;
+  return <BudgetsWorkspace key={`${year}-${month}`} initialBudget={budget} accounts={demoFinancialAccounts.map(({ id, name, institution, type }) => ({ id, name, institution, type }))} actions={actions} />;
 }

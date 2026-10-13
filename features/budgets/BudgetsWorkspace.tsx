@@ -1,7 +1,7 @@
 "use client";
 
 import { Drawer } from "@mantine/core";
-import { useServerState } from "@/lib/hooks/useServerState";
+import { useServerSnapshotState } from "@/lib/hooks/useServerSnapshotState";
 import { useMediaQuery } from "@mantine/hooks";
 import {
   IconArrowLeft,
@@ -18,7 +18,7 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
-import * as realActions from "@/app/(app)/budget/actions";
+import * as realActions from "./actions";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { SwipeActionRow } from "@/components/shared/SwipeActionRow";
 import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
@@ -36,7 +36,7 @@ import {
   type Purchase,
 } from "@/lib/demo/finance";
 
-import styles from "./BudgetWorkspace.module.css";
+import styles from "./BudgetsWorkspace.module.css";
 import { invalidateMobileShell } from "@/lib/helpers/mobileShell";
 import { SHELL_QUICK_ADD_EVENT, type ShellQuickAddAction } from "@/lib/helpers/shellQuickAdd";
 import { offsetMonth, withMonth } from "@/lib/helpers/monthSelection";
@@ -105,13 +105,13 @@ type BudgetAdviceResult = { ok: true; data: BudgetAdvice } | { ok: false; error:
 type BudgetActions=Pick<typeof realActions,"addCategoryAction"|"deleteBudgetCategoryAction"|"deleteBudgetEntryAction"|"saveBudgetEntryAction"|"updateBudgetCategoryAction"> & {
   getBudgetAdviceAction?: (input: { year: number; month: number }) => Promise<BudgetAdviceResult>;
 };
-export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActions, showAdviceBanner = false }: { initialBudget: BudgetMonth & { year: number; monthNumber: number }; accounts?: BudgetAccountOption[]; actions?:BudgetActions; showAdviceBanner?: boolean }) {
+export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realActions, showAdviceBanner = false }: { initialBudget: BudgetMonth & { year: number; monthNumber: number }; accounts?: BudgetAccountOption[]; actions?:BudgetActions; showAdviceBanner?: boolean }) {
   const currency=useCurrencyFormatter();
   const router = useRouter();
   const pathname = usePathname();
   const accountsPath = pathname.startsWith("/demo") ? "/demo/accounts" : "/accounts";
   const isMobile = useMediaQuery("(max-width: 47.999rem)");
-  const [categories, setCategories] = useServerState<BudgetCategory[]>(initialBudget.categories);
+  const [categories, setCategories] = useServerSnapshotState<BudgetCategory[]>(initialBudget.categories);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -357,7 +357,8 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
 
       <Drawer opened={Boolean(selected)} onClose={() => setSelectedId(null)} position={isMobile ? "bottom" : "right"} size={isMobile ? "88%" : 440} radius={isMobile ? "18px 18px 0 0" : 0} title={selected?.name} classNames={{ content: styles.drawer, header: styles.drawerHeader, body: styles.drawerBody, title: styles.drawerTitle }}>
         {selected && <div className={styles.categoryDetail}>
-          <label className={styles.categoryForm}>Category name<input value={categoryNameDraft} onChange={(event)=>setCategoryNameDraft(event.target.value)} onBlur={savePlanned}/></label>
+          <label className={styles.categoryForm}>Category name<input value={categoryNameDraft} onChange={(event)=>setCategoryNameDraft(event.target.value)} /></label>
+          <button type="button" className={styles.primaryButton} onClick={() => void savePlanned()}>Save category changes</button>
           <div className={styles.detailTotals}>
             <div><span>Budget</span>{editingPlanned ? <div className={styles.inlineEdit}><span>$</span><input aria-label="Planned budget amount" inputMode="decimal" value={plannedDraft} onChange={(e) => setPlannedDraft(e.target.value)} autoFocus /><button type="button" onClick={savePlanned} aria-label="Save planned amount"><IconCheck size={17} /></button></div> : <button type="button" onClick={() => setEditingPlanned(true)}>{currency.format(selected.plannedAmount)}<IconEdit size={14} /></button>}</div>
             <div><span>Actual</span><strong>{currency.format(categoryActual(selected))}</strong></div>
@@ -381,7 +382,18 @@ export function BudgetWorkspace({ initialBudget, accounts = [], actions=realActi
       </Drawer>
 
       <Drawer opened={addingCategory} onClose={() => setAddingCategory(false)} position={isMobile ? "bottom" : "right"} size={isMobile ? "auto" : 400} radius={isMobile ? "18px 18px 0 0" : 0} title="Add category" classNames={{ content: styles.drawer, header: styles.drawerHeader, body: styles.drawerBody, title: styles.drawerTitle }}>
-        <form className={styles.categoryForm} onSubmit={addCategory}><label>Category<select required value={categoryDraft.name} onChange={(e) => setCategoryDraft({ ...categoryDraft, name: e.target.value })} autoFocus><option value="" disabled>Choose a popular category</option>{popularCategoryGroups.map((group)=><optgroup label={group.label} key={group.label}>{group.categories.map((category)=><option value={category} key={category}>{categoryEmoji(category)} {category}</option>)}</optgroup>)}</select></label><label>Planned amount<div className={styles.simpleAmount}><span>$</span><input inputMode="decimal" placeholder="0.00" value={categoryDraft.plannedAmount} onChange={(e) => setCategoryDraft({ ...categoryDraft, plannedAmount: e.target.value })} /></div></label><button className={styles.primaryButton} type="submit" disabled={saving}>{saving ? "Saving…" : "Add category"}</button></form>
+        <form className={styles.categoryForm} onSubmit={addCategory}>
+          <label>Category name<input required placeholder="e.g. Subscriptions" value={categoryDraft.name} onChange={(e) => setCategoryDraft({ ...categoryDraft, name: e.target.value })} autoFocus /></label>
+          <div className={styles.categorySuggestions}>
+            {popularCategoryGroups.flatMap((group) => group.categories).map((category) => (
+              <button type="button" key={category} className={styles.categoryChip} data-active={categoryDraft.name === category} onClick={() => setCategoryDraft({ ...categoryDraft, name: category })}>
+                <i aria-hidden="true">{categoryEmoji(category)}</i>{category}
+              </button>
+            ))}
+          </div>
+          <label>Planned amount<div className={styles.simpleAmount}><span>$</span><input inputMode="decimal" placeholder="0.00" value={categoryDraft.plannedAmount} onChange={(e) => setCategoryDraft({ ...categoryDraft, plannedAmount: e.target.value })} /></div></label>
+          <button className={styles.primaryButton} type="submit" disabled={saving}>{saving ? "Saving…" : "Add category"}</button>
+        </form>
       </Drawer>
       <ConfirmDialog opened={Boolean(pendingDelete)} title={`Delete ${pendingDelete?.label ?? "record"}?`} description={pendingDelete?.kind==="category"?"This permanently deletes the category and every spending entry inside it.":"This permanently deletes this spending entry."} confirmLabel={pendingDelete?.kind==="category"?"Delete category":"Delete entry"} busy={saving} onCancel={()=>setPendingDelete(null)} onConfirm={confirmDelete}/>
     </div>
