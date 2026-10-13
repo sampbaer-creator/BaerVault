@@ -1,3 +1,7 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Cash flow" };
+
 import { CashFlowWorkspace } from "@/features/cash-flow/CashFlowWorkspace";
 import { getBudgetMonth } from "@/lib/data/budgets";
 import { parseMonthSelection } from "@/lib/helpers/monthSelection";

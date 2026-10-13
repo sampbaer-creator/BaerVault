@@ -3,9 +3,9 @@
   margin: auto;
 }
 
-/* Refracted Vault presentation */
+/* Financial surfaces */
 .page { max-width: 1120px; margin-inline: auto; }
-.management { border: 1px solid var(--glass-border); border-radius: 16px; background: var(--glass-surface); box-shadow: var(--shadow-glass); backdrop-filter: none; }
+.management { border: 1px solid var(--app-border); border-radius: 16px; background: var(--app-surface); box-shadow: none;  }
 .clerk { border-radius: 14px; background: var(--app-surface); }
 @media (max-width: 47.999rem) { .management { border-radius: 15px; padding: 20px 16px; } }
 
@@ -18,9 +18,9 @@
   margin: 0 0 8px;
   color: var(--app-accent);
   font-size: 0.8125rem;
-  font-weight: 750;
+  font-weight: 650;
   letter-spacing: 0.1em;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .page h2 {
@@ -39,10 +39,10 @@
   padding: 26px;
   border: 1px solid var(--glass-edge);
   border-radius: 14px;
-  background: var(--glass-strong);
-  box-shadow: var(--shadow-glass), inset 0 1px 0 var(--glass-highlight);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  background: var(--app-surface);
+  box-shadow: none;
+
+
 }
 
 .heading {
@@ -64,12 +64,12 @@
 .heading > span {
   flex: 0 0 auto;
   padding: 7px 10px;
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--app-border);
   border-radius: 999px;
   color: var(--app-text-muted);
   background: var(--control-glass);
   font-size: 0.8125rem;
-  font-weight: 700;
+  font-weight: 650;
 }
 
 .clerk {
@@ -92,10 +92,10 @@
   .management {
     padding: 18px 14px;
     border-radius: 18px;
-    background: var(--panel-glass-surface);
-    box-shadow: var(--panel-glass-shadow);
-    backdrop-filter: var(--panel-glass-blur);
-    -webkit-backdrop-filter: var(--panel-glass-blur);
+    background: var(--app-surface);
+    box-shadow: none;
+
+
   }
 
   .heading {
@@ -109,4 +109,8 @@
   .clerk {
     margin-inline: -6px;
   }
+}
+
+.eyebrow {
+  display: none;
 }

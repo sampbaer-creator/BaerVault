@@ -1,3 +1,7 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Dashboard" };
+
 import { DashboardOverview } from "@/features/dashboard/DashboardOverview";
 import { createDashboardViewModel } from "@/features/dashboard/dashboardViewModel";
 import { getFinancialAccounts } from "@/lib/data/accounts";

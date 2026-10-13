@@ -1,26 +1,10 @@
-"use client";
+﻿"use client";
 
 import { UserButton } from "@clerk/nextjs";
-import {
-  IconArrowsExchange,
-  IconBuildingBank,
-  IconBell,
-  IconLayoutSidebarLeftCollapse,
-  IconLayoutSidebarLeftExpand,
-  IconPlus,
-  IconSearch,
-  IconMessage,
-} from "@tabler/icons-react";
+import { IconBuildingCommunity, IconLayoutSidebarLeftCollapse, IconLayoutSidebarLeftExpand, IconSearch } from "@tabler/icons-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-
-import { requestShellQuickAdd, type ShellQuickAddAction } from "@/lib/helpers/shellQuickAdd";
-
-import {
-  householdNavigation,
-  mainNavigation,
-  systemNavigation,
-} from "./navigation";
+import { allNavigation } from "./navigation";
 import styles from "./AppShell.module.css";
 import { NavigationDrawer } from "./NavigationDrawer";
 import { type MonthSelection, withMonth } from "@/lib/helpers/monthSelection";
@@ -33,135 +17,52 @@ type PageHeaderProps = {
   onToggleSidebar: () => void;
 };
 
-const searchablePages = [
-  ...mainNavigation,
-  ...householdNavigation,
-  ...systemNavigation,
-];
-
-export function PageHeader({
-  title,
-  pathname,
-  selectedMonth,
-  sidebarCollapsed,
-  onToggleSidebar,
-}: PageHeaderProps) {
+export function PageHeader({ title, pathname, selectedMonth, sidebarCollapsed, onToggleSidebar }: PageHeaderProps) {
   const [query, setQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
   const results = useMemo(() => {
     const normalized = query.trim().toLowerCase();
-    if (!normalized) return [];
-    return searchablePages.filter(({ label }) =>
-      label.toLowerCase().includes(normalized),
-    );
+    return normalized ? allNavigation.filter(({ label }) => label.toLowerCase().includes(normalized)) : [];
   }, [query]);
-  const quickAdd = useMemo(() => {
-    const actions: Record<string, { action: ShellQuickAddAction; label: string }> = {
-      "/budget": { action: "category", label: "Add category" },
-      "/goals": { action: "goal", label: "Add goal" },
-      "/transactions": { action: "income", label: "Add income" },
-    };
-    return actions[pathname.replace(/^\/demo/, "")];
-  }, [pathname]);
-  const mobileQuickActions = useMemo(() => {
-    const actions: Record<string, Array<{ action: ShellQuickAddAction; label: string; secondary?: boolean }>> = {
-      "/accounts": [
-        { action: "account-connect", label: "Connect bank" },
-        { action: "account-transfer", label: "Transfer", secondary: true },
-        { action: "account", label: "Add account" },
-      ],
-    };
-    const route = pathname.replace(/^\/demo/, "");
-    return actions[route] ?? (quickAdd ? [quickAdd] : []);
-  }, [pathname, quickAdd]);
 
-  return (
-    <>
-      <header className={`${styles.desktopHeader} glass-panel`}>
-        <div className={styles.headerIdentity}>
-          <button
-            className={styles.sidebarToggle}
-            type="button"
-            onClick={onToggleSidebar}
-            aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            aria-pressed={sidebarCollapsed}
-          >
-            {sidebarCollapsed ? (
-              <IconLayoutSidebarLeftExpand size={17} aria-hidden="true" />
-            ) : (
-              <IconLayoutSidebarLeftCollapse size={17} aria-hidden="true" />
-            )}
-          </button>
-          <div>
-            <h1 className={styles.headerTitle}>{title}</h1>
-            <p className={styles.headerSubtitle}>Household finance workspace</p>
-          </div>
+  return <>
+    <header className={styles.desktopHeader}>
+      <div className={styles.headerIdentity}>
+        <button className={styles.sidebarToggle} type="button" onClick={onToggleSidebar}
+          aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"} aria-pressed={sidebarCollapsed}>
+          {sidebarCollapsed ? <IconLayoutSidebarLeftExpand size={20} aria-hidden="true" /> : <IconLayoutSidebarLeftCollapse size={20} aria-hidden="true" />}
+        </button>
+        <h1 className={styles.headerTitle}>{title}</h1>
+      </div>
+      <div className={styles.headerTools}>
+        <div className={styles.searchWrap}
+          onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setSearchOpen(false); }}
+          onKeyDown={(event) => { if (event.key === "Escape") { setQuery(""); setSearchOpen(false); } }}>
+          <label className={styles.searchControl}>
+            <IconSearch size={18} aria-hidden="true" />
+            <span className={styles.srOnly}>Find a page in BearVault</span>
+            <input type="search" placeholder="Find a page" value={query}
+              onFocus={() => setSearchOpen(true)}
+              onChange={(event) => { setQuery(event.target.value); setSearchOpen(true); }}
+              aria-controls={searchOpen && query.trim() ? "page-search-results" : undefined} />
+          </label>
+          {searchOpen && query.trim() && <nav className={styles.searchResults} id="page-search-results" aria-label="Matching pages">
+            {results.length ? results.map(({ href, label, icon: Icon }) => <Link
+              href={selectedMonth ? withMonth(href, selectedMonth) : href} key={href}
+              onClick={() => { setQuery(""); setSearchOpen(false); }}>
+              <Icon size={18} aria-hidden="true" /><span>{label}</span>
+            </Link>) : <p role="status">No matching pages.</p>}
+          </nav>}
         </div>
-        <div className={styles.headerTools}>
-          <div className={styles.searchWrap}>
-            <label className={styles.searchControl}>
-              <IconSearch size={16} aria-hidden="true" />
-              <span className={styles.srOnly}>Search BaerVault pages</span>
-              <input
-                type="search"
-                placeholder="Search pages"
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                role="combobox"
-                aria-autocomplete="list"
-                aria-expanded={results.length > 0}
-                aria-controls="page-search-results"
-              />
-            </label>
-            {results.length > 0 && (
-              <nav
-                className={styles.searchResults}
-                id="page-search-results"
-                aria-label="Matching pages"
-                role="listbox"
-              >
-                {results.map(({ href, label, icon: Icon }) => (
-                  <Link role="option" href={selectedMonth ? withMonth(href, selectedMonth) : href} key={href} onClick={() => setQuery("")}>
-                    <Icon size={16} aria-hidden="true" />
-                    <span>{label}</span>
-                  </Link>
-                ))}
-              </nav>
-            )}
-          </div>
-          {quickAdd && (
-            <button
-              className={`${styles.periodControl} ${styles.quickAddControl}`}
-              type="button"
-              onClick={() => requestShellQuickAdd(quickAdd.action)}
-            >
-              <IconPlus size={15} aria-hidden="true" /> {quickAdd.label}
-            </button>
-          )}
-          <button className={styles.iconControl} type="button" disabled aria-label="Notifications (coming soon)" title="Notifications are coming soon"><IconBell size={18} aria-hidden="true" /></button>
-          <UserButton />
-        </div>
-      </header>
-
-      <header className={`${styles.mobileHeader} glass-panel`}>
-        <NavigationDrawer pathname={pathname} selectedMonth={selectedMonth} />
-        <h1 className={styles.mobileTitle}>{title}</h1>
-        <span className={styles.mobileProfile}><Link className={styles.mobileHousehold} href={selectedMonth ? withMonth("/household", selectedMonth) : "/household"} aria-label="Open household"><IconMessage size={24}/></Link><UserButton /></span>
-      </header>
-      {mobileQuickActions.length > 0 && (
-        <div className={styles.mobileQuickActions} aria-label="Page actions">
-          {mobileQuickActions.map((action) => (
-            <button
-              className={`${styles.mobileQuickAdd} ${action.secondary ? styles.mobileQuickSecondary : ""}`}
-              type="button"
-              onClick={() => requestShellQuickAdd(action.action)}
-              key={action.action}
-            >
-              {action.action === "account-transfer" ? <IconArrowsExchange size={17} aria-hidden="true" /> : action.action === "account-connect" ? <IconBuildingBank size={17} aria-hidden="true" /> : <IconPlus size={17} aria-hidden="true" />}
-              {action.label}
-            </button>
-          ))}
-        </div>
-      )}
-    </>
-  );
+        <UserButton />
+      </div>
+    </header>
+    <header className={styles.mobileHeader}>
+      <NavigationDrawer pathname={pathname} selectedMonth={selectedMonth} />
+      <h1 className={styles.mobileTitle}>{title}</h1>
+      <Link className={styles.mobileHousehold} href={selectedMonth ? withMonth("/household", selectedMonth) : "/household"} aria-label="Open household">
+        <IconBuildingCommunity size={24} aria-hidden="true" />
+      </Link>
+    </header>
+  </>;
 }

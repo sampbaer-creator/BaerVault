@@ -1,7 +1,6 @@
 "use client";
 
 import { IconArrowDownRight, IconArrowUpRight } from "@tabler/icons-react";
-import { useReducedMotion } from "motion/react";
 import {
   Bar,
   CartesianGrid,
@@ -26,7 +25,6 @@ export function CashFlowWorkspace({ month }: { month: BudgetMonth }) {
     notation: "compact", style: "currency", currency: currency.resolvedOptions().currency,
     maximumFractionDigits: 0,
   });
-  const reduceMotion = useReducedMotion();
   const income = totalIncome(month);
   const spending = totalSpending(month);
   const net = income - spending;
@@ -44,24 +42,24 @@ export function CashFlowWorkspace({ month }: { month: BudgetMonth }) {
     ...categories.filter((category) => category.amount > 0).map((category) => ({ label: category.name, amount: -category.amount })),
   ];
   const chartMotion = {
-    isAnimationActive: !reduceMotion,
-    animationDuration: 800,
+    isAnimationActive: false,
+    animationDuration: 0,
     animationEasing: "ease-out" as const,
   };
 
   return (
     <div className={styles.page}>
       <section className={styles.netCard} aria-labelledby="net-cash-flow">
-        <h2 id="net-cash-flow">Net income</h2>
+        <h2 id="net-cash-flow">Recorded cash flow</h2>
         <span>{month.month}</span>
         <strong className={net >= 0 ? styles.positive : styles.negative}><AnimatedNumber value={net} format={currency.format}/></strong>
-        <div className={styles.changePill}>{net >= 0 ? <IconArrowUpRight size={17}/> : <IconArrowDownRight size={17}/>}Current period</div>
+        <p className={styles.periodNote}>Recorded income less spending. Upcoming obligations are not deducted.</p>
         <div className={styles.cashChart} aria-label={`Income ${currency.format(income)}, spending ${currency.format(spending)}`}>
           <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart data={activity} margin={{ top: 10, right: 8, bottom: 0, left: 0 }}>
+            <ComposedChart accessibilityLayer data={activity} margin={{ top: 10, right: 8, bottom: 0, left: 0 }}>
               <CartesianGrid vertical={false} stroke="var(--app-border)" strokeDasharray="3 5" />
               <XAxis dataKey="label" hide />
-              <YAxis width={42} axisLine={false} tickLine={false} tick={{ fill: "var(--app-text-muted)", fontSize: 10 }} tickFormatter={(value) => compactMoney.format(Number(value))}/>
+              <YAxis width={56} axisLine={false} tickLine={false} tick={{ fill: "var(--app-text-muted)", fontSize: 13 }} tickFormatter={(value) => compactMoney.format(Number(value))}/>
               <Tooltip formatter={(value) => [currency.format(Number(value)), "Monthly activity"]}/>
               <ReferenceLine y={0} stroke="var(--app-border-strong)" />
               <Bar dataKey="amount" radius={[5, 5, 5, 5]} maxBarSize={32} {...chartMotion}>
@@ -80,10 +78,10 @@ export function CashFlowWorkspace({ month }: { month: BudgetMonth }) {
         <header><div><h2 id="spending-breakdown">Spend</h2><span>{month.month}</span></div><strong><AnimatedNumber value={spending} format={currency.format}/></strong></header>
         <div className={styles.spendChart} aria-label="Actual category spending compared with planned amounts">
           <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart data={categories.slice(0, 8)} margin={{ top: 10, right: 8, bottom: 0, left: 0 }}>
+            <ComposedChart accessibilityLayer data={categories.slice(0, 8)} margin={{ top: 10, right: 8, bottom: 0, left: 0 }}>
               <CartesianGrid vertical={false} stroke="var(--app-border)" strokeDasharray="3 5" />
               <XAxis dataKey="name" hide />
-              <YAxis width={42} axisLine={false} tickLine={false} tick={{ fill: "var(--app-text-muted)", fontSize: 10 }} tickFormatter={(value) => compactMoney.format(Number(value))}/>
+              <YAxis width={56} axisLine={false} tickLine={false} tick={{ fill: "var(--app-text-muted)", fontSize: 13 }} tickFormatter={(value) => compactMoney.format(Number(value))}/>
               <Tooltip formatter={(value, name) => [currency.format(Number(value)), name === "amount" ? "Spent" : "Planned"]}/>
               <Bar dataKey="amount" fill="var(--app-text-strong)" radius={[5, 5, 0, 0]} maxBarSize={32} {...chartMotion}/>
               <Line type="monotone" dataKey="planned" stroke="var(--app-text-muted)" strokeWidth={1.5} strokeDasharray="6 6" dot={false} {...chartMotion}/>

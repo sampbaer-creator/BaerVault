@@ -4,11 +4,11 @@
   color: var(--app-text-strong);
 }
 
-/* Refracted Vault presentation */
+/* Financial surfaces */
 .page { max-width: 1240px; margin-inline: auto; }
-.metrics { border: 1px solid var(--glass-border); border-radius: 16px; background: var(--glass-surface); box-shadow: var(--shadow-glass); backdrop-filter: none; }
+.metrics { border: 1px solid var(--app-border); border-radius: 16px; background: var(--app-surface); box-shadow: none;  }
 .metric { background: transparent; box-shadow: none; }
-.goal { border-radius: 16px; border-color: color-mix(in srgb, var(--app-border) 84%, transparent); background: var(--app-surface); box-shadow: var(--shadow-surface); }
+.goal { border-radius: 16px; border-color: color-mix(in srgb, var(--app-border) 84%, transparent); background: var(--app-surface); box-shadow: none; }
 .top {
   display: flex;
   align-items: flex-end;
@@ -19,9 +19,9 @@
 .eyebrow {
   color: var(--app-accent);
   font-size: 0.8125rem;
-  font-weight: 800;
+  font-weight: 650;
   letter-spacing: 0.14em;
-  text-transform: uppercase;
+  text-transform: none;
 }
 .top h2 {
   margin: 6px 0 4px;
@@ -44,9 +44,9 @@
   border-radius: 11px;
   background: var(--app-accent);
   color: var(--app-on-accent);
-  min-height: 40px;
+  min-height: 44px;
   padding: 10px 15px;
-  font-weight: 800;
+  font-weight: 650;
   cursor: pointer;
 }
 .metrics {
@@ -89,7 +89,7 @@
   border: 1px solid var(--app-border);
   border-radius: 15px;
   background: var(--app-surface);
-  box-shadow: 0 10px 24px rgb(35 55 47/0.04);
+  box-shadow: none;
 }
 .goalHead {
   display: grid;
@@ -134,7 +134,7 @@
   margin: 0;
   font-family: var(--font-heading);
   font-size: 1.75rem;
-  font-weight: 800;
+  font-weight: 650;
 }
 .footer {
   display: flex;
@@ -144,7 +144,7 @@
   padding-top: 14px;
   border-top: 1px solid var(--app-border);
   font-size: 0.8125rem;
-  font-weight: 800;
+  font-weight: 650;
 }
 .footer button {
   display: flex;
@@ -180,7 +180,7 @@
 .drawerTitle {
   font-family: var(--font-heading);
   font-size: 1.3125rem;
-  font-weight: 800;
+  font-weight: 650;
 }
 .drawerBody {
   padding: 24px;
@@ -194,12 +194,12 @@
   gap: 7px;
   color: var(--app-text-strong);
   font-size: 0.8125rem;
-  font-weight: 800;
+  font-weight: 650;
 }
 .form input {
   width: 100%;
   min-height: 44px;
-  border: 1px solid var(--app-border);
+  border: 1px solid var(--app-border-strong);
   border-radius: 11px;
   background: var(--app-surface);
   padding: 10px 12px;
@@ -256,7 +256,7 @@
 }
 .mobileGoalSummary{display:none}
 
-.metrics, .goal { background: var(--app-surface); backdrop-filter: none; }
+.metrics, .goal { background: var(--app-surface);  }
 .top { flex-wrap: wrap; }
 .eyebrow { display: none; }
 .goalHead button, .footer button { display: inline-flex; min-width: 44px; min-height: 44px; align-items: center; justify-content: center; }
@@ -285,4 +285,7 @@
   .detail { font-size: .875rem; }
   .footer { padding-top: .75rem; border-top: 1px solid var(--app-border); font-size: .875rem; }
   .footer button { display: inline-flex; color: var(--app-danger); }
+}
+.eyebrow {
+  display: none;
 }

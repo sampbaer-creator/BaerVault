@@ -1,7 +1,7 @@
 .root { display: contents; }
 .actions { display: none; }
 .content { display: contents; }
-.keyboardActions { display: none; }
+.keyboardActions, .toggle { display: none; }
 
 @media (max-width: 47.999rem) and (pointer: coarse) {
   .root {
@@ -28,8 +28,8 @@
     color: var(--app-on-accent);
     background: var(--app-accent);
     font: inherit;
-    font-size: 10px;
-    font-weight: 720;
+    font-size: .8125rem;
+    font-weight: 650;
   }
   .actions button:last-child { color: var(--app-on-danger); background: var(--app-danger-fill); }
   .toggle { position: relative; z-index: 2; display: block; min-height: 44px; width: 100%; padding: .5rem 1rem; border: 0; border-bottom: 1px solid var(--app-border); color: var(--app-accent); background: var(--app-surface); font-size: .8125rem; text-align: right; }
@@ -39,19 +39,10 @@
     z-index: 1;
     display: block;
     min-width: 0;
-    background: var(--row-glass-surface);
+    background: var(--app-surface);
     will-change: transform;
   }
-  .root:focus-within .keyboardActions {
-    position: absolute;
-    inset: 0 0 0 auto;
-    z-index: 2;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 8px;
-    background: var(--app-surface);
-  }
+  .root:focus-within .keyboardActions { display: flex; position: relative; flex-wrap: wrap; gap: 8px; padding: 8px; background: var(--app-surface); }
   /* Pointer focus on a revealed swipe action must not put this layer over the tap. */
   .root.open:focus-within .keyboardActions { display: none; }
   .keyboardActions button {
@@ -65,8 +56,8 @@
     color: var(--app-text-strong);
     background: var(--app-surface);
     font: inherit;
-    font-size: 12px;
-    font-weight: 700;
+    font-size: .8125rem;
+    font-weight: 650;
   }
   .keyboardActions button:last-child { color: var(--money-negative); }
 }

@@ -7,7 +7,6 @@ import { useEffect, useRef } from "react";
 import { BaerVaultLogo } from "@/components/brand/BaerVaultLogo";
 import { NavigationDrawer } from "@/components/layout/NavigationDrawer";
 import { allNavigation, mobileSectionNavigation, pageTitles } from "@/components/layout/navigation";
-import { useMobilePageSwipe } from "@/components/layout/useMobilePageSwipe";
 import styles from "./DemoShell.module.css";
 
 const demoHref = (href: string) => href === "/dashboard" ? "/demo" : `/demo${href}`;
@@ -15,10 +14,9 @@ const demoHref = (href: string) => href === "/dashboard" ? "/demo" : `/demo${hre
 export function DemoShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const route = pathname === "/demo" ? "/dashboard" : pathname.replace(/^\/demo/, "");
-  const title = pageTitles[route] ?? "BaerVault";
+  const title = pageTitles[route] ?? "BearVault";
   const mainRef = useRef<HTMLElement>(null);
   const previousPathname = useRef(pathname);
-  const swipe = useMobilePageSwipe(pathname, true);
   useEffect(() => {
     if (previousPathname.current !== pathname) {
       mainRef.current?.focus();
@@ -36,11 +34,11 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
     <div className={styles.content}>
       <header>
         <span className={styles.mobileMenu}><NavigationDrawer pathname={pathname} demo /></span>
-        <div className={styles.headerCopy}><h1>{title}</h1><small>Explore BaerVault without signing in</small></div>
+        <div className={styles.headerCopy}><h1>{title}</h1><small>Explore BearVault without signing in</small></div>
         <Link className={styles.createAccount} href="/sign-up">Create account</Link>
         <Link className={styles.mobileExit} href="/" aria-label="Exit demo"><IconX size={24} aria-hidden="true" /></Link>
       </header>
-      <main id="demo-main-content" ref={mainRef} tabIndex={-1} onPointerDown={swipe.onPointerDown} onPointerMove={swipe.onPointerMove} onPointerUp={swipe.onPointerUp} onPointerCancel={swipe.onPointerCancel}>
+      <main id="demo-main-content" ref={mainRef} tabIndex={-1}>
         <p className={styles.demoNotice}>Demo household · sample data, never saved</p>
         {children}
       </main>

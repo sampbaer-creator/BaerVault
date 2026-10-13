@@ -27,10 +27,10 @@ export const mainNavigation: NavigationItem[] = [
 ];
 
 export const mobileSectionNavigation: NavigationItem[] = [
-  { href: "/dashboard", label: "Dashboard", icon: IconLayoutDashboard },
-  { href: "/transactions", label: "Transactions", icon: IconArrowsExchange },
-  { href: "/budget", label: "Budgets", icon: IconPigMoney },
-  { href: "/investments", label: "Investments", icon: IconChartPie },
+  { href: "/dashboard", label: "Home", icon: IconLayoutDashboard },
+  { href: "/transactions", label: "Activity", icon: IconArrowsExchange },
+  { href: "/budget", label: "Budget", icon: IconPigMoney },
+  { href: "/investments", label: "Holdings", icon: IconChartPie },
   { href: "/accounts", label: "Accounts", icon: IconBuildingBank },
 ];
 

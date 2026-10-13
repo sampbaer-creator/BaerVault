@@ -6,13 +6,16 @@ export type ThemeMode = "system" | "light" | "dark";
 type Preferences = {
   theme: ThemeMode;
   currency: string;
+  opaqueNavigation: boolean;
 };
 const defaults: Preferences = {
   theme: "system",
   currency: "USD",
+  opaqueNavigation: false,
 };
 type ContextValue = {
   preferences: Preferences;
+  ready: boolean;
   update: (next: Partial<Preferences>) => void;
   reset: () => void;
 };
@@ -35,7 +38,7 @@ export function PreferencesProvider({
             ? (parsed.theme as ThemeMode)
             : defaults.theme;
           const currency = ["USD", "CAD", "EUR", "GBP"].includes(parsed.currency ?? "") ? parsed.currency! : defaults.currency;
-          setPreferences({ ...defaults, currency, theme });
+          setPreferences({ ...defaults, currency, theme, opaqueNavigation: parsed.opaqueNavigation === true });
         }
       } catch {}
       setStorageReady(true);
@@ -52,9 +55,10 @@ export function PreferencesProvider({
         : preferences.theme;
       root.dataset.theme = resolvedTheme;
       root.style.colorScheme = resolvedTheme;
+      root.dataset.transparency = preferences.opaqueNavigation ? "opaque" : "auto";
       document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => {
         meta.removeAttribute("media");
-        meta.setAttribute("content", resolvedTheme === "dark" ? "#000000" : "#f2f2f7");
+        meta.setAttribute("content", resolvedTheme === "dark" ? "#0c1420" : "#f7f8fa");
       });
     };
     applyTheme();
@@ -68,11 +72,12 @@ export function PreferencesProvider({
   const value = useMemo(
     () => ({
       preferences,
+      ready: storageReady,
       update: (next: Partial<Preferences>) =>
         setPreferences((current) => ({ ...current, ...next })),
       reset: () => setPreferences(defaults),
     }),
-    [preferences],
+    [preferences, storageReady],
   );
   return (
     <PreferencesContext.Provider value={value}>

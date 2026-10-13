@@ -3,8 +3,8 @@
   margin: auto;
 }
 
-.banner { border: 1px solid var(--glass-border); border-radius: 16px; background: var(--glass-surface); box-shadow: var(--shadow-glass); backdrop-filter: none; }
-.card { border-color: color-mix(in srgb, var(--app-border) 84%, transparent); border-radius: 16px; background: var(--app-surface); box-shadow: var(--shadow-surface); }
+.banner { border: 1px solid var(--app-border); border-radius: 16px; background: var(--app-surface); box-shadow: none;  }
+.card { border-color: color-mix(in srgb, var(--app-border) 84%, transparent); border-radius: 16px; background: var(--app-surface); box-shadow: none; }
 
 .banner {
   display: flex;
@@ -21,7 +21,7 @@
 
 .banner strong {
   letter-spacing: 0.08em;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .page > header {
@@ -53,7 +53,7 @@
   border: 1px solid var(--app-border);
   border-radius: 14px;
   background: var(--app-surface);
-  box-shadow: var(--app-shadow);
+  box-shadow: none;
 }
 
 .card h2 {

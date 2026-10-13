@@ -7,5 +7,5 @@ export function BaerVaultLogo({ compact = false }: BaerVaultLogoProps) {
     return <strong>BV</strong>;
   }
 
-  return <strong>BaerVault</strong>;
+  return <strong>BearVault</strong>;
 }

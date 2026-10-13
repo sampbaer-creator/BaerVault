@@ -1,3 +1,7 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Recurring" };
+
 import { RecurringWorkspace } from "@/features/recurring/RecurringWorkspace";
 import { getBudgetMonth } from "@/lib/data/budgets";
 import { getUpcomingPayments } from "@/lib/data/recurring";

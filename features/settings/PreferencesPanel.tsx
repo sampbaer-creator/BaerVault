@@ -9,7 +9,7 @@ import { usePreferences } from "@/components/preferences/PreferencesProvider";
 import styles from "./SettingsWorkspace.module.css";
 
 export function PreferencesPanel() {
-  const { preferences, update } = usePreferences();
+  const { preferences, update, ready } = usePreferences();
   return (
     <>
       <section id="theme" aria-labelledby="theme-title">
@@ -28,11 +28,23 @@ export function PreferencesPanel() {
         >
           <Segment
             value={preferences.theme}
+            disabled={!ready}
             options={["system", "light", "dark"]}
             onChange={(theme) =>
               update({ theme: theme as typeof preferences.theme })
             }
           />
+        </Field>
+      </section>
+      <section id="accessibility" aria-labelledby="accessibility-title">
+        <div className={styles.sectionHeading}>
+          <span><IconMoonStars size={18} aria-hidden="true" /></span>
+          <div><h3 id="accessibility-title">Reading comfort</h3><p>Keep navigation solid when transparency makes reading harder.</p></div>
+        </div>
+        <Field label="Navigation material" description="Your device's reduced transparency setting is always respected.">
+          <button className={styles.reset} type="button" disabled={!ready} aria-pressed={preferences.opaqueNavigation} onClick={() => update({ opaqueNavigation: !preferences.opaqueNavigation })}>
+            {preferences.opaqueNavigation ? "Opaque navigation on" : "Use opaque navigation"}
+          </button>
         </Field>
       </section>
       <section id="formatting" aria-labelledby="formatting-title">
@@ -51,13 +63,14 @@ export function PreferencesPanel() {
         >
           <select
             aria-label="Display currency"
+            disabled={!ready}
             value={preferences.currency}
             onChange={(event) => update({ currency: event.target.value })}
           >
-            <option value="USD">USD — US Dollar</option>
-            <option value="CAD">CAD — Canadian Dollar</option>
-            <option value="EUR">EUR — Euro</option>
-            <option value="GBP">GBP — British Pound</option>
+            <option value="USD">USD , US Dollar</option>
+            <option value="CAD">CAD , Canadian Dollar</option>
+            <option value="EUR">EUR , Euro</option>
+            <option value="GBP">GBP , British Pound</option>
           </select>
         </Field>
         <p className={styles.note}>This changes display formatting, not exchange rates.</p>
@@ -95,21 +108,24 @@ function Segment({
   value,
   options,
   onChange,
+  disabled,
 }: {
   value: string;
   options: string[];
   onChange: (value: string) => void;
+  disabled?: boolean;
 }) {
   return (
-    <div className={styles.segment}>
+    <div className={styles.segment} role="group" aria-label="Display mode">
       {options.map((option) => (
         <button
           type="button"
+          disabled={disabled}
           key={option}
           aria-pressed={value === option}
           onClick={() => onChange(option)}
         >
-          <span>{option}</span>
+          <span>{option[0].toUpperCase() + option.slice(1)}</span>
         </button>
       ))}
     </div>

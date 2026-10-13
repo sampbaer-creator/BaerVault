@@ -12,14 +12,14 @@
 }
 .page { color: var(--app-text-strong); background: var(--app-surface); }
 .brand { color: var(--app-text-strong); }
-.authCard { border: 1px solid var(--glass-border); border-radius: 18px; background: var(--glass-strong); box-shadow: var(--shadow-glass); backdrop-filter: none; }
+.authCard { border: 1px solid var(--app-border); border-radius: 18px; background: var(--app-surface); box-shadow: none;  }
 .brand {
   position: absolute;
   top: 28px;
   left: 32px;
   color: var(--app-text-strong);
   font-size: 1.3125rem;
-  font-weight: 780;
+  font-weight: 650;
   letter-spacing: -0.04em;
   text-decoration: none;
 }
@@ -36,10 +36,10 @@
   margin: 0 0 10px;
   color: var(--app-text-muted);
   font-size: 0.8125rem;
-  font-weight: 750;
+  font-weight: 650;
   letter-spacing: 0.08em;
   text-align: center;
-  text-transform: uppercase;
+  text-transform: none;
 }
 .footer {
   margin: 0;
@@ -112,5 +112,5 @@
 .page { background: var(--app-background); }
 .brand { color: var(--app-text-strong); }
 .step, .footer { color: var(--app-text-muted); }
-.authCard { background: var(--app-surface); backdrop-filter: none; }
+.authCard { background: var(--app-surface);  }
 .authCard :global(.cl-card), .authCard :global(.cl-footer) { background: var(--app-surface); color: var(--app-text-strong); }

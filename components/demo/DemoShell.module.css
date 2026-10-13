@@ -12,27 +12,33 @@
 .sidebarFooter a { min-height: 44px; padding-block: .5rem; color: var(--app-accent); }
 .content { min-width: 0; margin-left: 264px; }
 .content > header { position: sticky; top: 12px; z-index: 25; display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 70px; margin: 12px 12px 0 0; padding: .75rem 1rem; border: 1px solid var(--app-border); border-radius: 16px; background: var(--glass-surface); backdrop-filter: blur(var(--glass-blur)); box-shadow: var(--shadow-glass); }
-.headerCopy h1 { margin: 0; font-size: 1.125rem; font-weight: 650; }
+.headerCopy h1 { margin: 0; font-size: clamp(1.5rem, 2.5vw, 2rem); font-weight: 650; }
 .headerCopy small { color: var(--app-text-muted); font-size: .8125rem; }
 .createAccount { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: .625rem 1rem; border-radius: var(--radius-control); color: var(--app-on-accent); background: var(--app-accent); font-size: .875rem; font-weight: 600; text-decoration: none; }
-.content main { max-width: 1540px; margin-inline: auto; padding: clamp(24px, 3vw, 40px) clamp(20px, 3vw, 48px) 64px; }
+.content main { max-width: 1440px; margin-inline: auto; padding: clamp(24px, 3vw, 40px) clamp(24px, 3vw, 40px) 64px; }
 .content main:focus { outline: none; }
 .demoNotice { margin: 0 0 1.25rem; color: var(--app-text-muted); font-size: .8125rem; }
 .mobileNav, .mobileMenu, .mobileExit { display: none; }
 @media (max-width: 47.999rem) {
   .sidebar, .createAccount { display: none; }
   .content { margin-left: 0; }
-  .content > header { position: fixed; inset: 0 0 auto; min-height: calc(64px + env(safe-area-inset-top)); margin: 0; padding: env(safe-area-inset-top) max(14px, env(safe-area-inset-right)) 0 max(14px, env(safe-area-inset-left)); border: 0; border-bottom: 1px solid var(--app-border); border-radius: 0; background: var(--glass-strong); }
+  .content > header { position: fixed; inset: 0 0 auto; min-height: calc(64px + env(safe-area-inset-top)); margin: 0; padding: env(safe-area-inset-top) max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left)); border: 0; border-bottom: 1px solid var(--app-border); border-radius: 0; background: var(--glass-strong); }
   .mobileMenu { display: inline-flex; }
   .mobileExit { display: grid; width: 44px; height: 44px; flex-shrink: 0; place-items: center; border-radius: var(--radius-control); color: var(--app-text-strong); }
   .headerCopy { min-width: 0; text-align: center; }
   .headerCopy small { display: none; }
-  .content main { min-width: 0; padding: calc(88px + env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) calc(112px + env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left)); }
+  .content main { min-width: 0; padding: calc(88px + env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) calc(112px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
   .content main > * { max-width: 100%; min-width: 0; }
   .mobileNav { position: fixed; inset: auto max(8px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left)); z-index: 30; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px; padding: 6px; border: 1px solid var(--app-border); border-radius: 18px; background: var(--glass-strong); backdrop-filter: blur(var(--glass-blur)); box-shadow: var(--shadow-glass); }
   .mobileNav a { display: flex; min-width: 0; min-height: 58px; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 6px 2px; border-radius: var(--radius-control); color: var(--app-text-muted); text-align: center; text-decoration: none; }
-  .mobileNav small { font-size: .6875rem; font-weight: 500; }
+  .mobileNav small { font-size: .8125rem; font-weight: 500; }
   .mobileNav .active { color: var(--app-accent); background: var(--app-accent-soft); }
 }
-@media (max-width: 22rem) { .mobileNav small { font-size: .625rem; } }
+@media (max-width: 22rem) { .mobileNav small { font-size: .75rem; } }
 @media (prefers-reduced-transparency: reduce) { .sidebar, .content > header, .mobileNav { background: var(--app-surface); backdrop-filter: none; } }
+
+@media (max-width: 47.999rem) { .mobileNav a { overflow-wrap: normal; word-break: normal; } }
+
+@media (max-width: 47.999rem) { .headerCopy h1 { font-size: 1.125rem; } }
+
+@media (max-width: 22rem) { .mobileNav { left: max(4px, env(safe-area-inset-left)); right: max(4px, env(safe-area-inset-right)); gap: 0; padding: 4px; } }

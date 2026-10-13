@@ -7,17 +7,15 @@
     var(--app-surface);
 }
 .page { color: var(--app-text-strong); background: var(--app-surface); }
-.card { border: 1px solid var(--glass-border); border-radius: 18px; background: var(--glass-strong); box-shadow: var(--shadow-glass); backdrop-filter: none; }
+.card { border: 1px solid var(--app-border); border-radius: 18px; background: var(--app-surface); box-shadow: none;  }
 .card {
   width: min(100%, 590px);
   padding: clamp(28px, 6vw, 52px);
   border: 1px solid var(--app-border);
   border-radius: 24px;
   background: var(--app-surface);
-  box-shadow:
-    0 28px 80px rgb(17 20 57 / 17%),
-    inset 0 1px 0 #fff;
-  backdrop-filter: none;
+  box-shadow: none;
+
 }
 .progress {
   display: flex;
@@ -27,8 +25,8 @@
   margin-bottom: 34px;
   color: var(--app-text-muted);
   font-size: 0.8125rem;
-  font-weight: 700;
-  text-transform: uppercase;
+  font-weight: 650;
+  text-transform: none;
   letter-spacing: 0.07em;
 }
 .progress span {
@@ -53,20 +51,18 @@
   place-items: center;
   margin: 0 auto 18px;
   border-radius: 14px;
-  color: white;
+  color: var(--app-on-accent);
   background: var(--app-surface);
-  box-shadow:
-    0 12px 28px rgb(17 20 57 / 22%),
-    inset 0 1px 0 rgb(255 255 255 / 28%);
+  box-shadow: none;
 }
 .eyebrow {
   margin: 0 0 8px;
   color: var(--money-positive);
   font-size: 0.8125rem;
-  font-weight: 750;
+  font-weight: 650;
   letter-spacing: 0.1em;
   text-align: center;
-  text-transform: uppercase;
+  text-transform: none;
 }
 .card h1 {
   margin: 0;
@@ -92,12 +88,12 @@
   margin-bottom: 8px;
   color: var(--money-positive);
   font-size: 0.8125rem;
-  font-weight: 700;
+  font-weight: 650;
 }
 .form > input {
   height: 48px;
   padding: 0 14px;
-  border: 1px solid var(--app-border);
+  border: 1px solid var(--app-border-strong);
   border-radius: 10px;
   color: var(--money-positive);
   background: var(--app-surface);
@@ -159,13 +155,11 @@
   gap: 9px;
   border: 1px solid var(--app-border);
   border-radius: 12px;
-  color: white;
+  color: var(--app-on-accent);
   background: var(--app-surface);
-  box-shadow:
-    0 12px 28px rgb(17 20 57 / 22%),
-    inset 0 1px 0 rgb(255 255 255 / 28%);
+  box-shadow: none;
   font: inherit;
-  font-weight: 700;
+  font-weight: 650;
   cursor: pointer;
 }
 .note {
@@ -205,8 +199,8 @@
     min-height: calc(100dvh - max(20px, env(safe-area-inset-top)) - max(36px, env(safe-area-inset-bottom)));
     padding: 22px 14px 28px;
     border-radius: 16px;
-    box-shadow: 0 12px 34px rgb(17 20 57 / 12%);
-    backdrop-filter: none;
+    box-shadow: none;
+
   }
   .progress { gap: 6px; margin-bottom: 26px; }
   .progress i { width: clamp(12px, 5vw, 24px); }
@@ -240,7 +234,7 @@
 }
 
 .page { background: var(--app-background); }
-.card { border: 1px solid var(--app-border); border-radius: var(--radius-panel); background: var(--app-surface); box-shadow: var(--shadow-surface); backdrop-filter: none; }
+.card { border: 1px solid var(--app-border); border-radius: var(--radius-panel); background: var(--app-surface); box-shadow: none;  }
 .card h1 { font-family: var(--font-heading); font-weight: 650; }
 .form > label, .form legend, .form > input { color: var(--app-text-strong); }
 .intro, .note, .progress, .options small { color: var(--app-text-muted); }
@@ -249,3 +243,6 @@
 .options input:checked + span { border-color: var(--app-accent); outline-color: var(--app-accent); background: var(--app-accent-soft); }
 .options input:focus-visible + span { outline-color: var(--app-focus); }
 .progress .active, .progress .done { color: var(--app-accent); }
+.eyebrow {
+  display: none;
+}

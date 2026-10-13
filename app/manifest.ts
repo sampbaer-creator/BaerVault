@@ -3,14 +3,14 @@ import type { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: "/",
-    name: "BaerVault",
-    short_name: "BaerVault",
+    name: "BearVault",
+    short_name: "BearVault",
     description: "A calm, shared home for your household finances.",
     start_url: "/dashboard",
     scope: "/",
     display: "standalone",
-    background_color: "#f2f2f7",
-    theme_color: "#f2f2f7",
+    background_color: "#f7f8fa",
+    theme_color: "#f7f8fa",
     lang: "en-US",
     dir: "ltr",
     categories: ["finance", "productivity"],

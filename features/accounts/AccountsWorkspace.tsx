@@ -1,6 +1,8 @@
 "use client";
 
 import { Drawer } from "@mantine/core";
+import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
+import { EditorDrawer } from "@/components/shared/EditorDrawer";
 import { useMediaQuery } from "@mantine/hooks";
 import { useServerSnapshotState } from "@/lib/hooks/useServerSnapshotState";
 import {
@@ -169,11 +171,15 @@ export function AccountsWorkspace({
   const router = useRouter();
   const [accounts, setAccounts] = useServerSnapshotState(initialAccounts);
   const mobile = useMediaQuery("(max-width: 47.999rem)");
+  const compactDetails = useMediaQuery("(max-width: 70rem)");
+  const [pendingRemoval, setPendingRemoval] = useState<FinancialAccount | null>(null);
+  const [pendingDisconnect, setPendingDisconnect] = useState<{ id: string; institution: string } | null>(null);
   const [selectedId, setSelectedId] = useState("");
   const [formOpen, setFormOpen] = useState(false);
   const [transferOpen, setTransferOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(blankForm);
+  const [formBaseline, setFormBaseline] = useState<FormState>(blankForm);
   const [transferForm, setTransferForm] = useState<TransferFormState>(blankTransferForm);
   const [saving, setSaving] = useState(false);
   const [refreshingId, setRefreshingId] = useState<string | null>(null);
@@ -220,17 +226,21 @@ export function AccountsWorkspace({
   }
 
   async function disconnectConnection(id: string, institution: string) {
-    if (!window.confirm(`Disconnect ${institution}? Its synced accounts and imported transactions will be removed from BaerVault.`)) return;
-    const result = await disconnectBankConnectionAction(id);
-    if (!result.ok) return showBankMessage(result.error);
-    showBankMessage(`${institution} was disconnected.`, true);
-    invalidateMobileShell();
-    router.refresh();
+    if (saving) return;
+    setSaving(true);
+    try {
+      const result = await disconnectBankConnectionAction(id);
+      if (!result.ok) { showBankMessage(result.error); return; }
+      showBankMessage(`${institution} was disconnected.`, true);
+      invalidateMobileShell(); router.refresh();
+    } catch { showBankMessage("Could not disconnect the bank. Try again."); }
+    finally { setSaving(false); setPendingDisconnect(null); }
   }
 
   const openAdd = useCallback((type: FinancialAccountType = "checking") => {
     setEditingId(null);
     setForm({ ...blankForm, type });
+    setFormBaseline({ ...blankForm, type });
     setMessage("");
     setMessageTone("error");
     setFormOpen(true);
@@ -239,6 +249,7 @@ export function AccountsWorkspace({
   function openEdit(account: FinancialAccount) {
     setEditingId(account.id);
     setForm(toForm(account));
+    setFormBaseline(toForm(account));
     setMessage("");
     setMessageTone("error");
     setFormOpen(true);
@@ -387,22 +398,20 @@ export function AccountsWorkspace({
   }
 
   async function removeAccount(account: FinancialAccount) {
-    if (!window.confirm(`Delete ${account.name}? This cannot be undone.`)) return;
+    if (saving) return;
+    setSaving(true);
     setMessage("");
-    if (!demo) {
-      const result = await deleteFinancialAccountAction(account.id);
-      if (!result.ok) {
-        showError(result.error);
-        return;
+    try {
+      if (!demo) {
+        const result = await deleteFinancialAccountAction(account.id);
+        if (!result.ok) { showError(result.error); return; }
       }
-    }
-    setAccounts((current) => current.filter((item) => item.id !== account.id));
-    setSelectedId((current) =>
-      current === account.id
-        ? accounts.find((item) => item.id !== account.id)?.id ?? ""
-        : current,
-    );
-    if (!demo) invalidateMobileShell();
+      setAccounts((current) => current.filter((item) => item.id !== account.id));
+      setSelectedId("");
+      showBankMessage("Account deleted.", true);
+      if (!demo) invalidateMobileShell();
+    } catch { showError("Could not delete the account. Try again."); }
+    finally { setSaving(false); setPendingRemoval(null); }
   }
 
   function selectAccount(
@@ -411,7 +420,7 @@ export function AccountsWorkspace({
   ) {
     accountTriggerRef.current = trigger;
     setSelectedId(accountId);
-    requestAnimationFrame(() => detailCloseRef.current?.focus());
+    if (!compactDetails) requestAnimationFrame(() => detailCloseRef.current?.focus());
   }
 
   function closeDetails() {
@@ -419,13 +428,54 @@ export function AccountsWorkspace({
     requestAnimationFrame(() => accountTriggerRef.current?.focus());
   }
 
+  const accountDetails = selected ? (
+            <>
+              <div className={styles.detailHeader}>
+                <span>{financialAccountTypeLabels[selected.type]}</span>
+                <button ref={detailCloseRef} type="button" onClick={closeDetails} aria-label="Close account details">
+                  <IconX size={20} aria-hidden="true" />
+                </button>
+              </div>
+              <div className={styles.detailHero}>
+                <span className={styles.detailIcon}>{(() => { const DetailIcon = groupIcons[selected.type]; return <DetailIcon size={24} aria-hidden="true" />; })()}</span>
+                <div>
+                  <span>{selected.institution || "Manual account"}</span>
+                  <h3>{selected.name}</h3>
+                </div>
+                <strong>{money.format(selected.balance)}</strong>
+              </div>
+              <dl className={styles.detailList}>
+                <div><dt>Owner</dt><dd>{ownerLabels[selected.owner] ?? selected.owner}</dd></div>
+                <div><dt>Account type</dt><dd>{financialAccountTypeLabels[selected.type]}</dd></div>
+                <div><dt>Last updated</dt><dd>{formatUpdatedAt(selected.updatedAt)}</dd></div>
+                {selected.creditLimit ? <div><dt>Credit limit</dt><dd>{money.format(selected.creditLimit)}</dd></div> : null}
+              </dl>
+              {selected.creditLimit ? (
+                <div className={styles.utilization}>
+                  <div><span>Credit utilization</span><strong>{((selected.balance / selected.creditLimit) * 100).toFixed(1)}%</strong></div>
+                  <div className={styles.utilizationTrack}><i data-animate-progress style={{ width: `${Math.min((selected.balance / selected.creditLimit) * 100, 100)}%` }} /></div>
+                </div>
+              ) : null}
+              <div className={styles.detailActions}>
+                {!isDebtAccount(selected.type) ? <button type="button" onClick={() => openTransfer(selected.id)} disabled={transferableAccounts.length < 2}><IconArrowsExchange size={17} aria-hidden="true" />Transfer</button> : null}
+                <button type="button" onClick={() => openEdit(selected)} disabled={Boolean(selected.bankConnectionId)}><IconPencil size={17} aria-hidden="true" />{selected.bankConnectionId ? "Synced by bank" : "Edit account"}</button>
+                <button className={`${styles.deleteButton} btn btn-ghost`} type="button" onClick={() => setPendingRemoval(selected)} disabled={Boolean(selected.bankConnectionId)}><IconTrash size={17} aria-hidden="true" />Delete</button>
+              </div>
+            </>
+          ) : (
+            <div className={styles.detailEmpty}>
+              <IconWallet size={30} aria-hidden="true" />
+              <p>Select an account to view its details.</p>
+            </div>
+          );
+
   return (
     <div className={styles.workspace}>
       <header className={styles.pageHeader}>
         <div>
           <span className={styles.eyebrow}>Household accounts</span>
-          <h2>Every balance, in one calm view.</h2>
-          <p>Add checking, savings, cash, cards, and loans to see your complete net worth.</p>
+          <h2>Account balances</h2>
+          <p>Review account balances, connection status, and transfers.</p>
         </div>
         <span className={styles.headerActions}>
           {!demo ? <BankConnectionButton className={styles.connectButton} onMessage={showBankMessage} listenToShell /> : null}
@@ -460,7 +510,7 @@ export function AccountsWorkspace({
                   {refreshingId === connection.id ? "Refreshing…" : "Refresh accounts"}
                 </button>
               ) : null}
-              <button className={styles.connectionAction} type="button" disabled={refreshingId !== null} onClick={() => void disconnectConnection(connection.id, connection.institutionName)}>Disconnect</button>
+              <button className={styles.connectionAction} type="button" disabled={refreshingId !== null} onClick={() => setPendingDisconnect({ id: connection.id, institution: connection.institutionName })}>Disconnect</button>
             </span>
           ))}
         </div>
@@ -530,7 +580,7 @@ export function AccountsWorkspace({
                             onEdit={() => account.bankConnectionId ? showError("Connected accounts are updated automatically.") : openEdit(account)}
                             onDelete={() => {
                               if (account.bankConnectionId) showError("Disconnect the bank instead of deleting a synced account.");
-                              else void removeAccount(account);
+                              else setPendingRemoval(account);
                             }}>
                           <button
                             className={`${styles.accountRow} ${selectedId === account.id ? styles.selectedRow : ""}`}
@@ -560,58 +610,11 @@ export function AccountsWorkspace({
           )}
         </div>
 
-        <aside
-                  className={`${styles.detailPanel} card glass-panel`}
-          aria-label="Selected account details"
-          onKeyDown={(event) => {
-            if (event.key === "Escape") closeDetails();
-          }}
-        >
-          {selected ? (
-            <>
-              <div className={styles.detailHeader}>
-                <span>{financialAccountTypeLabels[selected.type]}</span>
-                <button ref={detailCloseRef} type="button" onClick={closeDetails} aria-label="Close account details">
-                  <IconX size={20} aria-hidden="true" />
-                </button>
-              </div>
-              <div className={styles.detailHero}>
-                <span className={styles.detailIcon}>{(() => { const DetailIcon = groupIcons[selected.type]; return <DetailIcon size={24} aria-hidden="true" />; })()}</span>
-                <div>
-                  <span>{selected.institution || "Manual account"}</span>
-                  <h3>{selected.name}</h3>
-                </div>
-                <strong>{money.format(selected.balance)}</strong>
-              </div>
-              <dl className={styles.detailList}>
-                <div><dt>Owner</dt><dd>{ownerLabels[selected.owner] ?? selected.owner}</dd></div>
-                <div><dt>Account type</dt><dd>{financialAccountTypeLabels[selected.type]}</dd></div>
-                <div><dt>Last updated</dt><dd>{formatUpdatedAt(selected.updatedAt)}</dd></div>
-                {selected.creditLimit ? <div><dt>Credit limit</dt><dd>{money.format(selected.creditLimit)}</dd></div> : null}
-              </dl>
-              {selected.creditLimit ? (
-                <div className={styles.utilization}>
-                  <div><span>Credit utilization</span><strong>{((selected.balance / selected.creditLimit) * 100).toFixed(1)}%</strong></div>
-                  <div className={styles.utilizationTrack}><i data-animate-progress style={{ width: `${Math.min((selected.balance / selected.creditLimit) * 100, 100)}%` }} /></div>
-                </div>
-              ) : null}
-              <div className={styles.detailActions}>
-                {!isDebtAccount(selected.type) ? <button type="button" onClick={() => openTransfer(selected.id)} disabled={transferableAccounts.length < 2}><IconArrowsExchange size={17} aria-hidden="true" />Transfer</button> : null}
-                <button type="button" onClick={() => openEdit(selected)} disabled={Boolean(selected.bankConnectionId)}><IconPencil size={17} aria-hidden="true" />{selected.bankConnectionId ? "Synced by bank" : "Edit account"}</button>
-                <button className={`${styles.deleteButton} btn btn-ghost`} type="button" onClick={() => removeAccount(selected)} disabled={Boolean(selected.bankConnectionId)}><IconTrash size={17} aria-hidden="true" />Delete</button>
-              </div>
-            </>
-          ) : (
-            <div className={styles.detailEmpty}>
-              <IconWallet size={30} aria-hidden="true" />
-              <p>Select an account to view its details.</p>
-            </div>
-          )}
-        </aside>
+        {!compactDetails && <aside className={`${styles.detailPanel} card`} aria-label="Selected account details" onKeyDown={(event) => { if (event.key === "Escape") closeDetails(); }}>{accountDetails}</aside>}
       </div>
 
-      <Drawer
-        opened={formOpen}
+      <EditorDrawer
+        opened={formOpen} busy={saving} dirty={JSON.stringify(form) !== JSON.stringify(formBaseline)}
         onClose={() => setFormOpen(false)}
         position={mobile ? "bottom" : "right"}
         size={mobile ? "auto" : "md"}
@@ -658,10 +661,10 @@ export function AccountsWorkspace({
             {saving ? "Saving…" : editingId ? "Save changes" : "Add account"}
           </button>
         </form>
-      </Drawer>
+      </EditorDrawer>
 
-      <Drawer
-        opened={transferOpen}
+      <EditorDrawer
+        opened={transferOpen} busy={saving} dirty={Boolean(transferForm.amount || transferForm.note)}
         onClose={() => setTransferOpen(false)}
         position={mobile ? "bottom" : "right"}
         size={mobile ? "auto" : "md"}
@@ -684,13 +687,13 @@ export function AccountsWorkspace({
                 }));
               }}
             >
-              {transferableAccounts.map((account) => <option value={account.id} key={account.id}>{account.name} — {money.format(account.balance)}</option>)}
+              {transferableAccounts.map((account) => <option value={account.id} key={account.id}>{account.name} , {money.format(account.balance)}</option>)}
             </select>
           </label>
           <label>
             To
             <select value={transferForm.toAccountId} onChange={(event) => setTransferForm((current) => ({ ...current, toAccountId: event.target.value }))}>
-              {transferableAccounts.filter((account) => account.id !== transferForm.fromAccountId).map((account) => <option value={account.id} key={account.id}>{account.name} — {money.format(account.balance)}</option>)}
+              {transferableAccounts.filter((account) => account.id !== transferForm.fromAccountId).map((account) => <option value={account.id} key={account.id}>{account.name} , {money.format(account.balance)}</option>)}
             </select>
           </label>
           <div className={styles.formGrid}>
@@ -712,7 +715,10 @@ export function AccountsWorkspace({
             {saving ? "Transferring…" : "Transfer money"}
           </button>
         </form>
-      </Drawer>
+      </EditorDrawer>
+      <Drawer opened={compactDetails && Boolean(selected) && !formOpen && !transferOpen && !pendingRemoval} onClose={closeDetails} position={mobile ? "bottom" : "right"} size={mobile ? "auto" : 430} title={selected?.name ?? "Account details"}>{accountDetails}</Drawer>
+      <ConfirmDialog opened={Boolean(pendingRemoval)} title={`Delete ${pendingRemoval?.name ?? "account"}?`} description="This permanently removes this manual account. Recorded transactions remain in your ledger." confirmLabel="Delete account" busy={saving} onCancel={() => setPendingRemoval(null)} onConfirm={() => { if (pendingRemoval) void removeAccount(pendingRemoval); }} />
+      <ConfirmDialog opened={Boolean(pendingDisconnect)} title={`Disconnect ${pendingDisconnect?.institution ?? "bank"}?`} description="Its synced accounts and imported transactions will be removed from BearVault." confirmLabel="Disconnect bank" busy={saving} onCancel={() => setPendingDisconnect(null)} onConfirm={() => { if (pendingDisconnect) void disconnectConnection(pendingDisconnect.id, pendingDisconnect.institution); }} />
     </div>
   );
 }

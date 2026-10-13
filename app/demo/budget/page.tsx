@@ -1,3 +1,7 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Demo budgets" };
+
 import { DemoBudgets } from "@/components/demo/DemoBudgets";
 export default async function DemoBudgetsPage({ searchParams }: { searchParams: Promise<{ year?: string; month?: string }> }) {
   const query = await searchParams;

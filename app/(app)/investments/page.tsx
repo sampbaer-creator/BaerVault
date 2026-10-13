@@ -1,3 +1,7 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Investments" };
+
 import { InvestmentsWorkspace } from "@/features/investments/InvestmentsWorkspace";
 import { getInvestmentAccounts } from "@/lib/data/investments";
 

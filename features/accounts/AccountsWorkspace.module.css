@@ -13,13 +13,13 @@
   color: var(--app-text-strong);
 }
 
-/* Refracted Vault presentation */
+/* Financial surfaces */
 .workspace { max-width: 1320px; margin-inline: auto; }
 .pageHeader { margin-bottom: 26px; }
-.netWorthCard { border: 1px solid var(--glass-border); border-radius: 16px; background: var(--glass-surface); box-shadow: var(--shadow-glass); backdrop-filter: none; }
+.netWorthCard { border: 1px solid var(--app-border); border-radius: 16px; background: var(--app-surface); box-shadow: none;  }
 .netWorthLine { display: none; }
 .summaryCaption { margin-top: 30px; }
-.accountGroup, .detailPanel, .emptyState { border-radius: 16px; border-color: color-mix(in srgb, var(--app-border) 84%, transparent); background: var(--app-surface); box-shadow: var(--shadow-surface); }
+.accountGroup, .detailPanel, .emptyState { border-radius: 16px; border-color: color-mix(in srgb, var(--app-border) 84%, transparent); background: var(--app-surface); box-shadow: none; }
 .accountRow { min-height: 68px; }
 
 .pageHeader {
@@ -33,15 +33,15 @@
 .eyebrow {
   color: var(--accounts-blue);
   font-size: 0.8125rem;
-  font-weight: 750;
+  font-weight: 650;
   letter-spacing: 0.1em;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .pageHeader h2 {
   margin: 6px 0 0;
   font-size: clamp(1.75rem, 3vw, 2.5rem);
-  font-weight: 720;
+  font-weight: 650;
   letter-spacing: -0.045em;
   line-height: 1.08;
 }
@@ -88,7 +88,7 @@
   color: var(--accounts-blue);
   background: var(--accounts-blue-soft);
   font: inherit;
-  font-weight: 700;
+  font-weight: 650;
   white-space: nowrap;
   cursor: pointer;
 }
@@ -131,14 +131,14 @@
   color: var(--accounts-blue);
   background: var(--accounts-blue-soft);
   font: inherit;
-  font-weight: 750;
+  font-weight: 650;
   cursor: pointer;
 }
 .refreshButton:disabled, .connectionAction:disabled { opacity: .6; cursor: wait; }
 .refreshButton:focus-visible, .connectionAction:focus-visible { outline: 2px solid var(--accounts-blue); outline-offset: 3px; }
-.reconnectButton { border: 0; padding: 0; color: var(--accounts-blue); background: transparent; font: inherit; font-weight: 750; cursor: pointer; }
+.reconnectButton { border: 0; padding: 0; color: var(--accounts-blue); background: transparent; font: inherit; font-weight: 650; cursor: pointer; }
 .reconnectButton svg { display: none; }
-.connectionAction { border: 0; padding: 0; color: var(--accounts-blue); background: transparent; font: inherit; font-weight: 750; cursor: pointer; }
+.connectionAction { border: 0; padding: 0; color: var(--accounts-blue); background: transparent; font: inherit; font-weight: 650; cursor: pointer; }
 .connectionStrip span[data-status="connected"] svg { color: var(--money-positive); }
 .connectionStrip span:not([data-status="connected"]) svg { color: var(--money-negative); }
 
@@ -165,9 +165,9 @@
   padding: 0 17px;
   border: 1px solid var(--accounts-blue);
   border-radius: 10px;
-  color: white;
+  color: var(--app-on-accent);
   background: var(--accounts-blue);
-  box-shadow: 0 7px 18px color-mix(in srgb, var(--accounts-blue) 20%, transparent);
+  box-shadow: none;
   text-shadow: none;
   white-space: nowrap;
   cursor: pointer;
@@ -220,7 +220,7 @@
   border: 1px solid var(--app-border);
   border-radius: 18px;
   background: var(--app-surface);
-  box-shadow: 0 8px 28px rgb(30 42 78 / 5%);
+  box-shadow: none;
 }
 
 .summaryHeader {
@@ -310,7 +310,7 @@
   border: 1px solid var(--app-border);
   border-radius: 18px;
   background: var(--app-surface);
-  box-shadow: 0 8px 28px rgb(30 42 78 / 4%);
+  box-shadow: none;
 }
 
 .accountGroup + .accountGroup { border-top: 1px solid var(--app-border); }
@@ -326,7 +326,7 @@
 }
 
 .groupHeader > div { display: flex; align-items: center; gap: 8px; }
-.groupHeader h3 { margin: 0; font-size: 0.8125rem; font-weight: 720; }
+.groupHeader h3 { margin: 0; font-size: 0.8125rem; font-weight: 650; }
 .groupHeader span { display: grid; min-width: 22px; height: 22px; place-items: center; border-radius: 999px; color: var(--app-text-muted); background: var(--app-hover); font-size: 0.8125rem; }
 .groupHeader > strong { font-size: 0.8125rem; font-variant-numeric: tabular-nums; }
 
@@ -346,7 +346,7 @@
   color: var(--app-text-strong);
   background: transparent;
   box-shadow: none;
-  backdrop-filter: none;
+
   text-align: left;
   text-shadow: none;
   cursor: pointer;
@@ -376,7 +376,7 @@
 .accountCopy small,
 .accountMeta strong,
 .accountMeta small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.accountCopy strong { font-size: 0.8125rem; font-weight: 690; }
+.accountCopy strong { font-size: 0.8125rem; font-weight: 650; }
 .accountCopy small { margin-top: 3px; color: var(--app-text-muted); font-size: 0.8125rem; }
 .accountMeta { text-align: right; }
 .accountMeta strong { margin-top: 3px; font-size: 0.8125rem; font-variant-numeric: tabular-nums; }
@@ -391,7 +391,7 @@
   border: 1px solid var(--app-border);
   border-radius: 18px;
   background: var(--app-surface);
-  box-shadow: 0 8px 28px rgb(30 42 78 / 5%);
+  box-shadow: none;
 }
 
 .detailHeader {
@@ -403,14 +403,14 @@
   padding: 8px 12px 8px 18px;
   border-bottom: 1px solid var(--app-border);
   font-size: 0.8125rem;
-  font-weight: 700;
+  font-weight: 650;
 }
 
 .detailHeader button {
   display: grid;
   width: 40px;
   height: 40px;
-  min-height: 40px;
+  min-height: 44px;
   place-items: center;
   padding: 0;
   border: 0;
@@ -455,7 +455,7 @@
 
 .detailActions button {
   display: inline-flex;
-  min-height: 42px;
+  min-height: 44px;
   align-items: center;
   justify-content: center;
   gap: 7px;
@@ -489,13 +489,13 @@
 
 .accountForm { display: grid; gap: 17px; padding-bottom: 18px; }
 .accountForm > p:first-child { margin: 0; color: var(--app-text-muted); font-size: 0.8125rem; line-height: 1.55; }
-.accountForm label { display: grid; gap: 7px; color: var(--app-text-strong); font-size: 0.8125rem; font-weight: 680; }
+.accountForm label { display: grid; gap: 7px; color: var(--app-text-strong); font-size: 0.8125rem; font-weight: 650; }
 .accountForm input,
 .accountForm select {
   width: 100%;
   min-height: 46px;
   padding: 0 12px;
-  border: 1px solid var(--app-border);
+  border: 1px solid var(--app-border-strong);
   border-radius: 10px;
   color: var(--app-text-strong);
   background: var(--app-surface);
@@ -523,7 +523,7 @@
 
 :global(:root[data-theme="dark"]) .netWorthCard,
 :global(:root[data-theme="dark"]) .groups,
-:global(:root[data-theme="dark"]) .detailPanel { box-shadow: 0 12px 34px rgb(0 0 0 / 18%); }
+:global(:root[data-theme="dark"]) .detailPanel { box-shadow: none; }
 
 @media (max-width: 72rem) {
   .accountLayout { grid-template-columns: minmax(0, 1fr) 320px; }
@@ -573,8 +573,8 @@
 @media (max-width: 47.999rem) {
   .demoNotice { display: none; }
   .addButton, .transferButton { width: 58px; height: 58px; overflow: hidden; padding: 0; border-radius: 50%; font-size: 0; }
-  .addButton { box-shadow: 0 12px 26px rgb(22 92 151 / 22%); }
-  .transferButton { border-color: var(--app-border); background: var(--app-surface); box-shadow: var(--shadow-surface); }
+  .addButton { box-shadow: none; }
+  .transferButton { border-color: var(--app-border); background: var(--app-surface); box-shadow: none; }
   .addButton svg, .transferButton svg { width: 24px; height: 24px; }
   .lineFill { fill: rgb(47 142 232 / 8%); }
   .lineStroke { stroke: #59a5ef; }
@@ -591,7 +591,7 @@
     margin-bottom: 12px;
   }
   .pageHeader > div { display: none; }
-  .addButton, .transferButton { min-height: 36px; padding-inline: 12px; border-radius: 8px; box-shadow: none; font-size: 0.8125rem; }
+  .addButton, .transferButton { min-height: 44px; padding-inline: 12px; border-radius: 8px; box-shadow: none; font-size: 0.8125rem; }
   .demoNotice { margin-bottom: 12px; padding-block: 8px; border-radius: 8px; font-size: 0.8125rem; }
   .accountLayout { gap: 16px; }
   .netWorthCard {
@@ -631,7 +631,7 @@
 }
 
 /* Compact accounts retain balances, metadata, and direct actions. */
-.netWorthCard { background: var(--app-surface); backdrop-filter: none; }
+.netWorthCard { background: var(--app-surface);  }
 .summaryHeader > div > strong, .totalsGrid strong { color: var(--app-text-strong); overflow-wrap: anywhere; }
 .summaryHeader > div > span, .totalsGrid span, .summaryCaption { color: var(--app-text-muted); }
 .netWorthLine { display: none; }
@@ -650,7 +650,7 @@
   .pageHeader h2 { font-size: 1.5rem; }
   .headerActions { display: flex; width: 100%; flex-wrap: wrap; }
   .addButton, .transferButton, .connectButton { min-height: 44px; flex: 1; font-size: .875rem; }
-  .netWorthCard { display: block; min-height: 0; margin: 0; padding: 1.25rem; border: 1px solid var(--app-border); border-radius: var(--radius-panel); background: var(--app-surface); box-shadow: var(--shadow-surface); }
+  .netWorthCard { display: block; min-height: 0; margin: 0; padding: 1.25rem; border: 1px solid var(--app-border); border-radius: var(--radius-panel); background: var(--app-surface); box-shadow: none; }
   .summaryHeader { display: flex; align-items: start; }
   .summaryHeader > div > strong { font-size: 2rem; }
   .privateBadge { display: none; }
@@ -675,3 +675,20 @@
 
 :global(:root[data-theme="dark"]) .workspace { --accounts-blue: var(--app-accent); }
 :global(:root[data-theme="dark"]) .addButton, :global(:root[data-theme="dark"]) .submitButton { color: var(--app-on-accent); background: var(--app-accent); }
+
+.accountLayout:not(.hasSelection) { grid-template-columns: minmax(0, 1fr); }
+@media (max-width: 70rem) { .accountLayout, .accountLayout.hasSelection { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 47.999rem) {
+  .workspace { padding-bottom: 0; }
+  .pageHeader > div { display: none; }
+  .headerActions { display: flex; gap: .5rem; }
+  .addButton, .transferButton, .connectButton { width: auto; height: auto; min-height: 44px; padding: .625rem .75rem; border-radius: var(--radius-control); overflow: visible; }
+  .detailActions { flex-wrap: wrap; gap: .5rem; }
+  .detailActions button { flex: 1 1 120px; min-height: 44px; }
+}
+.eyebrow {
+  display: none;
+}
+
+.accountCopy strong, .accountMeta strong, .groupHeader > strong { font-size: .875rem; }
+.groupHeader h3 { font-size: 1rem; }

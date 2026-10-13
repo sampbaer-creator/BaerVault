@@ -1,3 +1,7 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Goals" };
+
 import { GoalsWorkspace } from "@/features/goals/GoalsWorkspace";
 import { getSavingsGoals } from "@/lib/data/goals";
 

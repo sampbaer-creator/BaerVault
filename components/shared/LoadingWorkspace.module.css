@@ -1,0 +1,7 @@
+.loading { min-height: 60vh; }
+.loading p { color: var(--app-text-muted); font-size: .875rem; }
+.lead, .details > div { border: 1px solid var(--app-border); border-radius: var(--radius-panel); background: var(--app-surface); }
+.lead { height: 240px; }
+.details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
+.details > div { height: 200px; }
+@media (max-width: 47.999rem) { .details { grid-template-columns: minmax(0, 1fr); gap: 1rem; margin-top: 1rem; } }

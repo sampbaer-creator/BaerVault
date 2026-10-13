@@ -57,7 +57,7 @@ export function PwaRuntime() {
   }, []);
   if (!offline && !waiting) return null;
   return <div className={styles.status} role="status">
-    <span>{offline ? "You’re offline. Reconnect to save changes." : "A BaerVault update is ready."}</span>
+    <span>{offline ? "You’re offline. Reconnect to save changes." : "A BearVault update is ready."}</span>
     {!offline && waiting ? <button type="button" onClick={() => { updating.current = true; waiting.postMessage({ type: "SKIP_WAITING" }); }}>Update app</button> : null}
   </div>;
 }
