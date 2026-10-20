@@ -3,7 +3,7 @@
 import { IconArrowRight, IconArrowsExchange, IconPlus, IconReceipt, IconWallet } from "@tabler/icons-react";
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 
 import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
 import type { DashboardViewModel } from "@/lib/dashboard";
@@ -14,6 +14,14 @@ type DashboardProps = { model: DashboardViewModel; basePath?: string; selectedMo
 type MarketState = { key: string; prices: Record<string, number>; unavailable: string[] };
 
 const marketRequests = new Map<string, { expires: number; request: Promise<MarketState> }>();
+const inviteDismissedKey = "baervault-household-invite-dismissed";
+const inviteDismissedEvent = "baervault-household-invite-dismissed-change";
+function subscribeInviteDismissed(callback: () => void) {
+  window.addEventListener("storage", callback);
+  window.addEventListener(inviteDismissedEvent, callback);
+  return () => { window.removeEventListener("storage", callback); window.removeEventListener(inviteDismissedEvent, callback); };
+}
+function getInviteDismissed() { return window.localStorage.getItem(inviteDismissedKey) === "true"; }
 
 function loadMarketPrices(key: string, symbols: string[]) {
   const cached = marketRequests.get(key);
@@ -39,6 +47,7 @@ export function DashboardOverview({ model, basePath = "", selectedMonth, members
   const money = useCurrencyFormatter();
   const requestKey = useMemo(() => model.symbols.toSorted().join(","), [model.symbols]);
   const [marketState, setMarketState] = useState<MarketState>(() => ({ key: basePath ? requestKey : "", prices: {}, unavailable: [] }));
+  const inviteDismissed = useSyncExternalStore(subscribeInviteDismissed, getInviteDismissed, () => false);
 
   useEffect(() => {
     if (!model.symbols.length || basePath) return;
@@ -63,6 +72,7 @@ export function DashboardOverview({ model, basePath = "", selectedMonth, members
   const budgetRangeMax = Math.max(model.planned, model.spending, 1);
   const memberMap = new Map(members.map((member) => [member.userId, member]));
 
+
   return (
     <div className={styles.dashboard}>
       <section className={styles.hero} aria-label="Monthly spending overview">
@@ -78,6 +88,7 @@ export function DashboardOverview({ model, basePath = "", selectedMonth, members
         </div>
       </section>
       <div className={styles.dashboardGrid}>
+        {members.length === 1 && !inviteDismissed && <section className={styles.invitePrompt} aria-labelledby="invite-partner-title"><div><strong id="invite-partner-title">Share your household with someone</strong><span>Invite your partner to plan and review finances together.</span></div><Link href={`${basePath}/household`}>Invite a member</Link><button type="button" aria-label="Dismiss invite prompt" onClick={() => { window.localStorage.setItem(inviteDismissedKey, "true"); window.dispatchEvent(new Event(inviteDismissedEvent)); }}>Dismiss</button></section>}
         <section className={styles.netWorthPanel}>
           <PanelHeading title="Current position" href={monthHref("/accounts")} action="View accounts" />
           {model.financialAccounts.length === 0 && model.accounts.length === 0 ? <p className={styles.emptyCopy}>No accounts yet. <Link href={`${basePath}/accounts?add=account`}>Add an account</Link> to see your current position.</p> : <><div className={styles.netWorthLead}>
