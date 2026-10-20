@@ -1,43 +1,26 @@
 "use client";
 
 import {
-  IconArrowsExchange,
-  IconBuildingBank,
-  IconChartPie,
   IconHome,
-  IconLayoutDashboard,
-  IconPigMoney,
-  IconSettings,
-  IconTargetArrow,
-  IconUsers,
   IconChevronDown,
-  IconMessage,
+  IconPlus,
   IconX,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 
 import styles from "./DemoShell.module.css";
 import { useMobilePageSwipe } from "@/components/layout/useMobilePageSwipe";
-import { mobileSectionNavigation } from "@/components/layout/navigation";
+import { primaryNavigation } from "@/components/layout/navigation";
+import { ProfileMenu } from "@/components/ui/ProfileMenu";
 
-const links = [
-  ["/demo", "Dashboard", IconLayoutDashboard],
-  ["/demo/transactions", "Transactions", IconArrowsExchange],
-  ["/demo/accounts", "Accounts", IconBuildingBank],
-  ["/demo/budget", "Budgets", IconPigMoney],
-  ["/demo/investments", "Investments", IconChartPie],
-  ["/demo/goals", "Goals", IconTargetArrow],
-  ["/demo/household", "Household", IconUsers],
-  ["/demo/settings", "Settings", IconSettings],
-] as const;
-
-const mobileLinks = mobileSectionNavigation.map((item) => ({
+const mobileLinks = primaryNavigation.map((item) => ({
   ...item,
   href: item.href === "/dashboard" ? "/demo" : `/demo${item.href}`,
 }));
+const bottomLinks = mobileLinks.filter(({ href }) => href !== "/demo/household");
 
 const accountGroups = [
   { label: "Credit cards", accounts: [["BaerVault Card", "$552"], ["Everyday Visa", "$0"]] },
@@ -98,7 +81,7 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
         </Link>
         <div className={styles.demoBadge}>Interactive demo</div>
         <nav>
-          {links.map(([href, label, Icon]) => (
+          {mobileLinks.map(({ href, label, icon: Icon }) => (
             <Link
               key={href}
               href={href}
@@ -131,22 +114,21 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
       </aside>
       <div className={styles.content}>
         <header>
-          <Link className={styles.mobileMark} href="/demo/settings" aria-label="Open settings"><IconSettings size={24}/></Link>
+          <span className={styles.mobileMark}><ProfileMenu demo /></span>
           <div className={styles.headerCopy}>
             <strong>BaerVault</strong>
             <small>Explore BaerVault without signing in</small>
           </div>
-          <Link className={styles.createAccount} href="/sign-up">Create account</Link>
-          <Link className={styles.mobileHousehold} href="/demo/household" aria-label="Open household"><IconMessage size={25}/></Link>
+          <span className={styles.desktopHeaderActions}><Link className={styles.createAccount} href="/sign-up">Create account</Link><ProfileMenu demo /></span>
         </header>
         <main id="demo-main-content" ref={mainRef} tabIndex={-1} onPointerDown={swipe.onPointerDown} onPointerMove={swipe.onPointerMove} onPointerUp={swipe.onPointerUp} onPointerCancel={swipe.onPointerCancel}>
           {children}
         </main>
       </div>
       <nav ref={mobileNavRef} className={styles.mobileNav} aria-label="Demo mobile navigation">
-        {mobileLinks.map(({ href, label, icon: Icon }) => (
+        {bottomLinks.map(({ href, label, icon: Icon }, index) => <Fragment key={href}>
+          {index === 2 && <Link className={styles.mobileAdd} href="/demo/budget" aria-label="Open Budget to add a purchase"><IconPlus size={24} aria-hidden="true" /></Link>}
           <Link
-            key={href}
             href={href}
             prefetch={pathname === href ? false : undefined}
             className={pathname === href ? styles.active : undefined}
@@ -163,7 +145,7 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
             <Icon size={19} aria-hidden="true" />
             <small>{label}</small>
           </Link>
-        ))}
+        </Fragment>)}
       </nav>
     </div>
   );

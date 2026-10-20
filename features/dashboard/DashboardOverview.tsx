@@ -114,7 +114,7 @@ export function DashboardOverview({ model, basePath = "", selectedMonth }: Dashb
             </div>
           </section>
           <section className={styles.upcomingPanel}>
-            <PanelHeading title="Upcoming payments" href={monthHref("/recurring")} action="View all" />
+            <PanelHeading title="Upcoming payments" href={monthHref("/transactions?tab=recurring")} action="View all" />
             {model.upcomingPayments.length ? <div className={styles.transactionList}>{model.upcomingPayments.slice(0, 5).map((payment) => <div className={styles.transactionRow} key={payment.id}><span className={styles.transactionIcon}><IconReceipt size={16} aria-hidden="true" /></span><div><strong>{payment.name}</strong><span>{payment.date}{payment.estimated ? " · Estimated" : " · Scheduled"}</span></div><strong>{money.format(payment.amount)}</strong></div>)}</div> : <div className={styles.upcomingEmpty}><p>No upcoming payments found.</p><span>Estimates appear after three months of consistent payments. You can also record a future payment in your budget.</span></div>}
           </section>
         </div>

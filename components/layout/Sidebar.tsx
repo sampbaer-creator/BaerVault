@@ -2,9 +2,7 @@ import { OrganizationSwitcher } from "@clerk/nextjs";
 import Link from "next/link";
 
 import {
-  householdNavigation,
-  mainNavigation,
-  systemNavigation,
+  primaryNavigation,
   type NavigationItem,
 } from "./navigation";
 import styles from "./AppShell.module.css";
@@ -69,19 +67,7 @@ export function Sidebar({ pathname, collapsed = false, selectedMonth }: SidebarP
       <nav className={styles.sidebarNav}>
         <NavigationSection
           label="Main"
-          items={mainNavigation}
-          pathname={pathname}
-          selectedMonth={selectedMonth}
-        />
-        <NavigationSection
-          label="Household"
-          items={householdNavigation}
-          pathname={pathname}
-          selectedMonth={selectedMonth}
-        />
-        <NavigationSection
-          label="System"
-          items={systemNavigation}
+          items={primaryNavigation}
           pathname={pathname}
           selectedMonth={selectedMonth}
         />

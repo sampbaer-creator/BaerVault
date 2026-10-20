@@ -1,4 +1,6 @@
-import { CashFlowWorkspace } from "@/features/cash-flow/CashFlowWorkspace";
-import { augustBudget, withDemoSpendingAccounts } from "@/lib/demo/mockFinanceData";
+import { redirect } from "next/navigation";
+import { sectionHref, type SectionQuery } from "@/lib/helpers/sectionNavigation";
 
-export default function DemoCashFlowPage() { return <CashFlowWorkspace month={withDemoSpendingAccounts(augustBudget)} />; }
+export default async function DemoCashFlowPage({ searchParams }: { searchParams: Promise<SectionQuery> }) {
+  redirect(sectionHref("/demo/budget", "cash-flow", await searchParams));
+}

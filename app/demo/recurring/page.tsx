@@ -1,4 +1,6 @@
-import { RecurringWorkspace } from "@/features/recurring/RecurringWorkspace";
-import { augustBudget, withDemoSpendingAccounts } from "@/lib/demo/mockFinanceData";
+import { redirect } from "next/navigation";
+import { sectionHref, type SectionQuery } from "@/lib/helpers/sectionNavigation";
 
-export default function DemoRecurringPage() { return <RecurringWorkspace month={withDemoSpendingAccounts(augustBudget)} />; }
+export default async function DemoRecurringPage({ searchParams }: { searchParams: Promise<SectionQuery> }) {
+  redirect(sectionHref("/demo/transactions", "recurring", await searchParams));
+}

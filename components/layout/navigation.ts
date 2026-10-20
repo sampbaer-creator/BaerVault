@@ -1,13 +1,9 @@
 import {
   IconBuildingCommunity,
   IconBuildingBank,
-  IconChartPie,
-  IconTargetArrow,
   IconArrowsExchange,
-  IconLayoutDashboard,
+  IconHome,
   IconPigMoney,
-  IconSettings,
-  IconChartHistogram,
   type Icon,
 } from "@tabler/icons-react";
 
@@ -17,40 +13,21 @@ export type NavigationItem = {
   icon: Icon;
 };
 
-export const mainNavigation: NavigationItem[] = [
-  { href: "/dashboard", label: "Dashboard", icon: IconLayoutDashboard },
+export const primaryNavigation: NavigationItem[] = [
+  { href: "/dashboard", label: "Home", icon: IconHome },
   { href: "/transactions", label: "Transactions", icon: IconArrowsExchange },
+  { href: "/budget", label: "Budget", icon: IconPigMoney },
   { href: "/accounts", label: "Accounts", icon: IconBuildingBank },
-  { href: "/budget", label: "Budgets", icon: IconPigMoney },
-  { href: "/investments", label: "Investments", icon: IconChartPie },
-  { href: "/goals", label: "Goals", icon: IconTargetArrow },
-];
-
-export const mobileSectionNavigation: NavigationItem[] = [
-  { href: "/cash-flow", label: "Cash flow", icon: IconChartHistogram },
-  { href: "/accounts", label: "Accounts", icon: IconBuildingBank },
-  { href: "/investments", label: "Investments", icon: IconChartPie },
-  { href: "/transactions", label: "Transactions", icon: IconArrowsExchange },
-  { href: "/dashboard", label: "Dashboard", icon: IconLayoutDashboard },
-  { href: "/budget", label: "Budgets", icon: IconPigMoney },
-  { href: "/goals", label: "Goals", icon: IconTargetArrow },
-];
-
-export const mobileRouteOrder = mobileSectionNavigation.map(({ href }) => href);
-
-export const householdNavigation: NavigationItem[] = [
   { href: "/household", label: "Household", icon: IconBuildingCommunity },
 ];
 
-export const systemNavigation: NavigationItem[] = [
-  { href: "/settings", label: "Settings", icon: IconSettings },
-];
+export const mobileRouteOrder = primaryNavigation.filter(({ href }) => href !== "/household").map(({ href }) => href);
 
 export const pageTitles: Record<string, string> = {
-  "/dashboard": "Dashboard",
+  "/dashboard": "Home",
   "/transactions": "Transactions",
   "/accounts": "Accounts",
-  "/budget": "Budgets",
+  "/budget": "Budget",
   "/investments": "Investments",
   "/goals": "Goals",
   "/household": "Household",

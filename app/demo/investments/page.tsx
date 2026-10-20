@@ -1,6 +1,6 @@
-import { InvestmentsWorkspace } from "@/features/investments/InvestmentsWorkspace";
-import { investmentAccounts } from "@/lib/demo/investmentData";
+import { redirect } from "next/navigation";
+import { sectionHref, type SectionQuery } from "@/lib/helpers/sectionNavigation";
 
-export default function DemoInvestmentsPage() {
-  return <InvestmentsWorkspace initialAccounts={investmentAccounts} demo />;
+export default async function DemoInvestmentsPage({ searchParams }: { searchParams: Promise<SectionQuery> }) {
+  redirect(sectionHref("/demo/accounts", "investments", await searchParams));
 }

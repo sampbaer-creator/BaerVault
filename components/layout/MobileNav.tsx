@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { IconPlus } from "@tabler/icons-react";
 import { motion, type MotionValue, useMotionValue, useMotionValueEvent } from "motion/react";
-import { useCallback, useEffect, useRef } from "react";
+import { Fragment, useCallback, useEffect, useRef } from "react";
 
-import { mobileSectionNavigation } from "./navigation";
+import { primaryNavigation } from "./navigation";
 import styles from "./AppShell.module.css";
 import { type MonthSelection, withMonth } from "@/lib/helpers/monthSelection";
 
@@ -17,8 +18,9 @@ type MobileNavProps = {
   selectedMonth?: MonthSelection;
 };
 
+const links = primaryNavigation.filter(({ href }) => href !== "/household");
+
 export function MobileNav({ pathname, progress, activeIndex, navigate, pagerEnabled, selectedMonth }: MobileNavProps) {
-  const links = mobileSectionNavigation;
   const navRef = useRef<HTMLElement>(null);
   const linkRefs = useRef<Array<HTMLAnchorElement | null>>([]);
   const bubbleX = useMotionValue(0);
@@ -33,7 +35,7 @@ export function MobileNav({ pathname, progress, activeIndex, navigate, pagerEnab
     const amount = value - low;
     bubbleX.set(from.offsetLeft + (to.offsetLeft - from.offsetLeft) * amount);
     bubbleWidth.set(from.offsetWidth + (to.offsetWidth - from.offsetWidth) * amount);
-  }, [bubbleWidth, bubbleX, links.length]);
+  }, [bubbleWidth, bubbleX]);
   useMotionValueEvent(progress, "change", positionBubble);
 
   useEffect(() => {
@@ -45,7 +47,7 @@ export function MobileNav({ pathname, progress, activeIndex, navigate, pagerEnab
       const timer = window.setTimeout(center, 120);
       return () => window.clearTimeout(timer);
     }
-  }, [activeIndex, pagerEnabled, pathname, links]);
+  }, [activeIndex, pagerEnabled, pathname]);
 
   useEffect(() => {
     const update = () => positionBubble(progress.get());
@@ -60,7 +62,8 @@ export function MobileNav({ pathname, progress, activeIndex, navigate, pagerEnab
         {links.map(({ href, label, icon: Icon }, index) => {
           const isActive = pagerEnabled ? activeIndex === index : pathname === href;
 
-          return (
+          return <Fragment key={href}>
+            {index === 2 && <Link className={styles.mobileAdd} href={selectedMonth ? withMonth("/budget", selectedMonth) : "/budget"} aria-label="Open Budget to add a purchase"><IconPlus size={24} aria-hidden="true" /></Link>}
             <Link
               className={`${styles.mobileLink} ${isActive ? styles.mobileLinkActive : ""}`}
               href={selectedMonth ? withMonth(href, selectedMonth) : href}
@@ -68,12 +71,11 @@ export function MobileNav({ pathname, progress, activeIndex, navigate, pagerEnab
               prefetch={isActive ? false : undefined}
               onClick={(event) => { if (pagerEnabled) { event.preventDefault(); navigate(href); } }}
               aria-current={isActive ? "page" : undefined}
-              key={href}
             >
               <Icon size={18} stroke={1.9} aria-hidden="true" />
               <span>{label}</span>
             </Link>
-          );
+          </Fragment>;
         })}
       </nav>
   );

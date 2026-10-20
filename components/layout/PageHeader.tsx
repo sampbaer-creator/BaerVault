@@ -1,6 +1,5 @@
 "use client";
 
-import { UserButton } from "@clerk/nextjs";
 import {
   IconArrowsExchange,
   IconBuildingBank,
@@ -9,18 +8,15 @@ import {
   IconLayoutSidebarLeftExpand,
   IconPlus,
   IconSearch,
-  IconSettings,
-  IconMessage,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import { requestShellQuickAdd, type ShellQuickAddAction } from "@/lib/helpers/shellQuickAdd";
+import { ProfileMenu } from "@/components/ui/ProfileMenu";
 
 import {
-  householdNavigation,
-  mainNavigation,
-  systemNavigation,
+  primaryNavigation,
 } from "./navigation";
 import styles from "./AppShell.module.css";
 import { type MonthSelection, withMonth } from "@/lib/helpers/monthSelection";
@@ -33,11 +29,7 @@ type PageHeaderProps = {
   onToggleSidebar: () => void;
 };
 
-const searchablePages = [
-  ...mainNavigation,
-  ...householdNavigation,
-  ...systemNavigation,
-];
+const searchablePages = primaryNavigation;
 
 export function PageHeader({
   title,
@@ -138,14 +130,14 @@ export function PageHeader({
             </button>
           )}
           <button className={styles.iconControl} type="button" disabled aria-label="Notifications (coming soon)" title="Notifications are coming soon"><IconBell size={18} aria-hidden="true" /></button>
-          <UserButton />
+          <ProfileMenu />
         </div>
       </header>
 
       <header className={`${styles.mobileHeader} glass-panel`}>
-        <Link className={styles.mobileMark} href={selectedMonth ? withMonth("/settings", selectedMonth) : "/settings"} aria-label="Open settings"><IconSettings size={24} /></Link>
+        <span className={styles.mobileMark}><ProfileMenu /></span>
         <strong className={styles.mobileTitle}>BaerVault</strong>
-        <span className={styles.mobileProfile}><Link className={styles.mobileHousehold} href={selectedMonth ? withMonth("/household", selectedMonth) : "/household"} aria-label="Open household"><IconMessage size={24}/></Link><UserButton /></span>
+        <span className={styles.mobileProfile} />
       </header>
       {mobileQuickActions.length > 0 && (
         <div className={styles.mobileQuickActions} aria-label="Page actions">

@@ -65,7 +65,7 @@ export function AppShell({ children }: AppShellProps) {
           ref={mainRef}
           tabIndex={-1}
         >
-          <MobilePager pathname={pathname} progress={pagerProgress} onActiveIndex={updatePager} selectedMonth={selectedMonth}>{children}</MobilePager>
+          <MobilePager pathname={pathname} progress={pagerProgress} onActiveIndex={updatePager} selectedMonth={selectedMonth} tab={searchParams.get("tab")}>{children}</MobilePager>
         </main>
       </div>
       <MobileNav pathname={pathname} progress={pagerProgress} activeIndex={pager.activeIndex} navigate={pager.navigate} pagerEnabled={pager.enabled} selectedMonth={selectedMonth} />

@@ -9,24 +9,20 @@ import { MOBILE_SHELL_INVALIDATE_EVENT } from "@/lib/helpers/mobileShell";
 import styles from "./AppShell.module.css";
 import { currentMonth, monthQuery, type MonthSelection } from "@/lib/helpers/monthSelection";
 import { gestureSpring, navigationSpring } from "@/lib/ui/motion";
+import { SectionTabs } from "@/components/ui/SectionTabs";
+import { accountTabs, budgetTabs, transactionTabs } from "@/lib/helpers/sectionNavigation";
 
 const loaders = {
-  "/cash-flow": () => import("@/features/cash-flow/CashFlowWorkspace").then((m) => ({ default: m.CashFlowWorkspace })),
   "/accounts": () => import("@/features/accounts/AccountsWorkspace").then((m) => ({ default: m.AccountsWorkspace })),
-  "/investments": () => import("@/features/investments/InvestmentsWorkspace").then((m) => ({ default: m.InvestmentsWorkspace })),
   "/transactions": () => import("@/features/transactions/TransactionsWorkspace").then((m) => ({ default: m.TransactionsWorkspace })),
   "/dashboard": () => import("@/features/dashboard/DashboardOverview").then((m) => ({ default: m.DashboardOverview })),
   "/budget": () => import("@/features/budgets/BudgetsWorkspace").then((m) => ({ default: m.BudgetsWorkspace })),
-  "/goals": () => import("@/features/goals/GoalsWorkspace").then((m) => ({ default: m.GoalsWorkspace })),
 } as const;
 
-const CashFlowScreen = lazy(loaders["/cash-flow"]);
 const AccountsScreen = lazy(loaders["/accounts"]);
-const InvestmentsScreen = lazy(loaders["/investments"]);
 const TransactionsScreen = lazy(loaders["/transactions"]);
 const DashboardScreen = lazy(loaders["/dashboard"]);
 const BudgetsScreen = lazy(loaders["/budget"]);
-const GoalsScreen = lazy(loaders["/goals"]);
 
 function preloadRoute(route: string | undefined) {
   const loader = route ? loaders[route as keyof typeof loaders] : undefined;
@@ -45,24 +41,25 @@ function routeHref(href: string, selection?: MonthSelection) {
 }
 
 function Screen({ route, data }: { route: string; data: MobileShellData }) {
-  if (route === "/cash-flow") return <CashFlowScreen month={data.selectedMonth} />;
-  if (route === "/accounts") return <AccountsScreen initialAccounts={data.financialAccounts} bankConnections={data.bankConnections} />;
-  if (route === "/investments") return <InvestmentsScreen initialAccounts={data.investmentAccounts} />;
+  const year = data.selectedMonth.year;
+  const month = data.selectedMonth.monthNumber;
+  if (route === "/accounts") return <><SectionTabs basePath="/accounts" active="accounts" tabs={accountTabs} year={year} month={month} /><AccountsScreen initialAccounts={data.financialAccounts} bankConnections={data.bankConnections} /></>;
   const selectedMonth = { year: data.selectedMonth.year, month: data.selectedMonth.monthNumber };
-  if (route === "/transactions") return <TransactionsScreen initialMonth={data.selectedMonth} selectedMonth={selectedMonth} />;
+  if (route === "/transactions") return <><SectionTabs basePath="/transactions" active="transactions" tabs={transactionTabs} year={year} month={month} /><TransactionsScreen initialMonth={data.selectedMonth} selectedMonth={selectedMonth} /></>;
   if (route === "/dashboard") return <DashboardScreen model={data.dashboard} selectedMonth={selectedMonth} />;
-  if (route === "/budget") return <BudgetsScreen initialBudget={data.selectedMonth} accounts={data.financialAccounts.map(({ id, name, institution, type }) => ({ id, name, institution, type }))} />;
-  return <GoalsScreen initialGoals={data.goals} />;
+  if (route === "/budget") return <><SectionTabs basePath="/budget" active="budget" tabs={budgetTabs} year={year} month={month} /><BudgetsScreen initialBudget={data.selectedMonth} accounts={data.financialAccounts.map(({ id, name, institution, type }) => ({ id, name, institution, type }))} /></>;
+  return null;
 }
 
 type Gesture = { pointerId: number; startX: number; startY: number; lastX: number; lastTime: number; velocity: number; axis: "x" | "y" | null };
 
-export function MobilePager({ children, pathname, progress, onActiveIndex, selectedMonth }: {
+export function MobilePager({ children, pathname, progress, onActiveIndex, selectedMonth, tab }: {
   children: React.ReactNode;
   pathname: string;
   progress: MotionValue<number>;
   onActiveIndex: (index: number, navigate: (href: string) => void, enabled: boolean) => void;
   selectedMonth?: MonthSelection;
+  tab?: string | null;
 }) {
   const resolvedMonth = selectedMonth ?? currentMonth();
   const selectedYear = resolvedMonth.year;
@@ -116,7 +113,7 @@ export function MobilePager({ children, pathname, progress, onActiveIndex, selec
     return () => window.removeEventListener(MOBILE_SHELL_INVALIDATE_EVENT, invalidate);
   }, [mobile, load]);
 
-  const enabled = mobile && Boolean(data) && mobileRouteOrder.includes(pathname);
+  const enabled = mobile && Boolean(data) && mobileRouteOrder.includes(pathname) && !tab;
   const width = () => viewportRef.current?.clientWidth ?? window.innerWidth;
 
   const commit = useCallback((nextIndex: number, velocity = 0) => {
