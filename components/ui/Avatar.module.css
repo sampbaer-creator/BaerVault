@@ -1,0 +1,3 @@
+.avatar { display: inline-grid; flex: 0 0 auto; place-items: center; overflow: hidden; border-radius: 50%; color: var(--teal-7); background: var(--teal-1); font-size: .8rem; font-weight: 700; }
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+:global([data-theme="dark"]) .avatar { color: var(--teal-2); background: var(--teal-8); }

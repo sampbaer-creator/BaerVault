@@ -1,0 +1,3 @@
+.card { display: grid; gap: 1rem; padding: 1.25rem; border-radius: var(--radius-lg); background: var(--app-surface); }
+.row { display: flex; align-items: center; gap: 1rem; padding: .75rem 0; }
+.row > div { display: grid; flex: 1; gap: .5rem; }

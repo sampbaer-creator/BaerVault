@@ -15,6 +15,7 @@
     "@clerk/nextjs": "^7.7.4",
     "@mantine/core": "^9.5.1",
     "@mantine/hooks": "^9.5.1",
+    "@mantine/notifications": "^9.7.3",
     "@supabase/supabase-js": "^2.112.3",
     "@tabler/icons-react": "^3.46.0",
     "ai": "^4.3.0",

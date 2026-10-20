@@ -1,0 +1,6 @@
+.row { display: flex; min-height: 64px; align-items: center; gap: .75rem; padding: .75rem 0; border-bottom: 1px solid var(--app-border); }
+.icon { display: grid; flex: 0 0 auto; width: 40px; height: 40px; place-items: center; border-radius: 50%; color: var(--teal-7); background: var(--teal-1); }
+.copy { display: grid; min-width: 0; gap: .2rem; }
+.copy strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.copy small { color: var(--app-text-muted); font-size: var(--text-small); }
+.amount { margin-left: auto; font-variant-numeric: tabular-nums; white-space: nowrap; }

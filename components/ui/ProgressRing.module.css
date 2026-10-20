@@ -1,0 +1,10 @@
+.root { display: grid; justify-items: center; gap: .25rem; text-align: center; }
+.root svg { width: 104px; height: 104px; transform: rotate(-90deg); overflow: visible; }
+.base,.value { fill: none; stroke-width: 9; }
+.base { stroke: var(--app-surface-raised); }
+.value { stroke: var(--success); stroke-linecap: round; }
+.value[data-status="close"] { stroke: var(--warning); }
+.value[data-status="over"] { stroke: var(--danger); }
+.root text { fill: var(--app-text-strong); font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; transform: rotate(90deg); transform-origin: 50% 50%; }
+.root strong { font-size: var(--text-small); }
+.root small,.root span { color: var(--app-text-muted); font-size: var(--text-label); }

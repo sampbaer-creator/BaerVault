@@ -1,0 +1,4 @@
+.card { min-width: 0; padding: 1.25rem; border: 1px solid var(--app-border); border-radius: var(--radius-lg); background: var(--app-surface); box-shadow: var(--shadow-1); }
+.header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+.header h2 { margin: 0; font-size: var(--text-h3); }
+.header a { color: var(--app-accent); font-size: var(--text-small); font-weight: 600; }

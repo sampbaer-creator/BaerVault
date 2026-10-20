@@ -1,0 +1,4 @@
+.pill { min-height: 40px; padding: .5rem .875rem; border: 1px solid var(--app-border); border-radius: var(--radius-pill); color: var(--app-text-default, var(--app-text-strong)); background: var(--app-surface); font: inherit; font-size: var(--text-small); cursor: pointer; }
+.pill[data-selected="true"] { border-color: var(--teal-6); color: var(--teal-8); background: var(--teal-0); }
+.pill:focus-visible { outline: 2px solid var(--app-focus); outline-offset: 2px; }
+:global([data-theme="dark"]) .pill[data-selected="true"] { color: var(--teal-1); background: var(--teal-8); }

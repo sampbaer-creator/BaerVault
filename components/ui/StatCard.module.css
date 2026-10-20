@@ -1,0 +1,5 @@
+.card { display: grid; gap: .4rem; padding: 1.1rem; border: 1px solid var(--app-border); border-radius: var(--radius-lg); background: var(--app-surface); }
+.card span,.card small { color: var(--app-text-muted); font-size: var(--text-small); }
+.card strong { font-size: var(--text-display); font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.04em; }
+.card small[data-positive="true"] { color: var(--success); }
+.card small[data-positive="false"] { color: var(--danger); }

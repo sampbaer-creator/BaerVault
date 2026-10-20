@@ -1,0 +1,9 @@
+.root { display: grid; gap: .5rem; }
+.labels { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .25rem .75rem; font-size: var(--text-small); }
+.status { color: var(--success-on-soft); }
+.status[data-status="close"] { color: var(--warning-on-soft); }
+.status[data-status="over"] { color: var(--danger-on-soft); }
+.track { height: 9px; overflow: hidden; border-radius: var(--radius-pill); background: var(--app-surface-raised); }
+.track i { display: block; height: 100%; border-radius: inherit; background: var(--success); }
+.track i[data-status="close"] { background: var(--warning); }
+.track i[data-status="over"] { background: var(--danger); }
