@@ -616,40 +616,40 @@
   .netWorthCard { margin-top: -18px; min-height: 286px !important; border-radius: 28px !important; }
   .totalsGrid { padding: 2px 8px 0; }
   .totalsGrid > div { border-right: 0; }
-  .totalsGrid span { color: #102653; font-size: 12px; font-weight: 650; }
-  .totalsGrid strong { margin-top: 8px; color: #102653; font-size: 17px; }
+  .totalsGrid span { color: var(--app-text-muted); font-size: 12px; font-weight: 650; }
+  .totalsGrid strong { margin-top: 8px; color: var(--app-text-strong); font-size: 17px; }
   .netWorthLine { bottom: 52px !important; height: 112px !important; }
   .groups { margin-top: 34px !important; }
   .accountGroup { margin-top: 30px !important; }
   .groupHeader { min-height: 48px; padding: 0 2px 8px !important; border-bottom: 0; }
-  .groupHeader h3 { color: #102653; font-size: 18px; }
-  .groupHeader span { color: #929db4; background: transparent; }
+  .groupHeader h3 { color: var(--app-text-strong); font-size: 18px; }
+  .groupHeader span { color: var(--app-text-muted); background: transparent; }
   .accountRow { min-height: 82px !important; grid-template-columns: 48px minmax(0, 1fr) auto !important; gap: 12px; padding: 10px 0 !important; border-top: 0 !important; border-bottom: 0 !important; }
-  .accountIcon { width: 48px; height: 48px; color: #174d8f; background: #d9e6f4; }
-  .accountCopy strong { color: #102653; font-size: 15px; }
-  .accountCopy small { color: #929db4; font-size: 11px; }
+  .accountIcon { width: 48px; height: 48px; color: var(--app-accent); background: var(--app-accent-soft); }
+  .accountCopy strong { color: var(--app-text-strong); font-size: 15px; }
+  .accountCopy small { color: var(--app-text-muted); font-size: 11px; }
   .accountMeta { grid-column: 3; display: grid; justify-items: end; text-align: right; }
-  .accountMeta strong { color: #102653; font-size: 15px; }
-  .accountMeta small { max-width: none; color: #00a51a; }
+  .accountMeta strong { color: var(--app-text-strong); font-size: 15px; }
+  .accountMeta small { max-width: none; color: var(--money-positive); }
   .rowChevron { display: none; }
 }
 
 @media (max-width: 47.999rem) {
   .pageHeader > div, .demoNotice { display: none; }
-  .pageHeader { position: fixed; right: 14px; bottom: max(18px, env(safe-area-inset-bottom)); z-index: 25; width: auto; margin: 0; }
+  .pageHeader { position: fixed; right: 14px; bottom: calc(84px + env(safe-area-inset-bottom)); z-index: 25; width: auto; margin: 0; }
   .headerActions { align-items: flex-end; flex-direction: column; }
   .addButton, .transferButton { width: 58px; height: 58px; overflow: hidden; padding: 0; border-radius: 50%; font-size: 0; }
   .addButton { box-shadow: 0 12px 26px rgb(22 92 151 / 22%) !important; }
   .transferButton { border-color: var(--app-border); background: var(--app-surface); box-shadow: var(--shadow-surface); }
   .addButton svg, .transferButton svg { width: 24px; height: 24px; }
-  .netWorthCard { min-height: 226px !important; padding: 22px 18px; border: 0; border-radius: 22px; color: var(--app-text-strong); background: #fff; box-shadow: 0 18px 38px rgb(43 119 183 / 12%); }
+  .netWorthCard { min-height: 226px !important; padding: 22px 18px; border: 0; border-radius: 16px; color: var(--app-text-strong); background: var(--app-surface); box-shadow: 0 12px 28px rgb(9 72 61 / 10%); }
   .summaryHeader { align-items: center; text-align: center; }
   .summaryHeader > div > span, .totalsGrid span, .summaryCaption { color: var(--app-text-muted); }
   .summaryHeader > div > strong, .totalsGrid strong { color: var(--app-text-strong); }
   .privateBadge { display: none; }
-  .lineFill { fill: rgb(47 142 232 / 8%); }
-  .lineStroke { stroke: #59a5ef; }
-  .linePoint { fill: white; stroke: #59a5ef; }
+  .lineFill { fill: color-mix(in srgb, var(--app-accent) 9%, transparent); }
+  .lineStroke { stroke: var(--app-accent); }
+  .linePoint { fill: var(--app-surface); stroke: var(--app-accent); }
   .groups { margin-top: 18px; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
   .emptyState { min-height: 180px; padding: 24px 20px; }
   .accountGroup { margin-top: 20px !important; border: 0; background: transparent; box-shadow: none; }
