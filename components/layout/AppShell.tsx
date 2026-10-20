@@ -55,6 +55,7 @@ export function AppShell({ children }: AppShellProps) {
         <PageHeader
           title={title}
           pathname={pathname}
+          tab={searchParams.get("tab")}
           selectedMonth={selectedMonth}
           sidebarCollapsed={sidebarCollapsed}
           onToggleSidebar={() => setSidebarCollapsed((current) => !current)}

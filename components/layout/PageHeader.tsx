@@ -24,6 +24,7 @@ import { type MonthSelection, withMonth } from "@/lib/helpers/monthSelection";
 type PageHeaderProps = {
   title: string;
   pathname: string;
+  tab?: string | null;
   selectedMonth?: MonthSelection;
   sidebarCollapsed: boolean;
   onToggleSidebar: () => void;
@@ -34,6 +35,7 @@ const searchablePages = primaryNavigation;
 export function PageHeader({
   title,
   pathname,
+  tab,
   selectedMonth,
   sidebarCollapsed,
   onToggleSidebar,
@@ -49,12 +51,13 @@ export function PageHeader({
   const quickAdd = useMemo(() => {
     const actions: Record<string, { action: ShellQuickAddAction; label: string }> = {
       "/budget": { action: "category", label: "Add category" },
-      "/goals": { action: "goal", label: "Add goal" },
       "/transactions": { action: "income", label: "Add income" },
     };
+    if (pathname === "/accounts" && tab === "goals") return { action: "goal" as const, label: "Add goal" };
+    if (pathname === "/budget" && tab === "cash-flow") return undefined;
     return actions[pathname.replace(/^\/demo/, "")];
-  }, [pathname]);
-  const mobileQuickActions = useMemo(() => {
+  }, [pathname, tab]);
+  const mobileQuickActions = useMemo<Array<{ action: ShellQuickAddAction; label: string; secondary?: boolean }>>(() => {
     const actions: Record<string, Array<{ action: ShellQuickAddAction; label: string; secondary?: boolean }>> = {
       "/accounts": [
         { action: "account-connect", label: "Connect bank" },
@@ -63,8 +66,8 @@ export function PageHeader({
       ],
     };
     const route = pathname.replace(/^\/demo/, "");
-    return actions[route] ?? (quickAdd ? [quickAdd] : []);
-  }, [pathname, quickAdd]);
+    return route === "/accounts" && tab === "goals" ? (quickAdd ? [quickAdd] : []) : actions[route] ?? (quickAdd ? [quickAdd] : []);
+  }, [pathname, quickAdd, tab]);
 
   return (
     <>
