@@ -1,5 +1,6 @@
 import type { FinancialAccount } from "@/lib/demo/accounts";
 import type { UpcomingPayment } from "@/lib/helpers/recurring";
+import type { SavingsGoal } from "@/lib/demo/goals";
 
 export type DashboardCategory = {
   name: string;
@@ -45,4 +46,8 @@ export type DashboardViewModel = {
   financialAccounts: DashboardFinancialAccount[];
   symbols: string[];
   upcomingPayments: UpcomingPayment[];
+  goals: SavingsGoal[];
+  leftToSpend: number;
+  daysLeft: number;
+  budgetStatus: "on-track" | "close" | "over";
 };

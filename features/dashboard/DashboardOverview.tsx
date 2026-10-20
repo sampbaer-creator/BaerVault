@@ -1,6 +1,6 @@
 "use client";
 
-import { IconArrowRight, IconReceipt, IconWallet } from "@tabler/icons-react";
+import { IconArrowRight, IconArrowsExchange, IconPlus, IconReceipt, IconWallet } from "@tabler/icons-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
@@ -56,18 +56,29 @@ export function DashboardOverview({ model, basePath = "", selectedMonth }: Dashb
   const netWorth = model.cashAssets - model.debts + portfolioValue;
   const totalAssets = netWorth + model.debts;
   const displayedAssets = totalAssets;
-  const budgetLeft = model.planned - model.spending;
+  const budgetLeft = model.leftToSpend;
   const spendingProgress = model.planned > 0 ? Math.min((model.spending / model.planned) * 100, 100) : 0;
   const debtShare = displayedAssets > 0 ? Math.min(100, Math.max((model.debts / displayedAssets) * 100, 0)) : 0;
   const budgetRangeMax = Math.max(model.planned, model.spending, 1);
-  const topCategories = model.categories.slice(0, 4);
 
   return (
     <div className={styles.dashboard}>
+      <section className={styles.hero} aria-label="Monthly spending overview">
+        <div className={styles.heroTop}><span>Good to see you</span><span className={styles.status} data-status={model.budgetStatus}>{model.budgetStatus === "over" ? "Over budget" : model.budgetStatus === "close" ? "Close to limit" : "On track"}</span></div>
+        <p>{model.month} spending plan</p>
+        <strong className={styles.heroAmount}>{money.format(budgetLeft)}</strong>
+        <div className={styles.heroCaption}>left to spend this month · {model.daysLeft} {model.daysLeft === 1 ? "day" : "days"} left</div>
+        {model.planned === 0 && <p className={styles.heroEmpty}>Set up a budget to see how much is safe to spend. <Link href={monthHref("/budget")}>Create a budget</Link></p>}
+        <div className={styles.quickActions} aria-label="Quick actions">
+          <Link href={monthHref("/budget?add=purchase")}><IconPlus size={21} aria-hidden="true" /><span>Add purchase</span></Link>
+          <Link href={monthHref("/transactions?add=income")}><IconWallet size={21} aria-hidden="true" /><span>Add income</span></Link>
+          <Link href={`${basePath}/accounts?add=account-transfer`}><IconArrowsExchange size={21} aria-hidden="true" /><span>Transfer</span></Link>
+        </div>
+      </section>
       <div className={styles.dashboardGrid}>
         <section className={styles.netWorthPanel}>
           <PanelHeading title="Current position" href={monthHref("/accounts")} action="View accounts" />
-          <div className={styles.netWorthLead}>
+          {model.financialAccounts.length === 0 && model.accounts.length === 0 ? <p className={styles.emptyCopy}>No accounts yet. <Link href={`${basePath}/accounts?add=account`}>Add an account</Link> to see your current position.</p> : <><div className={styles.netWorthLead}>
             <span>Net worth</span>
             <strong>{money.format(netWorth)}</strong>
             {(waitingForMarket || marketUnavailable) && <small>{waitingForMarket ? "Updating prices. " : "Some prices are unavailable. "}Unpriced investments use purchase cost.</small>}
@@ -77,7 +88,7 @@ export function DashboardOverview({ model, basePath = "", selectedMonth }: Dashb
             <div><span><i className={styles.assetDot} />Assets</span><strong>{money.format(displayedAssets)}</strong></div>
             <div><span><i className={styles.debtDot} />Debts</span><strong>{money.format(model.debts)}</strong></div>
           </div>
-          <p className={styles.emptyCopy}>Accounts {money.format(model.cashAssets)} + investments {money.format(portfolioValue)} − debts {money.format(model.debts)}</p>
+          <p className={styles.emptyCopy}>Accounts {money.format(model.cashAssets)} + investments {money.format(portfolioValue)} − debts {money.format(model.debts)}</p></>}
         </section>
 
         <section className={styles.spendingPanel}>
@@ -100,17 +111,17 @@ export function DashboardOverview({ model, basePath = "", selectedMonth }: Dashb
                 <div><strong>{item.name}</strong><span>{item.meta}</span></div>
                 <span className={item.incoming ? styles.positive : undefined}>{item.incoming ? "+" : "−"}{money.format(item.amount)}</span>
               </div>
-            )) : <p className={styles.emptyCopy}>Activity will appear as income and purchases are added.</p>}
+            )) : <p className={styles.emptyCopy}>Activity will appear as income and purchases are added. <Link href={monthHref("/budget?add=purchase")}>Add a purchase</Link>.</p>}
           </div>
         </section>
 
         <div className={styles.sideStack}>
           <section className={styles.categoriesPanel}>
-            <PanelHeading title="Top categories" href={monthHref("/budget")} action="View budget" />
+            <PanelHeading title="Budget by category" href={monthHref("/budget")} action="View budget" />
             <div className={styles.categoryList}>
-              {topCategories.length ? topCategories.map((category, index) => (
-                <div key={category.name}><span><i style={{ background: `var(--category-${index + 1})` }} />{category.name}</span><strong>{money.format(category.value)}</strong></div>
-              )) : <p className={styles.emptyCopy}>Category totals will appear after purchases are added.</p>}
+              {model.categories.length ? model.categories.map((category) => (
+                <div className={styles.categoryItem} key={category.name}><span><strong>{category.name}</strong><small>{money.format(category.value)} of {money.format(category.planned)}</small></span><div className={styles.categoryTrack} role="progressbar" aria-label={`${category.name} budget used`} aria-valuemin={0} aria-valuemax={Math.max(category.planned, category.value, 1)} aria-valuenow={category.value}><i data-animate-progress data-over={category.value > category.planned} style={{ width: `${category.planned > 0 ? Math.min(100, category.value / category.planned * 100) : 100}%` }} /></div><small>{category.value > category.planned ? `${money.format(category.value - category.planned)} over` : `${money.format(category.planned - category.value)} left`}</small></div>
+              )) : <p className={styles.emptyCopy}>No budgets yet. <Link href={monthHref("/budget")}>Add a category</Link> to start your spending plan.</p>}
             </div>
           </section>
           <section className={styles.upcomingPanel}>
@@ -118,6 +129,10 @@ export function DashboardOverview({ model, basePath = "", selectedMonth }: Dashb
             {model.upcomingPayments.length ? <div className={styles.transactionList}>{model.upcomingPayments.slice(0, 5).map((payment) => <div className={styles.transactionRow} key={payment.id}><span className={styles.transactionIcon}><IconReceipt size={16} aria-hidden="true" /></span><div><strong>{payment.name}</strong><span>{payment.date}{payment.estimated ? " · Estimated" : " · Scheduled"}</span></div><strong>{money.format(payment.amount)}</strong></div>)}</div> : <div className={styles.upcomingEmpty}><p>No upcoming payments found.</p><span>Estimates appear after three months of consistent payments. You can also record a future payment in your budget.</span></div>}
           </section>
         </div>
+        <section className={styles.goalsPanel}>
+          <PanelHeading title="Goals" href={`${basePath}/accounts?tab=goals`} action="View goals" />
+          {model.goals.length ? <div className={styles.goalsList}>{model.goals.slice(0, 3).map((goal) => <div className={styles.goalRow} key={goal.id}><div><strong>{goal.name}</strong><span>{money.format(goal.savedAmount)} of {money.format(goal.targetAmount)}</span></div><div className={styles.categoryTrack} role="progressbar" aria-label={`${goal.name} progress`} aria-valuemin={0} aria-valuemax={goal.targetAmount} aria-valuenow={goal.savedAmount}><i style={{ width: `${goal.targetAmount > 0 ? Math.min(100, goal.savedAmount / goal.targetAmount * 100) : 0}%` }} /></div></div>)}</div> : <p className={styles.emptyCopy}>No goals yet. <Link href={`${basePath}/accounts?tab=goals&add=goal`}>Add a goal</Link> to track your progress.</p>}
+        </section>
       </div>
     </div>
   );

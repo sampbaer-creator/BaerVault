@@ -9,12 +9,30 @@ import { isDebtAccount, type FinancialAccount } from "@/lib/demo/accounts";
 import { costFor, sharesFor, type InvestmentAccount } from "@/lib/demo/investmentData";
 import type { UpcomingPayment } from "@/lib/helpers/recurring";
 import type { DashboardViewModel } from "@/lib/dashboard";
+import type { SavingsGoal } from "@/lib/demo/goals";
+
+export function daysLeftInMonth(year: number, month: number, today: Date) {
+  const selected = year * 12 + month;
+  const current = today.getFullYear() * 12 + today.getMonth() + 1;
+  const lastDay = new Date(year, month, 0).getDate();
+  if (selected < current) return 0;
+  if (selected > current) return lastDay;
+  return lastDay - today.getDate() + 1;
+}
+
+export function spendingStatus(planned: number, spending: number): DashboardViewModel["budgetStatus"] {
+  if (spending > planned) return "over";
+  if (planned > 0 && (planned - spending) / planned <= 0.1) return "close";
+  return "on-track";
+}
 
 export function createDashboardViewModel(
   budget: BudgetMonth,
   accounts: InvestmentAccount[],
   financialAccounts: FinancialAccount[] = [],
   upcomingPayments: UpcomingPayment[] = [],
+  goals: SavingsGoal[] = [],
+  period?: { year: number; month: number; today?: Date },
 ): DashboardViewModel {
   const income = totalIncome(budget);
   const spending = totalSpending(budget);
@@ -61,6 +79,10 @@ export function createDashboardViewModel(
 
   return {
     upcomingPayments,
+    goals,
+    leftToSpend: totalPlanned(budget) - spending,
+    daysLeft: period ? daysLeftInMonth(period.year, period.month, period.today ?? new Date()) : 0,
+    budgetStatus: spendingStatus(totalPlanned(budget), spending),
     month: budget.month,
     income,
     spending,
