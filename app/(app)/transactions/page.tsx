@@ -6,6 +6,7 @@ import { RecurringWorkspace } from "@/features/recurring/RecurringWorkspace";
 import { SectionTabs } from "@/components/ui/SectionTabs";
 import { selectedTab, transactionTabs, type SectionQuery } from "@/lib/helpers/sectionNavigation";
 import { getTransactionsToReview } from "@/lib/data/bankTransactions";
+import { getHouseholdMembers } from "@/lib/data/households";
 
 export default async function TransactionsPage({ searchParams }: { searchParams: Promise<SectionQuery> }) {
   const query = await searchParams;
@@ -16,5 +17,5 @@ export default async function TransactionsPage({ searchParams }: { searchParams:
   const month = await getBudgetMonth(selected.year, selected.month);
   if (tab === "recurring") return <>{tabs}<RecurringWorkspace month={month} upcoming={await getUpcomingPayments(selected.year, selected.month)} /></>;
   const reviewTransactions = await getTransactionsToReview(selected.year, selected.month);
-  return <>{tabs}<TransactionsWorkspace initialMonth={month} selectedMonth={explicitSelection} reviewTransactions={reviewTransactions} period={selected} /></>;
+  return <>{tabs}<TransactionsWorkspace initialMonth={month} selectedMonth={explicitSelection} reviewTransactions={reviewTransactions} period={selected} members={await getHouseholdMembers()} /></>;
 }

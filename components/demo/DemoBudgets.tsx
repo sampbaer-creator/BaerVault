@@ -16,5 +16,5 @@ export function DemoBudgets({ year = 2026, month = 8 }: { year?: number; month?:
     year,
     monthNumber: month,
   };
-  return <BudgetsWorkspace key={`${year}-${month}`} initialBudget={budget} accounts={demoFinancialAccounts.map(({ id, name, institution, type }) => ({ id, name, institution, type }))} actions={actions} />;
+  return <BudgetsWorkspace key={`${year}-${month}`} initialBudget={budget} accounts={demoFinancialAccounts.map(({ id, name, institution, type }) => ({ id, name, institution, type }))} members={[{ userId: "demo-sam", name: "Sam", imageUrl: "" }, { userId: "demo-bailey", name: "Bailey", imageUrl: "" }]} actions={actions} />;
 }

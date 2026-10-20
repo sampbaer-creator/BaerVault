@@ -40,3 +40,17 @@ export const getCurrentHousehold = cache(async (): Promise<CurrentHousehold> => 
   if (inserted.error) throwDataError(inserted.error, "Could not create your BaerVault household.");
   return { id: inserted.data.id, clerkOrgId: inserted.data.clerk_org_id, name: inserted.data.name };
 });
+
+export type HouseholdMember = { userId: string; name: string; imageUrl: string; role: string };
+
+export const getHouseholdMembers = cache(async (): Promise<HouseholdMember[]> => {
+  const household = await getCurrentHousehold();
+  const clerk = await clerkClient();
+  const result = await clerk.organizations.getOrganizationMembershipList({ organizationId: household.clerkOrgId, limit: 100 });
+  return result.data.flatMap((membership) => {
+    const profile = membership.publicUserData;
+    if (!profile?.userId) return [];
+    const fullName = [profile.firstName, profile.lastName].filter(Boolean).join(" ");
+    return [{ userId: profile.userId, name: fullName || profile.identifier || "Household member", imageUrl: profile.imageUrl, role: membership.role }];
+  });
+});

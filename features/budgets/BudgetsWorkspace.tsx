@@ -16,6 +16,7 @@ import {
 } from "@tabler/icons-react";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import * as realActions from "./actions";
@@ -106,7 +107,7 @@ type BudgetAdviceResult = { ok: true; data: BudgetAdvice } | { ok: false; error:
 type BudgetActions=Pick<typeof realActions,"addCategoryAction"|"deleteBudgetCategoryAction"|"deleteBudgetEntryAction"|"saveBudgetEntryAction"|"updateBudgetCategoryAction"> & {
   getBudgetAdviceAction?: (input: { year: number; month: number }) => Promise<BudgetAdviceResult>;
 };
-export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realActions, showAdviceBanner = false }: { initialBudget: BudgetMonth & { year: number; monthNumber: number }; accounts?: BudgetAccountOption[]; actions?:BudgetActions; showAdviceBanner?: boolean }) {
+export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realActions, showAdviceBanner = false, members = [] }: { initialBudget: BudgetMonth & { year: number; monthNumber: number }; accounts?: BudgetAccountOption[]; actions?:BudgetActions; showAdviceBanner?: boolean; members?: Array<{ userId: string; name: string; imageUrl: string }> }) {
   const currency=useCurrencyFormatter();
   const router = useRouter();
   const pathname = usePathname();
@@ -114,6 +115,7 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
   const accountsPath = pathname.startsWith("/demo") ? "/demo/accounts" : "/accounts";
   const isMobile = useMediaQuery("(max-width: 47.999rem)");
   const [categories, setCategories] = useServerSnapshotState<BudgetCategory[]>(initialBudget.categories);
+  const memberMap = useMemo(() => new Map(members.map((member) => [member.userId, member])), [members]);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -412,7 +414,7 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
             <div className={styles.formActions}><button type="button" onClick={() => setShowPurchaseForm(false)}><IconX size={15} />Cancel</button><button className={`${styles.primaryButton} btn btn-primary`} type="submit" disabled={saving}>{saving ? "Saving…" : editingPurchaseId ? "Save purchase" : "Confirm purchase"}</button></div>
           </form>}
           <div className={styles.purchaseList}>
-            {selected.purchases.map((purchase) => <div className={styles.purchase} key={purchase.id}><div><strong>{purchase.description}</strong><span>{new Date(`${purchase.date}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric" })} · {purchase.accountName ?? "Account not assigned"}</span></div><strong>{currency.format(purchase.amount)}</strong><div className={styles.purchaseActions}><button type="button" onClick={() => editPurchase(purchase)} aria-label={`Edit ${purchase.description}`}><IconEdit size={16} /></button><button type="button" onClick={() => setPendingDelete({kind:"entry",id:purchase.id,label:purchase.description})} aria-label={`Delete ${purchase.description}`}><IconTrash size={16} /></button></div></div>)}
+            {selected.purchases.map((purchase) => { const creator = purchase.createdByClerkUserId ? memberMap.get(purchase.createdByClerkUserId) : undefined; return <div className={styles.purchase} key={purchase.id}><div><strong>{purchase.description}</strong><span>{new Date(`${purchase.date}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric" })} · {purchase.accountName ?? "Account not assigned"}{creator ? ` · ${creator.name}` : ""}</span></div>{creator && <span className={styles.purchaseAvatar} aria-label={`Added by ${creator.name}`}>{creator.imageUrl ? <Image src={creator.imageUrl} alt="" width={30} height={30} unoptimized /> : creator.name.slice(0,1)}</span>}<strong>{currency.format(purchase.amount)}</strong><div className={styles.purchaseActions}><button type="button" onClick={() => editPurchase(purchase)} aria-label={`Edit ${purchase.description}`}><IconEdit size={16} /></button><button type="button" onClick={() => setPendingDelete({kind:"entry",id:purchase.id,label:purchase.description})} aria-label={`Delete ${purchase.description}`}><IconTrash size={16} /></button></div></div>; })}
           </div>
           <button className={`${styles.copyButton} btn btn-ghost`} type="button" onClick={()=>setPendingDelete({kind:"category",id:selected.id,label:selected.name})}><IconTrash size={15}/>Delete category</button>
         </div>}

@@ -1,4 +1,5 @@
 import "server-only";
+import { auth } from "@clerk/nextjs/server";
 
 import type { BudgetMonth } from "@/lib/demo/finance";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -13,6 +14,7 @@ type BudgetEntryRow = {
   entry_date: string;
   financial_account_id: string | null;
   financial_account?: { name: string } | Array<{ name: string }> | null;
+  created_by_clerk_user_id?: string | null;
 };
 type CategoryRow = { id: string; name: string; planned_amount: number | string; budget_entries?: BudgetEntryRow[] };
 type BudgetHistoryCategoryRow = { name: string; planned_amount: number | string; budget_entries?: Array<{ amount: number | string }> };
@@ -32,7 +34,7 @@ export async function getBudgetMonth(year: number, month: number): Promise<Budge
   const ensured = await ensureBudgetMonth(year, month, household, supabase);
   const result = await supabase
     .from("budget_months")
-    .select("id, year, month, budget_categories(id, name, planned_amount, sort_order, budget_entries(id, description, amount, entry_date, financial_account_id, financial_account:financial_accounts(name)))")
+    .select("id, year, month, budget_categories(id, name, planned_amount, sort_order, budget_entries(id, description, amount, entry_date, financial_account_id, created_by_clerk_user_id, financial_account:financial_accounts(name)))")
     .eq("household_id", household.id)
     .eq("year", year)
     .eq("month", month)
@@ -59,6 +61,7 @@ export async function getBudgetMonth(year: number, month: number): Promise<Budge
       description: entry.description,
       date: entry.entry_date,
       accountId: entry.financial_account_id,
+      createdByClerkUserId: entry.created_by_clerk_user_id ?? null,
       accountName: Array.isArray(entry.financial_account)
         ? entry.financial_account[0]?.name ?? null
         : entry.financial_account?.name ?? null,
@@ -161,12 +164,14 @@ async function verifyFinancialAccount(
 }
 
 export async function createBudgetEntry(categoryId: string, description: string, amount: number, entryDate: string, accountId: string | null) {
+  const { userId } = await auth.protect();
+  if (!userId) throw new DataAccessError("Sign in before adding a purchase.");
   const household = await getCurrentHousehold();
   const supabase = createServerSupabaseClient();
   await verifyFinancialAccount(accountId, household.id, supabase);
-  const result = await supabase.from("budget_entries").insert({ household_id: household.id, budget_category_id: categoryId, description, amount, entry_date: entryDate, financial_account_id: accountId }).select("id, description, amount, entry_date, financial_account_id").single();
+  const result = await supabase.from("budget_entries").insert({ household_id: household.id, budget_category_id: categoryId, description, amount, entry_date: entryDate, financial_account_id: accountId, created_by_clerk_user_id: userId }).select("id, description, amount, entry_date, financial_account_id, created_by_clerk_user_id").single();
   if (result.error) throwDataError(result.error, "Could not add the spending entry.");
-  return { id: result.data.id, description: result.data.description, amount: Number(result.data.amount), date: result.data.entry_date, accountId: result.data.financial_account_id };
+  return { id: result.data.id, description: result.data.description, amount: Number(result.data.amount), date: result.data.entry_date, accountId: result.data.financial_account_id, createdByClerkUserId: result.data.created_by_clerk_user_id };
 }
 
 export async function updateBudgetEntry(entryId: string, description: string, amount: number, entryDate: string, accountId: string | null) {

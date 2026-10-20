@@ -5,6 +5,7 @@ export type Purchase = {
   date: string;
   accountId?: string | null;
   accountName?: string | null;
+  createdByClerkUserId?: string | null;
 };
 
 export type BudgetCategory = {

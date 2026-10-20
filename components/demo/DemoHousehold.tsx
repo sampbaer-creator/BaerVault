@@ -24,6 +24,12 @@ export function DemoHousehold() {
           </div>
         </section>
         <section className={styles.card}>
+          <h2>Spent by member this month</h2>
+          <div className={styles.row}><span>Sam</span><strong>$1,984.72</strong></div>
+          <div className={styles.row}><span>Bailey</span><strong>$1,245.61</strong></div>
+          <p className={styles.note}>Synthetic demo totals. Some imported transactions have no creator attribution.</p>
+        </section>
+        <section className={styles.card}>
           <h2>Sharing</h2>
           <p>
             Both members see the same budgets, income, accounts, and holdings

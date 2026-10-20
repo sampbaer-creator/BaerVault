@@ -9,9 +9,9 @@ export const augustBudget: BudgetMonth = {
     { id: "income-3", amount: 1707.7, source: "Northstar Studio", date: "2026-08-15", owner: "Bailey" },
   ],
   categories: [
-    { id: "housing", name: "Housing", plannedAmount: 1650, purchases: [{ id: "p-h1", amount: 1650, description: "Mortgage", date: "2026-08-01" }] },
+    { id: "housing", name: "Housing", plannedAmount: 1650, purchases: [{ id: "p-h1", amount: 1650, description: "Mortgage", date: "2026-08-01", createdByClerkUserId: "demo-sam" }] },
     { id: "groceries", name: "Groceries", plannedAmount: 600, purchases: [
-      { id: "p-g1", amount: 126.42, description: "Costco", date: "2026-08-11" },
+      { id: "p-g1", amount: 126.42, description: "Costco", date: "2026-08-11", createdByClerkUserId: "demo-bailey" },
       { id: "p-g2", amount: 84.18, description: "Smith's", date: "2026-08-08" },
       { id: "p-g3", amount: 53.27, description: "Walmart", date: "2026-08-04" },
       { id: "p-g4", amount: 41.12, description: "Macey's", date: "2026-08-01" },
@@ -23,7 +23,7 @@ export const augustBudget: BudgetMonth = {
       { id: "p-t3", amount: 60, description: "Transit pass", date: "2026-08-01" },
     ] },
     { id: "dining", name: "Dining", plannedAmount: 250, purchases: [
-      { id: "p-d1", amount: 68.4, description: "Copper Onion", date: "2026-08-10" },
+      { id: "p-d1", amount: 68.4, description: "Copper Onion", date: "2026-08-10", createdByClerkUserId: "demo-sam" },
       { id: "p-d2", amount: 54.02, description: "Takashi", date: "2026-08-06" },
       { id: "p-d3", amount: 61, description: "Coffee & lunch", date: "2026-08-03" },
     ] },

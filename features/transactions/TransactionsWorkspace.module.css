@@ -33,6 +33,8 @@
 .categoryIcon { display: grid; flex-shrink: 0; width: 40px; height: 40px; place-items: center; border-radius: 50%; background: var(--app-accent-soft); color: var(--app-accent); }
 .incomeIcon { background: color-mix(in srgb, var(--money-positive) 13%, var(--app-surface)); color: var(--money-positive); }
 .merchant strong { font-weight: 600; }
+.creatorAvatar { display: inline-flex; flex: 0 0 auto; width: 28px; height: 28px; align-items: center; justify-content: center; overflow: hidden; border-radius: 50%; color: var(--app-accent); background: var(--app-accent-soft); font-size: .75rem; font-weight: 700; }
+.creatorAvatar img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
 .chip { display: inline-flex; align-items: center; gap: .375rem; color: var(--app-text-muted); font-size: .75rem; }
 .chip i { width: 6px; height: 6px; border-radius: 50%; }
 .reviewPanel { margin-bottom: 1rem; padding: clamp(14px, 2vw, 22px); border: 1px solid color-mix(in srgb, var(--app-accent) 28%, var(--app-border)); border-radius: 16px; background: var(--app-surface); }
@@ -99,6 +101,7 @@
   .mobileTransaction > .categoryIcon { grid-column: 1; grid-row: 1 / 3; }
   .mobileTransaction > strong { grid-column: 2; grid-row: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .9375rem; font-weight: 650; }
   .mobileTransaction > span:not(.categoryIcon) { grid-column: 2; grid-row: 2; min-width: 0; overflow: hidden; color: var(--app-text-muted); font-size: .75rem; text-overflow: ellipsis; white-space: nowrap; }
+  .mobileTransaction > .mobileMeta { display: flex; align-items: center; gap: .25rem; }
   .mobileTransaction > b { grid-column: 3; grid-row: 1 / 3; font-size: .9375rem; font-weight: 650; font-variant-numeric: tabular-nums; white-space: nowrap; }
   .mobileTransaction:focus-visible, .tabs button:focus-visible { outline: 2px solid var(--app-focus); outline-offset: -2px; }
 }

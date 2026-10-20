@@ -13,6 +13,7 @@ export default function DemoPage() {
         { id: "demo-internet", name: "Internet", amount: 79, date: "2026-08-27", estimated: true },
       ], demoSavingsGoals, { year: 2026, month: 8, today: new Date(2026, 7, 20) }, 2)}
       basePath="/demo"
+      members={[{ userId: "demo-sam", name: "Sam", imageUrl: "" }, { userId: "demo-bailey", name: "Bailey", imageUrl: "" }]}
     />
   );
 }

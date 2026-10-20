@@ -14,6 +14,7 @@ export type DashboardActivity = {
   meta: string;
   amount: number;
   incoming: boolean;
+  createdByClerkUserId?: string | null;
 };
 
 export type DashboardAccount = {

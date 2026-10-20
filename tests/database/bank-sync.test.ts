@@ -25,6 +25,7 @@ test("bank sync is atomic, idempotent, household scoped, and handles removals", 
     await sync(null, "cursor-1");
     await sync("cursor-1", "cursor-2");
     assert.equal((await db.query<{ count: number }>("select count(*)::int as count from budget_entries")).rows[0].count, 1);
+    assert.equal((await db.query<{ created_by_clerk_user_id: string | null }>("select created_by_clerk_user_id from budget_entries limit 1")).rows[0].created_by_clerk_user_id, null, "Plaid imports remain unattributed");
     assert.equal(Number((await db.query<{ balance: string }>("select balance from financial_accounts")).rows[0].balance), -25);
     await assert.rejects(sync(null, "stale-cursor"), /cursor changed/);
     await assert.rejects(sync("cursor-2", "broken", [{ ...transaction, amount: 999, date: "invalid" }]), /date/);
@@ -44,11 +45,15 @@ test("bank sync is atomic, idempotent, household scoped, and handles removals", 
     await db.exec("grant usage on schema auth to authenticated; grant execute on function auth.jwt() to authenticated");
     await db.query("select set_config('request.jwt.claims', '{\"org_id\":\"org_test\"}', false)");
     await db.exec("set role authenticated");
+    const creatorEntry = await db.query<{ id: string }>("insert into budget_entries(household_id,budget_category_id,description,amount,entry_date,created_by_clerk_user_id) values($1,(select id from budget_categories limit 1),'Member purchase',12,'2026-09-09','user_test') returning id", [household]);
+    assert.equal(creatorEntry.rows.length, 1);
+    assert.equal((await db.query<{ creator: string }>("select created_by_clerk_user_id as creator from budget_entries where id=$1", [creatorEntry.rows[0].id])).rows[0].creator, "user_test");
     assert.equal((await db.query<{ count: number }>("select count(*)::int as count from bank_transactions where reviewed_at is null")).rows[0].count, 1);
     const review = await db.query<{ id: string }>("update bank_transactions set reviewed_at=now() where id=$1 returning id", [transactionId]);
     assert.equal(review.rows.length, 1);
     await assert.rejects(db.query("update bank_transactions set description='changed' where id=$1", [transactionId]), /permission denied/);
     await db.query("select set_config('request.jwt.claims', '{\"org_id\":\"org_other\"}', false)");
+    assert.equal((await db.query<{ count: number }>("select count(*)::int as count from budget_entries where id=$1", [creatorEntry.rows[0].id])).rows[0].count, 0);
     assert.equal((await db.query<{ count: number }>("select count(*)::int as count from bank_transactions where id=$1", [transactionId])).rows[0].count, 0);
     const foreignReview = await db.query<{ id: string }>("update bank_transactions set reviewed_at=null where id=$1 returning id", [transactionId]);
     assert.equal(foreignReview.rows.length, 0);

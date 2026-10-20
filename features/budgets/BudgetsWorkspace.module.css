@@ -1058,3 +1058,5 @@
     font-size: 13px;
   }
 }
+.purchaseAvatar { display: grid; width: 30px; height: 30px; place-items: center; overflow: hidden; border-radius: 50%; color: var(--app-accent); background: var(--app-accent-soft); font-size: .75rem; font-weight: 700; }
+.purchaseAvatar img { width: 100%; height: 100%; object-fit: cover; }

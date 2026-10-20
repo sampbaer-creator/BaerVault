@@ -2,6 +2,7 @@
 
 import { IconArrowRight, IconArrowsExchange, IconPlus, IconReceipt, IconWallet } from "@tabler/icons-react";
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 
 import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
@@ -9,7 +10,7 @@ import type { DashboardViewModel } from "@/lib/dashboard";
 import styles from "./DashboardOverview.module.css";
 import { type MonthSelection, withMonth } from "@/lib/helpers/monthSelection";
 
-type DashboardProps = { model: DashboardViewModel; basePath?: string; selectedMonth?: MonthSelection };
+type DashboardProps = { model: DashboardViewModel; basePath?: string; selectedMonth?: MonthSelection; members?: Array<{ userId: string; name: string; imageUrl: string }> };
 type MarketState = { key: string; prices: Record<string, number>; unavailable: string[] };
 
 const marketRequests = new Map<string, { expires: number; request: Promise<MarketState> }>();
@@ -33,7 +34,7 @@ function PanelHeading({ title, href, action }: { title: string; href: string; ac
   return <div className={styles.panelHeading}><h2>{title}</h2><Link href={href}>{action}<IconArrowRight size={14} aria-hidden="true" /></Link></div>;
 }
 
-export function DashboardOverview({ model, basePath = "", selectedMonth }: DashboardProps) {
+export function DashboardOverview({ model, basePath = "", selectedMonth, members = [] }: DashboardProps) {
   const monthHref = (href: string) => selectedMonth ? withMonth(`${basePath}${href}`, selectedMonth) : `${basePath}${href}`;
   const money = useCurrencyFormatter();
   const requestKey = useMemo(() => model.symbols.toSorted().join(","), [model.symbols]);
@@ -60,6 +61,7 @@ export function DashboardOverview({ model, basePath = "", selectedMonth }: Dashb
   const spendingProgress = model.planned > 0 ? Math.min((model.spending / model.planned) * 100, 100) : 0;
   const debtShare = displayedAssets > 0 ? Math.min(100, Math.max((model.debts / displayedAssets) * 100, 0)) : 0;
   const budgetRangeMax = Math.max(model.planned, model.spending, 1);
+  const memberMap = new Map(members.map((member) => [member.userId, member]));
 
   return (
     <div className={styles.dashboard}>
@@ -106,9 +108,10 @@ export function DashboardOverview({ model, basePath = "", selectedMonth }: Dashb
           <PanelHeading title="Recent activity" href={monthHref("/transactions")} action="View all" />
           <div className={styles.transactionList}>
             {model.activity.length ? model.activity.map((item) => (
-              <div className={styles.transactionRow} key={item.id}>
+                <div className={styles.transactionRow} key={item.id}>
                 <span className={styles.transactionIcon} aria-hidden="true">{item.incoming ? <IconWallet size={14} /> : <IconReceipt size={14} />}</span>
                 <div><strong>{item.name}</strong><span>{item.meta}</span></div>
+                {item.createdByClerkUserId && memberMap.get(item.createdByClerkUserId) && <span className={styles.memberAvatar} title={`Added by ${memberMap.get(item.createdByClerkUserId)!.name}`}>{memberMap.get(item.createdByClerkUserId)!.imageUrl ? <Image src={memberMap.get(item.createdByClerkUserId)!.imageUrl} alt="" width={28} height={28} unoptimized /> : memberMap.get(item.createdByClerkUserId)!.name.slice(0,1)}</span>}
                 <span className={item.incoming ? styles.positive : undefined}>{item.incoming ? "+" : "−"}{money.format(item.amount)}</span>
               </div>
             )) : <p className={styles.emptyCopy}>Activity will appear as income and purchases are added. <Link href={monthHref("/budget?add=purchase")}>Add a purchase</Link>.</p>}

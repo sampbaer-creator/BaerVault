@@ -15,5 +15,5 @@ export default async function DemoTransactionsPage({ searchParams }: { searchPar
     { id: "demo-review-2", description: "City Transit", amount: 18.5, providerCategory: "TRANSPORTATION", transactionDate: "2026-08-18", accountId: "demo-checking", budgetEntryId: "demo-entry-2" },
   ];
   if (tab === "recurring") return <>{tabs}<RecurringWorkspace month={month} /></>;
-  return <>{tabs}<TransactionsWorkspace initialMonth={month} reviewTransactions={reviewTransactions} period={{ year: 2026, month: 8 }} /></>;
+  return <>{tabs}<TransactionsWorkspace initialMonth={month} reviewTransactions={reviewTransactions} period={{ year: 2026, month: 8 }} members={[{ userId: "demo-sam", name: "Sam", imageUrl: "" }, { userId: "demo-bailey", name: "Bailey", imageUrl: "" }]} /></>;
 }

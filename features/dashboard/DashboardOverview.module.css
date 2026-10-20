@@ -54,6 +54,8 @@
 .transactionRow > div > strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
 .transactionRow > div > span { font-size: .75rem; color: var(--app-text-muted); overflow-wrap: anywhere; }
 .transactionRow > span:last-child { font-weight: 600; }
+.memberAvatar { display: grid; width: 28px; height: 28px; place-items: center; overflow: hidden; border-radius: 50%; color: var(--app-accent); background: var(--app-accent-soft); font-size: .75rem; font-weight: 700; }
+.memberAvatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 .positive { color: var(--money-positive); }
 .categoryList { display: grid; margin-top: .75rem; }
 .categoryItem { display: grid; gap: 8px; padding: 14px 0; border-bottom: 1px solid var(--app-border); }

@@ -56,6 +56,7 @@ export function createDashboardViewModel(
       date: entry.date,
       amount: entry.amount,
       incoming: true,
+      createdByClerkUserId: null,
     })),
     ...budget.categories.flatMap((category) =>
       category.purchases.map((purchase) => ({
@@ -65,6 +66,7 @@ export function createDashboardViewModel(
         date: purchase.date,
         amount: purchase.amount,
         incoming: false,
+        createdByClerkUserId: purchase.createdByClerkUserId,
       })),
     ),
   ]
@@ -76,6 +78,7 @@ export function createDashboardViewModel(
       meta: item.meta,
       amount: item.amount,
       incoming: item.incoming,
+      createdByClerkUserId: item.createdByClerkUserId,
     }));
 
   return {
