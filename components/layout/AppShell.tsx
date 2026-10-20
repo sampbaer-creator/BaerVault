@@ -14,9 +14,10 @@ import { parseExplicitMonthSelection } from "@/lib/helpers/monthSelection";
 
 type AppShellProps = {
   children: React.ReactNode;
+  reviewCount?: number;
 };
 
-export function AppShell({ children }: AppShellProps) {
+export function AppShell({ children, reviewCount = 0 }: AppShellProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const selectedMonth = parseExplicitMonthSelection(searchParams.get("year"), searchParams.get("month"));
@@ -50,7 +51,7 @@ export function AppShell({ children }: AppShellProps) {
       <a className={styles.skipLink} href="#main-content">
         Skip to main content
       </a>
-      <Sidebar pathname={pathname} collapsed={sidebarCollapsed} selectedMonth={selectedMonth} />
+      <Sidebar pathname={pathname} collapsed={sidebarCollapsed} selectedMonth={selectedMonth} reviewCount={reviewCount} />
       <div className={styles.contentColumn}>
         <PageHeader
           title={title}
@@ -69,7 +70,7 @@ export function AppShell({ children }: AppShellProps) {
           <MobilePager pathname={pathname} progress={pagerProgress} onActiveIndex={updatePager} selectedMonth={selectedMonth} tab={searchParams.get("tab")}>{children}</MobilePager>
         </main>
       </div>
-      <MobileNav pathname={pathname} progress={pagerProgress} activeIndex={pager.activeIndex} navigate={pager.navigate} pagerEnabled={pager.enabled} selectedMonth={selectedMonth} />
+      <MobileNav pathname={pathname} progress={pagerProgress} activeIndex={pager.activeIndex} navigate={pager.navigate} pagerEnabled={pager.enabled} selectedMonth={selectedMonth} reviewCount={reviewCount} />
     </div>
   );
 }

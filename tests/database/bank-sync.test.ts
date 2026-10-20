@@ -34,10 +34,26 @@ test("bank sync is atomic, idempotent, household scoped, and handles removals", 
     assert.equal((await db.query<{ count: number }>("select count(*)::int as count from budget_entries")).rows[0].count, 2);
     await sync("cursor-3", "cursor-4", [{ ...transaction, amount: 30 }]);
     assert.equal(Number((await db.query<{ amount: string }>("select amount from budget_entries order by amount desc limit 1")).rows[0].amount), 30);
+    const transactionId = (await db.query<{ id: string }>("select id from bank_transactions limit 1")).rows[0].id;
+    assert.equal((await db.query<{ reviewed_at: string | null }>("select reviewed_at from bank_transactions where id=$1", [transactionId])).rows[0].reviewed_at, null);
     await sync("cursor-4", "cursor-5", [], ["tx-1"]);
     assert.equal((await db.query<{ count: number }>("select count(*)::int as count from budget_entries")).rows[0].count, 1);
-    // Authenticated clients cannot call the service-only importer.
+    // Review state is writable only inside the active Clerk household.
+    await db.query("insert into households(id,clerk_org_id,name) values('33333333-3333-4333-8333-333333333333','org_other','Other')");
+    await db.exec(`create or replace function auth.jwt() returns jsonb language sql as $$ select current_setting('request.jwt.claims', true)::jsonb $$;`);
+    await db.exec("grant usage on schema auth to authenticated; grant execute on function auth.jwt() to authenticated");
+    await db.query("select set_config('request.jwt.claims', '{\"org_id\":\"org_test\"}', false)");
     await db.exec("set role authenticated");
+    assert.equal((await db.query<{ count: number }>("select count(*)::int as count from bank_transactions where reviewed_at is null")).rows[0].count, 1);
+    const review = await db.query<{ id: string }>("update bank_transactions set reviewed_at=now() where id=$1 returning id", [transactionId]);
+    assert.equal(review.rows.length, 1);
+    await assert.rejects(db.query("update bank_transactions set description='changed' where id=$1", [transactionId]), /permission denied/);
+    await db.query("select set_config('request.jwt.claims', '{\"org_id\":\"org_other\"}', false)");
+    assert.equal((await db.query<{ count: number }>("select count(*)::int as count from bank_transactions where id=$1", [transactionId])).rows[0].count, 0);
+    const foreignReview = await db.query<{ id: string }>("update bank_transactions set reviewed_at=null where id=$1 returning id", [transactionId]);
+    assert.equal(foreignReview.rows.length, 0);
+    await db.query("select set_config('request.jwt.claims', '{\"org_id\":\"org_test\"}', false)");
+    // Authenticated clients cannot call the service-only importer.
     await assert.rejects(sync("cursor-5", "forbidden"), /permission denied/);
     await db.exec("reset role");
     // Deleting a connection no longer tries to null a non-null household ID.

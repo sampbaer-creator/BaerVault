@@ -33,6 +33,7 @@ export function createDashboardViewModel(
   upcomingPayments: UpcomingPayment[] = [],
   goals: SavingsGoal[] = [],
   period?: { year: number; month: number; today?: Date },
+  reviewCount = 0,
 ): DashboardViewModel {
   const income = totalIncome(budget);
   const spending = totalSpending(budget);
@@ -83,6 +84,7 @@ export function createDashboardViewModel(
     leftToSpend: totalPlanned(budget) - spending,
     daysLeft: period ? daysLeftInMonth(period.year, period.month, period.today ?? new Date()) : 0,
     budgetStatus: spendingStatus(totalPlanned(budget), spending),
+    reviewCount,
     month: budget.month,
     income,
     spending,

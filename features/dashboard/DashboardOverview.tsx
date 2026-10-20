@@ -128,6 +128,7 @@ export function DashboardOverview({ model, basePath = "", selectedMonth }: Dashb
             <PanelHeading title="Upcoming payments" href={monthHref("/transactions?tab=recurring")} action="View all" />
             {model.upcomingPayments.length ? <div className={styles.transactionList}>{model.upcomingPayments.slice(0, 5).map((payment) => <div className={styles.transactionRow} key={payment.id}><span className={styles.transactionIcon}><IconReceipt size={16} aria-hidden="true" /></span><div><strong>{payment.name}</strong><span>{payment.date}{payment.estimated ? " · Estimated" : " · Scheduled"}</span></div><strong>{money.format(payment.amount)}</strong></div>)}</div> : <div className={styles.upcomingEmpty}><p>No upcoming payments found.</p><span>Estimates appear after three months of consistent payments. You can also record a future payment in your budget.</span></div>}
           </section>
+          {model.reviewCount > 0 && <section className={styles.reviewPanel} aria-labelledby="dashboard-review-title"><div><span>New bank transactions</span><strong id="dashboard-review-title">{model.reviewCount} {model.reviewCount === 1 ? "transaction" : "transactions"} to review</strong></div><Link href={monthHref("/transactions")}>Review now<IconArrowRight size={15} aria-hidden="true" /></Link></section>}
         </div>
         <section className={styles.goalsPanel}>
           <PanelHeading title="Goals" href={`${basePath}/accounts?tab=goals`} action="View goals" />

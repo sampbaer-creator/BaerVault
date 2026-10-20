@@ -35,6 +35,21 @@
 .merchant strong { font-weight: 600; }
 .chip { display: inline-flex; align-items: center; gap: .375rem; color: var(--app-text-muted); font-size: .75rem; }
 .chip i { width: 6px; height: 6px; border-radius: 50%; }
+.reviewPanel { margin-bottom: 1rem; padding: clamp(14px, 2vw, 22px); border: 1px solid color-mix(in srgb, var(--app-accent) 28%, var(--app-border)); border-radius: 16px; background: var(--app-surface); }
+.reviewHeading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.reviewHeading span { color: var(--app-text-muted); font-size: .75rem; }
+.reviewHeading h2 { margin: 3px 0 0; font-size: 1.05rem; }
+.reviewHeading button, .reviewActions button { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: 5px; padding: 0 12px; border: 1px solid var(--app-border); border-radius: 9px; color: var(--app-accent); background: var(--app-surface); font: inherit; font-size: .8rem; font-weight: 700; cursor: pointer; }
+.reviewHeading button:focus-visible, .reviewActions button:focus-visible, .reviewActions select:focus-visible { outline: 2px solid var(--app-focus); outline-offset: 2px; }
+.reviewList { margin-top: .75rem; }
+.reviewRow { display: grid; grid-template-columns: 40px minmax(0,1fr) auto; gap: 10px 12px; align-items: center; padding: 12px 0; border-top: 1px solid var(--app-border); }
+.reviewCopy { display: grid; min-width: 0; gap: 4px; }
+.reviewCopy strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.reviewCopy span { color: var(--app-text-muted); font-size: .75rem; }
+.reviewRow > b { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.reviewActions { display: flex; grid-column: 2 / 4; gap: 7px; justify-content: flex-end; flex-wrap: wrap; }
+.reviewActions select { min-width: 140px; min-height: 44px; border: 1px solid var(--app-border); border-radius: 9px; color: var(--app-text-strong); background: var(--app-background); }
+.reviewActions button:last-child { color: var(--money-positive); }
 .muted { color: var(--app-text-muted); }
 .actions { display: flex; gap: .25rem; }
 .actions button { display: grid; width: 44px; height: 44px; place-items: center; border: 0; border-radius: var(--radius-control); color: var(--app-text-muted); background: transparent; }
@@ -72,6 +87,8 @@
   .mobileActions > * { display: inline-flex; flex: 1; align-items: center; justify-content: center; min-height: 44px; gap: .375rem; padding: .5rem; border: 0; border-radius: var(--radius-control); color: var(--app-accent); background: var(--app-accent-soft); font-size: .875rem; text-decoration: none; font-weight: 600; }
   .panel { border: 0; border-radius: 0; background: transparent; box-shadow: none; }
   .panel table { display: none; }
+  .reviewRow { grid-template-columns: 40px minmax(0,1fr) auto; }
+  .reviewActions { grid-column: 1 / 4; }
   .tabs { display: flex; gap: 6px; padding: 0 0 .5rem; border: 0; }
   .tabs button { flex: 1; min-height: 44px; border-radius: 999px; background: var(--app-surface); }
   .tabs > span { display: none; }

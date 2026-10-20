@@ -7,7 +7,7 @@ import { IconArrowDown, IconArrowUp, IconBolt, IconCar, IconCheck, IconEdit, Ico
 import { FormEvent, Fragment, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { deleteIncomeAction, saveIncomeAction } from "./actions";
 import { deleteBudgetEntryAction, saveBudgetEntryAction } from "@/features/budgets/actions";
 import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
@@ -18,6 +18,8 @@ import styles from "./TransactionsWorkspace.module.css";
 import { invalidateMobileShell } from "@/lib/helpers/mobileShell";
 import { SHELL_QUICK_ADD_EVENT, type ShellQuickAddAction } from "@/lib/helpers/shellQuickAdd";
 import { type MonthSelection, withMonth } from "@/lib/helpers/monthSelection";
+import { markAllTransactionsReviewedAction, markTransactionReviewedAction, recategorizeTransactionAction } from "./reviewActions";
+import { type ReviewQueueItem, countUnreviewedTransactions, sortReviewQueue } from "@/lib/helpers/reviewQueue";
 
 type Filter = "all" | "income" | "expenses";
 const freshDraft = () => ({ source: "", amount: "", date: new Date().toISOString().slice(0, 10), owner: "Household" });
@@ -38,10 +40,11 @@ function CategoryIcon({ category, incoming }: { category: string; incoming: bool
   return <span className={`${styles.categoryIcon} ${incoming ? styles.incomeIcon : ""}`} aria-hidden="true"><IconComponent size={19} stroke={1.8} /></span>;
 }
 
-export function TransactionsWorkspace({ initialMonth, selectedMonth }: { initialMonth: BudgetMonth; selectedMonth?: MonthSelection }) {
+export function TransactionsWorkspace({ initialMonth, selectedMonth, reviewTransactions = [], period }: { initialMonth: BudgetMonth; selectedMonth?: MonthSelection; reviewTransactions?: ReviewQueueItem[]; period?: MonthSelection }) {
   const money = useCurrencyFormatter();
   const mobile = useMediaQuery("(max-width: 47.999rem)");
   const pathname = usePathname();
+  const router = useRouter();
   const addAction = useSearchParams().get("add");
   const baseBudgetPath = pathname.startsWith("/demo") ? "/demo/budget" : "/budget";
   const budgetPath = selectedMonth ? withMonth(baseBudgetPath, selectedMonth) : baseBudgetPath;
@@ -60,6 +63,10 @@ export function TransactionsWorkspace({ initialMonth, selectedMonth }: { initial
   const [pendingDelete, setPendingDelete] = useState<{id:string;name:string;incoming:boolean} | null>(null);
   const [expenseOpen, setExpenseOpen] = useState(false);
   const [expenseDraft, setExpenseDraft] = useState({ id:"", categoryId:"", description:"", amount:"", date:"", accountId:null as string | null });
+  const [reviewItems, setReviewItems] = useServerSnapshotState<ReviewQueueItem[]>(sortReviewQueue(reviewTransactions));
+  const [reviewCategory, setReviewCategory] = useState<Record<string, string>>({});
+  const [recategorizingId, setRecategorizingId] = useState<string | null>(null);
+  const [reviewBusy, setReviewBusy] = useState(false);
   const income = incomeEntries.reduce((sum, entry) => sum + entry.amount, 0);
   const spending = expenseEntries.reduce((sum, entry) => sum + entry.amount, 0);
   const accountSpending = useMemo(() => {
@@ -154,6 +161,40 @@ export function TransactionsWorkspace({ initialMonth, selectedMonth }: { initial
     setSuccessMessage("Expense updated.");
     if (!pathname.startsWith("/demo")) invalidateMobileShell();
   }
+  async function markReviewed(id: string) {
+    setReviewBusy(true); setError("");
+    if (!pathname.startsWith("/demo")) {
+      const result = await markTransactionReviewedAction(id);
+      if (!result.ok) { setError(result.error); setReviewBusy(false); return; }
+      invalidateMobileShell();
+      router.refresh();
+    }
+    setReviewItems((current) => current.filter((item) => item.id !== id));
+    setReviewBusy(false);
+  }
+  async function markAllReviewed() {
+    setReviewBusy(true); setError("");
+    if (!pathname.startsWith("/demo") && period) {
+      const result = await markAllTransactionsReviewedAction(period.year, period.month);
+      if (!result.ok) { setError(result.error); setReviewBusy(false); return; }
+      invalidateMobileShell();
+      router.refresh();
+    }
+    setReviewItems([]); setReviewBusy(false);
+  }
+  async function recategorize(id: string) {
+    const categoryId = reviewCategory[id];
+    if (!categoryId) return;
+    setReviewBusy(true); setError("");
+    if (!pathname.startsWith("/demo")) {
+      const result = await recategorizeTransactionAction(id, categoryId);
+      if (!result.ok) { setError(result.error); setReviewBusy(false); return; }
+      invalidateMobileShell();
+      router.refresh();
+    }
+    setReviewItems((current) => current.filter((item) => item.id !== id));
+    setRecategorizingId(null); setReviewBusy(false);
+  }
   async function remove() {
     if (!pendingDelete) return;
     if (!pathname.startsWith("/demo")) {
@@ -170,6 +211,15 @@ export function TransactionsWorkspace({ initialMonth, selectedMonth }: { initial
   return <div className={styles.page}>
     {error && !open && !expenseOpen ? <p className={styles.error} role="alert">{error}</p> : null}
     {successMessage && !open && !expenseOpen ? <p className={styles.success} role="status" aria-live="polite">{successMessage}</p> : null}
+    {reviewItems.length > 0 && <section className={styles.reviewPanel} aria-labelledby="review-queue-title">
+      <header className={styles.reviewHeading}><div><span>New bank transactions</span><h2 id="review-queue-title">To review ({countUnreviewedTransactions(reviewItems)})</h2></div><button type="button" onClick={() => void markAllReviewed()} disabled={reviewBusy}>Mark all reviewed</button></header>
+      <div className={styles.reviewList}>{reviewItems.map((item) => <SwipeActionRow key={item.id} editLabel="Change category" deleteLabel="Mark reviewed" onEdit={() => setRecategorizingId(item.id)} onDelete={() => void markReviewed(item.id)}><article className={styles.reviewRow}>
+        <span className={styles.categoryIcon} aria-hidden="true"><IconReceipt size={19} /></span>
+        <div className={styles.reviewCopy}><strong>{item.description}</strong><span>{item.transactionDate} · {item.providerCategory ?? "Uncategorized"}</span></div>
+        <b>{money.format(item.amount)}</b>
+        <div className={styles.reviewActions}>{recategorizingId === item.id ? <><select aria-label={`Category for ${item.description}`} value={reviewCategory[item.id] ?? ""} onChange={(event) => setReviewCategory((current) => ({ ...current, [item.id]: event.target.value }))}><option value="">Choose category</option>{initialMonth.categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select><button type="button" onClick={() => void recategorize(item.id)} disabled={reviewBusy || !reviewCategory[item.id]}>Save</button></> : <button type="button" onClick={() => setRecategorizingId(item.id)}>Change category</button>}<button type="button" onClick={() => void markReviewed(item.id)} disabled={reviewBusy} aria-label={`Mark ${item.description} reviewed`}><IconCheck size={17} aria-hidden="true" /> Reviewed</button></div>
+      </article></SwipeActionRow>)}</div>
+    </section>}
     {!visibleItems.length ? <p className={styles.emptyChart} role="status">{query ? "No transactions match your search." : "No transactions yet. Add income or a budget expense to get started."}</p> : null}
     <div className={styles.mobileSearch}><IconSearch size={23} aria-hidden="true"/><input value={query} onChange={(event)=>setQuery(event.target.value)} placeholder="Search" aria-label="Search transactions"/><button type="button" aria-label={`Filter transactions: ${filter}`} aria-expanded={filterOpen} aria-controls="transaction-filter-menu" onClick={()=>setFilterOpen((open)=>!open)}><Image src="/transaction-filter.png" alt="" width={22} height={22}/></button>{filterOpen&&<div className={styles.mobileFilterMenu} id="transaction-filter-menu" role="menu">{(["all","income","expenses"] as Filter[]).map((value)=><button type="button" role="menuitemradio" aria-checked={filter===value} key={value} onClick={()=>{setFilter(value);setFilterOpen(false)}}><span>{value==="all"?"All transactions":value==="income"?"Income":"Expenses"}</span>{filter===value&&<IconCheck size={17} aria-hidden="true"/>}</button>)}</div>}</div>
     <header className={styles.intro}><div><span>Household activity</span><h2>Every dollar, in one ledger.</h2><p>Income entered here also updates your Budget and Dashboard totals.</p></div><button className="btn btn-primary" onClick={() => launch()}><IconPlus size={16}/>Add income</button></header>

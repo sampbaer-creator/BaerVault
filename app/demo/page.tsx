@@ -11,7 +11,7 @@ export default function DemoPage() {
       model={createDashboardViewModel(augustBudget, investmentAccounts, demoFinancialAccounts, [
         { id: "demo-electric", name: "Electric bill", amount: 128, date: "2026-08-24", estimated: true },
         { id: "demo-internet", name: "Internet", amount: 79, date: "2026-08-27", estimated: true },
-      ], demoSavingsGoals, { year: 2026, month: 8, today: new Date(2026, 7, 20) })}
+      ], demoSavingsGoals, { year: 2026, month: 8, today: new Date(2026, 7, 20) }, 2)}
       basePath="/demo"
     />
   );

@@ -89,6 +89,7 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
             >
               <Icon size={18} aria-hidden="true" />
               {label}
+              {href === "/demo/transactions" && <span className={styles.navBadge} aria-label="2 to review">2</span>}
             </Link>
           ))}
         </nav>
@@ -144,6 +145,7 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
             )}
             <Icon size={19} aria-hidden="true" />
             <small>{label}</small>
+            {href === "/demo/transactions" && <span className={styles.mobileNavBadge} aria-label="2 to review">2</span>}
           </Link>
         </Fragment>)}
       </nav>

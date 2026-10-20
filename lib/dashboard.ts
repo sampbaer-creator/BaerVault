@@ -50,4 +50,5 @@ export type DashboardViewModel = {
   leftToSpend: number;
   daysLeft: number;
   budgetStatus: "on-track" | "close" | "over";
+  reviewCount: number;
 };

@@ -13,6 +13,7 @@ type SidebarProps = {
   pathname: string;
   collapsed?: boolean;
   selectedMonth?: MonthSelection;
+  reviewCount?: number;
 };
 
 type NavigationSectionProps = {
@@ -20,9 +21,10 @@ type NavigationSectionProps = {
   items: NavigationItem[];
   pathname: string;
   selectedMonth?: MonthSelection;
+  reviewCount?: number;
 };
 
-function NavigationSection({ label, items, pathname, selectedMonth }: NavigationSectionProps) {
+function NavigationSection({ label, items, pathname, selectedMonth, reviewCount = 0 }: NavigationSectionProps) {
   return (
     <section
       className={styles.navSection}
@@ -43,6 +45,7 @@ function NavigationSection({ label, items, pathname, selectedMonth }: Navigation
           >
             <Icon size={19} stroke={1.8} aria-hidden="true" />
             <span>{itemLabel}</span>
+            {href === "/transactions" && reviewCount > 0 && <span className={styles.navBadge} aria-label={`${reviewCount} to review`}>{reviewCount}</span>}
           </Link>
         );
       })}
@@ -50,7 +53,7 @@ function NavigationSection({ label, items, pathname, selectedMonth }: Navigation
   );
 }
 
-export function Sidebar({ pathname, collapsed = false, selectedMonth }: SidebarProps) {
+export function Sidebar({ pathname, collapsed = false, selectedMonth, reviewCount = 0 }: SidebarProps) {
   return (
     <aside
       className={`${styles.sidebar} ${collapsed ? styles.sidebarCompact : ""}`}
@@ -70,6 +73,7 @@ export function Sidebar({ pathname, collapsed = false, selectedMonth }: SidebarP
           items={primaryNavigation}
           pathname={pathname}
           selectedMonth={selectedMonth}
+          reviewCount={reviewCount}
         />
       </nav>
 

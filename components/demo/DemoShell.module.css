@@ -110,6 +110,8 @@
   font-weight: 600;
   text-decoration: none;
 }
+.navBadge, .mobileNavBadge { display: inline-grid; min-width: 20px; height: 20px; place-items: center; margin-left: auto; padding: 0 5px; border-radius: 999px; color: #fff; background: var(--money-negative); font-size: 10px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.mobileNavBadge { position: absolute; top: 2px; right: calc(50% - 26px); min-width: 17px; height: 17px; margin: 0; border: 1px solid var(--app-surface); font-size: 9px; }
 .sidebar nav a:hover,
 .sidebar nav .active {
   color: var(--app-accent);

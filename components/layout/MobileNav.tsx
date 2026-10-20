@@ -16,11 +16,12 @@ type MobileNavProps = {
   navigate: (href: string) => void;
   pagerEnabled: boolean;
   selectedMonth?: MonthSelection;
+  reviewCount?: number;
 };
 
 const links = primaryNavigation.filter(({ href }) => href !== "/household");
 
-export function MobileNav({ pathname, progress, activeIndex, navigate, pagerEnabled, selectedMonth }: MobileNavProps) {
+export function MobileNav({ pathname, progress, activeIndex, navigate, pagerEnabled, selectedMonth, reviewCount = 0 }: MobileNavProps) {
   const navRef = useRef<HTMLElement>(null);
   const linkRefs = useRef<Array<HTMLAnchorElement | null>>([]);
   const bubbleX = useMotionValue(0);
@@ -74,6 +75,7 @@ export function MobileNav({ pathname, progress, activeIndex, navigate, pagerEnab
             >
               <Icon size={18} stroke={1.9} aria-hidden="true" />
               <span>{label}</span>
+              {href === "/transactions" && reviewCount > 0 && <span className={styles.mobileNavBadge} aria-label={`${reviewCount} to review`}>{reviewCount}</span>}
             </Link>
           </Fragment>;
         })}
