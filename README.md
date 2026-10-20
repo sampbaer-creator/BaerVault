@@ -1,119 +1,67 @@
 <div align="center">
-  <img src="app/icon.png" alt="BaerVault app icon" width="112" />
+  <img src="app/icon.png" alt="BaerVault app icon" width="96" />
 
   # BaerVault
 
   **A calm, shared home for your household finances.**
 
-  Track spending, plan budgets, understand cash flow, monitor investments, and work toward goals—all in one secure workspace.
-
-  [![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=flat-square&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
-  [![React](https://img.shields.io/badge/React-19-149ECA?style=flat-square&logo=react&logoColor=white)](https://react.dev/)
-  [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-  [![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3FCF8E?style=flat-square&logo=supabase&logoColor=white)](https://supabase.com/)
-  [![Vercel](https://img.shields.io/badge/Deploys_on-Vercel-000000?style=flat-square&logo=vercel&logoColor=white)](https://vercel.com/)
+  [![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=flat-square&logo=nextdotjs&logoColor=white)](https://nextjs.org/) [![React](https://img.shields.io/badge/React-19-149ECA?style=flat-square&logo=react&logoColor=white)](https://react.dev/) [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/) [![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3FCF8E?style=flat-square&logo=supabase&logoColor=white)](https://supabase.com/) [![Vercel](https://img.shields.io/badge/Deploys_on-Vercel-000000?style=flat-square&logo=vercel&logoColor=white)](https://vercel.com/)
 </div>
 
----
+## Screenshots
 
-## The household picture, clearly organized
+<!-- Add real BaerVault screenshots at these paths. -->
 
-BaerVault brings everyday money management and long-term planning into a single responsive application. Clerk Organizations define the household, Supabase keeps financial records isolated with row-level security, and Twelve Data supplies current and historical market information.
-
-| Understand today | Plan ahead | Share securely |
+| Home | Budget | Transactions |
 | --- | --- | --- |
-| Dashboard, accounts, transactions, and cash flow | Monthly budgets, investments, and savings goals | Household membership, protected records, and role-aware access |
+| ![Home](docs/screenshots/home.png) | ![Budget](docs/screenshots/budget.png) | ![Transactions](docs/screenshots/transactions.png) |
 
-### Highlights
+**Live demo:** [Open BaerVault](https://YOUR_DEMO_URL)
 
-- 📊 A responsive dashboard for net worth, spending, and recent activity
-- 💳 Unified accounts and transaction tracking
-- 🧾 Category-level monthly budgeting and purchase entry
-- 📈 Investment holdings, lots, and market-data views
-- 🎯 Savings goals with clear progress
-- 👥 Shared household access through Clerk Organizations
-- 🌗 System, light, and dark appearance modes
-- 📱 Mobile navigation and installable PWA support
-- 🧪 A public demo backed by clearly synthetic data
+## Features
+
+- **Home:** monthly budget status, recent activity, upcoming payments, goals, and net worth.
+- **Transactions:** household ledger, bank transaction review, and recurring payments.
+- **Budget:** category plans, purchase entry, and cash flow.
+- **Accounts:** connected accounts, investments, and savings goals.
+- **Household:** member access, invitations, and spending by member.
 
 ## How it fits together
 
 ```mermaid
 flowchart LR
-    UI[Next.js app] --> AUTH[Clerk auth & households]
-    UI --> DATA[Supabase repositories]
-    DATA --> DB[(PostgreSQL + RLS)]
-    UI --> MARKET[Twelve Data API]
+    UI[Next.js app] --> AUTH[Clerk auth and Organizations]
+    UI --> DATA[Supabase data layer]
+    DATA --> DB[(PostgreSQL with RLS)]
+    UI --> PLAID[Plaid bank sync]
+    UI --> MARKET[Twelve Data market data]
 ```
 
-The public demo stays separate from authenticated household data. Production records flow through typed repositories and are restricted to the active household by database policies.
+The public demo uses synthetic data. Authenticated household records are scoped through Clerk Organizations and Supabase row-level security.
 
-## Technology
+## Tech stack
 
-| Layer | Tools |
+| Area | Tools |
 | --- | --- |
-| Application | Next.js App Router, React, TypeScript |
-| Interface | CSS Modules, Mantine, Tabler Icons, Recharts |
-| Identity | Clerk authentication and Organizations |
-| Data | Supabase PostgreSQL and row-level security |
-| Markets | Twelve Data |
-| Delivery | Vercel and PWA support |
+| App | Next.js 16, React 19, TypeScript |
+| UI | Mantine, CSS Modules, Tabler Icons, Recharts |
+| Identity | Clerk and Organizations |
+| Data | Supabase PostgreSQL, row-level security |
+| Finance integrations | Plaid, Twelve Data |
+| Tests | Node test runner, PGlite |
 
-## Run locally
+## Quick start
 
 ```bash
 git clone https://github.com/sampbaer-creator/BaerVault.git
 cd BaerVault
 npm install
+cp .env.example .env.local
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) on the development computer. The dev server listens on the local network too, so to test on a phone connected to the same Wi-Fi, open `http://YOUR_COMPUTER_IP:3000` (find the address with `ipconfig`). If Windows asks whether Node.js may communicate on private networks, allow it. The landing page and public demo work without an account. Protected household features require Clerk and Supabase credentials in `.env.local`; optional market data and live bank connections use Twelve Data and Plaid. Copy `.env.example` for the full variable list.
+Open `http://localhost:3000`. Configure the required service credentials in `.env.local`; the public demo is available at `/demo` without sign-in. See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for environment setup, migrations, and test commands.
 
-> [!IMPORTANT]
-> Keep credentials in `.env.local` and never commit secret values.
+## License
 
-### Plaid bank connections
-
-The Accounts workspace connects bank accounts through Plaid Link. Plaid access tokens are encrypted with AES-256-GCM and stored once per Item. BaerVault syncs cached balances and 90 days of posted transactions, maps recognized Plaid categories into existing monthly budget categories, and sends unmatched expenses to an `Uncategorized` category. Income is added to the matching month's totals; pending items, transfers, and refunds are not added to budgets automatically.
-
-Apply the latest Supabase migration and configure the Plaid variables in `.env.example`. Set the webhook URL in `PLAID_WEBHOOK_URL`:
-
-```text
-https://YOUR_APP_HOST/api/plaid/webhook
-```
-
-Start with `PLAID_ENV=sandbox`. Plaid Link requests the Transactions product; `/accounts/get` supplies its cached account balances without adding real-time Balance API charges.
-
-### Development commands
-
-```bash
-npm run dev      # Start the development server
-npm test         # Run unit and database tests
-npm run lint     # Check code quality
-npm run typecheck # Check TypeScript
-npm run build    # Create a production build
-```
-
-## Project map
-
-```text
-app/          Routes, layouts, API handlers, and global styles
-components/   Shared UI, navigation, branding, and preferences
-features/     Finance workspaces and scoped styles
-lib/          Data access, domain helpers, and demo data
-supabase/     Database migrations and security policies
-docs/         Architecture and project documentation
-```
-
-For setup, migrations, and a project tour, read the [development guide](docs/DEVELOPMENT.md).
-
-## Project status
-
-BaerVault is under active development. Core household-finance workflows and Plaid bank synchronization are available today. Payments, email, and analytics are not yet integrated.
-
----
-
-<div align="center">
-  Built with care by <a href="https://github.com/sampbaer-creator">Samuel Baer</a>.
-</div>
+License: **Pending owner selection.** No license file is currently present.
