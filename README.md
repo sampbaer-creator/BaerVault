@@ -106,7 +106,7 @@ supabase/     Database migrations and security policies
 docs/         Architecture and project documentation
 ```
 
-For a deeper tour, read the [architecture guide](docs/ARCHITECTURE.md) and [project map](docs/PROJECT_MAP.md).
+For setup, migrations, and a project tour, read the [development guide](docs/DEVELOPMENT.md).
 
 ## Project status
 
