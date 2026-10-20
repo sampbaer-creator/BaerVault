@@ -64,4 +64,4 @@ Open `http://localhost:3000`. Configure the required service credentials in `.en
 
 ## License
 
-License: **Pending owner selection.** No license file is currently present.
+MIT License. See [LICENSE](LICENSE).
