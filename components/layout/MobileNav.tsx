@@ -63,7 +63,7 @@ export function MobileNav({ pathname, progress, activeIndex, navigate, pagerEnab
           const isActive = pagerEnabled ? activeIndex === index : pathname === href;
 
           return <Fragment key={href}>
-            {index === 2 && <Link className={styles.mobileAdd} href={selectedMonth ? withMonth("/budget", selectedMonth) : "/budget"} aria-label="Open Budget to add a purchase"><IconPlus size={24} aria-hidden="true" /></Link>}
+            {index === 2 && <Link className={styles.mobileAdd} href={selectedMonth ? withMonth("/budget?add=purchase", selectedMonth) : "/budget?add=purchase"} aria-label="Add purchase"><IconPlus size={24} aria-hidden="true" /></Link>}
             <Link
               className={`${styles.mobileLink} ${isActive ? styles.mobileLinkActive : ""}`}
               href={selectedMonth ? withMonth(href, selectedMonth) : href}

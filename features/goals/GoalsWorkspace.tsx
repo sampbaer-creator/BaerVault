@@ -12,6 +12,7 @@ import type { SavingsGoal } from "@/lib/demo/goals";
 import styles from "./GoalsWorkspace.module.css";
 import { invalidateMobileShell } from "@/lib/helpers/mobileShell";
 import { SHELL_QUICK_ADD_EVENT, type ShellQuickAddAction } from "@/lib/helpers/shellQuickAdd";
+import { useSearchParams } from "next/navigation";
 
 const emptyDraft = { name: "", targetAmount: "", savedAmount: "0", targetDate: "", monthlyContribution: "0" };
 const colors = ["#4f8389", "#d4af37", "#000080", "#5e191a", "#cfac87", "#e8b00f"];
@@ -19,6 +20,7 @@ const colors = ["#4f8389", "#d4af37", "#000080", "#5e191a", "#cfac87", "#e8b00f"
 export function GoalsWorkspace({ initialGoals }: { initialGoals: SavingsGoal[] }) {
   const currency = useCurrencyFormatter();
   const mobile = useMediaQuery("(max-width: 47.999rem)");
+  const addAction = useSearchParams().get("add");
   const [goals, setGoals] = useServerSnapshotState(initialGoals);
   const [editing, setEditing] = useState<SavingsGoal | null>(null);
   const [draft, setDraft] = useState(emptyDraft);
@@ -35,6 +37,9 @@ export function GoalsWorkspace({ initialGoals }: { initialGoals: SavingsGoal[] }
     setDraft(goal ? { name: goal.name, targetAmount: String(goal.targetAmount), savedAmount: String(goal.savedAmount), targetDate: goal.targetDate ?? "", monthlyContribution: String(goal.monthlyContribution) } : emptyDraft);
     setError(""); setSuccessMessage(""); setOpen(true);
   }
+  useEffect(() => {
+    if (addAction === "goal") queueMicrotask(() => launch());
+  }, [addAction]);
   useEffect(() => {
     const openGoal = (event: Event) => {
       if ((event as CustomEvent<ShellQuickAddAction>).detail !== "goal") return;

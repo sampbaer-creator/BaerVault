@@ -123,15 +123,7 @@ export function PageHeader({
               </nav>
             )}
           </div>
-          {quickAdd && (
-            <button
-              className={`${styles.periodControl} ${styles.quickAddControl}`}
-              type="button"
-              onClick={() => requestShellQuickAdd(quickAdd.action)}
-            >
-              <IconPlus size={15} aria-hidden="true" /> {quickAdd.label}
-            </button>
-          )}
+          <Link className={`${styles.periodControl} ${styles.quickAddControl}`} href={selectedMonth ? withMonth("/budget?add=purchase", selectedMonth) : "/budget?add=purchase"} aria-label="Add purchase"><IconPlus size={16} aria-hidden="true" /> Add purchase</Link>
           <button className={styles.iconControl} type="button" disabled aria-label="Notifications (coming soon)" title="Notifications are coming soon"><IconBell size={18} aria-hidden="true" /></button>
           <ProfileMenu />
         </div>

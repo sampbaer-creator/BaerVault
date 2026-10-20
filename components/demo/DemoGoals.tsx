@@ -1,6 +1,12 @@
+"use client";
+
+import { Drawer } from "@mantine/core";
+import { useSearchParams } from "next/navigation";
+import { useState, type FormEvent } from "react";
+import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
 import styles from "./DemoGoals.module.css";
 
-const goals = [
+const seedGoals = [
   { name: "Emergency Fund", target: "Nov 2026", saved: "$15,000", detail: "of $18,000 · $3,000 to go", monthly: "$500/mo", progress: 83, color: "var(--chart-primary)" },
   { name: "House Down Payment", target: "Dec 2027", saved: "$28,400", detail: "of $60,000 · $31,600 to go", monthly: "$1,200/mo", progress: 47, color: "var(--chart-secondary)" },
   { name: "New Car", target: "Mar 2027", saved: "$6,200", detail: "of $12,000 · $5,800 to go", monthly: "$400/mo", progress: 52, color: "var(--app-accent)" },
@@ -10,15 +16,29 @@ const goals = [
 ];
 
 export function DemoGoals() {
+  const money = useCurrencyFormatter();
+  const addAction = useSearchParams().get("add");
+  const [goals, setGoals] = useState(seedGoals);
+  const [open, setOpen] = useState(addAction === "goal");
+  const [name, setName] = useState("");
+  const [target, setTarget] = useState("");
+  function addGoal(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const amount = Number(target);
+    if (!name.trim() || !Number.isFinite(amount) || amount <= 0) return;
+    setGoals((current) => [{ name: name.trim(), target: "New", saved: money.format(0), detail: `of ${money.format(amount)} · ${money.format(amount)} to go`, monthly: "Set a contribution", progress: 0, color: "var(--app-accent)" }, ...current]);
+    setName(""); setTarget(""); setOpen(false);
+  }
   return <div className={styles.page}>
     <div className={styles.mobileSummary}><div><strong>$205,500</strong><span>saved toward goals</span></div><i data-animate-ring-progress style={{ "--progress": "33%" } as React.CSSProperties}><b>33%</b></i><div><strong>$409,500</strong><span>left to save</span></div></div>
     <div className={styles.metrics}><Metric label="Total saved" value="$205,500" /><Metric label="Combined target" value="$615,000" /><Metric label="On track" value="6 of 6" positive /></div>
-    <h2 className={styles.mobileHeading}>Active</h2>
+    <h2 className={styles.mobileHeading}>Active</h2><button className={styles.addGoalButton} type="button" onClick={() => setOpen(true)}>Add goal</button>
     <section className={styles.goalsGrid} aria-label="Savings goals">{goals.map((goal) => <article className={styles.goal} key={goal.name}>
       <div className={styles.goalHead}><div className={styles.ring} data-animate-ring-progress style={{ "--progress": `${goal.progress}%`, "--ring": goal.color } as React.CSSProperties}><strong>{goal.progress}%</strong></div><div><h3>{goal.name}</h3><span className={styles.goalMeta}>Target {goal.target}</span></div></div>
       <p className={styles.goalValue}><strong>{goal.saved}</strong></p><span className={styles.goalMeta}>{goal.detail}</span>
       <div className={styles.goalFooter}><span>{goal.monthly}</span><span className={styles.status}>On track</span></div>
     </article>)}</section>
+    <Drawer opened={open} onClose={() => setOpen(false)} position="bottom" title="Add goal"><form className={styles.addGoalForm} onSubmit={addGoal}><label>Goal name<input required value={name} onChange={(event) => setName(event.target.value)} /></label><label>Target amount<input required type="number" min="0.01" step="0.01" inputMode="decimal" value={target} onChange={(event) => setTarget(event.target.value)} /></label><button type="submit">Add goal</button></form></Drawer>
   </div>;
 }
 function Metric({ label, value, positive }: { label: string; value: string; positive?: boolean }) { return <div className={styles.metric}><span>{label}</span><strong className={positive ? styles.positive : ""}>{value}</strong></div>; }

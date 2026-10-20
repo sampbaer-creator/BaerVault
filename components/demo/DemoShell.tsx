@@ -119,7 +119,7 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
             <strong>BaerVault</strong>
             <small>Explore BaerVault without signing in</small>
           </div>
-          <span className={styles.desktopHeaderActions}><Link className={styles.createAccount} href="/sign-up">Create account</Link><ProfileMenu demo /></span>
+          <span className={styles.desktopHeaderActions}><Link className={styles.createAccount} href="/demo/budget?add=purchase"><IconPlus size={16} aria-hidden="true" /> Add purchase</Link><Link className={styles.createAccount} href="/sign-up">Create account</Link><ProfileMenu demo /></span>
         </header>
         <main id="demo-main-content" ref={mainRef} tabIndex={-1} onPointerDown={swipe.onPointerDown} onPointerMove={swipe.onPointerMove} onPointerUp={swipe.onPointerUp} onPointerCancel={swipe.onPointerCancel}>
           {children}
@@ -127,7 +127,7 @@ export function DemoShell({ children }: { children: React.ReactNode }) {
       </div>
       <nav ref={mobileNavRef} className={styles.mobileNav} aria-label="Demo mobile navigation">
         {bottomLinks.map(({ href, label, icon: Icon }, index) => <Fragment key={href}>
-          {index === 2 && <Link className={styles.mobileAdd} href="/demo/budget" aria-label="Open Budget to add a purchase"><IconPlus size={24} aria-hidden="true" /></Link>}
+          {index === 2 && <Link className={styles.mobileAdd} href="/demo/budget?add=purchase" aria-label="Add purchase"><IconPlus size={24} aria-hidden="true" /></Link>}
           <Link
             href={href}
             prefetch={pathname === href ? false : undefined}

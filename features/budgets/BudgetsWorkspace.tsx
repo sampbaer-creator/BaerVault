@@ -16,7 +16,7 @@ import {
 } from "@tabler/icons-react";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import * as realActions from "./actions";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
@@ -40,6 +40,7 @@ import styles from "./BudgetsWorkspace.module.css";
 import { invalidateMobileShell } from "@/lib/helpers/mobileShell";
 import { SHELL_QUICK_ADD_EVENT, type ShellQuickAddAction } from "@/lib/helpers/shellQuickAdd";
 import { offsetMonth, withMonth } from "@/lib/helpers/monthSelection";
+import { QuickAddSheet, type QuickPurchaseDraft } from "@/components/ui/QuickAddSheet";
 
 type BudgetAccountOption = {
   id: string;
@@ -109,6 +110,7 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
   const currency=useCurrencyFormatter();
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const accountsPath = pathname.startsWith("/demo") ? "/demo/accounts" : "/accounts";
   const isMobile = useMediaQuery("(max-width: 47.999rem)");
   const [categories, setCategories] = useServerSnapshotState<BudgetCategory[]>(initialBudget.categories);
@@ -116,6 +118,8 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
   const [saving, setSaving] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [purchaseDraft, setPurchaseDraft] = useState<PurchaseDraft>(emptyPurchase);
+  const [quickDraft, setQuickDraft] = useState<QuickPurchaseDraft>({ ...emptyPurchase, categoryId: "" });
+  const quickOpen = searchParams.get("add") === "purchase";
   const [editingPurchaseId, setEditingPurchaseId] = useState<string | null>(null);
   const [showPurchaseForm, setShowPurchaseForm] = useState(false);
   const [plannedDraft, setPlannedDraft] = useState("");
@@ -140,6 +144,10 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
     return () => window.removeEventListener(SHELL_QUICK_ADD_EVENT, openCategory);
   }, []);
 
+  useEffect(() => {
+    if (searchParams.get("add") === "category") queueMicrotask(() => setAddingCategory(true));
+  }, [searchParams]);
+
   const month = useMemo(() => ({ ...initialBudget, categories }), [categories, initialBudget]);
   const selected = categories.find((category) => category.id === selectedId) ?? null;
   const income = totalIncome(month);
@@ -147,6 +155,10 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
   const spending = totalSpending(month);
   const remaining = planned - spending;
   const savings = netSavings(month);
+  const recentCategories = useMemo(() => [...categories].sort((a, b) => {
+    const latest = (category: BudgetCategory) => category.purchases.reduce((date, purchase) => purchase.date > date ? purchase.date : date, "");
+    return latest(b).localeCompare(latest(a)) || a.name.localeCompare(b.name);
+  }), [categories]);
 
   function openMonth(offset: number) {
     const target = offsetMonth({ year: initialBudget.year, month: initialBudget.monthNumber }, offset);
@@ -163,33 +175,50 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
     setPurchaseDraft(emptyPurchase);
   }
 
+  function closeQuickAdd() {
+    const query = new URLSearchParams(searchParams.toString());
+    query.delete("add");
+    router.replace(`${pathname}${query.size ? `?${query}` : ""}`, { scroll: false });
+  }
+
   function updateSelected(updater: (category: BudgetCategory) => BudgetCategory) {
     setCategories((current) => current.map((category) => category.id === selectedId ? updater(category) : category));
   }
 
-  async function submitPurchase(event: FormEvent) {
-    event.preventDefault();
-    const amount = Number(purchaseDraft.amount);
-    if (!selected || !amount || amount < 0 || !purchaseDraft.description.trim()) return;
+  async function savePurchase(category: BudgetCategory, draft: PurchaseDraft, editingId: string | null, quick = false) {
+    const amount = Number(draft.amount);
+    if (!Number.isFinite(amount) || amount <= 0 || !draft.description.trim()) return;
     const previous = categories;
-    const temporaryId = editingPurchaseId ?? "pending-new-entry";
-    const accountId = purchaseDraft.accountId || null;
+    const temporaryId = editingId ?? "pending-new-entry";
+    const accountId = draft.accountId || null;
     const accountName = accounts.find((account) => account.id === accountId)?.name ?? null;
-    updateSelected((category) => ({
-      ...category,
-      purchases: editingPurchaseId
-        ? category.purchases.map((purchase) => purchase.id === editingPurchaseId ? { ...purchase, amount, description: purchaseDraft.description.trim(), date: purchaseDraft.date, accountId, accountName } : purchase)
-        : [{ id: temporaryId, amount, description: purchaseDraft.description.trim(), date: purchaseDraft.date, accountId, accountName }, ...category.purchases],
-    }));
+    setCategories((current) => current.map((item) => item.id === category.id ? {
+      ...item,
+      purchases: editingId
+        ? item.purchases.map((purchase) => purchase.id === editingId ? { ...purchase, amount, description: draft.description.trim(), date: draft.date, accountId, accountName } : purchase)
+        : [{ id: temporaryId, amount, description: draft.description.trim(), date: draft.date, accountId, accountName }, ...item.purchases],
+    } : item));
     setSaving(true); setError("");
-    const result = await actions.saveBudgetEntryAction({ id: editingPurchaseId ?? undefined, categoryId: selected.id, description: purchaseDraft.description, amount, date: purchaseDraft.date, accountId });
+    const result = await actions.saveBudgetEntryAction({ id: editingId ?? undefined, categoryId: category.id, description: draft.description, amount, date: draft.date, accountId });
     setSaving(false);
     if (!result.ok) { setCategories(previous); setError(result.error); return; }
-    if (!editingPurchaseId) setCategories((current) => current.map((category) => category.id === selected.id ? { ...category, purchases: category.purchases.map((purchase) => purchase.id === temporaryId ? { ...purchase, id: result.data.id } : purchase) } : category));
+    if (!editingId) setCategories((current) => current.map((item) => item.id === category.id ? { ...item, purchases: item.purchases.map((purchase) => purchase.id === temporaryId ? { ...purchase, id: result.data.id } : purchase) } : item));
     setPurchaseDraft(emptyPurchase);
+    if (quick) { setQuickDraft({ ...emptyPurchase, categoryId: "" }); closeQuickAdd(); }
     setEditingPurchaseId(null);
     setShowPurchaseForm(false);
     router.refresh(); invalidateMobileShell();
+  }
+
+  async function submitPurchase(event: FormEvent) {
+    event.preventDefault();
+    if (selected) await savePurchase(selected, purchaseDraft, editingPurchaseId);
+  }
+
+  async function submitQuickPurchase(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const category = categories.find((item) => item.id === (quickDraft.categoryId || recentCategories[0]?.id));
+    if (category) await savePurchase(category, quickDraft, null, true);
   }
 
   function editPurchase(purchase: Purchase) {
@@ -354,6 +383,14 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
         <section className={`${styles.remainingPanel} card`}><span>Left to spend</span><strong>{currency.format(remaining)}</strong><p>{remaining >= 0 ? "Your plan is on pace for this month." : "Review categories currently over budget."}</p></section>
       </aside>
       </div>
+
+      <QuickAddSheet opened={quickOpen} onClose={closeQuickAdd} onSubmit={submitQuickPurchase} draft={quickDraft} onChange={setQuickDraft} categories={recentCategories.map(({ id, name }) => ({ id, label: name }))} accounts={accounts.map(({ id, name }) => ({ id, label: name }))} secondary={[
+        { label: "Add income", href: `${pathname.startsWith("/demo") ? "/demo" : ""}/transactions?add=income` },
+        { label: "Transfer", href: `${accountsPath}?add=account-transfer` },
+        { label: "Add account", href: `${accountsPath}?add=account` },
+        { label: "Add goal", href: `${accountsPath}?tab=goals&add=goal` },
+        { label: "Add category", href: `${pathname}?add=category` },
+      ]} busy={saving} error={error} />
 
       <Drawer opened={Boolean(selected)} onClose={() => setSelectedId(null)} position={isMobile ? "bottom" : "right"} size={isMobile ? "88%" : 440} radius={isMobile ? "18px 18px 0 0" : 0} title={selected?.name} classNames={{ content: styles.drawer, header: styles.drawerHeader, body: styles.drawerBody, title: styles.drawerTitle }}>
         {selected && <div className={styles.categoryDetail}>

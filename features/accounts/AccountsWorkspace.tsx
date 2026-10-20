@@ -22,7 +22,7 @@ import {
   type Icon,
 } from "@tabler/icons-react";
 import { type FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import {
   addFinancialAccountAction,
@@ -167,6 +167,7 @@ export function AccountsWorkspace({
 }: AccountsWorkspaceProps) {
   const money = useCurrencyFormatter();
   const router = useRouter();
+  const addAction = useSearchParams().get("add");
   const [accounts, setAccounts] = useServerSnapshotState(initialAccounts);
   const mobile = useMediaQuery("(max-width: 47.999rem)");
   const [selectedId, setSelectedId] = useState("");
@@ -261,6 +262,10 @@ export function AccountsWorkspace({
     setTransferOpen(true);
   }, [showError, transferableAccounts]);
 
+  useEffect(() => {
+    if (addAction === "account") queueMicrotask(openAdd);
+    if (addAction === "account-transfer") queueMicrotask(openTransfer);
+  }, [addAction, openAdd, openTransfer]);
   useEffect(() => {
     const openAccountAction = (event: Event) => {
       const action = (event as CustomEvent<ShellQuickAddAction>).detail;

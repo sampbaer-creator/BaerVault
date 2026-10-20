@@ -7,7 +7,7 @@ import { IconArrowDown, IconArrowUp, IconBolt, IconCar, IconCheck, IconEdit, Ico
 import { FormEvent, Fragment, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { deleteIncomeAction, saveIncomeAction } from "./actions";
 import { deleteBudgetEntryAction, saveBudgetEntryAction } from "@/features/budgets/actions";
 import { useCurrencyFormatter } from "@/components/preferences/PreferencesProvider";
@@ -42,6 +42,7 @@ export function TransactionsWorkspace({ initialMonth, selectedMonth }: { initial
   const money = useCurrencyFormatter();
   const mobile = useMediaQuery("(max-width: 47.999rem)");
   const pathname = usePathname();
+  const addAction = useSearchParams().get("add");
   const baseBudgetPath = pathname.startsWith("/demo") ? "/demo/budget" : "/budget";
   const budgetPath = selectedMonth ? withMonth(baseBudgetPath, selectedMonth) : baseBudgetPath;
   const [incomeEntries, setIncomeEntries] = useServerSnapshotState(initialMonth.incomeEntries);
@@ -113,6 +114,14 @@ export function TransactionsWorkspace({ initialMonth, selectedMonth }: { initial
     setExpenseDraft({ id:entry.id, categoryId:entry.categoryId, description:entry.description, amount:String(entry.amount), date:entry.date, accountId:entry.accountId ?? null });
     setError(""); setSuccessMessage(""); setExpenseOpen(true);
   }
+  useEffect(() => {
+    if (addAction === "income") queueMicrotask(() => {
+      setEditingId(null);
+      setDraft(freshDraft());
+      setError("");
+      setOpen(true);
+    });
+  }, [addAction]);
   useEffect(() => {
     const openIncome = (event: Event) => {
       if ((event as CustomEvent<ShellQuickAddAction>).detail !== "income") return;
