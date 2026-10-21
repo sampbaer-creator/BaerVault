@@ -22,6 +22,7 @@ import { markAllTransactionsReviewedAction, markTransactionReviewedAction, recat
 import { type ReviewQueueItem, countUnreviewedTransactions, sortReviewQueue } from "@/lib/helpers/reviewQueue";
 
 type Filter = "all" | "income" | "expenses";
+const EMPTY_REVIEW_TRANSACTIONS: ReviewQueueItem[] = [];
 const freshDraft = () => ({ source: "", amount: "", date: new Date().toISOString().slice(0, 10), owner: "Household" });
 const dateHeading = (date: string) => new Date(`${date}T12:00:00`).toLocaleDateString(undefined, { weekday: "short", month: "long", day: "numeric" });
 
@@ -55,7 +56,7 @@ function CreatorAvatar({ member, small = false }: { member: { name: string; imag
   >{initial}</span>;
 }
 
-export function TransactionsWorkspace({ initialMonth, selectedMonth, reviewTransactions = [], period, members = [] }: { initialMonth: BudgetMonth; selectedMonth?: MonthSelection; reviewTransactions?: ReviewQueueItem[]; period?: MonthSelection; members?: Array<{ userId: string; name: string; imageUrl: string }> }) {
+export function TransactionsWorkspace({ initialMonth, selectedMonth, reviewTransactions = EMPTY_REVIEW_TRANSACTIONS, period, members = [] }: { initialMonth: BudgetMonth; selectedMonth?: MonthSelection; reviewTransactions?: ReviewQueueItem[]; period?: MonthSelection; members?: Array<{ userId: string; name: string; imageUrl: string }> }) {
   const money = useCurrencyFormatter();
   const mobile = useMediaQuery("(max-width: 47.999rem)");
   const pathname = usePathname();
