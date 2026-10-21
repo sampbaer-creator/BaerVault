@@ -1,8 +1,17 @@
 .drawer { border-radius: 16px 16px 0 0; background: var(--app-surface); color: var(--app-text-strong); }
 .body { padding: 1rem 1.25rem 2rem; }
 .form { display: grid; gap: .875rem; }
+.titleField input { min-height: 52px; padding-inline: 0; border: 0; border-bottom: 1px solid var(--app-border); border-radius: 0; background: transparent; font-size: 1.25rem; font-weight: 700; }
+.titleField input::placeholder { color: var(--app-text-muted); opacity: .62; }
 .form label { display: grid; gap: .375rem; color: var(--app-text-muted); font-size: .8125rem; font-weight: 650; }
-.form input, .form select { width: 100%; min-height: 48px; padding: .65rem .8rem; border: 1px solid var(--app-border); border-radius: 10px; color: var(--app-text-strong); background: var(--app-background); font: inherit; font-size: 1rem; }
+.form input, .form select { width: 100%; min-height: 48px; padding: .65rem .8rem; border: 0; border-bottom: 1px solid var(--app-border); border-radius: 0; color: var(--app-text-strong); background: transparent; font: inherit; font-size: 1rem; }
+.fieldGroup { display: grid; gap: .5rem; }
+.fieldLabel { display:flex; justify-content:space-between; color:var(--app-text-muted); font-size:.8125rem; font-weight:650; }
+.categoryChips { display:flex; flex-wrap:wrap; gap:.5rem; }
+.categoryChip, .categoryChipActive { min-height:40px; padding:.5rem .75rem; border:0; border-radius:999px; color:var(--app-text-strong); background:var(--app-background); font-size:.8125rem; font-weight:650; }
+.categoryChipActive { color:#fff; background:var(--app-accent); }
+.dateRow { display:grid; grid-template-columns:1fr auto; align-items:center; gap:.5rem; }
+.dateRow button { min-height:44px; padding:.5rem .25rem; border:0; color:var(--app-accent); background:transparent; font-weight:700; }
 .form input:focus-visible, .form select:focus-visible, .other a:focus-visible, .save:focus-visible { outline: 2px solid var(--app-focus); outline-offset: 2px; }
 .save { min-height: 48px; border: 0; border-radius: 10px; color: #fff; background: var(--app-accent); font: inherit; font-weight: 750; cursor: pointer; }
 .save:disabled { opacity: .6; cursor: not-allowed; }

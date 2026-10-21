@@ -1,7 +1,7 @@
 :root {
   color-scheme: light;
-  --teal-0: #effaf7; --teal-1: #dff4ee; --teal-2: #c2e9df; --teal-3: #9ad8c9; --teal-4: #6fc3b0;
-  --teal-5: #3da58f; --teal-6: #0b6e63; --teal-7: #095a52; --teal-8: #074940; --teal-9: #04372f;
+  --teal-0: #f1f7f4; --teal-1: #e4f0eb; --teal-2: #c9e1d8; --teal-3: #a6cbbd; --teal-4: #7eae9d;
+  --teal-5: #4f8977; --teal-6: #205b4d; --teal-7: #194b40; --teal-8: #123a31; --teal-9: #0b2a23;
   --gray-0: #f8faf9; --gray-1: #eef2f1; --gray-2: #dfe7e4; --gray-3: #cbd6d2; --gray-4: #a4b2ad;
   --gray-5: #788983; --gray-6: #596b65; --gray-7: #3c4f49; --gray-8: #283a35; --gray-9: #172823;
   --success: #197a48; --success-soft: #e5f5eb; --success-on-soft: #145c39;
@@ -28,21 +28,21 @@
   --window-radius: 1.75rem;
   --control-height: 2.75rem;
   --bottom-nav-height: 76px;
-  --app-background: #f5f7f6;
+  --app-background: #f7f8f6;
   --app-surface: #fff;
   --app-surface-raised: #eaf2ef;
   --app-border: #d4e4df;
   --app-text-strong: #153a34;
   --app-text-muted: #4d625c;
-  --app-accent: #0b6e63;
-  --app-accent-soft: #def2ed;
-  --app-focus: #0b6e63;
+  --app-accent: #205b4d;
+  --app-accent-soft: #eaf3ef;
+  --app-focus: #205b4d;
   --app-hover: #e8f3ef;
   --app-danger: #c62f36;
   --money-positive: #197a48;
   --money-negative: #b64d43;
   --status-amber: #8a6200;
-  --chart-primary: #0b6e63;
+  --chart-primary: #205b4d;
   --chart-secondary: #42a77f;
   --chart-tertiary: #d8eee7;
   --chart-grid: var(--app-border);

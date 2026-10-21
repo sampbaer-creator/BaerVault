@@ -11,7 +11,7 @@ export default function manifest(): MetadataRoute.Manifest {
     display: "standalone",
     orientation: "portrait-primary",
     background_color: "#f3f7fc",
-    theme_color: "#0B6E63",
+    theme_color: "#205B4D",
     lang: "en-US",
     dir: "ltr",
     categories: ["finance", "productivity"],
@@ -22,3 +22,4 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
   };
 }
+

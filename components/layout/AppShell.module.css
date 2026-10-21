@@ -726,7 +726,7 @@
     scrollbar-width: none;
   }
   .mobileNav::-webkit-scrollbar { display: none; }
-  .mobileLink, .moreButton { min-width: max-content; min-height: 42px; flex-direction: row; gap: 7px; padding: 0 14px; border-radius: 21px; color: rgb(255 255 255 / 64%); font-size: 13px; }
+  .mobileLink, .moreButton { min-width: max-content; min-height: 42px; flex-direction: row; gap: 7px; padding: 0 14px; border-radius: 21px; color: var(--app-text-muted); font-size: 13px; }
   .mobileLink svg { display: none; }
   .mobileLink { position: relative; isolation: isolate; }
   .mobileLink > svg, .mobileLink > span:not(.mobileActiveIndicator) { position: relative; z-index: 1; }
@@ -774,3 +774,4 @@
   .mobileNav .mobileAdd svg { display: block; }
   .mobileNav .mobileAdd:focus-visible { outline: 2px solid var(--app-focus); outline-offset: 3px; }
 }
+
