@@ -6,7 +6,7 @@ import { RecurringWorkspace } from "@/features/recurring/RecurringWorkspace";
 import { SectionTabs } from "@/components/ui/SectionTabs";
 import { selectedTab, transactionTabs, type SectionQuery } from "@/lib/helpers/sectionNavigation";
 import { getTransactionsToReview } from "@/lib/data/bankTransactions";
-import { getHouseholdMembers } from "@/lib/data/households";
+import { getHouseholdMembers, type HouseholdMember } from "@/lib/data/households";
 import type { ReviewQueueItem } from "@/lib/helpers/reviewQueue";
 
 export default async function TransactionsPage({ searchParams }: { searchParams: Promise<SectionQuery> }) {
@@ -26,5 +26,11 @@ export default async function TransactionsPage({ searchParams }: { searchParams:
   } catch {
     reviewTransactions = [];
   }
-  return <>{tabs}<TransactionsWorkspace initialMonth={month} selectedMonth={explicitSelection} reviewTransactions={reviewTransactions} period={selected} members={await getHouseholdMembers()} /></>;
+  let members: HouseholdMember[] = [];
+  try {
+    members = await getHouseholdMembers();
+  } catch {
+    members = [];
+  }
+  return <>{tabs}<TransactionsWorkspace initialMonth={month} selectedMonth={explicitSelection} reviewTransactions={reviewTransactions} period={selected} members={members} /></>;
 }
