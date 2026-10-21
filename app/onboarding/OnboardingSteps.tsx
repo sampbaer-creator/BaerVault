@@ -63,7 +63,7 @@ export function OnboardingSteps({ step, period, existingCategories }: { step: "b
           <label>Monthly amount<input aria-label={`${category.name} monthly amount`} type="number" inputMode="decimal" min="0" step="0.01" required value={category.plannedAmount} onChange={(event) => setCategories((current) => current.map((item) => item.key === category.key ? { ...item, plannedAmount: event.target.value } : item))} /></label>
           <button type="button" aria-label={`Remove ${category.name}`} onClick={() => setCategories((current) => current.filter((item) => item.key !== category.key))}><IconTrash size={17} aria-hidden="true" /></button>
         </div>)}
-        <button type="button" className={styles.addCategory} onClick={() => setCategories((current) => [...current, { key: crypto.randomUUID(), name: "", plannedAmount: "0" }])}><IconPlus size={17} aria-hidden="true" /> Add category</button>
+        <button type="button" className={styles.addCategory} onClick={() => setCategories((current) => [...current, { key: crypto.randomUUID(), name: "", plannedAmount: "" }])}><IconPlus size={17} aria-hidden="true" /> Add category</button>
         {error && <p className={styles.stepError} role="alert">{error}</p>}
         <button className={styles.primaryAction} type="submit" disabled={saving}>{saving ? "Saving…" : "Finish and go to Home"}</button>
       </form>
