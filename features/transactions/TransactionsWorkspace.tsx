@@ -63,7 +63,8 @@ export function TransactionsWorkspace({ initialMonth, selectedMonth, reviewTrans
   const [pendingDelete, setPendingDelete] = useState<{id:string;name:string;incoming:boolean} | null>(null);
   const [expenseOpen, setExpenseOpen] = useState(false);
   const [expenseDraft, setExpenseDraft] = useState({ id:"", categoryId:"", description:"", amount:"", date:"", accountId:null as string | null });
-  const [reviewItems, setReviewItems] = useServerSnapshotState<ReviewQueueItem[]>(sortReviewQueue(reviewTransactions));
+  const sortedReviewTransactions = useMemo(() => sortReviewQueue(reviewTransactions), [reviewTransactions]);
+  const [reviewItems, setReviewItems] = useServerSnapshotState<ReviewQueueItem[]>(sortedReviewTransactions);
   const [reviewCategory, setReviewCategory] = useState<Record<string, string>>({});
   const [recategorizingId, setRecategorizingId] = useState<string | null>(null);
   const [reviewBusy, setReviewBusy] = useState(false);
