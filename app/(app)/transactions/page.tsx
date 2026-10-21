@@ -7,6 +7,7 @@ import { SectionTabs } from "@/components/ui/SectionTabs";
 import { selectedTab, transactionTabs, type SectionQuery } from "@/lib/helpers/sectionNavigation";
 import { getTransactionsToReview } from "@/lib/data/bankTransactions";
 import { getHouseholdMembers } from "@/lib/data/households";
+import type { ReviewQueueItem } from "@/lib/helpers/reviewQueue";
 
 export default async function TransactionsPage({ searchParams }: { searchParams: Promise<SectionQuery> }) {
   const query = await searchParams;
@@ -16,6 +17,14 @@ export default async function TransactionsPage({ searchParams }: { searchParams:
   const explicitSelection = parseExplicitMonthSelection(query.year, query.month);
   const month = await getBudgetMonth(selected.year, selected.month);
   if (tab === "recurring") return <>{tabs}<RecurringWorkspace month={month} upcoming={await getUpcomingPayments(selected.year, selected.month)} /></>;
-  const reviewTransactions = await getTransactionsToReview(selected.year, selected.month);
+  // The review queue is supplemental to the household ledger. A stale or
+  // temporarily unavailable review column must not prevent Transactions from
+  // rendering its primary income and purchase data.
+  let reviewTransactions: ReviewQueueItem[] = [];
+  try {
+    reviewTransactions = await getTransactionsToReview(selected.year, selected.month);
+  } catch {
+    reviewTransactions = [];
+  }
   return <>{tabs}<TransactionsWorkspace initialMonth={month} selectedMonth={explicitSelection} reviewTransactions={reviewTransactions} period={selected} members={await getHouseholdMembers()} /></>;
 }
