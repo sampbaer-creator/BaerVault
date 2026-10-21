@@ -21,7 +21,10 @@ function subscribeInviteDismissed(callback: () => void) {
   window.addEventListener(inviteDismissedEvent, callback);
   return () => { window.removeEventListener("storage", callback); window.removeEventListener(inviteDismissedEvent, callback); };
 }
-function getInviteDismissed() { return window.localStorage.getItem(inviteDismissedKey) === "true"; }
+function getInviteDismissed() {
+  try { return window.localStorage.getItem(inviteDismissedKey) === "true"; }
+  catch { return false; }
+}
 
 function loadMarketPrices(key: string, symbols: string[]) {
   const cached = marketRequests.get(key);
@@ -88,7 +91,7 @@ export function DashboardOverview({ model, basePath = "", selectedMonth, members
         </div>
       </section>
       <div className={styles.dashboardGrid}>
-        {members.length === 1 && !inviteDismissed && <section className={styles.invitePrompt} aria-labelledby="invite-partner-title"><div><strong id="invite-partner-title">Share your household with someone</strong><span>Invite your partner to plan and review finances together.</span></div><Link href={`${basePath}/household`}>Invite a member</Link><button type="button" aria-label="Dismiss invite prompt" onClick={() => { window.localStorage.setItem(inviteDismissedKey, "true"); window.dispatchEvent(new Event(inviteDismissedEvent)); }}>Dismiss</button></section>}
+        {members.length === 1 && !inviteDismissed && <section className={styles.invitePrompt} aria-labelledby="invite-partner-title"><div><strong id="invite-partner-title">Share your household with someone</strong><span>Invite your partner to plan and review finances together.</span></div><Link href={`${basePath}/household`}>Invite a member</Link><button type="button" aria-label="Dismiss invite prompt" onClick={() => { try { window.localStorage.setItem(inviteDismissedKey, "true"); } catch {} window.dispatchEvent(new Event(inviteDismissedEvent)); }}>Dismiss</button></section>}
         <section className={styles.netWorthPanel}>
           <PanelHeading title="Current position" href={monthHref("/accounts")} action="View accounts" />
           {model.financialAccounts.length === 0 && model.accounts.length === 0 ? <p className={styles.emptyCopy}>No accounts yet. <Link href={`${basePath}/accounts?add=account`}>Add an account</Link> to see your current position.</p> : <><div className={styles.netWorthLead}>
