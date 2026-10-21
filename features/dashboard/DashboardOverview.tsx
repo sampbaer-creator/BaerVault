@@ -45,7 +45,7 @@ function PanelHeading({ title, href, action }: { title: string; href: string; ac
 export function DashboardOverview({ model, basePath = "", selectedMonth, members = [] }: DashboardProps) {
   const monthHref = (href: string) => selectedMonth ? withMonth(`${basePath}${href}`, selectedMonth) : `${basePath}${href}`;
   const money = useCurrencyFormatter();
-  const requestKey = useMemo(() => model.symbols.toSorted().join(","), [model.symbols]);
+  const requestKey = useMemo(() => [...model.symbols].sort().join(","), [model.symbols]);
   const [marketState, setMarketState] = useState<MarketState>(() => ({ key: basePath ? requestKey : "", prices: {}, unavailable: [] }));
   const inviteDismissed = useSyncExternalStore(subscribeInviteDismissed, getInviteDismissed, () => false);
 

@@ -12,7 +12,7 @@ export function upcomingPayments(history: PaymentHistory[], from: string, throug
   const result: UpcomingPayment[] = history.filter((p) => p.date >= from && p.date <= through)
     .map((p) => ({ id: p.id, name: p.description, amount: p.amount, date: p.date, estimated: false }));
   for (const [key, values] of groups) {
-    const ordered = values.toSorted((a, b) => b.date.localeCompare(a.date));
+    const ordered = [...values].sort((a, b) => b.date.localeCompare(a.date));
     const recent = ordered.slice(0, 3);
     if (recent.length < 3 || new Set(recent.map((p) => p.date.slice(0, 7))).size !== 3) continue;
     const latest = recent[0];

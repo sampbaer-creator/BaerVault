@@ -232,7 +232,7 @@ export function InvestmentsWorkspace({
       return { id: item.id, name: item.name, value };
     })
     .filter((item) => item.value > 0);
-  const sortedHoldings = (account?.holdings ?? []).toSorted((a, b) => {
+  const sortedHoldings = [...(account?.holdings ?? [])].sort((a, b) => {
     const priceA = accountMarkets[a.symbol]?.price ?? a.fallbackPrice;
     const priceB = accountMarkets[b.symbol]?.price ?? b.fallbackPrice;
     const valueA = valueFor(a, priceA);
