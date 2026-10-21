@@ -867,6 +867,9 @@
 .mobileProgress > small { display: none; }
 .mobileProgress i { display: block; height: 7px; overflow: hidden; border-radius: 4px; background: var(--app-border); }
 .mobileProgress b { display: block; height: 100%; border-radius: inherit; background: var(--app-accent); }
+.progressTrack { position: relative; }
+.paceMarker { position: absolute; top: -3px; bottom: -3px; width: 2px; border-radius: 2px; background: var(--app-text-strong); }
+.paceWarning { color: var(--status-amber); font-size: 11px; font-style: normal; font-weight: 650; }
 .budgetAside { display: grid; gap: 16px; }
 .allocationPanel, .remainingPanel { padding: 20px; border: 1px solid var(--panel-glass-border); border-radius: 14px; background: var(--panel-glass-surface); box-shadow: var(--panel-glass-shadow); backdrop-filter: var(--panel-glass-blur); -webkit-backdrop-filter: var(--panel-glass-blur); }
 .allocationPanel h3 { margin: 0 0 18px; font-size: 14px; }
