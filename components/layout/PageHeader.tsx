@@ -1,8 +1,6 @@
 "use client";
 
 import {
-  IconArrowsExchange,
-  IconBuildingBank,
   IconBell,
   IconLayoutSidebarLeftCollapse,
   IconLayoutSidebarLeftExpand,
@@ -12,7 +10,6 @@ import {
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
-import { requestShellQuickAdd, type ShellQuickAddAction } from "@/lib/helpers/shellQuickAdd";
 import { ProfileMenu } from "@/components/ui/ProfileMenu";
 
 import {
@@ -35,7 +32,6 @@ const searchablePages = primaryNavigation;
 export function PageHeader({
   title,
   pathname,
-  tab,
   selectedMonth,
   sidebarCollapsed,
   onToggleSidebar,
@@ -48,27 +44,6 @@ export function PageHeader({
       label.toLowerCase().includes(normalized),
     );
   }, [query]);
-  const quickAdd = useMemo(() => {
-    const actions: Record<string, { action: ShellQuickAddAction; label: string }> = {
-      "/budget": { action: "category", label: "Add category" },
-      "/transactions": { action: "income", label: "Add income" },
-    };
-    if (pathname === "/accounts" && tab === "goals") return { action: "goal" as const, label: "Add goal" };
-    if (pathname === "/budget" && tab === "cash-flow") return undefined;
-    return actions[pathname.replace(/^\/demo/, "")];
-  }, [pathname, tab]);
-  const mobileQuickActions = useMemo<Array<{ action: ShellQuickAddAction; label: string; secondary?: boolean }>>(() => {
-    const actions: Record<string, Array<{ action: ShellQuickAddAction; label: string; secondary?: boolean }>> = {
-      "/accounts": [
-        { action: "account-connect", label: "Connect bank" },
-        { action: "account-transfer", label: "Transfer", secondary: true },
-        { action: "account", label: "Add account" },
-      ],
-    };
-    const route = pathname.replace(/^\/demo/, "");
-    return route === "/accounts" && tab === "goals" ? (quickAdd ? [quickAdd] : []) : actions[route] ?? (quickAdd ? [quickAdd] : []);
-  }, [pathname, quickAdd, tab]);
-
   return (
     <>
       <header className={`${styles.desktopHeader} glass-panel`}>
@@ -131,24 +106,9 @@ export function PageHeader({
 
       <header className={`${styles.mobileHeader} glass-panel`}>
         <span className={styles.mobileMark}><ProfileMenu /></span>
-        <strong className={styles.mobileTitle}>BaerVault</strong>
+        <strong className={styles.mobileTitle}>{pathname.replace(/^\/demo/, "") === "/dashboard" ? "BaerVault" : title}</strong>
         <span className={styles.mobileProfile} />
       </header>
-      {mobileQuickActions.length > 0 && (
-        <div className={styles.mobileQuickActions} aria-label="Page actions">
-          {mobileQuickActions.map((action) => (
-            <button
-              className={`${styles.mobileQuickAdd} ${action.secondary ? styles.mobileQuickSecondary : ""}`}
-              type="button"
-              onClick={() => requestShellQuickAdd(action.action)}
-              key={action.action}
-            >
-              {action.action === "account-transfer" ? <IconArrowsExchange size={17} aria-hidden="true" /> : action.action === "account-connect" ? <IconBuildingBank size={17} aria-hidden="true" /> : <IconPlus size={17} aria-hidden="true" />}
-              {action.label}
-            </button>
-          ))}
-        </div>
-      )}
     </>
   );
 }

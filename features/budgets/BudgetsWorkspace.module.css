@@ -1060,3 +1060,8 @@
 }
 .purchaseAvatar { display: grid; width: 30px; height: 30px; place-items: center; overflow: hidden; border-radius: 50%; color: var(--app-accent); background: var(--app-accent-soft); font-size: .75rem; font-weight: 700; }
 .purchaseAvatar img { width: 100%; height: 100%; object-fit: cover; }
+
+@media(max-width:47.999rem){
+  .sheetHeading button { position: static !important; width: auto !important; height: 40px !important; padding: 0 12px !important; color: var(--app-accent) !important; background: var(--app-accent-soft) !important; border-radius: 10px !important; box-shadow: none !important; }
+  .sheetHeading button svg { position: static !important; color: currentColor !important; }
+}

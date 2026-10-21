@@ -70,7 +70,7 @@ export function AppShell({ children, reviewCount = 0 }: AppShellProps) {
           <MobilePager pathname={pathname} progress={pagerProgress} onActiveIndex={updatePager} selectedMonth={selectedMonth} tab={searchParams.get("tab")}>{children}</MobilePager>
         </main>
       </div>
-      <MobileNav pathname={pathname} progress={pagerProgress} activeIndex={pager.activeIndex} navigate={pager.navigate} pagerEnabled={pager.enabled} selectedMonth={selectedMonth} reviewCount={reviewCount} />
+      <MobileNav pathname={pathname} progress={pagerProgress} activeIndex={pager.activeIndex} navigate={pager.navigate} pagerEnabled={pager.enabled} selectedMonth={selectedMonth} reviewCount={reviewCount} tab={searchParams.get("tab")} />
     </div>
   );
 }

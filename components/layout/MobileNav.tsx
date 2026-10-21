@@ -17,11 +17,12 @@ type MobileNavProps = {
   pagerEnabled: boolean;
   selectedMonth?: MonthSelection;
   reviewCount?: number;
+  tab?: string | null;
 };
 
 const links = primaryNavigation.filter(({ href }) => href !== "/household");
 
-export function MobileNav({ pathname, progress, activeIndex, navigate, pagerEnabled, selectedMonth, reviewCount = 0 }: MobileNavProps) {
+export function MobileNav({ pathname, progress, activeIndex, navigate, pagerEnabled, selectedMonth, reviewCount = 0, tab }: MobileNavProps) {
   const navRef = useRef<HTMLElement>(null);
   const linkRefs = useRef<Array<HTMLAnchorElement | null>>([]);
   const bubbleX = useMotionValue(0);
@@ -57,6 +58,10 @@ export function MobileNav({ pathname, progress, activeIndex, navigate, pagerEnab
     return () => window.removeEventListener("resize", update);
   }, [positionBubble, progress]);
 
+  const addHref = pathname === "/accounts"
+    ? tab === "goals" ? "/accounts?tab=goals&add=goal" : "/accounts?add=account"
+    : selectedMonth ? withMonth("/budget?add=purchase", selectedMonth) : "/budget?add=purchase";
+
   return (
       <nav ref={navRef} className={`${styles.mobileNav} mobile-nav-enhanced`} aria-label="Mobile sections">
         <motion.span aria-hidden="true" className={styles.mobileActiveIndicator} style={{ x: bubbleX, width: bubbleWidth }} />
@@ -64,7 +69,7 @@ export function MobileNav({ pathname, progress, activeIndex, navigate, pagerEnab
           const isActive = pagerEnabled ? activeIndex === index : pathname === href;
 
           return <Fragment key={href}>
-            {index === 2 && <Link className={styles.mobileAdd} href={selectedMonth ? withMonth("/budget?add=purchase", selectedMonth) : "/budget?add=purchase"} aria-label="Add purchase"><IconPlus size={24} aria-hidden="true" /></Link>}
+            {index === 2 && <Link className={styles.mobileAdd} href={selectedMonth && pathname !== "/accounts" ? withMonth(addHref, selectedMonth) : addHref} aria-label={pathname === "/accounts" ? tab === "goals" ? "Add goal" : "Add account" : "Add purchase"}><IconPlus size={24} aria-hidden="true" /></Link>}
             <Link
               className={`${styles.mobileLink} ${isActive ? styles.mobileLinkActive : ""}`}
               href={selectedMonth ? withMonth(href, selectedMonth) : href}

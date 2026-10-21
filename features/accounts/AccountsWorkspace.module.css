@@ -708,6 +708,7 @@
 
 /* Mobile account rows: solid card with a liquid-glass edge, instead of the flat transparent strip above. */
 @media (max-width: 47.999rem) {
+  .pageHeader .headerActions { display: none !important; }
   .accountRows { display: grid; gap: 10px; }
   .accountRow {
     border: 1px solid var(--panel-glass-border) !important;

@@ -3,7 +3,7 @@
 import { Drawer } from "@mantine/core";
 import { useServerSnapshotState } from "@/lib/hooks/useServerSnapshotState";
 import { useMediaQuery } from "@mantine/hooks";
-import { IconArrowDown, IconArrowUp, IconBolt, IconCar, IconCheck, IconEdit, IconHome, IconPlus, IconReceipt, IconRepeat, IconSearch, IconShoppingCart, IconTag, IconToolsKitchen2, IconTrash, IconWallet, type Icon } from "@tabler/icons-react";
+import { IconArrowUp, IconBolt, IconCar, IconCheck, IconEdit, IconHome, IconPlus, IconReceipt, IconRepeat, IconSearch, IconShoppingCart, IconTag, IconToolsKitchen2, IconTrash, IconWallet, type Icon } from "@tabler/icons-react";
 import { FormEvent, Fragment, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -20,11 +20,12 @@ import { SHELL_QUICK_ADD_EVENT, type ShellQuickAddAction } from "@/lib/helpers/s
 import { type MonthSelection, withMonth } from "@/lib/helpers/monthSelection";
 import { markAllTransactionsReviewedAction, markTransactionReviewedAction, recategorizeTransactionAction } from "./reviewActions";
 import { type ReviewQueueItem, countUnreviewedTransactions, sortReviewQueue } from "@/lib/helpers/reviewQueue";
+import { displayMerchantName, displayOwnerName, displayShortDate } from "@/lib/helpers/display";
 
 type Filter = "all" | "income" | "expenses";
 const EMPTY_REVIEW_TRANSACTIONS: ReviewQueueItem[] = [];
 const freshDraft = () => ({ source: "", amount: "", date: new Date().toISOString().slice(0, 10), owner: "Household" });
-const dateHeading = (date: string) => new Date(`${date}T12:00:00`).toLocaleDateString(undefined, { weekday: "short", month: "long", day: "numeric" });
+const dateHeading = (date: string) => displayShortDate(date);
 
 function CategoryIcon({ category, incoming }: { category: string; incoming: boolean }) {
   const name = category.toLowerCase();
@@ -99,7 +100,7 @@ export function TransactionsWorkspace({ initialMonth, selectedMonth, reviewTrans
   }, [expenseEntries]);
   const largestAccountSpend = accountSpending[0]?.amount ?? 0;
   const memberMap = useMemo(() => new Map(members.map((member) => [member.userId, member])), [members]);
-  const items = useMemo(() => [...incomeEntries.map((entry) => ({ id: entry.id, name: entry.source, category: "Income", account: entry.owner, date: entry.date, amount: entry.amount, incoming: true as const, creator: null as { name: string; imageUrl: string } | null })), ...expenseEntries.map((purchase) => ({ ...purchase, name: purchase.description, account: purchase.accountName ?? "Account not assigned", incoming: false as const, creator: purchase.createdByClerkUserId ? memberMap.get(purchase.createdByClerkUserId) ?? null : null }))].filter((item) => filter === "all" || (filter === "income" ? item.incoming : !item.incoming)).sort((a, b) => b.date.localeCompare(a.date)), [filter, incomeEntries, expenseEntries, memberMap]);
+  const items = useMemo(() => [...incomeEntries.map((entry) => ({ id: entry.id, name: displayMerchantName(entry.source), category: "Income", account: displayOwnerName(entry.owner), date: entry.date, amount: entry.amount, incoming: true as const, creator: null as { name: string; imageUrl: string } | null })), ...expenseEntries.map((purchase) => ({ ...purchase, name: displayMerchantName(purchase.description), account: purchase.accountName ?? "Account not assigned", incoming: false as const, creator: purchase.createdByClerkUserId ? memberMap.get(purchase.createdByClerkUserId) ?? null : null }))].filter((item) => filter === "all" || (filter === "income" ? item.incoming : !item.incoming)).sort((a, b) => b.date.localeCompare(a.date)), [filter, incomeEntries, expenseEntries, memberMap]);
   const visibleItems = useMemo(() => {
     const normalized = query.trim().toLowerCase();
     return normalized ? items.filter((item) => `${item.name} ${item.category} ${item.account}`.toLowerCase().includes(normalized)) : items;
@@ -255,7 +256,7 @@ export function TransactionsWorkspace({ initialMonth, selectedMonth, reviewTrans
         </div>)}
       </div> : <p className={styles.emptyChart}>Add a budget purchase to see account spending here.</p>}
     </section>
-    <div className={styles.mobileActions} aria-label="Add transaction"><button type="button" onClick={() => launch()}><IconArrowDown size={17}/>Add income</button><Link href={budgetPath}><IconArrowUp size={17}/>Add expense</Link></div>
+    <div className={styles.mobileActions} aria-label="Transaction tools"><Link href={budgetPath}><IconArrowUp size={17}/>Open budget</Link></div>
       <section className={`${styles.panel} table-wrapper card`}><div className={styles.tabs}>{(["all","income","expenses"] as Filter[]).map((value) => <button type="button" className={filter === value ? styles.active : ""} key={value} onClick={() => setFilter(value)} aria-pressed={filter === value}>{value[0].toUpperCase()+value.slice(1)}</button>)}<span>{visibleItems.length} transactions</span></div><table><thead><tr><th>Merchant</th><th>Category</th><th>Account</th><th>Date</th><th>Amount</th><th/></tr></thead><tbody>{mobileGroups.map(([date, group]) => <Fragment key={date}><tr className={styles.desktopDateHeader}><th colSpan={6} scope="rowgroup">{dateHeading(date)}</th></tr>{group.map((item) => <tr key={item.id}><td><div className={styles.merchant}><CategoryIcon category={item.category} incoming={item.incoming}/><span><strong>{item.name}</strong><small>{item.account}</small></span>{item.creator && <span title={`Added by ${item.creator.name}`}><CreatorAvatar member={item.creator}/></span>}</div></td><td><span className={styles.chip}>{item.category}</span></td><td className={styles.muted}>{item.account}</td><td className={styles.muted}>{item.date}</td><td className={item.incoming?styles.positive:styles.negative}><strong>{item.incoming?"+":"−"}{money.format(item.amount)}</strong></td><td>{item.incoming&&<div className={styles.actions}><button aria-label={`Edit ${item.name}`} onClick={() => launch(item.id)}><IconEdit size={15}/></button><button aria-label={`Delete ${item.name}`} onClick={() => setPendingDelete({id:item.id,name:item.name,incoming:true})}><IconTrash size={15}/></button></div>}</td></tr>)}</Fragment>)}</tbody></table>
       <div className={styles.mobileLedger}>{mobileGroups.map(([date,group])=><section className={styles.mobileDateGroup} key={date}><h3>{dateHeading(date)}</h3>{group.map((item)=><SwipeActionRow key={item.id} onEdit={()=>item.incoming?launch(item.id):editExpense(item.id)} onDelete={()=>setPendingDelete({id:item.id,name:item.name,incoming:item.incoming})}><button type="button" className={styles.mobileTransaction} onClick={()=>item.incoming?launch(item.id):editExpense(item.id)}><CategoryIcon category={item.category} incoming={item.incoming}/><strong>{item.name}</strong><span className={styles.mobileMeta}>{item.creator && <CreatorAvatar member={item.creator} small />}{item.category} · {item.account}{item.creator ? ` · ${item.creator.name}` : ""}</span><b className={item.incoming?styles.positive:undefined}>{item.incoming?"+":"−"}{money.format(item.amount)}</b></button></SwipeActionRow>)}</section>)}</div>
     </section>

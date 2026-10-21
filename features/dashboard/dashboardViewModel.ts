@@ -10,6 +10,7 @@ import { costFor, sharesFor, type InvestmentAccount } from "@/lib/demo/investmen
 import type { UpcomingPayment } from "@/lib/helpers/recurring";
 import type { DashboardViewModel } from "@/lib/dashboard";
 import type { SavingsGoal } from "@/lib/demo/goals";
+import { displayMerchantName, displayOwnerName, displayShortDate } from "@/lib/helpers/display";
 
 export function daysLeftInMonth(year: number, month: number, today: Date) {
   const selected = year * 12 + month;
@@ -51,8 +52,8 @@ export function createDashboardViewModel(
   const activity = [
     ...budget.incomeEntries.map((entry) => ({
       id: entry.id,
-      name: entry.source,
-      meta: `${entry.owner} · ${entry.date}`,
+      name: displayMerchantName(entry.source),
+      meta: `${displayOwnerName(entry.owner)} · ${displayShortDate(entry.date)}`,
       date: entry.date,
       amount: entry.amount,
       incoming: true,
@@ -61,8 +62,8 @@ export function createDashboardViewModel(
     ...budget.categories.flatMap((category) =>
       category.purchases.map((purchase) => ({
         id: purchase.id,
-        name: purchase.description,
-        meta: `${category.name}${purchase.accountName ? ` · ${purchase.accountName}` : ""} · ${purchase.date}`,
+        name: displayMerchantName(purchase.description),
+        meta: `${category.name}${purchase.accountName ? ` · ${purchase.accountName}` : ""} · ${displayShortDate(purchase.date)}`,
         date: purchase.date,
         amount: purchase.amount,
         incoming: false,
