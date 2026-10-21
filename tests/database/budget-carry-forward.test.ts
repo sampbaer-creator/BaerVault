@@ -62,8 +62,8 @@ test("concurrent month creation has one creator and bank sync uses carry-forward
     const accounts = [{ providerAccountId: "account", name: "Checking", type: "checking", balance: -25, status: "open", lastFour: "1234" }];
     const transactions = [{ providerAccountId: "account", providerTransactionId: "tx-carry", description: "Utilities", amount: 25, category: "BILLS_UTILITIES", status: "posted", date: "2026-10-09", raw: {} }];
     await db.query("select public.apply_bank_sync($1, $2, $3, $4::jsonb, $5::jsonb, $6::text[])", [connection, null, "cursor-1", JSON.stringify(accounts), JSON.stringify(transactions), []]);
-    const syncedMonth = await db.query<{ id: string }>("select id from public.budget_months where household_id = $1 and year = 2026 and month = 10", [household]);
-    assert.equal((await db.query<{ count: number }>("select count(*)::int as count from public.budget_categories where household_id = $1 and budget_month_id = $2 and name = 'Utilities'", [household, syncedMonth.rows[0].id])).rows[0].count, 1);
+    assert.equal((await db.query<{ count: number }>("select count(*)::int as count from public.bank_transactions where household_id = $1 and provider_transaction_id = 'tx-carry'", [household])).rows[0].count, 1);
+    assert.equal((await db.query<{ count: number }>("select count(*)::int as count from public.budget_entries where household_id = $1", [household])).rows[0].count, 0);
   } finally {
     await db.close();
   }

@@ -46,7 +46,13 @@ export type HouseholdMember = { userId: string; name: string; imageUrl: string; 
 export const getHouseholdMembers = cache(async (): Promise<HouseholdMember[]> => {
   const household = await getCurrentHousehold();
   const clerk = await clerkClient();
-  const result = await clerk.organizations.getOrganizationMembershipList({ organizationId: household.clerkOrgId, limit: 100 });
+  let result;
+  try {
+    result = await clerk.organizations.getOrganizationMembershipList({ organizationId: household.clerkOrgId, limit: 100 });
+  } catch {
+    // Member attribution enriches screens but must not make the ledger unavailable.
+    return [];
+  }
   return result.data.flatMap((membership) => {
     const profile = membership.publicUserData;
     if (!profile?.userId) return [];

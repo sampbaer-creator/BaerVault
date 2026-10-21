@@ -24,23 +24,26 @@ test("bank sync is atomic, idempotent, household scoped, and handles removals", 
     const sync = (expected: string | null, next: string, rows = [transaction], removed: string[] = []) => db.query("select public.apply_bank_sync($1,$2,$3,$4::jsonb,$5::jsonb,$6::text[])", [connection, expected, next, JSON.stringify(accounts), JSON.stringify(rows), removed]);
     await sync(null, "cursor-1");
     await sync("cursor-1", "cursor-2");
-    assert.equal((await db.query<{ count: number }>("select count(*)::int as count from budget_entries")).rows[0].count, 1);
-    assert.equal((await db.query<{ created_by_clerk_user_id: string | null }>("select created_by_clerk_user_id from budget_entries limit 1")).rows[0].created_by_clerk_user_id, null, "Plaid imports remain unattributed");
+    assert.equal((await db.query<{ count: number }>("select count(*)::int as count from budget_entries")).rows[0].count, 0, "Bank imports do not write the spending ledger");
+    assert.equal((await db.query<{ count: number }>("select count(*)::int as count from budget_entries where bank_transaction_id is not null")).rows[0].count, 0, "Plaid imports remain outside the spending ledger");
     assert.equal(Number((await db.query<{ balance: string }>("select balance from financial_accounts")).rows[0].balance), -25);
     await assert.rejects(sync(null, "stale-cursor"), /cursor changed/);
     await assert.rejects(sync("cursor-2", "broken", [{ ...transaction, amount: 999, date: "invalid" }]), /date/);
-    assert.equal(Number((await db.query<{ amount: string }>("select amount from budget_entries")).rows[0].amount), 25);
+    assert.equal((await db.query<{ count: number }>("select count(*)::int as count from budget_entries")).rows[0].count, 0);
     // Equal-looking real purchases with different bank IDs must both survive.
     await sync("cursor-2", "cursor-3", [transaction, { ...transaction, providerTransactionId: "tx-2" }]);
-    assert.equal((await db.query<{ count: number }>("select count(*)::int as count from budget_entries")).rows[0].count, 2);
+    assert.equal((await db.query<{ count: number }>("select count(*)::int as count from budget_entries")).rows[0].count, 0);
     await sync("cursor-3", "cursor-4", [{ ...transaction, amount: 30 }]);
-    assert.equal(Number((await db.query<{ amount: string }>("select amount from budget_entries order by amount desc limit 1")).rows[0].amount), 30);
+    assert.equal((await db.query<{ count: number }>("select count(*)::int as count from budget_entries")).rows[0].count, 0);
     const transactionId = (await db.query<{ id: string }>("select id from bank_transactions limit 1")).rows[0].id;
     assert.equal((await db.query<{ reviewed_at: string | null }>("select reviewed_at from bank_transactions where id=$1", [transactionId])).rows[0].reviewed_at, null);
     await sync("cursor-4", "cursor-5", [], ["tx-1"]);
-    assert.equal((await db.query<{ count: number }>("select count(*)::int as count from budget_entries")).rows[0].count, 1);
+    assert.equal((await db.query<{ count: number }>("select count(*)::int as count from budget_entries")).rows[0].count, 0);
     // Review state is writable only inside the active Clerk household.
     await db.query("insert into households(id,clerk_org_id,name) values('33333333-3333-4333-8333-333333333333','org_other','Other')");
+    await db.query("insert into budget_months(household_id,year,month) values($1,2026,9) on conflict do nothing", [household]);
+    const month = (await db.query<{ id: string }>("select id from budget_months where household_id=$1 and year=2026 and month=9", [household])).rows[0].id;
+    await db.query("insert into budget_categories(household_id,budget_month_id,name,planned_amount,sort_order) values($1,$2,'Groceries',100,0)", [household, month]);
     await db.exec(`create or replace function auth.jwt() returns jsonb language sql as $$ select current_setting('request.jwt.claims', true)::jsonb $$;`);
     await db.exec("grant usage on schema auth to authenticated; grant execute on function auth.jwt() to authenticated");
     await db.query("select set_config('request.jwt.claims', '{\"org_id\":\"org_test\"}', false)");

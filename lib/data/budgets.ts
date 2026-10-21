@@ -34,13 +34,20 @@ export async function getBudgetMonth(year: number, month: number): Promise<Budge
   const ensured = await ensureBudgetMonth(year, month, household, supabase);
   const result = await supabase
     .from("budget_months")
-    .select("id, year, month, budget_categories(id, name, planned_amount, sort_order, budget_entries(id, description, amount, entry_date, financial_account_id, created_by_clerk_user_id, financial_account:financial_accounts(name)))")
+    .select("id, year, month, budget_categories(id, name, planned_amount, sort_order, budget_entries(id, description, amount, entry_date, financial_account_id, financial_account:financial_accounts(name)))")
     .eq("household_id", household.id)
     .eq("year", year)
     .eq("month", month)
     .order("sort_order", { referencedTable: "budget_categories", ascending: true })
     .maybeSingle();
   if (result.error) throwDataError(result.error, "Could not load this budget.");
+
+  const entryIds = ((result.data?.budget_categories ?? []) as CategoryRow[]).flatMap((category) => (category.budget_entries ?? []).map((entry) => entry.id));
+  const creatorByEntry = new Map<string, string | null>();
+  if (entryIds.length) {
+    const creators = await supabase.from("budget_entries").select("id, created_by_clerk_user_id").in("id", entryIds);
+    if (!creators.error) for (const row of creators.data ?? []) creatorByEntry.set(row.id, row.created_by_clerk_user_id ?? null);
+  }
 
   const income = await supabase
     .from("income_entries")
@@ -61,7 +68,7 @@ export async function getBudgetMonth(year: number, month: number): Promise<Budge
       description: entry.description,
       date: entry.entry_date,
       accountId: entry.financial_account_id,
-      createdByClerkUserId: entry.created_by_clerk_user_id ?? null,
+      createdByClerkUserId: creatorByEntry.get(entry.id) ?? null,
       accountName: Array.isArray(entry.financial_account)
         ? entry.financial_account[0]?.name ?? null
         : entry.financial_account?.name ?? null,
