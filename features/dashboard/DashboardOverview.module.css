@@ -85,7 +85,7 @@
 .reviewPanel strong { font-size: .9375rem; }
 .reviewPanel a { display: inline-flex; min-height: 44px; align-items: center; gap: 4px; color: var(--app-accent); font-size: .8125rem; font-weight: 750; text-decoration: none; }
 @media (max-width: 47.999rem) {
-  .dashboardGrid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "side" "transactions" "goals" "spending" "worth"; gap: 1rem; padding-bottom: 2rem; }
+  .dashboardGrid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "spending" "side" "transactions" "goals" "worth"; gap: 1rem; padding-bottom: 2rem; }
   .netWorthPanel, .spendingPanel, .transactionsPanel, .categoriesPanel, .upcomingPanel, .goalsPanel { padding: 1.25rem; }
   .hero { padding: 24px 18px; }
   .quickActions { gap: 8px; }

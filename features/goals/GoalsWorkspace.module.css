@@ -316,3 +316,9 @@
   .top > .add,
   .empty > .add { display: none !important; }
 }
+
+@media (max-width: 47.999rem) {
+  .mobileGoalSummary > i { background: radial-gradient(circle, var(--app-surface) 56%, transparent 58%), conic-gradient(var(--app-accent) var(--progress), var(--app-surface-raised) 0); }
+  .grid::before { color: var(--app-text-strong); }
+  .add svg { color: var(--app-accent) !important; }
+}

@@ -1064,4 +1064,6 @@
 @media(max-width:47.999rem){
   .sheetHeading button { position: static !important; width: auto !important; height: 40px !important; padding: 0 12px !important; color: var(--app-accent) !important; background: var(--app-accent-soft) !important; border-radius: 10px !important; box-shadow: none !important; }
   .sheetHeading button svg { position: static !important; color: currentColor !important; }
+  .categoryRow:nth-child(3n+2)::before { background: var(--status-amber) !important; }
+  .categoryRow:nth-child(3n)::before { background: var(--money-positive) !important; }
 }
