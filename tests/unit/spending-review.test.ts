@@ -55,6 +55,8 @@ test("empty history never creates months and truncated history fails closed", as
 test("merchant text bounds and removes common identifiers", () => {
   assert.equal(reviewText("Market hello@example.com 123456789012 https://example.com"), "Market [redacted] [redacted] [redacted]");
   assert.equal(reviewText("x".repeat(200)).length, 100);
+  assert.equal(reviewText("123 Main Street"), "[redacted]");
+  assert.ok(!reviewText("account AB123456789").includes("123456789"));
 });
 
 test("spending analysis uses observed months, exact cents and merchant evidence", () => {

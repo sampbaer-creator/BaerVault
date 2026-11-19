@@ -334,7 +334,7 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
           const key = existing?.id ?? suggestion.categoryName.trim().toLocaleLowerCase();
           return <div className={styles.adviceSuggestion} key={key}><div><strong>{suggestion.categoryName}</strong><span>{suggestion.rationale}</span></div><div className={styles.adviceSuggestionAction}><strong>{currency.format(suggestion.suggestedAmount)}</strong><button type="button" onClick={() => applyAdvice(suggestion)} disabled={Boolean(applyingAdvice)}>{applyingAdvice === key ? "Applying…" : "Apply"}</button></div></div>;
         })}</div> : <p className={styles.adviceEmpty}>No category changes were suggested from the available history.</p>}
-        <p className={styles.adviceDisclaimer}>AI-generated suggestions can be inaccurate. Review each amount before applying; each Apply saves only that category's planned budget.</p>
+        <p className={styles.adviceDisclaimer}>AI-generated suggestions can be inaccurate. Review each amount before applying; each Apply saves only the planned budget for that category.</p>
       </section>}
 
       <section className={`${styles.summary} chart-summary card`} aria-labelledby="budget-summary-title">

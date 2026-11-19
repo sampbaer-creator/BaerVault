@@ -19,8 +19,8 @@ export function reviewWindow(year: number, month: number, monthsBack: number) {
 // contact/account identifiers before allowing that text across the AI boundary.
 export function reviewText(value: string): string {
   return value.replace(/https?:\/\/\S+|www\.\S+|\S+@\S+/gi, "[redacted]")
-    .replace(/\b(?:\d[\s().+/-]*){3,}\b/g, "[redacted]")
     .replace(/\b\d+\s+[^,;]+\b(?:street|st|avenue|ave|road|rd|drive|dr|lane|ln)\b/gi, "[redacted]")
+    .replace(/\d(?:[\s().+/-]*\d){2,}/g, "[redacted]")
     .replace(/[\u0000-\u001f\u007f]/g, " ").trim().slice(0, 100);
 }
 
