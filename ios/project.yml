@@ -1,0 +1,31 @@
+name: BaerVault
+options:
+  deploymentTarget:
+    iOS: "17.0"
+packages:
+  Clerk:
+    url: https://github.com/clerk/clerk-ios
+    exactVersion: 1.7.3
+targets:
+  BaerVault:
+    type: application
+    platform: iOS
+    info:
+      path: Info.plist
+      properties:
+        CFBundleDisplayName: BaerVault
+        BaerVaultAPI: "$(BAERVAULT_API)"
+        ClerkPublishableKey: "$(CLERK_PUBLISHABLE_KEY)"
+    sources:
+      - BaerVault.swift
+    dependencies:
+      - package: Clerk
+        product: ClerkKit
+      - package: Clerk
+        product: ClerkKitUI
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.baervault.ios
+        SWIFT_VERSION: "5.0"
+        BAERVAULT_API: ""
+        CLERK_PUBLISHABLE_KEY: ""
