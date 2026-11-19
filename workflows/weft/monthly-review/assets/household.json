@@ -1,0 +1,26 @@
+{
+  "month": "2026-10",
+  "budgetCents": {
+    "Housing": 145000,
+    "Utilities": 9000,
+    "Groceries": 20000,
+    "Dining": 6000,
+    "Other": 10000
+  },
+  "transactions": [
+    {"id":"r7","date":"2026-07-01","account":"checking","merchant":"Pine Apartments","cents":145000,"kind":"expense"},
+    {"id":"r8","date":"2026-08-01","account":"checking","merchant":"Pine Apartments","cents":145000,"kind":"expense"},
+    {"id":"r9","date":"2026-09-01","account":"checking","merchant":"Pine Apartments","cents":145000,"kind":"expense"},
+    {"id":"u7","date":"2026-07-12","account":"checking","merchant":"Cedar Internet","cents":6999,"kind":"expense"},
+    {"id":"u8","date":"2026-08-12","account":"checking","merchant":"Cedar Internet","cents":6999,"kind":"expense"},
+    {"id":"u9","date":"2026-09-13","account":"checking","merchant":"Cedar Internet","cents":6999,"kind":"expense"},
+    {"id":"r10","date":"2026-10-01","account":"checking","merchant":"Pine Apartments","cents":145000,"kind":"expense"},
+    {"id":"u10","date":"2026-10-12","account":"checking","merchant":"Cedar Internet","cents":6999,"kind":"expense"},
+    {"id":"g1","date":"2026-10-06","account":"card","merchant":"Maple Market","cents":12340,"kind":"expense"},
+    {"id":"g2","date":"2026-10-18","account":"card","merchant":"Maple Market","cents":10160,"kind":"expense"},
+    {"id":"d1","date":"2026-10-19","account":"card","merchant":"Birch Cafe","cents":4800,"kind":"expense"},
+    {"id":"a1","date":"2026-10-23","account":"card","merchant":"Aspen Appliance Repair","cents":38900,"kind":"expense"},
+    {"id":"p1","date":"2026-10-25","account":"checking","merchant":"Card payment","cents":50000,"kind":"transfer"},
+    {"id":"i1","date":"2026-10-31","account":"checking","merchant":"Household payroll","cents":350000,"kind":"income"}
+  ]
+}

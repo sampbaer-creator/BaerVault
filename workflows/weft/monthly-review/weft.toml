@@ -1,0 +1,6 @@
+[package]
+name = "baervault-workflows"
+id = "1e4c0ea8-654f-451d-98ad-5a97a892b566"
+version = "0.1.0"
+
+[build.worker]
