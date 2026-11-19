@@ -1,5 +1,7 @@
 "use client";
 
+import { findAdviceTarget } from "@/lib/helpers/budgetAdvice";
+
 import { Drawer } from "@mantine/core";
 import { useServerSnapshotState } from "@/lib/hooks/useServerSnapshotState";
 import { useMediaQuery } from "@mantine/hooks";
@@ -92,14 +94,10 @@ function categoryEmoji(name: string) {
   return "💳";
 }
 
-type BudgetAdvice = {
-  suggestions: Array<{ categoryName: string; suggestedAmount: number; rationale: string }>;
-  overallTip: string;
-  confidence: "low" | "medium" | "high";
-};
+type BudgetAdvice = import("@/lib/helpers/budgetAdvice").BudgetAdvice;
 type BudgetAdviceResult = { ok: true; data: BudgetAdvice } | { ok: false; error: string };
 type BudgetActions=Pick<typeof realActions,"addCategoryAction"|"deleteBudgetCategoryAction"|"deleteBudgetEntryAction"|"saveBudgetEntryAction"|"updateBudgetCategoryAction"> & {
-  getBudgetAdviceAction?: (input: { year: number; month: number }) => Promise<BudgetAdviceResult>;
+  getBudgetAdviceAction?: (input: { year: number; month: number; monthsBack?: number }) => Promise<BudgetAdviceResult>;
 };
 export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realActions, showAdviceBanner = false, members = [] }: { initialBudget: BudgetMonth & { year: number; monthNumber: number }; accounts?: BudgetAccountOption[]; actions?:BudgetActions; showAdviceBanner?: boolean; members?: Array<{ userId: string; name: string; imageUrl: string }> }) {
   const currency=useCurrencyFormatter();
@@ -123,6 +121,7 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
   const [categoryDraft, setCategoryDraft] = useState({ name: "", plannedAmount: "" });
   const [categoryNameDraft, setCategoryNameDraft] = useState("");
   const [pendingDelete, setPendingDelete] = useState<{ kind: "entry" | "category"; id: string; label: string } | null>(null);
+  const [historyMonths, setHistoryMonths] = useState(6);
   const [advice, setAdvice] = useState<BudgetAdvice | null>(null);
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState("");
@@ -255,7 +254,8 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
     if (!actions.getBudgetAdviceAction) return;
     setAdviceLoading(true);
     setAdviceError("");
-    const result = await actions.getBudgetAdviceAction({ year: initialBudget.year, month: initialBudget.monthNumber });
+    setAdvice(null);
+    const result = await actions.getBudgetAdviceAction({ year: initialBudget.year, month: initialBudget.monthNumber, monthsBack: historyMonths });
     setAdviceLoading(false);
     if (!result.ok) {
       setAdviceError(result.error);
@@ -265,9 +265,13 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
   }
 
   async function applyAdvice(suggestion: BudgetAdvice["suggestions"][number]) {
-    const name = suggestion.categoryName.trim();
+    const name = suggestion.categoryName;
     const amount = Math.round(suggestion.suggestedAmount * 100) / 100;
-    const existing = categories.find((category) => category.name.trim().toLocaleLowerCase() === name.toLocaleLowerCase());
+    let existing;
+    try { existing = findAdviceTarget(categories, suggestion); } catch {
+      setAdviceError("Category identity changed or is ambiguous. Request a new review.");
+      return;
+    }
     const key = existing?.id ?? name.toLocaleLowerCase();
     setApplyingAdvice(key);
     setAdviceError("");
@@ -331,6 +335,14 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
 
       {error && <p className={styles.formError} role="alert">{error}</p>}
 
+      {actions.getBudgetAdviceAction && <section className={styles.advicePanel} aria-label="Monthly spending review">
+        <label htmlFor="review-history">Review history </label>
+        <select id="review-history" value={historyMonths} disabled={adviceLoading} onChange={(event) => { setHistoryMonths(Number(event.target.value)); setAdvice(null); setAdviceError(""); }}>
+          {Array.from({ length: 12 }, (_, index) => <option key={index + 1} value={index + 1}>{index + 1} prior {index === 0 ? "month" : "months"}</option>)}
+        </select>
+        <p className={styles.adviceDisclaimer}>Requesting a review sends this household ledger merchant descriptions, purchase amounts, dates, categories and planned budgets to OpenAI. Common contact and account identifiers are redacted. Imported bank transactions and account details are excluded. Only record merchant names in purchase descriptions. Nothing is saved until you Apply a category suggestion.</p>
+        <button type="button" className={styles.primaryButton} onClick={requestAdvice} disabled={adviceLoading}>{adviceLoading ? "Preparing review..." : "Review spending with OpenAI"}</button>
+      </section>}
       {actions.getBudgetAdviceAction && showAdviceBanner && !bannerDismissed && !advice && <aside className={styles.adviceBanner} role="status">
         <div><strong>Need a starting point?</strong><span>Use your recent spending history to draft this month&apos;s plan.</span></div>
         <div className={styles.adviceBannerActions}><button className={styles.primaryButton} type="button" onClick={requestAdvice} disabled={adviceLoading}>{adviceLoading ? "Preparing…" : "Get advice"}</button><button className={styles.dismissButton} type="button" onClick={() => setBannerDismissed(true)} aria-label="Dismiss budget advice"><IconX size={16} /></button></div>
@@ -340,13 +352,15 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
 
       {actions.getBudgetAdviceAction && advice && <section className={styles.advicePanel} aria-labelledby="budget-advice-title">
         <div className={styles.adviceHeading}><div><span className={styles.adviceEyebrow}>AI budget advice</span><h3 id="budget-advice-title">A practical starting point for {initialBudget.month}</h3></div><span className={styles.confidence}>Confidence: {advice.confidence}</span></div>
+        {advice.review && <p>Ledger review: {advice.review.start} to {advice.review.end} (exclusive). {advice.review.monthsRecorded} of {advice.review.monthsRequested} months recorded; {advice.review.transactionCount} purchases totaling {currency.format(advice.review.total)}. Missing months are not treated as zero spending.</p>}
+        {advice.insights && advice.insights.length > 0 && <div><h4>Spending insights</h4><ul>{advice.insights.map((insight, index) => <li key={index}>{insight}</li>)}</ul></div>}
         <p className={styles.adviceTip}>{advice.overallTip}</p>
         {advice.suggestions.length > 0 ? <div className={styles.adviceSuggestions}>{advice.suggestions.map((suggestion) => {
-          const existing = categories.find((category) => category.name.trim().toLocaleLowerCase() === suggestion.categoryName.trim().toLocaleLowerCase());
+          const existing = categories.find((category) => category.name === suggestion.categoryName);
           const key = existing?.id ?? suggestion.categoryName.trim().toLocaleLowerCase();
           return <div className={styles.adviceSuggestion} key={key}><div><strong>{suggestion.categoryName}</strong><span>{suggestion.rationale}</span></div><div className={styles.adviceSuggestionAction}><strong>{currency.format(suggestion.suggestedAmount)}</strong><button type="button" onClick={() => applyAdvice(suggestion)} disabled={Boolean(applyingAdvice)}>{applyingAdvice === key ? "Applying…" : "Apply"}</button></div></div>;
         })}</div> : <p className={styles.adviceEmpty}>No category changes were suggested from the available history.</p>}
-        <p className={styles.adviceDisclaimer}>AI-generated suggestions based on spending history. Category names and amounts are sent to OpenAI; transaction descriptions and account details are not included.</p>
+        <p className={styles.adviceDisclaimer}>AI-generated suggestions can be inaccurate. Review each amount before applying; each Apply saves only the planned budget for that category.</p>
       </section>}
 
       <section className={`${styles.summary} chart-summary card`} aria-labelledby="budget-summary-title">
