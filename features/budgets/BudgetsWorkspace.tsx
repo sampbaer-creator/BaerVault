@@ -1,5 +1,6 @@
 "use client";
 
+import { reviewSourceLabel, type ReviewSource } from "@/lib/helpers/spendingReview";
 import { findAdviceTarget } from "@/lib/helpers/budgetAdvice";
 
 import { Drawer } from "@mantine/core";
@@ -97,7 +98,7 @@ function categoryEmoji(name: string) {
 type BudgetAdvice = import("@/lib/helpers/budgetAdvice").BudgetAdvice;
 type BudgetAdviceResult = { ok: true; data: BudgetAdvice } | { ok: false; error: string };
 type BudgetActions=Pick<typeof realActions,"addCategoryAction"|"deleteBudgetCategoryAction"|"deleteBudgetEntryAction"|"saveBudgetEntryAction"|"updateBudgetCategoryAction"> & {
-  getBudgetAdviceAction?: (input: { year: number; month: number; monthsBack?: number }) => Promise<BudgetAdviceResult>;
+  getBudgetAdviceAction?: (input: { year: number; month: number; monthsBack?: number; source?: ReviewSource }) => Promise<BudgetAdviceResult>;
 };
 export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realActions, showAdviceBanner = false, members = [] }: { initialBudget: BudgetMonth & { year: number; monthNumber: number }; accounts?: BudgetAccountOption[]; actions?:BudgetActions; showAdviceBanner?: boolean; members?: Array<{ userId: string; name: string; imageUrl: string }> }) {
   const currency=useCurrencyFormatter();
@@ -121,6 +122,7 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
   const [categoryDraft, setCategoryDraft] = useState({ name: "", plannedAmount: "" });
   const [categoryNameDraft, setCategoryNameDraft] = useState("");
   const [pendingDelete, setPendingDelete] = useState<{ kind: "entry" | "category"; id: string; label: string } | null>(null);
+  const [reviewSource, setReviewSource] = useState<ReviewSource>("ledger");
   const [historyMonths, setHistoryMonths] = useState(6);
   const [advice, setAdvice] = useState<BudgetAdvice | null>(null);
   const [adviceLoading, setAdviceLoading] = useState(false);
@@ -255,7 +257,7 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
     setAdviceLoading(true);
     setAdviceError("");
     setAdvice(null);
-    const result = await actions.getBudgetAdviceAction({ year: initialBudget.year, month: initialBudget.monthNumber, monthsBack: historyMonths });
+    const result = await actions.getBudgetAdviceAction({ year: initialBudget.year, month: initialBudget.monthNumber, monthsBack: historyMonths, source: reviewSource });
     setAdviceLoading(false);
     if (!result.ok) {
       setAdviceError(result.error);
@@ -336,31 +338,37 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
       {error && <p className={styles.formError} role="alert">{error}</p>}
 
       {actions.getBudgetAdviceAction && <section className={styles.advicePanel} aria-label="Monthly spending review">
+        <div className={styles.reviewControls}><label htmlFor="review-source">Source </label>
+        <select id="review-source" value={reviewSource} disabled={adviceLoading} onChange={(event) => { setReviewSource(event.target.value as ReviewSource); setAdvice(null); setAdviceError(""); }}>
+          <option value="ledger">{reviewSourceLabel("ledger")}</option>
+          <option value="bank">{reviewSourceLabel("bank")}</option>
+        </select>
         <label htmlFor="review-history">Review history </label>
         <select id="review-history" value={historyMonths} disabled={adviceLoading} onChange={(event) => { setHistoryMonths(Number(event.target.value)); setAdvice(null); setAdviceError(""); }}>
           {Array.from({ length: 12 }, (_, index) => <option key={index + 1} value={index + 1}>{index + 1} prior {index === 0 ? "month" : "months"}</option>)}
         </select>
-        <p className={styles.adviceDisclaimer}>Requesting a review sends this household ledger merchant descriptions, purchase amounts, dates, categories and planned budgets to OpenAI. Common contact and account identifiers are redacted. Imported bank transactions and account details are excluded. Only record merchant names in purchase descriptions. Nothing is saved until you Apply a category suggestion.</p>
-        <button type="button" className={styles.primaryButton} onClick={requestAdvice} disabled={adviceLoading}>{adviceLoading ? "Preparing review..." : "Review spending with OpenAI"}</button>
+        </div>
+        <p className={styles.adviceDisclaimer}>Only when you click Review spending, this source is analyzed on the server using statistical estimates, no data sent to OpenAI or any other model provider. Bank estimates exclude identified transfers and card payments; provider classification may be incomplete. This review does not mark transactions reviewed or modify budgets. Each proposed category requires individual approval with Apply.</p>
+        <button type="button" className={styles.primaryButton} onClick={requestAdvice} disabled={adviceLoading}>{adviceLoading ? "Preparing review..." : "Review spending"}</button>
       </section>}
-      {actions.getBudgetAdviceAction && showAdviceBanner && !bannerDismissed && !advice && <aside className={styles.adviceBanner} role="status">
+      {actions.getBudgetAdviceAction && reviewSource === "ledger" && showAdviceBanner && !bannerDismissed && !advice && <aside className={styles.adviceBanner} role="status">
         <div><strong>Need a starting point?</strong><span>Use your recent spending history to draft this month&apos;s plan.</span></div>
-        <div className={styles.adviceBannerActions}><button className={styles.primaryButton} type="button" onClick={requestAdvice} disabled={adviceLoading}>{adviceLoading ? "Preparing…" : "Get advice"}</button><button className={styles.dismissButton} type="button" onClick={() => setBannerDismissed(true)} aria-label="Dismiss budget advice"><IconX size={16} /></button></div>
+        <div className={styles.adviceBannerActions}><button className={styles.primaryButton} type="button" onClick={requestAdvice} disabled={adviceLoading}>{adviceLoading ? "Preparing…" : "Review spending"}</button><button className={styles.dismissButton} type="button" onClick={() => setBannerDismissed(true)} aria-label="Dismiss spending forecast"><IconX size={16} /></button></div>
       </aside>}
 
       {actions.getBudgetAdviceAction && adviceError && <p className={styles.formError} role="alert">{adviceError}</p>}
 
       {actions.getBudgetAdviceAction && advice && <section className={styles.advicePanel} aria-labelledby="budget-advice-title">
-        <div className={styles.adviceHeading}><div><span className={styles.adviceEyebrow}>AI budget advice</span><h3 id="budget-advice-title">A practical starting point for {initialBudget.month}</h3></div><span className={styles.confidence}>Confidence: {advice.confidence}</span></div>
-        {advice.review && <p>Ledger review: {advice.review.start} to {advice.review.end} (exclusive). {advice.review.monthsRecorded} of {advice.review.monthsRequested} months recorded; {advice.review.transactionCount} purchases totaling {currency.format(advice.review.total)}. Missing months are not treated as zero spending.</p>}
+        <div className={styles.adviceHeading}><div><span className={styles.adviceEyebrow}>{advice.review?.source === "bank" ? "Bank spending forecast" : "Spending forecast"}</span><h3 id="budget-advice-title">A practical starting point for {initialBudget.month}</h3></div><span className={styles.confidence}>Confidence: {advice.confidence}</span></div>
+        {advice.review && <p>{advice.review.source === "bank" ? "Bank history review (estimated)" : "Ledger review"}: {advice.review.start} to {advice.review.end} (exclusive). {advice.review.monthsRecorded} of {advice.review.monthsRequested} months recorded; {advice.review.transactionCount} {advice.review.source === "bank" ? "posted outflows with estimated total" : "purchases totaling"} {currency.format(advice.review.total)}. Missing months are not treated as zero spending.</p>}
         {advice.insights && advice.insights.length > 0 && <div><h4>Spending insights</h4><ul>{advice.insights.map((insight, index) => <li key={index}>{insight}</li>)}</ul></div>}
         <p className={styles.adviceTip}>{advice.overallTip}</p>
         {advice.suggestions.length > 0 ? <div className={styles.adviceSuggestions}>{advice.suggestions.map((suggestion) => {
           const existing = categories.find((category) => category.name === suggestion.categoryName);
           const key = existing?.id ?? suggestion.categoryName.trim().toLocaleLowerCase();
-          return <div className={styles.adviceSuggestion} key={key}><div><strong>{suggestion.categoryName}</strong><span>{suggestion.rationale}</span></div><div className={styles.adviceSuggestionAction}><strong>{currency.format(suggestion.suggestedAmount)}</strong><button type="button" onClick={() => applyAdvice(suggestion)} disabled={Boolean(applyingAdvice)}>{applyingAdvice === key ? "Applying…" : "Apply"}</button></div></div>;
+          return <div className={styles.adviceSuggestion} key={key}><div><strong>{suggestion.categoryName}</strong>{suggestion.isNewCategory && <span>Proposed new category: approval required</span>}<span>{suggestion.rationale}</span></div><div className={styles.adviceSuggestionAction}><strong>{currency.format(suggestion.suggestedAmount)}</strong><button type="button" onClick={() => applyAdvice(suggestion)} disabled={Boolean(applyingAdvice)}>{applyingAdvice === key ? "Applying…" : "Apply"}</button></div></div>;
         })}</div> : <p className={styles.adviceEmpty}>No category changes were suggested from the available history.</p>}
-        <p className={styles.adviceDisclaimer}>AI-generated suggestions can be inaccurate. Review each amount before applying; each Apply saves only the planned budget for that category.</p>
+        <p className={styles.adviceDisclaimer}>Statistical estimates can be inaccurate. Review each amount before applying; each Apply saves only the planned budget for that category.</p>
       </section>}
 
       <section className={`${styles.summary} chart-summary card`} aria-labelledby="budget-summary-title">
@@ -374,7 +382,7 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
 
       <div className={styles.referenceGrid}>
       <section className={`${styles.sheet} card`} aria-labelledby="categories-title">
-        <div className={styles.sheetHeading}><div><h3 id="categories-title">Spending plan</h3><p>Actuals are calculated from the purchases inside each category.</p></div><div className={styles.headingActions}>{actions.getBudgetAdviceAction && <button type="button" onClick={requestAdvice} disabled={adviceLoading}>{adviceLoading ? "Preparing…" : "Get AI budget advice"}</button>}<button type="button" onClick={() => setAddingCategory(true)}><IconPlus size={16} />Add category</button></div></div>
+        <div className={styles.sheetHeading}><div><h3 id="categories-title">Spending plan</h3><p>Actuals are calculated from the purchases inside each category.</p></div><div className={styles.headingActions}>{actions.getBudgetAdviceAction && reviewSource === "ledger" && <button type="button" onClick={requestAdvice} disabled={adviceLoading}>{adviceLoading ? "Preparing…" : "Review spending"}</button>}<button type="button" onClick={() => setAddingCategory(true)}><IconPlus size={16} />Add category</button></div></div>
         <div className={styles.tableHeader} aria-hidden="true"><span>Category</span><span>Budget / projected</span><span>Actual</span><span>Remaining / variance</span><span /></div>
         <div className={styles.rows}>
           <div className={styles.mobileTableHeader}><span>Category</span><span>Spent</span><span>Budget</span></div>

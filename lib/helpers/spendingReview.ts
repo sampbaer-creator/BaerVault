@@ -5,7 +5,9 @@ export const MAX_REVIEW_CATEGORIES = 200;
 export const MAX_REVIEW_BYTES = 180_000;
 export type SpendingCategory = { year: number; month: number; categoryId: string; categoryName: string; planned: number; actual: number };
 export type SpendingTransaction = { categoryId: string; categoryName: string; merchant: string; amount: number; date: string };
-export type SpendingSnapshot = { start: string; end: string; monthsRequested: number; monthsRecorded: number; categories: SpendingCategory[]; transactions: SpendingTransaction[] };
+export type ReviewSource = "ledger" | "bank";
+export const reviewSourceLabel = (source: ReviewSource) => source === "bank" ? "Imported bank transactions (estimated)" : "Ledger purchases";
+export type SpendingSnapshot = { source?: ReviewSource; start: string; end: string; monthsRequested: number; monthsRecorded: number; categories: SpendingCategory[]; transactions: SpendingTransaction[] };
 
 export function reviewWindow(year: number, month: number, monthsBack: number) {
   if (!isValidMonth(year, month) || !Number.isInteger(monthsBack) || monthsBack < 1 || monthsBack > 12) {
@@ -16,7 +18,7 @@ export function reviewWindow(year: number, month: number, monthsBack: number) {
 }
 
 // Free-text ledger descriptions may contain more than a merchant. Remove common
-// contact/account identifiers before allowing that text across the AI boundary.
+// contact/account identifiers before returning review text to the client.
 export function reviewText(value: string): string {
   return value.replace(/https?:\/\/\S+|www\.\S+|\S+@\S+/gi, "[redacted]")
     .replace(/\b\d+\s+[^,;]+\b(?:street|st|avenue|ave|road|rd|drive|dr|lane|ln)\b/gi, "[redacted]")
@@ -27,7 +29,7 @@ export function reviewText(value: string): string {
 export function summarizeSpending(snapshot: SpendingSnapshot) {
   const total = snapshot.categories.reduce((sum, category) => sum + Math.round(category.actual * 100), 0) / 100;
   const planned = snapshot.categories.reduce((sum, category) => sum + Math.round(category.planned * 100), 0) / 100;
-  return { total, planned, transactionCount: snapshot.transactions.length, monthsRequested: snapshot.monthsRequested, monthsRecorded: snapshot.monthsRecorded, start: snapshot.start, end: snapshot.end };
+  return { ...(snapshot.source ? { source: snapshot.source } : {}), total, planned, transactionCount: snapshot.transactions.length, monthsRequested: snapshot.monthsRequested, monthsRecorded: snapshot.monthsRecorded, start: snapshot.start, end: snapshot.end };
 }
 
 export type SpendingSummary = ReturnType<typeof summarizeSpending>;
