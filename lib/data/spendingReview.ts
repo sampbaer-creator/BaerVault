@@ -2,7 +2,7 @@ import "server-only";
 
 import { auth } from "@clerk/nextjs/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { reviewWindow, type SpendingSnapshot } from "@/lib/helpers/spendingReview";
+import { reviewWindow } from "@/lib/helpers/spendingReview";
 import { readSpendingSnapshot } from "./spendingReviewQuery";
 import { DataAccessError, throwDataError } from "./errors";
 
@@ -16,9 +16,11 @@ export async function getReviewHousehold() {
   return result.data.id;
 }
 
-export async function getSpendingSnapshot(year: number, month: number, monthsBack: number): Promise<SpendingSnapshot> {
+export async function getSpendingSnapshot(year: number, month: number, monthsBack: number) {
   try { reviewWindow(year, month, monthsBack); } catch { throw new DataAccessError("Select a valid month and 1-12 prior months."); }
   const householdId = await getReviewHousehold();
   const client = createServerSupabaseClient();
-  return readSpendingSnapshot(client, householdId, year, month, monthsBack);
+  const categoryNames = new Map<string, string>();
+  const history = await readSpendingSnapshot(client, householdId, year, month, monthsBack, categoryNames);
+  return { history, categoryNames };
 }

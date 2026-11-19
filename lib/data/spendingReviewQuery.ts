@@ -3,7 +3,7 @@ import { MAX_REVIEW_BYTES, MAX_REVIEW_CATEGORIES, MAX_REVIEW_ENTRIES, reviewText
 import { DataAccessError, throwDataError } from "./errors";
 
 // Caller must obtain householdId from authenticated membership, never client input.
-export async function readSpendingSnapshot(client: ReturnType<typeof createServerSupabaseClient>, householdId: string, year: number, month: number, monthsBack: number): Promise<SpendingSnapshot> {
+export async function readSpendingSnapshot(client: ReturnType<typeof createServerSupabaseClient>, householdId: string, year: number, month: number, monthsBack: number, categoryNames = new Map<string, string>()): Promise<SpendingSnapshot> {
   const window = reviewWindow(year, month, monthsBack);
   const months = await client.from("budget_months").select("id, year, month", { count: "exact" })
     .eq("household_id", householdId)
@@ -20,18 +20,24 @@ export async function readSpendingSnapshot(client: ReturnType<typeof createServe
   if ((categories.count ?? MAX_REVIEW_CATEGORIES + 1) > MAX_REVIEW_CATEGORIES) throw new DataAccessError("Too many categories for one review. Choose fewer months.");
   if (categories.count !== categories.data?.length) throw new DataAccessError("Incomplete category history. Choose fewer months.");
   if (!categories.data?.length) return snapshot;
-  const entries = await client.from("budget_entries").select("budget_category_id, description, amount, entry_date", { count: "exact" })
-    .eq("household_id", householdId).in("budget_category_id", categories.data.map(row => row.id))
+  const entries = await client.from("budget_entries").select("budget_category_id, description, amount, entry_date, bank_transaction_id", { count: "exact" })
+    .eq("household_id", householdId).is("bank_transaction_id", null).in("budget_category_id", categories.data.map(row => row.id))
     .order("entry_date").order("id").limit(MAX_REVIEW_ENTRIES + 1);
   if (entries.error) throwDataError(entries.error, "Could not read budget spending.");
   if ((entries.count ?? MAX_REVIEW_ENTRIES + 1) > MAX_REVIEW_ENTRIES) throw new DataAccessError("Too many purchases for one review. Choose fewer months.");
   if (entries.count !== entries.data?.length) throw new DataAccessError("Incomplete purchase history. Choose fewer months.");
   for (const category of categories.data) {
     const budgetMonth = months.data.find(row => row.id === category.budget_month_id)!;
-    const purchases = (entries.data ?? []).filter(row => row.budget_category_id === category.id);
+    const purchases = (entries.data ?? []).filter(row => row.budget_category_id === category.id && row.bank_transaction_id == null);
     const categoryName = reviewText(category.name);
-    snapshot.categories.push({ year: budgetMonth.year, month: budgetMonth.month, categoryName, planned: Number(category.planned_amount), actual: purchases.reduce((sum, row) => sum + Math.round(Number(row.amount) * 100), 0) / 100 });
-    snapshot.transactions.push(...purchases.map(row => ({ categoryName, merchant: reviewText(row.description), amount: Number(row.amount), date: row.entry_date })));
+    // Exact original names share identity across months; redacted labels never define identity.
+    let categoryId = [...categoryNames].find(([, name]) => name === category.name)?.[0];
+    if (!categoryId) {
+      categoryId = `category_${categoryNames.size + 1}`;
+      categoryNames.set(categoryId, category.name);
+    }
+    snapshot.categories.push({ year: budgetMonth.year, month: budgetMonth.month, categoryId, categoryName, planned: Number(category.planned_amount), actual: purchases.reduce((sum, row) => sum + Math.round(Number(row.amount) * 100), 0) / 100 });
+    snapshot.transactions.push(...purchases.map(row => ({ categoryId, categoryName, merchant: reviewText(row.description), amount: Number(row.amount), date: row.entry_date })));
   }
   if (Buffer.byteLength(JSON.stringify(snapshot), "utf8") > MAX_REVIEW_BYTES) throw new DataAccessError("This review is too large. Choose fewer months.");
   return snapshot;

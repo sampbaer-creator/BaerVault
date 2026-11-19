@@ -1,5 +1,7 @@
 "use client";
 
+import { findAdviceTarget } from "@/lib/helpers/budgetAdvice";
+
 import { Drawer } from "@mantine/core";
 import { useServerSnapshotState } from "@/lib/hooks/useServerSnapshotState";
 import { useMediaQuery } from "@mantine/hooks";
@@ -245,9 +247,13 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
   }
 
   async function applyAdvice(suggestion: BudgetAdvice["suggestions"][number]) {
-    const name = suggestion.categoryName.trim();
+    const name = suggestion.categoryName;
     const amount = Math.round(suggestion.suggestedAmount * 100) / 100;
-    const existing = categories.find((category) => category.name.trim().toLocaleLowerCase() === name.toLocaleLowerCase());
+    let existing;
+    try { existing = findAdviceTarget(categories, suggestion); } catch {
+      setAdviceError("Category identity changed or is ambiguous. Request a new review.");
+      return;
+    }
     const key = existing?.id ?? name.toLocaleLowerCase();
     setApplyingAdvice(key);
     setAdviceError("");
@@ -330,7 +336,7 @@ export function BudgetsWorkspace({ initialBudget, accounts = [], actions=realAct
         {advice.insights && advice.insights.length > 0 && <div><h4>Spending insights</h4><ul>{advice.insights.map((insight, index) => <li key={index}>{insight}</li>)}</ul></div>}
         <p className={styles.adviceTip}>{advice.overallTip}</p>
         {advice.suggestions.length > 0 ? <div className={styles.adviceSuggestions}>{advice.suggestions.map((suggestion) => {
-          const existing = categories.find((category) => category.name.trim().toLocaleLowerCase() === suggestion.categoryName.trim().toLocaleLowerCase());
+          const existing = categories.find((category) => category.name === suggestion.categoryName);
           const key = existing?.id ?? suggestion.categoryName.trim().toLocaleLowerCase();
           return <div className={styles.adviceSuggestion} key={key}><div><strong>{suggestion.categoryName}</strong><span>{suggestion.rationale}</span></div><div className={styles.adviceSuggestionAction}><strong>{currency.format(suggestion.suggestedAmount)}</strong><button type="button" onClick={() => applyAdvice(suggestion)} disabled={Boolean(applyingAdvice)}>{applyingAdvice === key ? "Applying…" : "Apply"}</button></div></div>;
         })}</div> : <p className={styles.adviceEmpty}>No category changes were suggested from the available history.</p>}

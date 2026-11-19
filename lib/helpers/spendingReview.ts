@@ -3,8 +3,8 @@ import { isValidMonth } from "./validation";
 export const MAX_REVIEW_ENTRIES = 1000;
 export const MAX_REVIEW_CATEGORIES = 200;
 export const MAX_REVIEW_BYTES = 180_000;
-export type SpendingCategory = { year: number; month: number; categoryName: string; planned: number; actual: number };
-export type SpendingTransaction = { categoryName: string; merchant: string; amount: number; date: string };
+export type SpendingCategory = { year: number; month: number; categoryId: string; categoryName: string; planned: number; actual: number };
+export type SpendingTransaction = { categoryId: string; categoryName: string; merchant: string; amount: number; date: string };
 export type SpendingSnapshot = { start: string; end: string; monthsRequested: number; monthsRecorded: number; categories: SpendingCategory[]; transactions: SpendingTransaction[] };
 
 export function reviewWindow(year: number, month: number, monthsBack: number) {
@@ -35,10 +35,10 @@ export function analyzeSpending(snapshot: SpendingSnapshot) {
   const categories = new Map<string, { totalCents: number; months: Set<string> }>();
   const merchants = new Map<string, { totalCents: number; purchases: number; months: Set<string> }>();
   for (const category of snapshot.categories) {
-    const item = categories.get(category.categoryName) ?? { totalCents: 0, months: new Set<string>() };
+    const item = categories.get(category.categoryId) ?? { totalCents: 0, months: new Set<string>() };
     item.totalCents += Math.round(category.actual * 100);
     item.months.add(`${category.year}-${category.month}`);
-    categories.set(category.categoryName, item);
+    categories.set(category.categoryId, item);
   }
   for (const transaction of snapshot.transactions) {
     if (!transaction.merchant || transaction.merchant.includes("[redacted]")) continue;
@@ -49,7 +49,7 @@ export function analyzeSpending(snapshot: SpendingSnapshot) {
     merchants.set(transaction.merchant, item);
   }
   return {
-    categories: [...categories].map(([categoryName, item]) => ({ categoryName, total: item.totalCents / 100, monthsObserved: item.months.size, averagePerObservedMonth: Math.round(item.totalCents / item.months.size) / 100 }))
+    categories: [...categories].map(([categoryId, item]) => ({ categoryId, categoryName: snapshot.categories.find(category => category.categoryId === categoryId)!.categoryName, total: item.totalCents / 100, monthsObserved: item.months.size, averagePerObservedMonth: Math.round(item.totalCents / item.months.size) / 100 }))
       .sort((a, b) => b.total - a.total).slice(0, 10),
     merchants: [...merchants].map(([merchant, item]) => ({ merchant, total: item.totalCents / 100, purchases: item.purchases, distinctPurchaseMonths: item.months.size }))
       .sort((a, b) => b.total - a.total).slice(0, 10),

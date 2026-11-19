@@ -9,11 +9,13 @@ import { analyzeSpending, summarizeSpending } from "@/lib/helpers/spendingReview
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { DataAccessError, errorMessage } from "@/lib/data/errors";
 
-import { normalizeBudgetAdvice, type BudgetAdvice } from "@/lib/helpers/budgetAdvice";
+import { normalizeBudgetAdvice, resolveAdviceCategories, type BudgetAdvice } from "@/lib/helpers/budgetAdvice";
 import { isValidMonth } from "@/lib/helpers/validation";
 
 const AdviceSchema = z.object({
   suggestions: z.array(z.object({
+    categoryId: z.string().min(1).nullable(),
+    isNewCategory: z.boolean(),
     categoryName: z.string().min(1).max(80),
     suggestedAmount: z.number().finite().nonnegative().max(999999999999).multipleOf(0.01),
     rationale: z.string().min(1).max(200),
@@ -37,7 +39,7 @@ export async function getBudgetAdviceAction(input: { year: number; month: number
     const quota = await createServerSupabaseClient().rpc("consume_budget_advice_quota");
     if (quota.error) throw new DataAccessError("Budget advice is temporarily unavailable.");
     if (quota.data !== true) return { ok: false, error: "Please wait a minute between reviews. Each household can request up to 20 reviews per day." };
-    const history = await getSpendingSnapshot(input.year, input.month, input.monthsBack ?? 6);
+    const { history, categoryNames } = await getSpendingSnapshot(input.year, input.month, input.monthsBack ?? 6);
     const historyMonthCount = history.monthsRecorded;
     if (!history.transactions.length) return { ok: false, error: "No ledger purchases were recorded in this history range. Choose a different range." };
     const object = await generateObject({
@@ -53,12 +55,12 @@ export async function getBudgetAdviceAction(input: { year: number; month: number
         historyMonthCount < 3
           ? "There are fewer than three months of history. Set confidence to low and explain that the advice is preliminary."
           : "Use the available history to recommend reasonable planned amounts and one concrete savings tip.",
-        "Return suggestions for useful existing categories first; only suggest a new category when the history clearly supports it.",
+        "For existing categories return their exact categoryId and isNewCategory=false. Labels may collide; never infer identity from a label. Only suggest a genuine new category when history clearly supports it, with categoryId=null and isNewCategory=true.",
         JSON.stringify({ history, analysis: analyzeSpending(history) }),
       ].join("\n\n"),
     });
 
-    return { ok: true, data: { ...normalizeBudgetAdvice(object.object, historyMonthCount), review: summarizeSpending(history) } };
+    return { ok: true, data: { ...normalizeBudgetAdvice(resolveAdviceCategories(object.object, categoryNames), historyMonthCount), review: summarizeSpending(history) } };
   } catch (error) {
     return { ok: false, error: errorMessage(error) };
   }
