@@ -1,0 +1,10 @@
+analysis @layout 372 220
+fixture @layout 40 221
+review @layout 624 63 expanded
+publish @layout 956 221
+reject @layout 956 40
+analysis @slayout 189 51
+fixture @slayout 40 50
+review @slayout 338 110
+publish @slayout 487 40
+reject @slayout 487 161

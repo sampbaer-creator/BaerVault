@@ -16,13 +16,13 @@
 | --- | --- | --- |
 | ![Home](docs/screenshots/home.png) | ![Budget](docs/screenshots/budget.png) | ![Transactions](docs/screenshots/transactions.png) |
 
-**Live demo:** [Open BaerVault](https://YOUR_DEMO_URL)
+**Live demo:** [Open BaerVault](https://www.baervault.company/demo)
 
 ## Features
 
 - **Home:** monthly budget status, recent activity, upcoming payments, goals, and net worth.
 - **Transactions:** household ledger, bank transaction review, and recurring payments.
-- **Budget:** category plans, purchase entry, and cash flow.
+- **Budget:** category plans, historical transaction review, private statistical spending forecasts, purchase entry, and cash flow.
 - **Accounts:** connected accounts, investments, and savings goals.
 - **Household:** member access, invitations, and spending by member.
 
@@ -49,6 +49,10 @@ The public demo uses synthetic data. Authenticated household records are scoped 
 | Data | Supabase PostgreSQL, row-level security |
 | Finance integrations | Plaid, Twelve Data |
 | Tests | Node test runner, PGlite |
+
+## Weft monthly review workflow
+
+The Weft graph and Python forecast scripts are versioned **in this repository**, at [workflows/weft/monthly-review](workflows/weft/monthly-review/README.md). The live website uses the equivalent in-app statistical forecast. Weft requires a separate authenticated hosted runner before the website can execute its graph; see [the integration plan](docs/weft-orchestration-plan.md).
 
 ## Quick start
 

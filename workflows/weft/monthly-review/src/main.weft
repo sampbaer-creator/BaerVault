@@ -1,0 +1,69 @@
+# Synthetic monthly household review with deterministic Python forecasts.
+fixture = Text {
+  _label: "Load synthetic household fixture"
+  value: @file("assets/household.json")
+}
+
+analysis = Group(fixture: String) -> (report: String, filename: String) {
+  categorize = ExecPython(fixture: String) -> (month: String, budget: Dict[String, Number], expenses: List[JsonDict], excluded: Number) {
+    _label: "Validate and categorize household transactions"
+    fixture: self.fixture
+    code: @file("assets/scripts/categorize.py")
+  }
+  patterns = ExecPython(month: String, expenses: List[JsonDict]) -> (recurring: List[JsonDict], unusual: List[JsonDict]) {
+    _label: "Find recurring and unusual expenses"
+    month: categorize.month
+    expenses: categorize.expenses
+    code: @file("assets/scripts/patterns.py")
+  }
+  compare = ExecPython(month: String, budget: Dict[String, Number], expenses: List[JsonDict]) -> (comparison: List[JsonDict]) {
+    _label: "Compare spending against planned amounts"
+    month: categorize.month
+    budget: categorize.budget
+    expenses: categorize.expenses
+    code: @file("assets/scripts/compare.py")
+  }
+  forecast = ExecPython(month: String, expenses: List[JsonDict]) -> (recommendations: List[JsonDict]) {
+    _label: "Forecast budgets with Python statistics"
+    month: categorize.month
+    expenses: categorize.expenses
+    code: @file("assets/scripts/forecast.py")
+  }
+  summary = ExecPython(month: String, excluded: Number, comparison: List[JsonDict], recurring: List[JsonDict], unusual: List[JsonDict], recommendations: List[JsonDict]) -> (report: String, filename: String) {
+    _label: "Write draft monthly review and forecasts"
+    month: categorize.month
+    excluded: categorize.excluded
+    comparison: compare.comparison
+    recurring: patterns.recurring
+    unusual: patterns.unusual
+    recommendations: forecast.recommendations
+    code: @file("assets/scripts/summary.py")
+  }
+  self.report = summary.report
+  self.filename = summary.filename
+}
+analysis.fixture = fixture.value
+
+review = HumanQuery {
+  _label: "Wait for human approval"
+  _tags: ["approvals"]
+  title: "Review the synthetic monthly forecast"
+  draft: analysis.report
+  fields: [
+    { "kind": "display", "key": "draft", "label": "Draft report" },
+    { "kind": "approve_reject", "key": "publish", "approveLabel": "Save report", "rejectLabel": "Reject draft" }
+  ]
+}
+publish = TextToFile {
+  _label: "Save approved report"
+  _should_flow: review.publishApproved
+  text: analysis.report
+  filename: analysis.filename
+  mimeType: "text/markdown"
+  scope: "run"
+}
+reject = Debug {
+  _label: "Record rejection"
+  _should_flow: review.publishRejected
+  data: "Rejected by reviewer. No report was published."
+}
