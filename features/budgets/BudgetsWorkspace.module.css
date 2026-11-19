@@ -1071,3 +1071,38 @@
   .categoryRow:nth-child(3n)::before { background: var(--money-positive) !important; }
 }
 
+
+.reviewControls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.reviewControls label { font-size: 14px; }
+.reviewControls select { min-height: 44px; max-width: 100%; padding: 8px 12px; border: 1px solid var(--app-border); border-radius: 10px; background: var(--app-surface); color: var(--app-text-strong); font: inherit; }
+
+/* Forecast controls stay reachable on mobile and desktop. */
+.reviewControls button, .advicePanel button, .adviceBanner button,
+.adviceSuggestionAction button { min-height: 44px; }
+.headingActions { flex-wrap: wrap; }
+@media (max-width: 47.999rem) {
+  .reviewControls { flex-direction: column; align-items: stretch; }
+  .adviceSuggestion { flex-wrap: wrap; }
+  .sheetHeading > .headingActions button { min-height: 44px !important; height: auto !important; }
+}
+
+/* Spending review and category rows stay readable in the PWA and narrower desktop layouts. */
+@media (min-width: 48rem) and (max-width: 70rem) {
+  .referenceGrid { display: grid; grid-template-columns: minmax(0, 1fr) !important; }
+  .budgetAside { position: static !important; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .sheet, .rows, .tableHeader { min-width: 0; }
+  .categoryRow, .tableHeader {
+    grid-template-columns: minmax(100px, 1.8fr) repeat(3, minmax(0, 1fr)) 18px !important;
+    column-gap: 6px !important;
+    padding-inline: 12px !important;
+  }
+  .categoryRow .desktopValue { min-width: 0; font-size: 12px; }
+}
+@media (max-width: 26.25rem) {
+  .categoryRow { grid-template-columns: minmax(0, 1fr) minmax(0, 1.45fr) 0 !important; }
+  .mobileProgress { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important; gap: 8px !important; min-width: 0; }
+  .mobileProgress > i { display: none !important; }
+  .mobileProgress > span > strong { grid-column: 1 !important; font-size: 12px !important; text-align: right; min-width: 0; }
+  .mobileProgress > span > em { grid-column: 2 !important; font-size: 12px !important; text-align: right; min-width: 0; }
+  .categoryName { min-width: 0; }
+}
