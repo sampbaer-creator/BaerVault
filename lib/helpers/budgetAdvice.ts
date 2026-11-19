@@ -1,5 +1,7 @@
 export type BudgetAdvice = {
   suggestions: Array<{ categoryName: string; suggestedAmount: number; rationale: string }>;
+  insights?: string[];
+  review?: import("./spendingReview").SpendingSummary;
   overallTip: string;
   confidence: "low" | "medium" | "high";
 };
