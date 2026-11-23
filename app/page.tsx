@@ -80,7 +80,7 @@ const faqs = [
   },
   {
     q: "Can my partner or household see the same data?",
-    a: "Yes — that's the point. Invite your household and everyone sees the same accounts, budget, and goals, isolated from every other household on BaerVault.",
+    a: "Yes. Invite your household to share the same accounts, budget, and goals.",
   },
   {
     q: "Is my data actually private?",
@@ -89,10 +89,6 @@ const faqs = [
   {
     q: "Do I have to connect a bank account to use it?",
     a: "No. You can track accounts, budgets, and goals manually, and connect a bank later if you want balances to update automatically.",
-  },
-  {
-    q: "What happens to my data if I stop using BaerVault?",
-    a: "It's yours. You can export or delete your household's records at any time from Settings.",
   },
 ] as const;
 
@@ -146,7 +142,6 @@ function DashboardPreview() {
           <section className={styles.activityCard}>
             <div className={styles.previewCardHeading}>
               <strong>Transactions to review</strong>
-              <span>View all</span>
             </div>
             {[
               ["City Market", "Groceries", "−$84.27"],
@@ -163,7 +158,6 @@ function DashboardPreview() {
           <section className={styles.categoriesCard}>
             <div className={styles.previewCardHeading}>
               <strong>Top categories</strong>
-              <span>View all</span>
             </div>
             <div className={styles.categoryBar}><span>Home</span><i><b style={{ width: "78%" }} /></i><strong>$1,420</strong></div>
             <div className={styles.categoryBar}><span>Food</span><i><b style={{ width: "56%" }} /></i><strong>$816</strong></div>
@@ -198,11 +192,10 @@ export default function Home() {
 
       <section className={styles.hero} id="product">
         <div className={styles.heroCopy}>
-          <p className={styles.eyebrow}>Household finance, clearly organized</p>
-          <h1>Know where your household stands.</h1>
+          <h1>See where your money goes, together.</h1>
           <p className={styles.lede}>
-            BaerVault brings spending, accounts, budgets, goals, and investments
-            into one calm workspace built for your whole household.
+            Track spending, plan budgets, and see your accounts, goals, and
+            investments in one shared household dashboard.
           </p>
           <div className={styles.heroActions}>
             <TrackedLink className={styles.primaryAction} href="/sign-up" event="cta_click" eventProps={{ placement: "hero", label: "create_account" }}>
@@ -212,7 +205,7 @@ export default function Home() {
             <Link className={styles.mobileSignInAction} href="/sign-in">Sign in</Link>
           </div>
           <p className={styles.securityNote}>
-            <IconLock size={14} aria-hidden="true" /> Secure sign-in with Google and MFA
+            <IconLock size={14} aria-hidden="true" /> Sign in with Google or email. MFA is available.
           </p>
         </div>
         <DashboardPreview />
@@ -225,13 +218,6 @@ export default function Home() {
             <span><strong>{title}</strong><small>{copy}</small></span>
           </div>
         ))}
-      </section>
-
-      <section className={styles.factStrip} aria-label="BaerVault product coverage">
-        <div><strong>9</strong><span>connected workspaces</span></div>
-        <div><strong>1</strong><span>shared household view</span></div>
-        <div><strong>Light + dark</strong><span>theme support</span></div>
-        <div><strong>Desktop + mobile</strong><span>responsive layouts</span></div>
       </section>
 
       <section className={styles.productSection} aria-labelledby="product-heading">
@@ -314,21 +300,23 @@ export default function Home() {
       <section className={styles.comparisonSection} aria-labelledby="comparison-heading">
         <div className={styles.sectionHeading}>
           <p>Why not just a spreadsheet</p>
-          <h2 id="comparison-heading">Built for a household, not one person&apos;s habit.</h2>
+          <h2 id="comparison-heading">BaerVault and shared spreadsheets</h2>
         </div>
-        <div className={styles.comparisonTable} role="table">
+        <div className={styles.comparisonTable} role="table" aria-labelledby="comparison-heading">
           <div className={styles.comparisonHead} role="row">
-            <span role="columnheader" />
+            <span role="columnheader">Feature</span>
             <span role="columnheader">BaerVault</span>
             <span role="columnheader">A shared spreadsheet</span>
           </div>
           {comparisonRows.map(([label, hasIt, spreadsheetHasIt]) => (
             <div className={styles.comparisonRow} role="row" key={label}>
-              <span role="cell">{label}</span>
+              <span role="rowheader">{label}</span>
               <span role="cell" className={styles.comparisonCell}>
+                <span className={styles.srOnly}>{hasIt ? "Yes" : "No"}</span>
                 {hasIt ? <IconCheck size={16} className={styles.checkIcon} aria-hidden="true" /> : <IconMinus size={16} aria-hidden="true" />}
               </span>
               <span role="cell" className={styles.comparisonCell}>
+                <span className={styles.srOnly}>{spreadsheetHasIt ? "Yes" : "No"}</span>
                 {spreadsheetHasIt ? <IconCheck size={16} className={styles.checkIcon} aria-hidden="true" /> : <IconMinus size={16} aria-hidden="true" />}
               </span>
             </div>

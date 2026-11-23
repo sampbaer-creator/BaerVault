@@ -1,14 +1,14 @@
 "use client";
 
 import {
-  IconBell,
   IconLayoutSidebarLeftCollapse,
   IconLayoutSidebarLeftExpand,
   IconPlus,
   IconSearch,
+  IconSettings,
 } from "@tabler/icons-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useRef, useState } from "react";
 
 import { ProfileMenu } from "@/components/ui/ProfileMenu";
 
@@ -27,7 +27,10 @@ type PageHeaderProps = {
   onToggleSidebar: () => void;
 };
 
-const searchablePages = primaryNavigation;
+const searchablePages = [
+  ...primaryNavigation,
+  { href: "/settings", label: "Settings", icon: IconSettings },
+];
 
 export function PageHeader({
   title,
@@ -37,13 +40,9 @@ export function PageHeader({
   onToggleSidebar,
 }: PageHeaderProps) {
   const [query, setQuery] = useState("");
-  const results = useMemo(() => {
-    const normalized = query.trim().toLowerCase();
-    if (!normalized) return [];
-    return searchablePages.filter(({ label }) =>
-      label.toLowerCase().includes(normalized),
-    );
-  }, [query]);
+  const searchInput = useRef<HTMLInputElement>(null);
+  const normalized = query.trim().toLowerCase();
+  const results = searchablePages.filter(({ label }) => label.toLowerCase().includes(normalized));
   return (
     <>
       <header className={`${styles.desktopHeader} glass-panel`}>
@@ -63,34 +62,41 @@ export function PageHeader({
           </button>
           <div>
             <h1 className={styles.headerTitle}>{title}</h1>
-            <p className={styles.headerSubtitle}>Household finance workspace</p>
           </div>
         </div>
         <div className={styles.headerTools}>
-          <div className={styles.searchWrap}>
+          <div
+            className={styles.searchWrap}
+            onBlur={(event) => {
+              if (!event.currentTarget.contains(event.relatedTarget)) setQuery("");
+            }}
+            onKeyDown={(event) => {
+              if (event.key === "Escape" && query) {
+                event.preventDefault();
+                setQuery("");
+                searchInput.current?.focus();
+              }
+            }}
+          >
             <label className={styles.searchControl}>
               <IconSearch size={16} aria-hidden="true" />
               <span className={styles.srOnly}>Search BaerVault pages</span>
               <input
+                ref={searchInput}
                 type="search"
                 placeholder="Search pages"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                role="combobox"
-                aria-autocomplete="list"
-                aria-expanded={results.length > 0}
-                aria-controls="page-search-results"
               />
             </label>
-            {results.length > 0 && (
+            {normalized && (
               <nav
                 className={styles.searchResults}
-                id="page-search-results"
                 aria-label="Matching pages"
-                role="listbox"
               >
+                {results.length === 0 && <p className={styles.searchEmpty} role="status">No matching pages</p>}
                 {results.map(({ href, label, icon: Icon }) => (
-                  <Link role="option" href={selectedMonth ? withMonth(href, selectedMonth) : href} key={href} onClick={() => setQuery("")}>
+                  <Link href={selectedMonth ? withMonth(href, selectedMonth) : href} key={href} onClick={() => setQuery("")}>
                     <Icon size={16} aria-hidden="true" />
                     <span>{label}</span>
                   </Link>
@@ -99,14 +105,13 @@ export function PageHeader({
             )}
           </div>
           <Link className={`${styles.periodControl} ${styles.quickAddControl}`} href={selectedMonth ? withMonth("/budget?add=purchase", selectedMonth) : "/budget?add=purchase"} aria-label="Add purchase"><IconPlus size={16} aria-hidden="true" /> Add purchase</Link>
-          <button className={styles.iconControl} type="button" disabled aria-label="Notifications (coming soon)" title="Notifications are coming soon"><IconBell size={18} aria-hidden="true" /></button>
           <ProfileMenu />
         </div>
       </header>
 
       <header className={`${styles.mobileHeader} glass-panel`}>
         <span className={styles.mobileMark}><ProfileMenu /></span>
-        <strong className={styles.mobileTitle}>{pathname.replace(/^\/demo/, "") === "/dashboard" ? "BaerVault" : title}</strong>
+        <h1 className={styles.mobileTitle}>{pathname === "/dashboard" ? "BaerVault" : title}</h1>
         <span className={styles.mobileProfile} />
       </header>
     </>

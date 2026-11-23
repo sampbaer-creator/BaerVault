@@ -248,7 +248,6 @@
   line-height: 1.2;
 }
 
-.headerSubtitle { margin: 2px 0 0; color: var(--app-text-muted); font-size: 8px; line-height: 1; }
 
 .headerTools { display: flex; align-items: center; gap: 10px; }
 .searchWrap { position: relative; }
@@ -257,19 +256,18 @@
 .searchControl:focus-within { border-color: var(--app-focus); box-shadow: 0 0 0 2px color-mix(in srgb, var(--app-focus) 14%, transparent); }
 .searchResults { position: absolute; inset: calc(100% + 7px) 0 auto; z-index: 30; min-width: 210px; overflow: hidden; padding: 5px; border: 1px solid var(--app-border); border-radius: 10px; background: var(--app-surface); box-shadow: 0 14px 36px rgb(8 20 40 / 14%); }
 .searchResults a { display: flex; min-height: 38px; align-items: center; gap: 9px; padding: 8px 9px; border-radius: 7px; color: var(--app-text-strong); font-size: 11px; font-weight: 650; text-decoration: none; }
+.searchEmpty { margin: 0; padding: 8px 9px; color: var(--app-text-muted); font-size: 12px; }
 .searchResults a:hover { background: var(--app-hover); }
 .searchResults a:focus-visible { outline: 2px solid var(--app-focus); outline-offset: -1px; }
-.periodControl, .iconControl { min-height: 34px; border: 1px solid var(--app-border) !important; border-radius: 8px; background: var(--app-background) !important; box-shadow: none !important; backdrop-filter: none; font-size: 11px; }
+.periodControl { min-height: 34px; border: 1px solid var(--app-border) !important; border-radius: 8px; background: var(--app-background) !important; box-shadow: none !important; backdrop-filter: none; font-size: 11px; }
 .periodControl { display: inline-flex; align-items: center; gap: 10px; padding: 0 13px; }
 .quickAddControl { border-color: transparent !important; color: #fff; background: var(--app-accent) !important; font-weight: 750; cursor: pointer; }
 .quickAddControl:hover { filter: brightness(0.96); }
 .quickAddControl:focus-visible { outline: 2px solid var(--app-focus); outline-offset: 2px; }
 .mobileQuickActions,
 .mobileQuickAdd { display: none; }
-.iconControl { display: grid; width: 34px; place-items: center; padding: 0; }
-.periodControl::before, .iconControl::before { display: none; }
+.periodControl::before { display: none; }
 .periodControl:disabled,
-.iconControl:disabled { opacity: 0.62; cursor: not-allowed; }
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 .main {
@@ -665,10 +663,9 @@
 }
 
 .headerTitle { font-size: 16px; }
-.headerSubtitle { margin-top: 3px; font-size: 9px; }
 .searchControl { min-height: 38px; border-radius: 10px; background: color-mix(in srgb, var(--app-surface) 64%, transparent); }
-.periodControl, .iconControl, .sidebarToggle { min-height: 38px; border-radius: 10px; background: color-mix(in srgb, var(--app-surface) 66%, transparent) !important; }
-.sidebarToggle, .iconControl { width: 38px; height: 38px; }
+.periodControl, .sidebarToggle { min-height: 38px; border-radius: 10px; background: color-mix(in srgb, var(--app-surface) 66%, transparent) !important; }
+.sidebarToggle { width: 38px; height: 38px; }
 
 .main {
   max-width: 1540px;
@@ -707,7 +704,7 @@
   }
   .mobileScrolled .mobileHeader::after { opacity: 0; }
   .mobileMark { border: 0; color:rgb(255 255 255 / 62%); background:transparent; box-shadow:none; text-decoration:none; }
-  .mobileTitle { color: white; font-size: 21px; line-height: 1.1; font-weight: 760; }
+  .mobileTitle { margin: 0; color: white; font-size: 21px; line-height: 1.1; font-weight: 760; }
   .main { position: relative; min-height: 100dvh; padding: calc(138px + env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) calc(34px + env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left)); background: var(--app-background); touch-action: pan-y pinch-zoom; }
   .main { width:100%; max-width:none; box-sizing:border-box; overflow-x: clip; }
   .main > * { width:100%; max-width:100%; min-width:0; box-sizing:border-box; }
@@ -754,7 +751,6 @@
   .shellCompact .sidebarGlass, .sidebarCompact { width: 72px; }
   .desktopHeader { top: 12px; min-height: 64px; margin-bottom: 12px; padding: 10px clamp(20px, 2.2vw, 34px); border: 1px solid var(--glass-border); border-radius: 18px; background: var(--glass-surface); box-shadow: var(--shadow-glass); backdrop-filter: blur(30px) saturate(155%); }
   .headerTitle { font-size: 16px; }
-  .headerSubtitle { font-size: 10px; }
   .searchControl { width: clamp(210px, 22vw, 340px); min-height: 40px; border-radius: 11px; background: color-mix(in srgb, var(--app-surface) 82%, transparent); }
   .main { max-width: 1540px; padding: clamp(22px, 2.5vw, 40px) clamp(22px, 3vw, 48px) 64px; }
 }
