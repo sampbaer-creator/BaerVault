@@ -99,7 +99,6 @@
 }
 
 .heroCopy { position: relative; z-index: 2; }
-.eyebrow,
 .sectionCopy > p,
 .finalCta p {
   margin: 0 0 12px;
@@ -274,17 +273,6 @@
 .benefitStrip strong { font-size: 12px; }
 .benefitStrip small { margin-top: 5px; color: var(--app-text-muted); font-size: 11px; line-height: 1.5; }
 
-.factStrip {
-  display: grid;
-  width: min(1080px, calc(100% - 40px));
-  grid-template-columns: repeat(4, 1fr);
-  margin: 46px auto 0;
-}
-.factStrip > div { display: grid; justify-items: center; gap: 5px; padding: 12px 18px; text-align: center; }
-.factStrip > div + div { border-left: 1px solid var(--app-border); }
-.factStrip strong { font-size: 17px; font-variant-numeric: tabular-nums; }
-.factStrip span { color: var(--app-text-muted); font-size: 9px; text-transform: uppercase; letter-spacing: .07em; }
-
 .productSection {
   display: grid;
   width: min(1080px, calc(100% - 40px));
@@ -451,10 +439,6 @@
   .worthCard { min-height: 178px; }
   .benefitStrip { width: min(100% - 28px, 1240px); grid-template-columns: 1fr; }
   .benefitStrip > div + div { border-top: 1px solid var(--app-border); border-left: 0; }
-  .factStrip { width: min(100% - 28px, 1080px); grid-template-columns: repeat(2, 1fr); margin-top: 34px; }
-  .factStrip > div + div { border-left: 0; }
-  .factStrip > div:nth-child(even) { border-left: 1px solid var(--app-border); }
-  .factStrip > div:nth-child(n + 3) { border-top: 1px solid var(--app-border); }
   .productSection,
   .securitySection,
   .finalCta,
@@ -483,7 +467,6 @@
   .nav { width: calc(100% - 16px); }
   .hero,
   .benefitStrip,
-  .factStrip,
   .productSection,
   .featuresSection,
   .howSection,
@@ -503,12 +486,6 @@
   .accountTotal strong { font-size: 23px; }
 }
 
-@media (max-width: 22rem) {
-  .factStrip { grid-template-columns: 1fr; }
-  .factStrip > div:nth-child(even) { border-left: 0; }
-  .factStrip > div + div { border-top: 1px solid var(--app-border); }
-}
-
 /* Comparison, pricing, FAQ */
 .comparisonSection,
 .pricingSection,
@@ -517,6 +494,8 @@
   margin: 0 auto;
   padding-bottom: 118px;
 }
+
+.srOnly { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 .comparisonTable {
   overflow: hidden;
@@ -743,14 +722,12 @@
 .categoriesCard,
 .accountPreview { box-shadow: 0 12px 32px rgb(15 52 84 / 7%), inset 0 1px 0 var(--panel-glass-highlight) !important; }
 .benefitStrip,
-.factStrip,
 .securitySection,
 .finalCta,
 .pricingCard,
 .faqItem,
 .comparisonTable { border-color: var(--panel-glass-border); background: var(--panel-glass-surface); box-shadow: var(--panel-glass-shadow); -webkit-backdrop-filter: var(--panel-glass-blur); backdrop-filter: var(--panel-glass-blur); }
 .benefitStrip,
-.factStrip { border-radius: 16px; }
 .securitySection,
 .finalCta { border-radius: 18px; }
 .featureGrid article,
@@ -788,7 +765,6 @@
   .siteHeader,
   .previewWindow,
   .benefitStrip,
-  .factStrip,
   .securitySection,
   .finalCta,
   .pricingCard,

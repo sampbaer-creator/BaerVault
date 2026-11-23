@@ -10,7 +10,6 @@ export function SettingsWorkspace() {
   return (
     <div className={styles.page}>
       <header>
-        <h2>Settings</h2>
         <p>Manage display preferences, formatting, and account security.</p>
       </header>
       <div className={styles.layout}>
@@ -28,7 +27,7 @@ export function SettingsWorkspace() {
                 <IconShieldLock size={18} aria-hidden="true" />
               </span>
               <div>
-                <h3 id="account-title">Account and security</h3>
+                <h2 id="account-title">Account and security</h2>
                 <p>Manage your profile, login methods, password, and MFA.</p>
               </div>
             </div>

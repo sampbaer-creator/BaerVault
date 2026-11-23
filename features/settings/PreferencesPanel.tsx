@@ -21,7 +21,7 @@ export function PreferencesPanel() {
             <IconMoonStars size={18} aria-hidden="true" />
           </span>
           <div>
-            <h3 id="theme-title">Theme</h3>
+            <h2 id="theme-title">Theme</h2>
             <p>Match your device or choose a fixed appearance.</p>
           </div>
         </div>
@@ -44,7 +44,7 @@ export function PreferencesPanel() {
             <IconCurrencyDollar size={18} aria-hidden="true" />
           </span>
           <div>
-            <h3 id="formatting-title">Regional formatting</h3>
+            <h2 id="formatting-title">Regional formatting</h2>
             <p>Choose how values are displayed.</p>
           </div>
         </div>

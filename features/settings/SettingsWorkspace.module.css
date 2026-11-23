@@ -15,14 +15,6 @@
   margin-bottom: 28px;
 }
 
-.page h2 {
-  margin: 0;
-  color: var(--app-text-strong);
-  font-size: clamp(28px, 3vw, 34px);
-  font-weight: 720;
-  letter-spacing: -0.04em;
-}
-
 .page > header p {
   margin: 8px 0 0;
   color: var(--app-text-muted);
@@ -101,12 +93,12 @@
   background: var(--app-accent-soft);
 }
 
-.sectionHeading h3,
+.sectionHeading h2,
 .sectionHeading p {
   margin: 0;
 }
 
-.sectionHeading h3,
+.sectionHeading h2,
 .sections section > h3 {
   color: var(--app-text-strong);
   font-size: 15px;
@@ -381,7 +373,6 @@
 }
 
 @media (max-width: 520px) {
-  .page h2 { font-size: 28px; }
   .paletteTrigger { grid-template-columns: 76px minmax(0, 1fr) auto; }
   .paletteMenu { right: auto; left: 0; width: min(420px, calc(100vw - 52px)); }
   .paletteMenu button { grid-template-columns: 68px minmax(0, 1fr) 18px; }
@@ -402,9 +393,9 @@
 .sections :global(#install > button) { min-height:40px;padding:0 16px;border:0;border-radius:10px;color:white;background:var(--app-accent);font-weight:700; }
 
 @media (max-width: 47.999rem) {
-  .page { margin: -26px -14px 0; padding: 24px 18px max(30px, env(safe-area-inset-bottom)); border-radius: 28px 28px 0 0; background: #fff; }
+  .page { margin: -26px -14px 0; padding: 24px 18px max(30px, env(safe-area-inset-bottom)); border-radius: 28px 28px 0 0; background: var(--app-surface); }
   .page, .layout, .sections, .sections section, .field, .field > * { min-width: 0; max-width: 100%; }
-  .page::before { display: block; width: 44px; height: 5px; margin: -10px auto 24px; border-radius: 999px; background: #cfd5df; content: ""; }
+  .page::before { display: block; width: 44px; height: 5px; margin: -10px auto 24px; border-radius: 999px; background: var(--app-border); content: ""; }
   .page > header { display: none; }
   .layout { display: block; border: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; backdrop-filter: none; }
   .layout > nav { display: none; }
@@ -412,8 +403,8 @@
   .sections section { padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
   .sectionHeading { min-height: 54px; }
   .sectionHeading > span, .sectionHeading p { display: none; }
-  .sectionHeading h3 { color: #65728b; font-size: 22px; }
-  .field, .toggle { min-height: 66px; border-top-color: #e4e8ee; }
+  .sectionHeading h2 { color: var(--app-text-strong); font-size: 22px; }
+  .field, .toggle { min-height: 66px; border-top-color: var(--app-border); }
   .field { grid-template-columns: 1fr; gap: 10px; padding: 14px 0; }
   .fieldCopy strong, .toggle strong { font-size: 15px; }
   .fieldCopy small, .toggle small { font-size: 11px; }
